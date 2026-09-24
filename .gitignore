@@ -1,0 +1,27 @@
+# Machine-specific configuration (SDK path) — never commit
+local.properties
+
+# Gradle and build output
+.gradle/
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IntelliJ / Android Studio internals
+.idea/
+*.iml
+
+# Packaged and intermediate artifacts
+*.apk
+*.aab
+*.dex
+*.class
+
+# Logs
+*.log
+
+# Signing keystores — never commit
+*.jks
+*.keystore

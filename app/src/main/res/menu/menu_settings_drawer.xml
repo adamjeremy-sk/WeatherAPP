@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_settings_location">
+        <item
+            android:id="@+id/menu_item_default_location"
+            android:title="Default Location" />
+        <item
+            android:id="@+id/menu_item_tabs"
+            android:title="Location Tabs" />
+        <item
+            android:id="@+id/menu_item_theme"
+            android:title="Theme &amp; Display" />
+    </group>
+
+    <group android:id="@+id/group_settings_app">
+        <item
+            android:id="@+id/menu_item_ai_models"
+            android:title="AI Models" />
+        <item
+            android:id="@+id/menu_item_cache"
+            android:title="Data Cache" />
+        <item
+            android:id="@+id/menu_item_alerts"
+            android:title="Notifications" />
+        <item
+            android:id="@+id/menu_item_models"
+            android:title="Weather Model" />
+    </group>
+
+    <group android:id="@+id/group_support">
+        <item
+            android:id="@+id/menu_item_about"
+            android:title="About" />
+        <item
+            android:id="@+id/menu_item_licenses"
+            android:title="Licenses &amp; Sources" />
+        <item
+            android:id="@+id/menu_item_privacy"
+            android:title="Privacy Policy" />
+    </group>
+
+    <group android:id="@+id/group_external_links">
+        <item
+            android:id="@+id/menu_item_update"
+            android:title="Check for Updates" />
+        <item
+            android:id="@+id/menu_item_donate"
+            android:title="Donate" />
+        <item
+            android:id="@+id/menu_item_rate"
+            android:title="Rate &amp; Review" />
+    </group>
+
+</menu>

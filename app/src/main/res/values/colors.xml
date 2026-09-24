@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Weather App Theme Colors -->
+    <color name="brand_primary">#1E88E5</color>
+    <color name="brand_primary_variant">#1565C0</color>
+    <color name="brand_secondary">#0288D1</color>
+    <color name="background_light">#F8F9FA</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_card_secondary">#F1F5F9</color>
+
+    <!-- Temperature colors -->
+    <color name="temp_high">#D84315</color>
+    <color name="temp_high_bg">#FBE9E7</color>
+    <color name="temp_low">#1565C0</color>
+    <color name="temp_low_bg">#E3F2FD</color>
+
+    <!-- Solar colors -->
+    <color name="sunrise_sunset_text">#D84315</color>
+    <color name="golden_hour_primary">#E65100</color>
+    <color name="golden_hour_bg">#FFF3E0</color>
+    <color name="blue_hour_primary">#1A237E</color>
+    <color name="blue_hour_bg">#E8EAF6</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#1E293B</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_tertiary">#94A3B8</color>
+    <color name="divider_color">#E2E8F0</color>
+</resources>
