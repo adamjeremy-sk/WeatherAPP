@@ -79,7 +79,8 @@ class DayForecastAdapter(
 
             // Populate Expanded Section Data
             val solar = item.solarTimes
-            binding.tvExpandedMoonPhase.text = "${solar.moonPhase.name} ${solar.moonPhase.emoji} (${solar.moonCyclePercentage}%)"
+            val lunarPhase = LunarInfoRepository.getMoonPhaseForDate(binding.root.context, item.date)
+            binding.tvExpandedMoonPhase.text = "${lunarPhase.name} ${lunarPhase.emoji} (${lunarPhase.percentage}%)"
             binding.tvExpandedDaylight.text = solar.daylightDurationText
 
             val sunriseStr = SolarCalculator.formatTime(solar.sunrise)

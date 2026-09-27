@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDate
 
 enum class UnitSystem {
     METRIC,
@@ -107,6 +108,12 @@ data class DailyData(
     var windGustsMax: List<Double?>? = null
 )
 
+data class LunarPhaseResult(
+    val name: String,
+    val emoji: String,
+    val percentage: Int
+)
+
 data class DayForecast(
     val dateString: String,
     val dayOfWeek: String,
@@ -125,4 +132,11 @@ data class DayForecast(
     val airQualityIndex: Int?,
     val solarTimes: SolarTimesResult,
     var isExpanded: Boolean = false
-)
+) {
+    val date: LocalDate
+        get() = try {
+            LocalDate.parse(dateString)
+        } catch (e: Exception) {
+            LocalDate.now()
+        }
+}

@@ -15,9 +15,6 @@
 
     <group android:id="@+id/group_settings_app">
         <item
-            android:id="@+id/menu_item_ai_models"
-            android:title="AI Models" />
-        <item
             android:id="@+id/menu_item_cache"
             android:title="Data Cache" />
         <item

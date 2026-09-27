@@ -41,6 +41,12 @@ data class MoonPhaseInfo(
     val emoji: String
 )
 
+data class MoonPhaseInfoAndPercentage(
+    val name: String,
+    val emoji: String,
+    val percentage: Int
+)
+
 data class SolarPhaseDetail(
     val stepIndex: Int,
     val name: String,

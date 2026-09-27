@@ -27,23 +27,6 @@ enum class ForecastModel(
     }
 }
 
-enum class AiModel(
-    val idKey: String,
-    val displayName: String,
-    val provider: String,
-    val description: String
-) {
-    QWEN("QWEN", "Qwen 2.5 72B", "Alibaba Qwen", "Rich, expressive natural language climate analysis."),
-    GEMINI("GEMINI", "Gemini 1.5 Flash", "Google", "Fast, comprehensive Google generative AI analysis."),
-    MISTRAL("MISTRAL", "Mistral 7B", "Mistral AI", "High-reasoning, concise European open-weights AI model.");
-
-    companion object {
-        fun fromKey(key: String?): AiModel {
-            return values().find { it.idKey.equals(key, ignoreCase = true) } ?: QWEN
-        }
-    }
-}
-
 class LocationPreferences(context: Context) {
 
     private val prefs: SharedPreferences =
@@ -75,11 +58,6 @@ class LocationPreferences(context: Context) {
         private const val KEY_WEATHER_ALERTS = "app_weather_alerts_enabled"
         private const val KEY_CACHE_TTL_ENABLED = "app_cache_ttl_enabled"
         private const val KEY_CACHE_TTL_MINUTES = "app_cache_ttl_minutes"
-        private const val KEY_AI_MODEL = "app_ai_model_preference"
-        private const val KEY_SECONDARY_AI_MODEL = "app_secondary_ai_model_preference"
-        private const val KEY_DUAL_AI_MODEL = "app_dual_ai_model_enabled"
-        private const val KEY_AI_SUMMARY_ENABLED = "app_ai_summary_enabled"
-        private const val KEY_AI_HAIKU_MODE = "app_ai_haiku_mode_enabled"
         private const val KEY_ACTIVE_ALERT_JSON = "app_active_alert_json"
         private const val KEY_ALERT_DISMISSED = "app_alert_dismissed"
         private const val KEY_SOLAR_EVENTS_FIRST_LAUNCH = "is_solar_events_first_launch"
@@ -134,14 +112,6 @@ class LocationPreferences(context: Context) {
         return pending
     }
 
-    fun isAiHaikuModeEnabled(): Boolean {
-        return prefs.getBoolean(KEY_AI_HAIKU_MODE, false)
-    }
-
-    fun saveAiHaikuModeEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_AI_HAIKU_MODE, enabled).apply()
-    }
-
     fun isVolumeScrollEnabled(): Boolean {
         return prefs.getBoolean(KEY_VOLUME_SCROLL_ENABLED, true)
     }
@@ -170,29 +140,6 @@ class LocationPreferences(context: Context) {
 
     fun resetAppLaunchCount() {
         prefs.edit().putInt(KEY_LAUNCH_COUNT, 0).apply()
-    }
-
-    fun getSavedSecondaryAiModel(): AiModel {
-        val key = prefs.getString(KEY_SECONDARY_AI_MODEL, AiModel.GEMINI.idKey)
-        val primary = getSavedAiModel()
-        val secondary = AiModel.fromKey(key)
-        return if (secondary == primary) {
-            AiModel.values().find { it != primary } ?: AiModel.GEMINI
-        } else {
-            secondary
-        }
-    }
-
-    fun saveSecondaryAiModel(model: AiModel) {
-        prefs.edit().putString(KEY_SECONDARY_AI_MODEL, model.idKey).apply()
-    }
-
-    fun isDualAiModelEnabled(): Boolean {
-        return prefs.getBoolean(KEY_DUAL_AI_MODEL, true)
-    }
-
-    fun saveDualAiModelEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_DUAL_AI_MODEL, enabled).apply()
     }
 
     fun getSolarAlarmLeadMinutes(): Int {
@@ -290,23 +237,6 @@ class LocationPreferences(context: Context) {
 
     fun saveForecastModel(model: ForecastModel) {
         prefs.edit().putString(KEY_DEFAULT_MODEL, model.idKey).apply()
-    }
-
-    fun getSavedAiModel(): AiModel {
-        val key = prefs.getString(KEY_AI_MODEL, AiModel.QWEN.idKey)
-        return AiModel.fromKey(key)
-    }
-
-    fun saveAiModel(model: AiModel) {
-        prefs.edit().putString(KEY_AI_MODEL, model.idKey).apply()
-    }
-
-    fun isAiSummaryEnabled(): Boolean {
-        return prefs.getBoolean(KEY_AI_SUMMARY_ENABLED, false)
-    }
-
-    fun saveAiSummaryEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_AI_SUMMARY_ENABLED, enabled).apply()
     }
 
     fun isAutoCmaChinaEnabled(): Boolean {

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lunarInformation>
+  <year value="2025">
+    <phases>
+      <phase date="2025-01-06" type="First Quarter" />
+      <phase date="2025-01-13" type="Full Moon" />
+      <phase date="2025-01-21" type="Last Quarter" />
+      <phase date="2025-01-29" type="New Moon" />
+      <phase date="2025-02-05" type="First Quarter" />
+      <phase date="2025-02-12" type="Full Moon" />
+      <phase date="2025-02-20" type="Last Quarter" />
+      <phase date="2025-02-27" type="New Moon" />
+      <phase date="2025-03-06" type="First Quarter" />
+      <phase date="2025-03-13" type="Full Moon" />
+      <phase date="2025-03-22" type="Last Quarter" />
+      <phase date="2025-03-29" type="New Moon" />
+      <phase date="2025-04-04" type="First Quarter" />
+      <phase date="2025-04-12" type="Full Moon" />
+      <phase date="2025-04-20" type="Last Quarter" />
+      <phase date="2025-04-27" type="New Moon" />
+      <phase date="2025-05-04" type="First Quarter" />
+      <phase date="2025-05-12" type="Full Moon" />
+      <phase date="2025-05-20" type="Last Quarter" />
+      <phase date="2025-05-26" type="New Moon" />
+      <phase date="2025-06-02" type="First Quarter" />
+      <phase date="2025-06-11" type="Full Moon" />
+      <phase date="2025-06-18" type="Last Quarter" />
+      <phase date="2025-06-25" type="New Moon" />
+      <phase date="2025-07-02" type="First Quarter" />
+      <phase date="2025-07-10" type="Full Moon" />
+      <phase date="2025-07-17" type="Last Quarter" />
+      <phase date="2025-07-24" type="New Moon" />
+      <phase date="2025-08-01" type="First Quarter" />
+      <phase date="2025-08-09" type="Full Moon" />
+      <phase date="2025-08-15" type="Last Quarter" />
+      <phase date="2025-08-22" type="New Moon" />
+      <phase date="2025-08-30" type="First Quarter" />
+      <phase date="2025-09-07" type="Full Moon" />
+      <phase date="2025-09-14" type="Last Quarter" />
+      <phase date="2025-09-21" type="New Moon" />
+      <phase date="2025-09-29" type="First Quarter" />
+      <phase date="2025-10-06" type="Full Moon" />
+      <phase date="2025-10-13" type="Last Quarter" />
+      <phase date="2025-10-21" type="New Moon" />
+      <phase date="2025-10-29" type="First Quarter" />
+      <phase date="2025-11-05" type="Full Moon" />
+      <phase date="2025-11-11" type="Last Quarter" />
+      <phase date="2025-11-19" type="New Moon" />
+      <phase date="2025-11-27" type="First Quarter" />
+      <phase date="2025-12-04" type="Full Moon" />
+      <phase date="2025-12-11" type="Last Quarter" />
+      <phase date="2025-12-19" type="New Moon" />
+      <phase date="2025-12-20" type="First Quarter" />
+      <phase date="2025-12-27" type="Full Moon" />
+    </phases>
+    <lunarEclipses>
+      <eclipse date="2025-03-14" type="Total Lunar Eclipse" />
+      <eclipse date="2025-09-07" type="Total Lunar Eclipse" />
+    </lunarEclipses>
+    <specialMoons>
+      <specialMoon date="2025-01-13" name="Wolf Moon / Supermoon" />
+      <specialMoon date="2025-10-06" name="Harvest Moon / Supermoon" />
+      <specialMoon date="2025-11-05" name="Beaver Moon / Supermoon" />
+      <specialMoon date="2025-12-04" name="Cold Moon / Supermoon" />
+    </specialMoons>
+    <meteorShowers>
+      <meteorShower date="2025-01-03" name="Quadrantids Peak" />
+      <meteorShower date="2025-04-22" name="Lyrids Peak" />
+      <meteorShower date="2025-05-06" name="Eta Aquariids Peak" />
+      <meteorShower date="2025-07-30" name="Delta Aquariids Peak" />
+      <meteorShower date="2025-08-12" name="Perseids Peak" />
+      <meteorShower date="2025-10-21" name="Orionids Peak" />
+      <meteorShower date="2025-11-17" name="Leonids Peak" />
+      <meteorShower date="2025-12-14" name="Geminids Peak" />
+    </meteorShowers>
+    <planetaryAlignmentsAndConjunctions>
+      <alignment date="2025-01-21" event="Seven-Planet Alignment Begins (Venus, Mars, Jupiter, Saturn, Uranus, Neptune)" />
+      <alignment date="2025-02-28" event="Seven-Planet Alignment Culmination" />
+      <alignment date="2025-08-12" event="Six-Planet Alignment (Mercury, Venus, Jupiter, Saturn, Uranus, Neptune)" />
+    </planetaryAlignmentsAndConjunctions>
+    <equinoxesAndSolstices>
+      <season date="2025-03-20" name="March Equinox" />
+      <season date="2025-06-21" name="June Solstice" />
+      <season date="2025-09-22" name="September Equinox" />
+      <season date="2025-12-21" name="December Solstice" />
+    </equinoxesAndSolstices>
+    <asteroidPasses>
+      <asteroidPass date="2025-01-01" event="Various Near-Earth Asteroid (NEA) close approaches monitored by NASA CNEOS" />
+    </asteroidPasses>
+  </year>
+  <year value="2026">
+    <phases>
+      <phase date="2026-01-03" type="Full Moon" />
+      <phase date="2026-01-10" type="Last Quarter" />
+      <phase date="2026-01-18" type="New Moon" />
+      <phase date="2026-01-25" type="First Quarter" />
+      <phase date="2026-02-01" type="Full Moon" />
+      <phase date="2026-02-09" type="Last Quarter" />
+      <phase date="2026-02-17" type="New Moon" />
+      <phase date="2026-02-24" type="First Quarter" />
+      <phase date="2026-03-03" type="Full Moon" />
+      <phase date="2026-03-11" type="Last Quarter" />
+      <phase date="2026-03-18" type="New Moon" />
+      <phase date="2026-03-25" type="First Quarter" />
+      <phase date="2026-04-01" type="Full Moon" />
+      <phase date="2026-04-09" type="Last Quarter" />
+      <phase date="2026-04-17" type="New Moon" />
+      <phase date="2026-04-23" type="First Quarter" />
+      <phase date="2026-05-01" type="Full Moon" />
+      <phase date="2026-05-09" type="Last Quarter" />
+      <phase date="2026-05-16" type="New Moon" />
+      <phase date="2026-05-23" type="First Quarter" />
+      <phase date="2026-05-31" type="Full Moon" />
+      <phase date="2026-06-08" type="Last Quarter" />
+      <phase date="2026-06-14" type="New Moon" />
+      <phase date="2026-06-21" type="First Quarter" />
+      <phase date="2026-06-29" type="Full Moon" />
+      <phase date="2026-07-07" type="Last Quarter" />
+      <phase date="2026-07-14" type="New Moon" />
+      <phase date="2026-07-21" type="First Quarter" />
+      <phase date="2026-07-29" type="Full Moon" />
+      <phase date="2026-08-05" type="Last Quarter" />
+      <phase date="2026-08-12" type="New Moon" />
+      <phase date="2026-08-19" type="First Quarter" />
+      <phase date="2026-08-27" type="Full Moon" />
+      <phase date="2026-09-04" type="Last Quarter" />
+      <phase date="2026-09-10" type="New Moon" />
+      <phase date="2026-09-18" type="First Quarter" />
+      <phase date="2026-09-26" type="Full Moon" />
+      <phase date="2026-10-03" type="Last Quarter" />
+      <phase date="2026-10-10" type="New Moon" />
+      <phase date="2026-10-18" type="First Quarter" />
+      <phase date="2026-10-25" type="Full Moon" />
+      <phase date="2026-11-01" type="Last Quarter" />
+      <phase date="2026-11-08" type="New Moon" />
+      <phase date="2026-11-17" type="First Quarter" />
+      <phase date="2026-11-24" type="Full Moon" />
+      <phase date="2026-11-30" type="Last Quarter" />
+      <phase date="2026-12-08" type="New Moon" />
+      <phase date="2026-12-16" type="First Quarter" />
+      <phase date="2026-12-23" type="Full Moon" />
+      <phase date="2026-12-30" type="Last Quarter" />
+    </phases>
+    <lunarEclipses>
+      <eclipse date="2026-03-03" type="Total Lunar Eclipse" />
+      <eclipse date="2026-08-28" type="Partial Lunar Eclipse" />
+    </lunarEclipses>
+    <specialMoons>
+      <specialMoon date="2026-01-03" name="Wolf Moon / Supermoon" />
+      <specialMoon date="2026-05-31" name="Blue Moon (Monthly)" />
+      <specialMoon date="2026-09-26" name="Harvest Moon" />
+      <specialMoon date="2026-11-24" name="Beaver Moon / Supermoon" />
+      <specialMoon date="2026-12-23" name="Cold Moon / Supermoon" />
+    </specialMoons>
+    <meteorShowers>
+      <meteorShower date="2026-01-03" name="Quadrantids Peak" />
+      <meteorShower date="2026-04-22" name="Lyrids Peak" />
+      <meteorShower date="2026-05-06" name="Eta Aquariids Peak" />
+      <meteorShower date="2026-07-30" name="Delta Aquariids Peak" />
+      <meteorShower date="2026-08-12" name="Perseids Peak" />
+      <meteorShower date="2026-10-21" name="Orionids Peak" />
+      <meteorShower date="2026-11-17" name="Leonids Peak" />
+      <meteorShower date="2026-12-14" name="Geminids Peak" />
+    </meteorShowers>
+    <planetaryAlignmentsAndConjunctions>
+      <alignment date="2026-02-28" event="Six-Planet Alignment (Mercury, Venus, Jupiter, Saturn, Uranus, Neptune)" />
+      <alignment date="2026-06-08" event="Venus and Jupiter Conjunction" />
+      <alignment date="2026-11-14" event="Planetary Alignment (Mercury, Venus, Mars, Jupiter)" />
+    </planetaryAlignmentsAndConjunctions>
+    <equinoxesAndSolstices>
+      <season date="2026-03-20" name="March Equinox" />
+      <season date="2026-06-21" name="June Solstice" />
+      <season date="2026-09-22" name="September Equinox" />
+      <season date="2026-12-21" name="December Solstice" />
+    </equinoxesAndSolstices>
+    <asteroidPasses>
+      <asteroidPass date="2026-05-15" event="Asteroid 2026 JH2 close approach (approx. 56,000 miles)" />
+      <asteroidPass date="2026-09-27" event="Notable NEA close approach (1,990,000 miles)" />
+    </asteroidPasses>
+  </year>
+  <year value="2027">
+    <phases>
+      <phase date="2027-01-07" type="New Moon" />
+      <phase date="2027-01-15" type="First Quarter" />
+      <phase date="2027-01-22" type="Full Moon" />
+      <phase date="2027-01-29" type="Last Quarter" />
+      <phase date="2027-02-06" type="New Moon" />
+      <phase date="2027-02-13" type="First Quarter" />
+      <phase date="2027-02-20" type="Full Moon" />
+      <phase date="2027-02-27" type="Last Quarter" />
+      <phase date="2027-03-08" type="New Moon" />
+      <phase date="2027-03-15" type="First Quarter" />
+      <phase date="2027-03-22" type="Full Moon" />
+      <phase date="2027-03-29" type="Last Quarter" />
+      <phase date="2027-04-06" type="New Moon" />
+      <phase date="2027-04-13" type="First Quarter" />
+      <phase date="2027-04-20" type="Full Moon" />
+      <phase date="2027-04-28" type="Last Quarter" />
+      <phase date="2027-05-06" type="New Moon" />
+      <phase date="2027-05-12" type="First Quarter" />
+      <phase date="2027-05-20" type="Full Moon" />
+      <phase date="2027-05-28" type="Last Quarter" />
+      <phase date="2027-06-04" type="New Moon" />
+      <phase date="2027-06-11" type="First Quarter" />
+      <phase date="2027-06-18" type="Full Moon" />
+      <phase date="2027-06-26" type="Last Quarter" />
+      <phase date="2027-07-03" type="New Moon" />
+      <phase date="2027-07-10" type="First Quarter" />
+      <phase date="2027-07-18" type="Full Moon" />
+      <phase date="2027-07-26" type="Last Quarter" />
+      <phase date="2027-08-02" type="New Moon" />
+      <phase date="2027-08-08" type="First Quarter" />
+      <phase date="2027-08-17" type="Full Moon" />
+      <phase date="2027-08-24" type="Last Quarter" />
+      <phase date="2027-08-31" type="New Moon" />
+      <phase date="2027-09-07" type="First Quarter" />
+      <phase date="2027-09-15" type="Full Moon" />
+      <phase date="2027-09-23" type="Last Quarter" />
+      <phase date="2027-09-29" type="New Moon" />
+      <phase date="2027-10-07" type="First Quarter" />
+      <phase date="2027-10-15" type="Full Moon" />
+      <phase date="2027-10-22" type="Last Quarter" />
+      <phase date="2027-10-29" type="New Moon" />
+      <phase date="2027-11-06" type="First Quarter" />
+      <phase date="2027-11-13" type="Full Moon" />
+      <phase date="2027-11-20" type="Last Quarter" />
+      <phase date="2027-11-27" type="New Moon" />
+      <phase date="2027-12-05" type="First Quarter" />
+      <phase date="2027-12-13" type="Full Moon" />
+      <phase date="2027-12-20" type="Last Quarter" />
+      <phase date="2027-12-27" type="New Moon" />
+    </phases>
+    <lunarEclipses>
+      <eclipse date="2027-02-20" type="Penumbral Lunar Eclipse" />
+      <eclipse date="2027-07-18" type="Penumbral Lunar Eclipse" />
+      <eclipse date="2027-08-16" type="Penumbral Lunar Eclipse" />
+    </lunarEclipses>
+    <specialMoons>
+      <specialMoon date="2027-01-22" name="Wolf Moon / Supermoon" />
+      <specialMoon date="2027-05-20" name="Blue Moon (Seasonal)" />
+      <specialMoon date="2027-09-15" name="Harvest Moon" />
+    </specialMoons>
+    <meteorShowers>
+      <meteorShower date="2027-01-03" name="Quadrantids Peak" />
+      <meteorShower date="2027-04-22" name="Lyrids Peak" />
+      <meteorShower date="2027-05-06" name="Eta Aquariids Peak" />
+      <meteorShower date="2027-07-30" name="Delta Aquariids Peak" />
+      <meteorShower date="2027-08-12" name="Perseids Peak" />
+      <meteorShower date="2027-10-21" name="Orionids Peak" />
+      <meteorShower date="2027-11-17" name="Leonids Peak" />
+      <meteorShower date="2027-12-14" name="Geminids Peak" />
+    </meteorShowers>
+    <planetaryAlignmentsAndConjunctions>
+      <alignment date="2027-03-31" event="Jupiter and Mars Conjunction" />
+      <alignment date="2027-04-11" event="Mercury and Neptune Conjunction" />
+    </planetaryAlignmentsAndConjunctions>
+    <equinoxesAndSolstices>
+      <season date="2027-03-20" name="March Equinox" />
+      <season date="2027-06-21" name="June Solstice" />
+      <season date="2027-09-22" name="September Equinox" />
+      <season date="2027-12-21" name="December Solstice" />
+    </equinoxesAndSolstices>
+    <asteroidPasses>
+      <asteroidPass date="2027-08-07" event="Asteroid (7482) 1994 PC1 close approach (wider but notable tracking)" />
+    </asteroidPasses>
+  </year>
+</lunarInformation>

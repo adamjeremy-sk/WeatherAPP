@@ -44,7 +44,6 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
-import com.weatherapp.libre.databinding.DialogAiModelsSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
 import com.weatherapp.libre.databinding.DialogCacheSettingsBinding
 import com.weatherapp.libre.databinding.DialogLicensesSettingsBinding
@@ -65,7 +64,6 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -90,8 +88,7 @@ class MainActivity : AppCompatActivity() {
     enum class InlineSubTab {
         WEATHER_DETAILS,
         GOLDEN_HOUR,
-        SOLAR_EVENTS,
-        AI_SUMMARY
+        SOLAR_EVENTS
     }
 
     private var activeInlineSubTab: InlineSubTab = InlineSubTab.WEATHER_DETAILS
@@ -219,7 +216,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         updateAlertBanner()
         checkTodaySolarEvents()
-        updateAiSummaryVisibility()
         updateTabsStickyPosition()
         applyPaletteToUI()
     }
@@ -480,39 +476,13 @@ class MainActivity : AppCompatActivity() {
         // Dropdown menu button styling
         binding.btnInlineMenu.strokeColor = ColorStateList.valueOf(palette.dividerColor)
 
-        // Palette styling for Inline AI Summary Cards
-        binding.cardInlineAiBanner.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
-        binding.cardInlineAiBanner.strokeColor = palette.primary
-        binding.tvInlineAiBannerTitle.setTextColor(palette.primary)
-        binding.tvInlineAiBannerSubtitle.setTextColor(palette.textSecondary)
-
-        binding.cardInlineP1.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
-        binding.cardInlineP1.strokeColor = palette.dividerColor
-        binding.tvInlineP1.setTextColor(palette.textSecondary)
-
-        binding.cardInlineP2.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
-        binding.cardInlineP2.strokeColor = palette.dividerColor
-        binding.tvInlineP2.setTextColor(palette.textSecondary)
-
-        binding.cardInlineP3.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
-        binding.cardInlineP3.strokeColor = palette.dividerColor
-        binding.tvInlineP3.setTextColor(palette.textSecondary)
-
         inlineSolarPhaseAdapter.setPalette(palette)
         inlineSolarEventAdapter.setPalette(palette)
         forecastAdapter.setPalette(palette)
     }
 
-    private fun updateAiSummaryVisibility() {
-        val isAiEnabled = locationPreferences.isAiSummaryEnabled()
-        // If AI Summary feature is disabled and active subtab is AI_SUMMARY, return to WEATHER_DETAILS
-        if (!isAiEnabled && activeInlineSubTab == InlineSubTab.AI_SUMMARY) {
-            switchInlineSubTab(InlineSubTab.WEATHER_DETAILS)
-        }
-    }
-
     private fun checkTodaySolarEvents() {
-        val (_, upcomingEvents) = AstronomicalEventsRepository.generateEvents()
+        val (_, upcomingEvents) = LunarInfoRepository.generateEventsFromLunarInfo(this)
         val todayEvent = upcomingEvents.find { it.isHappeningToday }
 
         if (todayEvent != null) {
@@ -600,16 +570,12 @@ class MainActivity : AppCompatActivity() {
             popup.menu.add(0, 1, 0, "Weather")
             popup.menu.add(0, 2, 1, "Golden Hour")
             popup.menu.add(0, 3, 2, "Solar Events")
-            if (locationPreferences.isAiSummaryEnabled()) {
-                popup.menu.add(0, 4, 3, "AI Summary")
-            }
 
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     1 -> switchInlineSubTab(InlineSubTab.WEATHER_DETAILS)
                     2 -> switchInlineSubTab(InlineSubTab.GOLDEN_HOUR)
                     3 -> switchInlineSubTab(InlineSubTab.SOLAR_EVENTS)
-                    4 -> switchInlineSubTab(InlineSubTab.AI_SUMMARY)
                 }
                 true
             }
@@ -651,8 +617,6 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        updateAiSummaryVisibility()
-
         // Easter Egg 1: Tap Daily Low 5 Times -> Snowflakes Effect
         binding.tvDailyLow.setOnClickListener { handleDailyLowTap() }
         binding.cardLowTemp.setOnClickListener { handleDailyLowTap() }
@@ -680,7 +644,6 @@ class MainActivity : AppCompatActivity() {
         binding.layoutWeatherDetailsContainer.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
         binding.layoutInlineGoldenHourContainer.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
         binding.layoutInlineSolarEventsContainer.visibility = if (subTab == InlineSubTab.SOLAR_EVENTS) View.VISIBLE else View.GONE
-        binding.layoutInlineAiSummaryContainer.visibility = if (subTab == InlineSubTab.AI_SUMMARY) View.VISIBLE else View.GONE
 
         when (subTab) {
             InlineSubTab.WEATHER_DETAILS -> {
@@ -698,11 +661,6 @@ class MainActivity : AppCompatActivity() {
                 binding.btnInlineMenu.setIconResource(R.drawable.ic_solar_events)
                 val activeTabPos = binding.tabLayoutInlineEvents.selectedTabPosition.coerceAtLeast(0)
                 updateInlineSolarEventsDisplay(if (activeTabPos in 0..1) activeTabPos else 1)
-            }
-            InlineSubTab.AI_SUMMARY -> {
-                binding.btnInlineMenu.text = "AI Summary ▾"
-                binding.btnInlineMenu.setIconResource(R.drawable.ic_ai_summary)
-                renderInlineAiSummary()
             }
         }
     }
@@ -733,137 +691,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateInlineSolarEventsDisplay(tabPosition: Int) {
-        val (pastEvents, upcomingEvents) = AstronomicalEventsRepository.generateEvents()
+        val (pastEvents, upcomingEvents) = LunarInfoRepository.generateEventsFromLunarInfo(this)
         val eventsToShow = if (tabPosition == 0) pastEvents else upcomingEvents
         inlineSolarEventAdapter.submitList(eventsToShow)
-    }
-
-    private fun cleanAiText(rawText: String, locationName: String): String {
-        var text = rawText
-        val unwantedPhrases = listOf(
-            "Synthesizing the forecast,",
-            "Synthesizing the forecast",
-            "Synthesizing the overall outlook,",
-            "Synthesizing 7-day data,",
-            "Sythensizing 7-day data,",
-            "Synthesizing 7-day data",
-            "Refining secondary draft telemetry,",
-            "Analyzing the 7-day long-term trend,",
-            "Concluding the forecast breakdown,",
-            "Model processing...",
-            "Secondary model telemetry draft..."
-        )
-        for (phrase in unwantedPhrases) {
-            text = text.replace(phrase, "", ignoreCase = true)
-        }
-
-        val coordsRegex = Regex("-?\\d+\\.\\d+\\s*,\\s*-?\\d+\\.\\d+")
-        text = text.replace(coordsRegex, locationName)
-
-        return text.trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-    }
-
-    private fun renderInlineAiSummary() {
-        val primaryModel = locationPreferences.getSavedAiModel()
-        val secondaryModel = locationPreferences.getSavedSecondaryAiModel()
-        val isDualEnabled = locationPreferences.isDualAiModelEnabled()
-        val isHaikuMode = locationPreferences.isAiHaikuModeEnabled()
-        val activeModelName = locationPreferences.getActiveModelForLocation(currentLocation).displayName
-
-        val haikuSuffix = if (isHaikuMode) " (Haiku Mode 5-7-5)" else ""
-
-        binding.tvInlineAiBannerTitle.text = if (isDualEnabled) {
-            "✨ Dual AI Pipeline: ${primaryModel.displayName} + ${secondaryModel.displayName}$haikuSuffix"
-        } else {
-            "✨ ${primaryModel.displayName} Climate AI Analysis$haikuSuffix"
-        }
-
-        binding.tvInlineAiBannerSubtitle.text = if (isDualEnabled) {
-            "Draft generated by ${secondaryModel.displayName} and refined by ${primaryModel.displayName} using $activeModelName."
-        } else {
-            "Analysis by ${primaryModel.displayName} (${primaryModel.provider}) using $activeModelName."
-        }
-
-        lifecycleScope.launch {
-            binding.pbInlineAiLoading.visibility = View.VISIBLE
-            binding.layoutInlineAiCardsContainer.visibility = View.GONE
-
-            val result = repository.getWeatherForecast(currentLocation.latitude, currentLocation.longitude, locationPreferences = locationPreferences)
-            binding.pbInlineAiLoading.visibility = View.GONE
-            binding.layoutInlineAiCardsContainer.visibility = View.VISIBLE
-
-            result.fold(
-                onSuccess = { response ->
-                    val today = repository.processTodayForecast(response, currentLocation.latitude, currentLocation.longitude)
-                    val forecastList = repository.processDailyForecast(response, currentLocation.latitude, currentLocation.longitude)
-                    if (today != null && forecastList.isNotEmpty()) {
-                        val city = currentLocation.name
-
-                        if (isHaikuMode) {
-                            // Strict 5-7-5 syllable Haikus for all 3 cards
-                            val c1Haiku = "Clear skies warm the day\nSunlight shines on $city\nCrisp cool night arrives"
-                            val c2Haiku = "Mild week lies ahead\nGentle breezes cross the plains\nHighs stay near nineteen"
-                            val c3Haiku = "Seasons gently flow\nFavorable daytime plans\nPeaceful climate week"
-
-                            binding.tvInlineP1.text = c1Haiku
-                            binding.tvInlineP2.text = c2Haiku
-                            binding.tvInlineP3.text = c3Haiku
-                        } else {
-                            val seed = (System.currentTimeMillis() % 1000).toInt() + Random.nextInt(100)
-                            val todayHigh = UnitUtils.formatTemp(today.tempMax, unitSystem)
-                            val todayLow = UnitUtils.formatTemp(today.tempMin, unitSystem)
-                            val todayWind = UnitUtils.formatWindSpeed(today.windSpeedMaxKmH, unitSystem, gustKmh = today.windGustsMaxKmH)
-
-                            val p1Vars = listOf(
-                                "Today in ${currentLocation.displayName} features ${today.weatherDescription.lowercase(Locale.getDefault())} with afternoon temperatures reaching $todayHigh and cooling to $todayLow tonight. Surface winds are $todayWind with relative humidity near ${today.humidityPct}% and UV index topping out at ${String.format(Locale.getDefault(), "%.1f", today.uvIndexMax)}.",
-                                "Expect pleasant ${today.weatherDescription.lowercase(Locale.getDefault())} conditions across ${currentLocation.displayName} throughout today. Daytime temperatures will peak at $todayHigh before dropping to $todayLow tonight, accompanied by $todayWind, comfortable humidity, and moderate UV exposure.",
-                                "Weather across ${currentLocation.displayName} today features ${today.weatherDescription.lowercase(Locale.getDefault())} with comfortable seasonal conditions. Expect afternoon highs around $todayHigh alongside crisp evening lows of $todayLow, moderate surface humidity, and gentle winds averaging $todayWind."
-                            )
-
-                            val avgMaxVal = forecastList.map { it.tempMax }.average()
-                            val avgMinVal = forecastList.map { it.tempMin }.average()
-                            val avgHigh = UnitUtils.formatTemp(avgMaxVal, unitSystem)
-                            val avgLow = UnitUtils.formatTemp(avgMinVal, unitSystem)
-                            val peakWind = UnitUtils.formatWindSpeed(forecastList.maxOfOrNull { it.windSpeedMaxKmH } ?: 15.0, unitSystem)
-                            val conditions = forecastList.map { it.weatherDescription }.distinct().joinToString(", ").lowercase(Locale.getDefault())
-
-                            val p2Vars = listOf(
-                                "Over the upcoming 7-day forecast, ${currentLocation.displayName} will experience $conditions. Daytime maximums throughout the week will average $avgHigh while overnight minimums cool to $avgLow, with peak wind speeds near $peakWind.",
-                                "Looking ahead across the 7-day forecast, regional weather patterns bring $conditions across ${currentLocation.displayName}. Expect steady daily highs averaging $avgHigh and evening lows near $avgLow, with surface breezes up to $peakWind.",
-                                "The 7-day outlook brings $conditions across ${currentLocation.displayName}. Daytime temperatures settle near $avgHigh on average, while nighttime lows rest around $avgLow, bringing stable atmospheric conditions and moderate winds throughout the week."
-                            )
-
-                            val overallMaxVal = forecastList.maxOf { it.tempMax }.coerceAtLeast(today.tempMax)
-                            val overallMinVal = forecastList.minOf { it.tempMin }.coerceAtMost(today.tempMin)
-                            val overallHigh = UnitUtils.formatTemp(overallMaxVal, unitSystem)
-                            val overallLow = UnitUtils.formatTemp(overallMinVal, unitSystem)
-
-                            val p3Vars = listOf(
-                                "In summary, ${currentLocation.displayName} enjoys well-balanced seasonal weather bounded between $overallLow and $overallHigh over the coming week. Overall climate stability presents excellent opportunities for outdoor recreation, travel, sports, and daily routines.",
-                                "Weather in ${currentLocation.displayName} remains steady and comfortable with overall temperatures spanning $overallLow to $overallHigh across the forecast horizon. Plan outdoor activities, travel, and exercise during clear morning and evening stretches.",
-                                "Overall, ${currentLocation.displayName} experiences pleasant weather balance with temperatures contained comfortably between $overallLow and $overallHigh. Stable daytime highs and cool evening breezes offer great peace of mind for all outdoor plans."
-                            )
-
-                            binding.tvInlineP1.text = cleanAiText(p1Vars[seed % p1Vars.size], currentLocation.displayName)
-                            binding.tvInlineP2.text = cleanAiText(p2Vars[(seed / 2) % p2Vars.size], currentLocation.displayName)
-                            binding.tvInlineP3.text = cleanAiText(p3Vars[(seed / 3) % p3Vars.size], currentLocation.displayName)
-                        }
-                    }
-                },
-                onFailure = {
-                    val city = currentLocation.name
-                    if (locationPreferences.isAiHaikuModeEnabled()) {
-                        binding.tvInlineP1.text = "Clear skies warm the day\nSunlight shines on $city\nCrisp cool night arrives"
-                        binding.tvInlineP2.text = "Mild week lies ahead\nGentle breezes cross the plains\nHighs stay near nineteen"
-                        binding.tvInlineP3.text = "Seasons gently flow\nFavorable daytime plans\nPeaceful climate week"
-                    } else {
-                        binding.tvInlineP1.text = "Today in ${currentLocation.displayName} brings stable seasonal weather with clear to partly cloudy skies."
-                        binding.tvInlineP2.text = "Across the 7-day forecast, regional weather exhibits steady thermal flow with moderate winds."
-                        binding.tvInlineP3.text = "Overall, the weather outlook for ${currentLocation.displayName} supports outdoor planning, travel, and daily routines."
-                    }
-                }
-            )
-        }
     }
 
     private fun promptSetSolarAlarm(item: SolarPhaseDetail) {
@@ -1056,7 +886,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_theme -> showThemeSettingsScreen()
                 R.id.menu_item_tabs -> showLocationTabsSettingsScreen()
                 R.id.menu_item_models -> showModelsSettingsScreen()
-                R.id.menu_item_ai_models -> showAiModelsSettingsScreen()
                 R.id.menu_item_alerts -> showWeatherAlertsSettingsScreen()
                 R.id.menu_item_cache -> showCacheSettingsScreen()
                 R.id.menu_item_default_location -> showDefaultLocationSettingsScreen()
@@ -1662,134 +1491,6 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showAiModelsSettingsScreen() {
-        val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
-        val dialogBinding = DialogAiModelsSettingsBinding.inflate(layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        val savedTheme = locationPreferences.getSavedThemeMode()
-        val palette = BoutiqueThemeEngine.getThemePalette(savedTheme)
-        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
-
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
-        dialogBinding.btnBack.imageTintList = ColorStateList.valueOf(palette.textPrimary)
-
-        dialogBinding.cardAiEnabledSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardAiEnabledSwitch.strokeColor = palette.dividerColor
-
-        dialogBinding.cardDualAiSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardDualAiSwitch.strokeColor = palette.dividerColor
-
-        dialogBinding.cardHaikuSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHaikuSwitch.strokeColor = palette.dividerColor
-
-        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
-
-        // Switch to enable / disable AI Summary button
-        val isAiEnabled = locationPreferences.isAiSummaryEnabled()
-        dialogBinding.switchAiSummaryEnabled.isChecked = isAiEnabled
-
-        dialogBinding.switchAiSummaryEnabled.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveAiSummaryEnabled(isChecked)
-            updateAiSummaryVisibility()
-            val msg = if (isChecked) "AI Summary button enabled" else "AI Summary button hidden"
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-        }
-
-        // Switch for Haiku Mode
-        dialogBinding.switchAiHaikuMode.isChecked = locationPreferences.isAiHaikuModeEnabled()
-        dialogBinding.switchAiHaikuMode.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveAiHaikuModeEnabled(isChecked)
-            if (isChecked) {
-                locationPreferences.saveAiModel(AiModel.QWEN)
-                locationPreferences.saveSecondaryAiModel(AiModel.MISTRAL)
-                Toast.makeText(this, "Haiku Mode enabled (Qwen + Mistral)", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Haiku Mode disabled", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        fun populateAiEngineOptions() {
-            val primaryModel = locationPreferences.getSavedAiModel()
-            val secondaryModel = locationPreferences.getSavedSecondaryAiModel()
-            val isDualEnabled = locationPreferences.isDualAiModelEnabled()
-
-            dialogBinding.switchDualAiEnabled.isChecked = isDualEnabled
-
-            // Primary Models
-            dialogBinding.rgAiModels.removeAllViews()
-            for (model in AiModel.values()) {
-                val optionBinding = ItemSettingsOptionBinding.inflate(layoutInflater, dialogBinding.rgAiModels, false)
-                optionBinding.cardOption.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-                optionBinding.cardOption.strokeColor = palette.dividerColor
-                optionBinding.tvOptionTitle.text = "${model.displayName} (${model.provider})"
-                optionBinding.tvOptionTitle.setTextColor(palette.textPrimary)
-                optionBinding.tvOptionDesc.text = model.description
-                optionBinding.tvOptionDesc.setTextColor(palette.textSecondary)
-                optionBinding.rbOption.isChecked = (primaryModel == model)
-
-                optionBinding.cardOption.setOnClickListener {
-                    locationPreferences.saveAiModel(model)
-                    if (locationPreferences.getSavedSecondaryAiModel() == model) {
-                        val newSec = AiModel.values().find { it != model } ?: AiModel.GEMINI
-                        locationPreferences.saveSecondaryAiModel(newSec)
-                    }
-                    Toast.makeText(this, "Primary AI Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
-                    populateAiEngineOptions()
-                }
-
-                dialogBinding.rgAiModels.addView(optionBinding.root)
-            }
-
-            // Secondary Models
-            dialogBinding.rgSecondaryAiModels.removeAllViews()
-            for (model in AiModel.values()) {
-                val optionBinding = ItemSettingsOptionBinding.inflate(layoutInflater, dialogBinding.rgSecondaryAiModels, false)
-                optionBinding.cardOption.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-                optionBinding.cardOption.strokeColor = palette.dividerColor
-                optionBinding.tvOptionTitle.text = "${model.displayName} (${model.provider})"
-                optionBinding.tvOptionTitle.setTextColor(palette.textPrimary)
-                optionBinding.tvOptionDesc.text = model.description
-                optionBinding.tvOptionDesc.setTextColor(palette.textSecondary)
-                optionBinding.rbOption.isChecked = (secondaryModel == model)
-
-                val isSelectable = (model != primaryModel) && isDualEnabled
-                optionBinding.cardOption.isEnabled = isSelectable
-                optionBinding.cardOption.alpha = if (isSelectable) 1.0f else 0.4f
-                optionBinding.rbOption.isEnabled = isSelectable
-
-                optionBinding.cardOption.setOnClickListener {
-                    if (isSelectable) {
-                        locationPreferences.saveSecondaryAiModel(model)
-                        Toast.makeText(this, "Secondary AI Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
-                        populateAiEngineOptions()
-                    }
-                }
-
-                dialogBinding.rgSecondaryAiModels.addView(optionBinding.root)
-            }
-
-            dialogBinding.layoutSecondaryContainer.alpha = if (isDualEnabled) 1.0f else 0.4f
-        }
-
-        dialogBinding.switchDualAiEnabled.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveDualAiModelEnabled(isChecked)
-            populateAiEngineOptions()
-            val msg = if (isChecked) "Dual AI Model pipeline enabled" else "Secondary AI Model disabled"
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-        }
-
-        populateAiEngineOptions()
-        dialog.show()
-    }
-
     private fun showWeatherAlertsSettingsScreen() {
         val dialog = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogAlertsSettingsBinding.inflate(layoutInflater)
@@ -2006,7 +1707,35 @@ class MainActivity : AppCompatActivity() {
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
+        val mdText = try {
+            assets.open("privacypolicy.md").bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+            "Privacy Policy could not be loaded."
+        }
+
+        val brandHex = String.format("#%06X", 0xFFFFFF and palette.primary)
+        val primaryHex = String.format("#%06X", 0xFFFFFF and palette.textPrimary)
+
+        dialogBinding.tvPrivacyPolicyContent.text = renderMarkdownToSpannable(mdText, primaryHex, brandHex)
+
         dialog.show()
+    }
+
+    private fun renderMarkdownToSpannable(mdText: String, primaryHex: String, brandHex: String): CharSequence {
+        val html = mdText
+            .replace(Regex("(?m)^# (.*)$"), "<font color='$brandHex'><h2><b>$1</b></h2></font>")
+            .replace(Regex("(?m)^## (.*)$"), "<font color='$primaryHex'><h3><b>$1</b></h3></font>")
+            .replace(Regex("(?m)^### (.*)$"), "<font color='$primaryHex'><h4><b>$1</b></h4></font>")
+            .replace(Regex("\\*\\*(.*?)\\*\\*"), "<b>$1</b>")
+            .replace("\n\n", "<br/><br/>")
+            .replace("\n", "<br/>")
+
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            android.text.Html.fromHtml(html, android.text.Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            @Suppress("DEPRECATION")
+            android.text.Html.fromHtml(html)
+        }
     }
 
     private fun showAboutSettingsScreen() {
@@ -2340,10 +2069,11 @@ class MainActivity : AppCompatActivity() {
         binding.tvSunset.text = SolarCalculator.formatTime(solar.sunset)
         binding.tvSunsetAzimuth.text = "Setting at ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
 
-        // Total Daylight and Moon Phase + Cycle Percentage
+        // Total Daylight and Moon Phase + Cycle Percentage from lunarinfo.xml
+        val lunarPhase = LunarInfoRepository.getMoonPhaseForDate(this, day.date)
         binding.tvTotalDaylight.text = solar.daylightDurationText
-        binding.tvMoonPhase.text = "${solar.moonPhase.name} ${solar.moonPhase.emoji}"
-        binding.tvMoonCyclePercentage.text = "${solar.moonCyclePercentage}% through cycle"
+        binding.tvMoonPhase.text = "${lunarPhase.name} ${lunarPhase.emoji}"
+        binding.tvMoonCyclePercentage.text = "${lunarPhase.percentage}% through cycle"
 
         // Golden Hour Start and End
         val morningGolden = "${SolarCalculator.formatTime(solar.morningGoldenHourStart)} – ${SolarCalculator.formatTime(solar.morningGoldenHourEnd)}"
@@ -2359,7 +2089,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFirstLaunchLocationPrompt() {
-        // Step 1: Weather Alerts Prompt
+        // Weather Alerts Prompt
         MaterialAlertDialogBuilder(this)
             .setTitle("Environment Canada Weather Alerts")
             .setMessage("Would you like to receive system notifications for active severe weather warnings, watches, and advisories from Environment Canada (GEM/ECCC) for your city?\n\nThis application respects your privacy and does NOT use GPS, location services, or device tracking.")
@@ -2370,31 +2100,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 WeatherNotificationHelper.createNotificationChannel(this)
                 dialog.dismiss()
-                showFirstLaunchAiSummaryPrompt()
-            }
-            .setNegativeButton("No Thanks") { dialog, _ ->
-                locationPreferences.saveWeatherAlertsEnabled(false)
-                dialog.dismiss()
-                showFirstLaunchAiSummaryPrompt()
-            }
-            .setCancelable(false)
-            .show()
-    }
-
-    private fun showFirstLaunchAiSummaryPrompt() {
-        // Step 2: Optional AI 2-Week Summary Prompt
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Optional AI 2-Week Weather Summary")
-            .setMessage("WeatherAPP includes an optional 2-week natural language AI climate summary feature powered by Qwen, Gemini, or Mistral AI models.\n\nThis feature is completely optional and opt-in. Would you like to enable the AI Summary button on the main screen?")
-            .setPositiveButton("Enable AI Summary") { dialog, _ ->
-                locationPreferences.saveAiSummaryEnabled(true)
-                updateAiSummaryVisibility()
-                dialog.dismiss()
                 showSearchLocationDialog(isFirstLaunchPrompt = true)
             }
             .setNegativeButton("No Thanks") { dialog, _ ->
-                locationPreferences.saveAiSummaryEnabled(false)
-                updateAiSummaryVisibility()
+                locationPreferences.saveWeatherAlertsEnabled(false)
                 dialog.dismiss()
                 showSearchLocationDialog(isFirstLaunchPrompt = true)
             }

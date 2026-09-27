@@ -34,10 +34,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".AiSummaryActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".LocalEventsActivity"
             android:exported="false" />
     </application>
