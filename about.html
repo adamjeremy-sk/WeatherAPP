@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="About WeatherAPP Libre, including weather forecasting, astronomy, alerts, privacy, customization, support, and credits.">
+  <title>About WeatherAPP Libre</title>
+  <style>
+    :root{--bg:#f3f7fb;--card:#fff;--text:#172033;--muted:#5f6d7d;--primary:#1167b1;--primary-dark:#0d3b66;--border:#d8e3ee;--note:#eaf5fc;--shadow:0 10px 28px rgba(23,50,79,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.68}a{color:var(--primary)}
+    header{padding:46px 24px;color:#fff;background:linear-gradient(135deg,var(--primary-dark),var(--primary) 68%,#288bc4)}
+    .header-inner,.layout,footer{width:min(1200px,calc(100% - 32px));margin-right:auto;margin-left:auto}.header-inner{display:flex;align-items:center;gap:24px}
+    /* LOGO IMAGE GUIDANCE: Save the logo as logo.png beside this HTML file. Recommended source size: 512 x 512 pixels, square PNG with a transparent background. It displays at 112 x 112 pixels on desktop and 82 x 82 pixels on mobile. */
+    .app-logo{width:112px;height:112px;flex:0 0 112px;object-fit:contain;border-radius:24px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.22))}.header-copy{min-width:0}h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.7rem);line-height:1.08}header p{max-width:760px;margin:4px 0 0;color:#e9f5fd;font-size:1.08rem}
+    .layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:26px;align-items:start;padding:30px 0 54px}.sidebar{position:sticky;top:18px;grid-column:1;display:grid;gap:18px;max-height:calc(100vh - 36px);overflow-y:auto;padding-right:3px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}.toc,.more-info{padding:21px;border:1px solid var(--border);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.toc h2,.more-info h2{margin:0 0 12px;color:var(--primary-dark);font-size:1.08rem;line-height:1.3}.toc>nav>ol{margin:0;padding-left:1.55rem}.toc ol ol{margin:5px 0 9px;padding-left:1.4rem;font-size:.89rem}.toc li{margin:5px 0}.toc a,.more-info a{color:var(--text);text-decoration:none}.toc a:hover,.more-info a:hover{color:var(--primary);text-decoration:underline}.toc a:focus-visible,.more-info a:focus-visible{outline:3px solid rgba(17,103,177,.28);outline-offset:3px}.more-info p{margin:0 0 12px;color:var(--muted);font-size:.92rem}.more-info ul{margin:0;padding-left:1.25rem}.more-info .sidebar-tagline{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);color:var(--primary-dark);font-weight:700}
+    main{grid-column:2;min-width:0}.card{scroll-margin-top:18px;margin-bottom:19px;padding:27px;border:1px solid var(--border);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.card:last-child{margin-bottom:0}.card h2{margin-top:0;margin-bottom:14px;color:var(--primary-dark);line-height:1.23}.card h3{scroll-margin-top:18px;margin-top:28px;margin-bottom:10px;color:#174f7d;line-height:1.3}.card p:last-child,.card ul:last-child{margin-bottom:0}.version{color:#fff;background:linear-gradient(135deg,var(--primary-dark),var(--primary))}.version h2{color:#fff}.version p{margin-bottom:0;color:#e9f5fd;font-size:1.08rem}.highlight{margin:18px 0;padding:16px 18px;border-left:5px solid var(--primary);border-radius:10px;background:var(--note);font-weight:650}li{margin:.38rem 0}footer{padding-bottom:44px;color:var(--muted);text-align:center}
+    @media(max-width:880px){.layout{grid-template-columns:1fr;padding-top:18px}.sidebar,main{grid-column:1}.sidebar{position:static;max-height:none;overflow:visible;padding-right:0}}
+    @media(max-width:540px){header{padding:34px 20px}.header-inner{align-items:flex-start;gap:16px}.app-logo{width:82px;height:82px;flex-basis:82px;border-radius:18px}.layout,.header-inner,footer{width:min(100% - 24px,1200px)}.card,.toc,.more-info{padding:20px;border-radius:14px}}
+    @media print{body{background:#fff}header{padding:24px 0;color:#111;background:#fff}header p{color:#444}.app-logo{filter:none}.layout{display:block;width:100%;padding:0}.sidebar{display:none}main{display:block}.card{border-color:#ccc;box-shadow:none;break-inside:avoid}.version{color:#111;background:#fff}.version h2,.version p{color:#111}}
+  </style>
+</head>
+<body>
+  <header><div class="header-inner">
+    <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
+    <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+    <div class="header-copy"><h1>About WeatherAPP Libre</h1><p>Private, ad-free weather forecasting and astronomy information.</p></div>
+  </div></header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc"><nav aria-labelledby="contents-heading">
+        <h2 id="contents-heading">Contents</h2>
+        <ol>
+          <li><a href="#forecasting">Weather Forecasting</a></li>
+          <li><a href="#astronomy">Sun, Moon &amp; Astronomy</a><ol><li><a href="#solar">Solar Information</a></li><li><a href="#lunar">Lunar Information</a></li><li><a href="#events">Astronomical Events</a></li></ol></li>
+          <li><a href="#alerts">Weather Alerts</a></li>
+          <li><a href="#privacy">Privacy</a><ol><li><a href="#principles">Privacy Principles</a></li><li><a href="#storage">Local Storage</a></li></ol></li>
+          <li><a href="#design">Design &amp; Customization</a></li>
+        </ol>
+      </nav></section>
+      <section class="more-info" aria-labelledby="more-info-heading">
+        <h2 id="more-info-heading">More Information</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="support.html">Beta Signup & Support</a></li>
+          <li>
+            <a
+              href="https://ko-fi.com/adamjeremy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Support on Ko-fi</a>
+          </li>
+          <li>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.weatherapp.libre"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Google Play Store</a>
+          </li>
+        </ul>
+
+      </section>
+    </aside>
+
+    <main>
+      <section id="forecasting" class="card"><h2>1. Weather Forecasting</h2><p>WeatherAPP provides privacy-focused weather forecasting using multiple meteorological models.</p><ul><li>Environment Canada GEM</li><li>NOAA GFS</li><li>NOAA GEFS</li><li>ECMWF</li><li>CMA-GFS</li></ul><p>Current conditions, forecasts, AQI, UV, visibility, humidity, wind, and more.</p></section>
+      <section id="astronomy" class="card"><h2>2. Sun, Moon &amp; Astronomy</h2><p>Detailed solar and astronomical information for photographers, outdoor enthusiasts, and stargazers.</p><h3 id="solar">2.1 Solar Information</h3><ul><li>Sunrise and sunset</li><li>Golden hour</li><li>Blue hour</li><li>Solar azimuth</li><li>Daylight duration</li></ul><h3 id="lunar">2.2 Lunar Information</h3><ul><li>Moon phases</li><li>Lunar illumination</li></ul><h3 id="events">2.3 Astronomical Events</h3><ul><li>Meteor showers</li><li>Astronomical calendar</li><li>Calendar export</li><li>Solar alarms</li></ul></section>
+      <section id="alerts" class="card"><h2>3. Weather Alerts</h2><ul><li>Official Environment and Climate Change Canada (ECCC) alerts</li><li>Opt-in notifications</li><li>Per-city alert management</li><li>Built-in test notifications</li></ul></section>
+      <section id="privacy" class="card"><h2>4. Privacy</h2><div class="highlight">No ads. No GPS permission. No user accounts. No behavioural analytics.</div><h3 id="principles">4.1 Privacy Principles</h3><ul><li>No GPS or location permission required</li><li>No advertising SDKs</li><li>No behavioural tracking</li><li>No user accounts</li><li>No data selling</li></ul><h3 id="storage">4.2 Local Storage</h3><p>Saved locations, preferences, and cached forecasts are stored locally on your device.</p></section>
+      <section id="design" class="card"><h2>5. Design &amp; Customization</h2><ul><li>Eleven handcrafted themes</li><li>Nine boutique color palettes</li><li>Light and dark options</li><li>Metric and Imperial units</li><li>Flexible location tabs</li></ul></section>
+      <section id="support" class="card"><h2>6. Support WeatherAPP</h2><p>WeatherAPP is supported through direct purchases and optional community donations. The application is committed to remaining ad-free and privacy-focused.</p></section>
+      <section id="credits" class="card"><h2>7. Credits</h2><p>WeatherAPP utilizes weather, geocoding, and air-quality information provided through Open-Meteo.</p><ul><li>Environment Canada GEM</li><li>NOAA GFS</li><li>NOAA GEFS</li><li>ECMWF</li><li>CMA-GFS</li></ul><p>Official alerts are provided by Environment and Climate Change Canada (ECCC).</p></section>
+    </main>
+  </div>
+  <footer>WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy</footer>
+</body>
+</html>

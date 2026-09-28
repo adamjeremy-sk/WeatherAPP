@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="WeatherAPP Libre Beta Program, Bug Reports, Feature Requests, and Support">
+<title>WeatherAPP Libre Support</title>
+
+<style>
+:root{
+    --bg:#f3f7fb;
+    --card:#fff;
+    --text:#172033;
+    --muted:#5f6d7d;
+    --primary:#1167b1;
+    --primary-dark:#0d3b66;
+    --border:#d8e3ee;
+    --note:#eaf5fc;
+    --shadow:0 10px 28px rgba(23,50,79,.08);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.68;
+}
+
+a{
+    color:var(--primary);
+}
+
+header{
+    padding:46px 24px;
+    color:#fff;
+    background:linear-gradient(
+        135deg,
+        var(--primary-dark),
+        var(--primary) 68%,
+        #288bc4
+    );
+}
+
+.header-inner,
+.layout,
+footer{
+    width:min(1200px,calc(100% - 32px));
+    margin:auto;
+}
+
+.header-inner{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+/*
+LOGO IMAGE GUIDANCE
+
+Save logo.png beside this HTML file.
+
+Recommended source size:
+512 x 512 pixels
+
+Display size:
+112 x 112 desktop
+82 x 82 mobile
+*/
+
+.app-logo{
+    width:112px;
+    height:112px;
+    object-fit:contain;
+    border-radius:24px;
+    filter:drop-shadow(0 8px 18px rgba(0,0,0,.22));
+}
+
+.header-copy{
+    min-width:0;
+}
+
+h1{
+    margin:0 0 12px;
+    font-size:clamp(2rem,5vw,3.7rem);
+    line-height:1.08;
+}
+
+header p{
+    max-width:760px;
+    margin:4px 0 0;
+    color:#e9f5fd;
+    font-size:1.08rem;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:310px minmax(0,1fr);
+    gap:26px;
+    align-items:start;
+    padding:30px 0 54px;
+}
+
+.sidebar{
+    position:sticky;
+    top:18px;
+    grid-column:1;
+
+    display:grid;
+    gap:18px;
+}
+
+.toc,
+.more-info{
+    padding:21px;
+    border:1px solid var(--border);
+    border-radius:17px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+}
+
+.toc h2,
+.more-info h2{
+    margin:0 0 12px;
+    color:var(--primary-dark);
+    font-size:1.08rem;
+}
+
+.toc ol{
+    margin:0;
+    padding-left:1.5rem;
+}
+
+.toc li{
+    margin:8px 0;
+}
+
+.toc a,
+.more-info a{
+    color:var(--text);
+    text-decoration:none;
+}
+
+.toc a:hover,
+.more-info a:hover{
+    color:var(--primary);
+    text-decoration:underline;
+}
+
+.more-info ul{
+    margin:0;
+    padding-left:1.25rem;
+}
+
+.more-info li{
+    margin:8px 0;
+}
+
+main{
+    grid-column:2;
+    min-width:0;
+}
+
+.card{
+    scroll-margin-top:18px;
+    margin-bottom:20px;
+    padding:27px;
+    border:1px solid var(--border);
+    border-radius:17px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+}
+
+.card:last-child{
+    margin-bottom:0;
+}
+
+.card h2{
+    margin-top:0;
+    color:var(--primary-dark);
+}
+
+.card h3{
+    color:#174f7d;
+}
+
+.highlight{
+    margin:18px 0;
+    padding:16px 18px;
+    border-left:5px solid var(--primary);
+    border-radius:10px;
+    background:var(--note);
+}
+
+label{
+    display:block;
+    margin-top:16px;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-family:inherit;
+    font-size:15px;
+    background:#fff;
+}
+
+textarea{
+    min-height:220px;
+    resize:vertical;
+}
+
+.form-help{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+button{
+    margin-top:18px;
+    padding:14px 24px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--primary-dark);
+}
+
+.notice{
+    font-size:.95rem;
+    color:var(--muted);
+}
+
+footer{
+    padding-bottom:44px;
+    color:var(--muted);
+    text-align:center;
+}
+
+@media(max-width:880px){
+
+    .layout{
+        grid-template-columns:1fr;
+        padding-top:18px;
+    }
+
+    .sidebar,
+    main{
+        grid-column:1;
+    }
+
+    .sidebar{
+        position:static;
+    }
+}
+
+@media(max-width:540px){
+
+    header{
+        padding:34px 20px;
+    }
+
+    .header-inner{
+        align-items:flex-start;
+        gap:16px;
+    }
+
+    .app-logo{
+        width:82px;
+        height:82px;
+        border-radius:18px;
+    }
+
+    .layout,
+    .header-inner,
+    footer{
+        width:min(100% - 24px,1200px);
+    }
+
+    .card,
+    .toc,
+    .more-info{
+        padding:20px;
+        border-radius:14px;
+    }
+}
+
+@media print{
+
+    body{
+        background:#fff;
+    }
+
+    header{
+        color:#111;
+        background:#fff;
+        padding:24px 0;
+    }
+
+    header p{
+        color:#444;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .layout{
+        display:block;
+        width:100%;
+        padding:0;
+    }
+
+    .card{
+        box-shadow:none;
+        break-inside:avoid;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header-inner">
+
+<img
+    class="app-logo"
+    src="logo.png"
+    alt="WeatherAPP Libre logo"
+    width="512"
+    height="512">
+
+<div class="header-copy">
+<h1>WeatherAPP Support</h1>
+<p>
+Beta Program Applications, Bug Reports,
+Feature Requests, Privacy Questions,
+and General Support.
+</p>
+</div>
+
+</div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar" aria-label="Page sidebar">
+
+<section class="toc">
+
+<h2>Contents</h2>
+
+<ol>
+<li><a href="#form">Request Form</a></li>
+<li><a href="#help">Help & Support</a></li>
+</ol>
+
+</section>
+
+<section class="more-info">
+
+<h2>More Information</h2>
+
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About WeatherAPP</a></li>
+<li><a href="privacypolicy.html">Privacy Policy</a></li>
+
+<li>
+<a
+href="https://play.google.com/store/apps/details?id=com.weatherapp.libre"
+target="_blank"
+rel="noopener noreferrer">
+Google Play Store
+</a>
+</li>
+
+<li>
+<a
+href="https://ko-fi.com/adamjeremy"
+target="_blank"
+rel="noopener noreferrer">
+Support on Ko-fi
+</a>
+</li>
+
+</ul>
+
+</section>
+
+</aside>
+
+<main>
+
+<section id="form" class="card">
+
+<h2>1. Beta Program, Bug Reports & Support</h2>
+
+<div class="highlight">
+
+<p>
+Use this form to:
+</p>
+
+<ul>
+<li>Apply for the WeatherAPP beta program</li>
+<li>Report bugs and crashes</li>
+<li>Request new features</li>
+<li>Receive technical support</li>
+<li>Ask privacy-related questions</li>
+</ul>
+
+<p>
+All submissions are sent through your default email application.
+</p>
+
+</div>
+
+<form>
+
+<label for="requestType">
+Request Type
+</label>
+
+<select id="requestType">
+
+<option>Beta Program Application</option>
+<option>Bug Report</option>
+<option>Feature Request</option>
+<option>General Support</option>
+<option>Account / Purchase Issue</option>
+<option>Privacy Question</option>
+<option>Other</option>
+
+</select>
+
+<label for="name">
+Name (Optional)
+</label>
+
+<input
+type="text"
+id="name"
+placeholder="Your name">
+
+<label for="email">
+Google Play Account Email Address
+</label>
+
+<input
+type="email"
+id="email"
+required
+placeholder="Email address associated with your Google Play account">
+
+<label for="device">
+Device Information
+</label>
+
+<input
+type="text"
+id="device"
+placeholder="Pixel 9, Galaxy S25, OnePlus 15, etc.">
+
+<label for="message">
+Details
+</label>
+
+<textarea
+id="message"
+placeholder="Describe your beta application, bug report, feature request, or support question."></textarea>
+
+<p class="form-help">
+For bug reports, please include:
+device model,
+Android version,
+WeatherAPP version,
+and steps to reproduce the issue.
+</p>
+
+<button
+type="button"
+onclick="submitWeatherAppForm()">
+Submit Request
+</button>
+
+</form>
+
+</section>
+
+<section id="help" class="card">
+
+<h2>2. Help & Support</h2>
+
+<p>
+To help resolve issues quickly, please include as many details as possible.
+</p>
+
+<ul>
+<li>Device model</li>
+<li>Android version</li>
+<li>WeatherAPP version</li>
+<li>Steps to reproduce the issue</li>
+<li>Screenshots (if available)</li>
+</ul>
+
+<p>
+Feature requests are welcome and help guide future development.
+</p>
+
+</section>
+
+<section id="privacy" class="card">
+
+<h2>3. Privacy Notice</h2>
+
+<p>
+Please do not submit passwords, payment information, home addresses, or any other sensitive personal information.
+</p>
+
+<p>
+For complete information regarding how WeatherAPP handles data, please review the Privacy Policy.
+</p>
+
+<p>
+<a href="privacypolicy.html">
+Read the Privacy Policy →
+</a>
+</p>
+
+</section>
+
+</main>
+
+</div>
+
+<footer>
+WeatherAPP Libre • Support, Beta Program & Bug Reports
+</footer>
+
+<script>
+function submitWeatherAppForm() {
+
+    const requestType =
+        document.getElementById("requestType").value;
+
+    const name =
+        document.getElementById("name").value;
+
+    const email =
+        document.getElementById("email").value;
+
+    const device =
+        document.getElementById("device").value;
+
+    const message =
+        document.getElementById("message").value;
+
+    const subject =
+        encodeURIComponent(
+            `WeatherAPP - ${requestType}`
+        );
+
+    const body =
+        encodeURIComponent(
+`Request Type:
+${requestType}
+
+Name:
+${name}
+
+Google Play Account Email:
+${email}
+
+Device Information:
+${device}
+
+Details:
+
+${message}`
+        );
+
+    window.location.href =
+        `mailto:support@weatherapplibre.com?subject=${subject}&body=${body}`;
+}
+</script>
+
+</body>
+</html>
