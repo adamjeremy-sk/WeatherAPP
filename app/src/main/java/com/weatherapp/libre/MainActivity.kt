@@ -42,6 +42,9 @@ import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
+import com.weatherapp.libre.lunar.LunarCalculator
+import com.weatherapp.libre.lunar.MoonEventType
+import com.weatherapp.libre.lunar.Observer
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
@@ -1956,6 +1959,7 @@ class MainActivity : AppCompatActivity() {
                         currentLocation.longitude
                     )
 
+                    forecastAdapter.setLocation(currentLocation, weatherResponse.timezone)
                     forecastAdapter.submitList(dailyForecasts)
 
                     if (todayForecast != null) {
@@ -2069,10 +2073,25 @@ class MainActivity : AppCompatActivity() {
         binding.tvSunset.text = SolarCalculator.formatTime(solar.sunset)
         binding.tvSunsetAzimuth.text = "Setting at ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
 
-        // Total Daylight and Moon Phase + Cycle Percentage
+        // Total Daylight and Moon Phase + Cycle Percentage via LunarCalculator
+        val obs = Observer(currentLocation.latitude, currentLocation.longitude)
+        val zoneId = try {
+            if (!locationTimezone.isNullOrEmpty()) ZoneId.of(locationTimezone) else ZoneId.systemDefault()
+        } catch (e: Exception) {
+            ZoneId.systemDefault()
+        }
+        val targetInstant = if (isToday) {
+            java.time.Instant.now()
+        } else {
+            day.date.atStartOfDay(zoneId).toInstant()
+        }
+
+        val moonInfo = LunarCalculator.phaseAt(targetInstant, obs)
+        val formattedPhase = LunarCalculator.formatPhaseDisplay(moonInfo)
+
         binding.tvTotalDaylight.text = solar.daylightDurationText
-        binding.tvMoonPhase.text = "--"
-        binding.tvMoonCyclePercentage.text = "--"
+        binding.tvMoonPhase.text = formattedPhase.phaseNameWithEmoji
+        binding.tvMoonCyclePercentage.text = formattedPhase.illuminationText
 
         // Golden Hour Start and End
         val morningGolden = "${SolarCalculator.formatTime(solar.morningGoldenHourStart)} – ${SolarCalculator.formatTime(solar.morningGoldenHourEnd)}"
