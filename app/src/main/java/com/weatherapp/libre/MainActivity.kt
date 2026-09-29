@@ -2069,11 +2069,10 @@ class MainActivity : AppCompatActivity() {
         binding.tvSunset.text = SolarCalculator.formatTime(solar.sunset)
         binding.tvSunsetAzimuth.text = "Setting at ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
 
-        // Total Daylight and Moon Phase + Cycle Percentage from lunarinfo.xml
-        val lunarPhase = LunarInfoRepository.getMoonPhaseForDate(this, day.date)
+        // Total Daylight and Moon Phase + Cycle Percentage
         binding.tvTotalDaylight.text = solar.daylightDurationText
-        binding.tvMoonPhase.text = "${lunarPhase.name} ${lunarPhase.emoji}"
-        binding.tvMoonCyclePercentage.text = "${lunarPhase.percentage}% through cycle"
+        binding.tvMoonPhase.text = "--"
+        binding.tvMoonCyclePercentage.text = "--"
 
         // Golden Hour Start and End
         val morningGolden = "${SolarCalculator.formatTime(solar.morningGoldenHourStart)} – ${SolarCalculator.formatTime(solar.morningGoldenHourEnd)}"

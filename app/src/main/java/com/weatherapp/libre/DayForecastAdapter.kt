@@ -79,8 +79,7 @@ class DayForecastAdapter(
 
             // Populate Expanded Section Data
             val solar = item.solarTimes
-            val lunarPhase = LunarInfoRepository.getMoonPhaseForDate(binding.root.context, item.date)
-            binding.tvExpandedMoonPhase.text = "${lunarPhase.name} ${lunarPhase.emoji} (${lunarPhase.percentage}%)"
+            binding.tvExpandedMoonPhase.text = "--"
             binding.tvExpandedDaylight.text = solar.daylightDurationText
 
             val sunriseStr = SolarCalculator.formatTime(solar.sunrise)
@@ -91,7 +90,7 @@ class DayForecastAdapter(
             binding.tvExpandedWindUv.text = "Wind: $windStr"
 
             binding.tvExpandedSunAzimuth.text = "Rise ${solar.sunriseAzimuthDegrees}° (${solar.sunriseCompassDirection}) • Set ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
-            binding.tvExpandedMoonAzimuth.text = "Rise ${solar.moonriseAzimuthDegrees}° (${solar.moonriseCompassDirection}) • Set ${solar.moonsetAzimuthDegrees}° (${solar.moonsetCompassDirection})"
+            binding.tvExpandedMoonAzimuth.text = "--"
 
             binding.layoutExpandedDetails.visibility = if (item.isExpanded) View.VISIBLE else View.GONE
 
