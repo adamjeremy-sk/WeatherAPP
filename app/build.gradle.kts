@@ -13,7 +13,7 @@ android {
         minSdk = 32
         targetSdk = 37
         versionCode = 7
-        versionName = "1.4.1"
+        versionName = "0.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.play.app.update.ktx)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

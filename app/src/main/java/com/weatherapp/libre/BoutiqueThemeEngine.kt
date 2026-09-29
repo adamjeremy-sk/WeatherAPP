@@ -16,7 +16,16 @@ data class ColorPalette(
     val goldenHourPrimary: Int,
     val blueHourPrimary: Int,
     val dividerColor: Int
-)
+) {
+    val background: Int get() = backgroundLight
+    val brandPrimary: Int get() = primary
+
+    companion object {
+        fun forMode(themeMode: Int, context: android.content.Context? = null): ColorPalette {
+            return BoutiqueThemeEngine.getThemePalette(themeMode)
+        }
+    }
+}
 
 object BoutiqueThemeEngine {
 

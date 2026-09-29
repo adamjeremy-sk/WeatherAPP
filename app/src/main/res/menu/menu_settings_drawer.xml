@@ -39,8 +39,8 @@
 
     <group android:id="@+id/group_external_links">
         <item
-            android:id="@+id/menu_item_update"
-            android:title="Check for Updates" />
+            android:id="@+id/menu_item_roadmap"
+            android:title="WeatherAPP Roadmap" />
         <item
             android:id="@+id/menu_item_donate"
             android:title="Donate" />

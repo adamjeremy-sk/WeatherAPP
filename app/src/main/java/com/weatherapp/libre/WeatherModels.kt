@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import com.google.gson.annotations.SerializedName
+import java.time.Instant
 import java.time.LocalDate
 
 enum class UnitSystem {
@@ -108,10 +109,21 @@ data class DailyData(
     var windGustsMax: List<Double?>? = null
 )
 
-data class LunarPhaseResult(
-    val name: String,
-    val emoji: String,
-    val percentage: Int
+data class SolarDaySummary(
+    val sunrise: Instant? = null,
+    val sunset: Instant? = null,
+    val sunriseAzimuthDegrees: Int? = null,
+    val sunsetAzimuthDegrees: Int? = null,
+    val morningGoldenHourStart: Instant? = null,
+    val morningGoldenHourEnd: Instant? = null,
+    val eveningGoldenHourStart: Instant? = null,
+    val eveningGoldenHourEnd: Instant? = null,
+    val morningBlueHourStart: Instant? = null,
+    val morningBlueHourEnd: Instant? = null,
+    val eveningBlueHourStart: Instant? = null,
+    val eveningBlueHourEnd: Instant? = null,
+    val solarNoonElevationDegrees: Int? = null,
+    val daylightDurationMinutes: Long? = null
 )
 
 data class DayForecast(
@@ -130,7 +142,7 @@ data class DayForecast(
     val visibilityMeters: Double,
     val cloudCoverPct: Int,
     val airQualityIndex: Int?,
-    val solarTimes: SolarTimesResult,
+    val solarSummary: SolarDaySummary? = null,
     var isExpanded: Boolean = false
 ) {
     val date: LocalDate

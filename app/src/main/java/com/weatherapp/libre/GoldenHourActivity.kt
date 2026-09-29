@@ -126,15 +126,12 @@ class GoldenHourActivity : AppCompatActivity() {
             selectedDate.format(dateFormatter).uppercase(Locale.getDefault())
         }
 
-        // Force 24-hour time format by default
-        val is24Hour = true
-
-        // Generate all 13 chronological daily solar transitions
-        val phases = SolarCalculator.calculate13ChronologicalPhases(
-            latitude,
-            longitude,
+        val observer = com.weatherapp.libre.solar.Observer(latitude, longitude)
+        val zoneId = java.time.ZoneId.systemDefault()
+        val phases = com.weatherapp.libre.solar.SolarLightingEngine.calculateChronologicalSolarPhases(
             selectedDate,
-            is24Hour
+            zoneId,
+            observer
         )
 
         adapter.submitList(phases)

@@ -10,19 +10,62 @@ enum class ForecastModel(
     val idKey: String,
     val displayName: String,
     val openMeteoKey: String,
+    val baseUrl: String,
     val sourceAttribution: String,
     val description: String,
-    val isWestern: Boolean
+    val isWestern: Boolean,
+    val isEnsemble: Boolean = false
 ) {
-    GEM("GEM", "GEM", "gem_seamless", "Source: Environment Canada GEM Model", "Official Environment Canada GEM forecast model", true),
-    GFS("GFS", "GFS", "gfs_seamless", "Source: NOAA GFS Model", "NOAA Global Forecast System", true),
-    ECMWF("ECMWF", "ECMWF (IFS/EPS)", "ecmwf_ifs025", "Source: ECMWF IFS Model", "European Centre for Medium-Range Weather Forecasts", true),
-    GEFS("GEFS", "GEFS", "gfs_global", "Source: NOAA GEFS Model", "NOAA Global Ensemble Forecast System", true),
-    CMA_GFS("CMA_GFS", "CMA-GFS (GRAPES_GFS)", "cma_grapes_global", "Source: CMA-GFS (GRAPES_GFS) Model", "China Meteorological Administration Global Forecast System", false);
+    GEM(
+        "GEM",
+        "GEM (Environment Canada)",
+        "gem_global",
+        "https://api.open-meteo.com/v1/forecast",
+        "Source: Environment Canada GEM Model",
+        "Official Environment Canada GEM global forecast model",
+        true
+    ),
+    GFS(
+        "GFS",
+        "GFS (NOAA, USA)",
+        "gfs_seamless",
+        "https://api.open-meteo.com/v1/forecast",
+        "Source: NOAA GFS Model",
+        "NOAA Global Forecast System",
+        true
+    ),
+    ECMWF(
+        "ECMWF",
+        "ECMWF (European Centre)",
+        "ecmwf_ifs025",
+        "https://api.open-meteo.com/v1/forecast",
+        "Source: ECMWF IFS Model",
+        "European Centre for Medium-Range Weather Forecasts (25km)",
+        true
+    ),
+    GEFS(
+        "GEFS",
+        "GEFS Ensemble (NOAA)",
+        "gfs_seamless_ensemble",
+        "https://ensemble-api.open-meteo.com/v1/ensemble",
+        "Source: NOAA GEFS Model",
+        "NOAA Global Ensemble Forecast System (30 member ensemble)",
+        true,
+        isEnsemble = true
+    ),
+    CMA_GFS(
+        "CMA_GFS",
+        "CMA-GFS (China)",
+        "cma_grapes_global",
+        "https://api.open-meteo.com/v1/forecast",
+        "Source: CMA-GFS (GRAPES_GFS) Model",
+        "China Meteorological Administration Global Forecast System",
+        false
+    );
 
     companion object {
         fun fromKey(key: String?): ForecastModel {
-            return values().find { it.idKey.equals(key, ignoreCase = true) } ?: GEM
+            return values().find { it.idKey.equals(key, ignoreCase = true) || it.openMeteoKey.equals(key, ignoreCase = true) } ?: GEM
         }
     }
 }
@@ -195,14 +238,17 @@ class LocationPreferences(context: Context) {
             return LocationItem(name = name, admin1 = admin1, country = country, latitude = lat, longitude = lon)
         }
 
-        // Default initial fallbacks for tabs
-        return when (tabIndex) {
+        // Default initial fallbacks for tabs (persist on first read so tabs remain independent and stable)
+        val defaultLoc = when (tabIndex) {
             0 -> getInitialLocation()
-            1 -> LocationItem(name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702)
-            2 -> LocationItem(name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832)
+            1 -> LocationItem(name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832)
+            2 -> LocationItem(name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702)
             3 -> LocationItem(name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207)
             else -> getInitialLocation()
         }
+
+        saveTabLocation(tabIndex, defaultLoc)
+        return defaultLoc
     }
 
     fun saveTabLocation(tabIndex: Int, location: LocationItem) {
@@ -486,8 +532,68 @@ class LocationPreferences(context: Context) {
         return prefs.getInt(KEY_THEME, THEME_SYSTEM)
     }
 
+    fun getThemeMode(): Int = getSavedThemeMode()
+
     fun saveThemeMode(mode: Int) {
         prefs.edit().putInt(KEY_THEME, mode).apply()
+    }
+
+    fun getUnitSystem(): UnitSystem = getSavedUnitSystem()
+
+    fun getDefaultModel(): String = getSavedForecastModel().openMeteoKey
+
+    fun saveDefaultModel(key: String) {
+        val model = ForecastModel.fromKey(key)
+        saveForecastModel(model)
+    }
+
+    fun clearPersistentCache() {
+        val editor = prefs.edit()
+        val allKeys = prefs.all.keys
+        for (k in allKeys) {
+            if (k.startsWith("disk_cache_")) {
+                editor.remove(k)
+            }
+        }
+        editor.apply()
+    }
+
+    fun getVolumeScrollSpeedLabel(index: Int): String {
+        return when (index) {
+            1 -> "Speed 1 - Slowest (250ms)"
+            2 -> "Speed 2 - Slow (200ms)"
+            3 -> "Speed 3 - Moderate (160ms)"
+            4 -> "Speed 4 - Normal (120ms)"
+            5 -> "Speed 5 - Fast (80ms)"
+            6 -> "Speed 6 - Faster (50ms)"
+            7 -> "Speed 7 - Ultra Fast (30ms)"
+            else -> "Speed 4 - Normal (120ms)"
+        }
+    }
+
+    data class ActiveWeatherAlert(
+        val id: String = "alert_default",
+        val event: String = "Weather Advisory",
+        val headline: String = "Active Advisory",
+        val description: String = "Weather advisory in effect for this region."
+    )
+
+    fun getActiveWeatherAlert(location: LocationItem? = null): ActiveWeatherAlert? {
+        val json = if (location != null) getActiveAlertJsonForLocation(location) else prefs.getString(KEY_ACTIVE_ALERT_JSON, null)
+        if (json.isNullOrEmpty()) return null
+        return try {
+            Gson().fromJson(json, ActiveWeatherAlert::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun isAlertDismissed(alertId: String): Boolean {
+        return prefs.getBoolean("${KEY_ALERT_DISMISSED}_$alertId", false)
+    }
+
+    fun dismissAlert(alertId: String) {
+        prefs.edit().putBoolean("${KEY_ALERT_DISMISSED}_$alertId", true).apply()
     }
 
     fun getSavedLocation(): LocationItem = getInitialLocation()

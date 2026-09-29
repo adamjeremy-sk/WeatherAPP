@@ -11,6 +11,8 @@ import com.weatherapp.libre.lunar.MoonEventType
 import com.weatherapp.libre.lunar.MoonPhaseName
 import com.weatherapp.libre.lunar.Observer
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class DayForecastAdapter(
     private var unitSystem: UnitSystem = UnitSystem.METRIC
@@ -91,27 +93,43 @@ class DayForecastAdapter(
                 binding.tvExpandedMoonAzimuth.setTextColor(p.textSecondary)
             }
 
-            // Populate Expanded Section Data
-            val solar = item.solarTimes
-            binding.tvExpandedDaylight.text = solar.daylightDurationText
-
-            val sunriseStr = SolarCalculator.formatTime(solar.sunrise)
-            val sunsetStr = SolarCalculator.formatTime(solar.sunset)
-            binding.tvExpandedSunriseSunset.text = "$sunriseStr / $sunsetStr"
-
-            val windStr = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem, gustKmh = item.windGustsMaxKmH)
-            binding.tvExpandedWindUv.text = "Wind: $windStr"
-
-            binding.tvExpandedSunAzimuth.text = "Rise ${solar.sunriseAzimuthDegrees}° (${solar.sunriseCompassDirection}) • Set ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
-
-            // Calculate Lunar Phase, Moonrise/Set & Topocentric Azimuths using LunarCalculator
-            val loc = currentLocation
             val zoneId = try {
                 if (!locationTimezone.isNullOrEmpty()) ZoneId.of(locationTimezone) else ZoneId.systemDefault()
             } catch (e: Exception) {
                 ZoneId.systemDefault()
             }
 
+            val is24Hour = DateFormat.is24HourFormat(binding.root.context)
+
+            // Populate Expanded Section Data via SolarDaySummary
+            val solar = item.solarSummary
+
+            val durationMins = solar?.daylightDurationMinutes
+            if (durationMins != null) {
+                val h = durationMins / 60
+                val m = durationMins % 60
+                binding.tvExpandedDaylight.text = "${h}h ${String.format(Locale.getDefault(), "%02dm", m)}"
+            } else {
+                binding.tvExpandedDaylight.text = "——"
+            }
+
+            fun formatInst(inst: java.time.Instant?): String {
+                if (inst == null) return "——"
+                val pattern = if (is24Hour) "HH:mm" else "h:mm a"
+                return inst.atZone(zoneId).format(DateTimeFormatter.ofPattern(pattern, Locale.getDefault()))
+            }
+
+            val srStr = formatInst(solar?.sunrise)
+            val ssStr = formatInst(solar?.sunset)
+            binding.tvExpandedSunriseSunset.text = "$srStr / $ssStr"
+
+            val windStr = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem, gustKmh = item.windGustsMaxKmH)
+            binding.tvExpandedWindUv.text = "Wind: $windStr"
+
+            binding.tvExpandedSunAzimuth.text = "Sunrise: $srStr • Sunset: $ssStr"
+
+            // Calculate Lunar Phase & Moonrise/Set via LunarCalculator
+            val loc = currentLocation
             if (loc != null) {
                 val observer = Observer(
                     latitudeDegrees = loc.latitude,
@@ -133,17 +151,17 @@ class DayForecastAdapter(
                 val riseEvent = moonEvents.find { it.type == MoonEventType.MOONRISE }
                 val setEvent = moonEvents.find { it.type == MoonEventType.MOONSET }
 
-                val is24Hour = DateFormat.is24HourFormat(binding.root.context)
+                val timeFormatter = DateTimeFormatter.ofPattern(if (is24Hour) "HH:mm" else "h:mm a", Locale.getDefault())
 
                 val riseText = if (riseEvent != null) {
-                    val timeStr = SolarCalculator.formatTime(riseEvent.instantUtc.atZone(zoneId).toLocalTime(), is24Hour)
+                    val timeStr = riseEvent.instantUtc.atZone(zoneId).format(timeFormatter)
                     "Rise $timeStr (${riseEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(riseEvent.azimuthDegrees)})"
                 } else {
                     "No Rise"
                 }
 
                 val setText = if (setEvent != null) {
-                    val timeStr = SolarCalculator.formatTime(setEvent.instantUtc.atZone(zoneId).toLocalTime(), is24Hour)
+                    val timeStr = setEvent.instantUtc.atZone(zoneId).format(timeFormatter)
                     "Set $timeStr (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
                 } else {
                     "No Set"
@@ -151,8 +169,8 @@ class DayForecastAdapter(
 
                 binding.tvExpandedMoonAzimuth.text = "$riseText • $setText"
             } else {
-                binding.tvExpandedMoonPhase.text = "--"
-                binding.tvExpandedMoonAzimuth.text = "--"
+                binding.tvExpandedMoonPhase.text = "——"
+                binding.tvExpandedMoonAzimuth.text = "——"
             }
 
             binding.layoutExpandedDetails.visibility = if (item.isExpanded) View.VISIBLE else View.GONE

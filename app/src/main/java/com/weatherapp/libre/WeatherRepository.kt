@@ -1,7 +1,8 @@
 package com.weatherapp.libre
 
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.weatherapp.libre.solar.Observer
+import com.weatherapp.libre.solar.SolarLightingEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -12,6 +13,7 @@ import java.io.IOException
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
@@ -38,24 +40,23 @@ class WeatherRepository {
     suspend fun getWeatherForecast(
         latitude: Double,
         longitude: Double,
-        modelKey: String = "gem_seamless",
+        model: ForecastModel = ForecastModel.GEM,
         forceRefresh: Boolean = false,
         isCacheEnabled: Boolean = true,
         ttlMinutes: Int = 120,
         locationPreferences: LocationPreferences? = null
     ): Result<WeatherResponse> = withContext(Dispatchers.IO) {
-        val cacheKey = String.format(Locale.US, "%.4f,%.4f_%s", latitude, longitude, modelKey)
+        val modelKey = model.openMeteoKey
+        val cacheKey = String.format(Locale.US, "cache_%.4f_%.4f_%s", latitude, longitude, modelKey)
         val now = System.currentTimeMillis()
         val ttlMillis = ttlMinutes.toLong() * 60 * 1000L
 
         if (!forceRefresh && isCacheEnabled) {
-            // Check in-memory cache
             val cached = forecastCache[cacheKey]
             if (cached != null && (now - cached.timestampMillis) < ttlMillis) {
                 return@withContext Result.success(cached.response)
             }
 
-            // Check persistent disk cache across app restarts
             if (locationPreferences != null) {
                 val diskTime = locationPreferences.getPersistentCacheTime(cacheKey)
                 if (diskTime > 0L && (now - diskTime) < ttlMillis) {
@@ -77,7 +78,7 @@ class WeatherRepository {
 
         try {
             coroutineScope {
-                val forecastDeferred = async { fetchForecastData(latitude, longitude, modelKey) }
+                val forecastDeferred = async { fetchForecastData(latitude, longitude, model) }
                 val extraDeferred = async { fetchBestMatchMetrics(latitude, longitude) }
                 val aqiDeferred = async { fetchAirQualityData(latitude, longitude) }
 
@@ -133,7 +134,6 @@ class WeatherRepository {
                     d.sunset = mergedSunset
                 }
 
-                // Store in memory cache & persistent disk cache
                 forecastCache[cacheKey] = CachedWeatherEntry(weatherResponse, now)
                 if (locationPreferences != null) {
                     try {
@@ -151,20 +151,29 @@ class WeatherRepository {
         }
     }
 
-    private fun fetchForecastData(latitude: Double, longitude: Double, modelKey: String): Result<WeatherResponse> {
+    private fun fetchForecastData(latitude: Double, longitude: Double, model: ForecastModel): Result<WeatherResponse> {
         return try {
-            val url = "https://api.open-meteo.com/v1/forecast?" +
+            val baseUrl = model.baseUrl
+            val modelApiString = model.openMeteoKey
+
+            val url = "$baseUrl?" +
                     "latitude=$latitude" +
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
                     "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max" +
                     "&forecast_days=8" +
-                    "&models=$modelKey" +
+                    "&models=$modelApiString" +
                     "&timezone=auto"
+
+            android.util.Log.d("WeatherAPI_Routing", "Requesting Model: ${model.displayName} | Endpoint: $baseUrl | URL: $url")
 
             val request = Request.Builder().url(url).get().build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
+                    if (response.code == 400 && model == ForecastModel.ECMWF) {
+                        android.util.Log.w("WeatherAPI_Routing", "ECMWF returned HTTP 400, falling back to GFS")
+                        return fetchForecastData(latitude, longitude, ForecastModel.GFS)
+                    }
                     return Result.failure(IOException("HTTP Error: ${response.code}"))
                 }
                 val bodyString = response.body?.string()
@@ -259,6 +268,37 @@ class WeatherRepository {
         }
     }
 
+    private fun calculateSolarSummary(latitude: Double, longitude: Double, date: LocalDate, zoneId: ZoneId): SolarDaySummary {
+        val observer = Observer(latitude, longitude)
+        val lighting = SolarLightingEngine.calculateSolarLightingPhases(date, zoneId, observer)
+
+        val srInstant = lighting.sunrise?.instantUtc
+        val ssInstant = lighting.sunset?.instantUtc
+        val srAz = lighting.sunrise?.azimuthDegrees?.toInt()
+        val ssAz = lighting.sunset?.azimuthDegrees?.toInt()
+
+        val durationMins = if (srInstant != null && ssInstant != null) {
+            ChronoUnit.MINUTES.between(srInstant, ssInstant).coerceAtLeast(0L)
+        } else null
+
+        return SolarDaySummary(
+            sunrise = srInstant,
+            sunset = ssInstant,
+            sunriseAzimuthDegrees = srAz,
+            sunsetAzimuthDegrees = ssAz,
+            morningGoldenHourStart = lighting.morningGoldenHour?.startInstantUtc,
+            morningGoldenHourEnd = lighting.morningGoldenHour?.endInstantUtc,
+            eveningGoldenHourStart = lighting.eveningGoldenHour?.startInstantUtc,
+            eveningGoldenHourEnd = lighting.eveningGoldenHour?.endInstantUtc,
+            morningBlueHourStart = lighting.morningBlueHour?.startInstantUtc,
+            morningBlueHourEnd = lighting.morningBlueHour?.endInstantUtc,
+            eveningBlueHourStart = lighting.eveningBlueHour?.startInstantUtc,
+            eveningBlueHourEnd = lighting.eveningBlueHour?.endInstantUtc,
+            solarNoonElevationDegrees = lighting.solarNoon?.apparentAltitudeDegrees?.toInt(),
+            daylightDurationMinutes = durationMins
+        )
+    }
+
     /**
      * Processes specifically Today's forecast for cardTodayDetails.
      */
@@ -298,7 +338,7 @@ class WeatherRepository {
         val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
         val aqi = current?.airQualityIndex
 
-        val solarTimes = SolarCalculator.calculateSolarTimes(latitude, longitude, date, zoneId)
+        val solarSummary = calculateSolarSummary(latitude, longitude, date, zoneId)
 
         val desc = WeatherCodeUtils.getWeatherDescription(code)
         val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)
@@ -319,7 +359,7 @@ class WeatherRepository {
             visibilityMeters = visibility,
             cloudCoverPct = cloudCover,
             airQualityIndex = aqi,
-            solarTimes = solarTimes
+            solarSummary = solarSummary
         )
     }
 
@@ -366,7 +406,6 @@ class WeatherRepository {
                 today.plusDays(i.toLong())
             }
 
-            // Exclude "Today" from the forecast list since it is displayed in cardTodayDetails
             if (date.isEqual(today) || i == 0) {
                 continue
             }
@@ -387,12 +426,11 @@ class WeatherRepository {
             val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
             val aqi = current?.airQualityIndex
 
-            val solarTimes = SolarCalculator.calculateSolarTimes(latitude, longitude, date, zoneId)
+            val solarSummary = calculateSolarSummary(latitude, longitude, date, zoneId)
 
             val desc = WeatherCodeUtils.getWeatherDescription(code)
             val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)
 
-            // Tomorrow (the first card in the forecast list) is expanded by default
             val isExpandedByDefault = (list.isEmpty())
 
             list.add(
@@ -412,7 +450,7 @@ class WeatherRepository {
                     visibilityMeters = visibility,
                     cloudCoverPct = cloudCover,
                     airQualityIndex = aqi,
-                    solarTimes = solarTimes,
+                    solarSummary = solarSummary,
                     isExpanded = isExpandedByDefault
                 )
             )
