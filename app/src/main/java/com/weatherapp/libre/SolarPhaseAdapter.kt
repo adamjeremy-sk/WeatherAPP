@@ -49,20 +49,29 @@ class SolarPhaseAdapter(
             binding.tvPhaseDuration.text = item.durationText
 
             val isEvent = item.name.equals("Sunrise", ignoreCase = true) || item.name.equals("Sunset", ignoreCase = true)
+            val isHighlighted = item.isCurrentActivePhase
+
+            val goldColor = ContextCompat.getColor(binding.root.context, R.color.golden_hour_primary)
 
             val p = palette
             if (p != null) {
-                // Use lighter secondary card background shade for event cells without gold outline stroke
-                binding.cardPhase.setCardBackgroundColor(if (isEvent) p.surfaceCardSecondary else p.surfaceCard)
-                binding.tvPhaseName.setTextColor(p.textPrimary)
+                binding.cardPhase.setCardBackgroundColor(
+                    when {
+                        isHighlighted -> p.surfaceCardSecondary
+                        isEvent -> p.surfaceCardSecondary
+                        else -> p.surfaceCard
+                    }
+                )
+                binding.tvPhaseName.setTextColor(if (isHighlighted) goldColor else p.textPrimary)
                 binding.tvPhaseTimeRange.setTextColor(p.textPrimary)
-                binding.tvPhaseDuration.setTextColor(p.primary)
-                binding.cardPhase.strokeColor = p.dividerColor
+                binding.tvPhaseDuration.setTextColor(if (isHighlighted) goldColor else p.primary)
+                binding.cardPhase.strokeColor = if (isHighlighted) goldColor else p.dividerColor
             } else {
-                val dividerColor = ContextCompat.getColor(binding.root.context, R.color.divider_color)
-                binding.cardPhase.strokeColor = dividerColor
+                binding.cardPhase.strokeColor = if (isHighlighted) goldColor else ContextCompat.getColor(binding.root.context, R.color.divider_color)
             }
-            binding.cardPhase.strokeWidth = (1 * binding.root.resources.displayMetrics.density).toInt()
+
+            val strokeWidthDp = if (isHighlighted) 2.5f else 1.0f
+            binding.cardPhase.strokeWidth = (strokeWidthDp * binding.root.resources.displayMetrics.density).toInt()
 
             binding.cardPhase.setOnLongClickListener {
                 onItemLongClick?.invoke(item)

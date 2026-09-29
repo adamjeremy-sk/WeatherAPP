@@ -44,7 +44,9 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
 import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.MoonEventType
+import com.weatherapp.libre.lunar.MoonPhaseName
 import com.weatherapp.libre.lunar.Observer
+import java.time.temporal.ChronoUnit
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
@@ -150,14 +152,13 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.drawerLayout) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val navPaddingExtra = if (locationPreferences.isNavPaddingEnabled()) (48 * resources.displayMetrics.density).toInt() else 0
 
             // Pad main content view below top status bar and above bottom gesture/navigation bar
             binding.main.setPadding(
                 systemBars.left,
                 systemBars.top,
                 systemBars.right,
-                systemBars.bottom + navPaddingExtra
+                systemBars.bottom
             )
 
             // Pad drawer header view cleanly below top status bar and close drawer when tapped
@@ -1167,21 +1168,19 @@ class MainActivity : AppCompatActivity() {
         val isSystemDefault = (savedTheme == LocationPreferences.THEME_SYSTEM)
         dialogBinding.switchSystemDefault.isChecked = isSystemDefault
 
-        // 3-Button Touchscreen Navigation Padding Switch
-        dialogBinding.cardNavPaddingSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardNavPaddingSwitch.strokeColor = palette.dividerColor
-        dialogBinding.tvNavPaddingTitle.setTextColor(palette.textPrimary)
-        dialogBinding.tvNavPaddingDesc.setTextColor(palette.textSecondary)
+        // Show Golden & Blue Hour on Main Page Switch
+        dialogBinding.cardShowGoldenBlueHourSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardShowGoldenBlueHourSwitch.strokeColor = palette.dividerColor
+        dialogBinding.tvShowGoldenBlueHourTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvShowGoldenBlueHourDesc.setTextColor(palette.textSecondary)
 
-        val isNavPaddingOn = locationPreferences.isNavPaddingEnabled()
-        dialogBinding.switchNavPadding.isChecked = isNavPaddingOn
-        dialogBinding.switchNavPadding.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveNavPaddingEnabled(isChecked)
-            
-            // Re-trigger insets request to instantly recalculate bottom padding without requiring app restart
-            ViewCompat.requestApplyInsets(binding.drawerLayout)
+        val isShowGoldenBlueHourOn = locationPreferences.isShowGoldenBlueHourMainPageEnabled()
+        dialogBinding.switchShowGoldenBlueHour.isChecked = isShowGoldenBlueHourOn
+        dialogBinding.switchShowGoldenBlueHour.setOnCheckedChangeListener { _, isChecked ->
+            locationPreferences.saveShowGoldenBlueHourMainPageEnabled(isChecked)
+            binding.layoutMetricGoldenBlueHourContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
 
-            val msg = if (isChecked) "3-Button Navigation Padding Enabled" else "3-Button Navigation Padding Disabled"
+            val msg = if (isChecked) "Golden & Blue Hour enabled on Main Page" else "Golden & Blue Hour hidden from Main Page"
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
 
@@ -2014,6 +2013,48 @@ class MainActivity : AppCompatActivity() {
         binding.tvTotalDaylight.text = solar.daylightDurationText
         binding.tvMoonPhase.text = formattedPhase.phaseNameWithEmoji
         binding.tvMoonCyclePercentage.text = formattedPhase.illuminationText
+
+        // Golden & Blue Hour Container Visibility via Theme Settings Preference
+        binding.layoutMetricGoldenBlueHourContainer.visibility =
+            if (locationPreferences.isShowGoldenBlueHourMainPageEnabled()) View.VISIBLE else View.GONE
+
+        binding.layoutMetricMoon.setOnClickListener {
+            val moonObs = Observer(currentLocation.latitude, currentLocation.longitude)
+            val currMoonInfo = LunarCalculator.phaseAt(java.time.Instant.now(), moonObs)
+            val formatted = LunarCalculator.formatPhaseDisplay(currMoonInfo)
+
+            val startUtc = java.time.Instant.now()
+            val endUtc = startUtc.plus(30, ChronoUnit.DAYS)
+            val upcomingPhases = LunarCalculator.phaseEventsBetween(startUtc, endUtc)
+
+            val formatter = DateTimeFormatter.ofPattern("EEE, MMM d • h:mm a", Locale.getDefault())
+            val upcomingText = upcomingPhases.take(4).joinToString("\n") { ev ->
+                val localTimeStr = ev.instantUtc.atZone(zoneId).format(formatter)
+                val phaseNameStr = when (ev.type) {
+                    MoonPhaseName.NEW_MOON -> "🌑 New Moon"
+                    MoonPhaseName.FIRST_QUARTER -> "🌓 First Quarter"
+                    MoonPhaseName.FULL_MOON -> "🌕 Full Moon"
+                    MoonPhaseName.LAST_QUARTER -> "🌗 Last Quarter"
+                }
+                "• $phaseNameStr: $localTimeStr"
+            }
+
+            val message = """
+                Phase: ${formatted.phaseNameWithEmoji}
+                Illumination: ${formatted.illuminationText}
+                Moon Age: ${String.format(Locale.US, "%.1f", currMoonInfo.ageDays)} days
+                Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm ?: 384400.0)} km
+                
+                Upcoming Moon Phases:
+                $upcomingText
+            """.trimIndent()
+
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Current Moon Phase")
+                .setMessage(message)
+                .setPositiveButton("Close", null)
+                .show()
+        }
 
         // Golden Hour Start and End
         val morningGolden = "${SolarCalculator.formatTime(solar.morningGoldenHourStart)} – ${SolarCalculator.formatTime(solar.morningGoldenHourEnd)}"

@@ -66,7 +66,7 @@ class LocationPreferences(context: Context) {
         private const val KEY_TAB_COUNT = "app_location_tab_count"
         private const val KEY_ACTIVE_TAB_INDEX = "app_active_tab_index"
         private const val KEY_TABS_STICKY = "app_location_tabs_sticky"
-        private const val KEY_NAV_PADDING = "app_nav_padding_enabled"
+        private const val KEY_SHOW_GOLDEN_BLUE_HOUR_MAIN_PAGE = "app_show_golden_blue_hour_main_page"
         private const val KEY_SOLAR_ALARM_MINS = "app_solar_alarm_lead_mins"
 
         private const val KEY_VOLUME_SCROLL_ENABLED = "app_volume_scroll_enabled"
@@ -150,12 +150,12 @@ class LocationPreferences(context: Context) {
         prefs.edit().putInt(KEY_SOLAR_ALARM_MINS, mins.coerceIn(1, 120)).apply()
     }
 
-    fun isNavPaddingEnabled(): Boolean {
-        return prefs.getBoolean(KEY_NAV_PADDING, false)
+    fun isShowGoldenBlueHourMainPageEnabled(): Boolean {
+        return prefs.getBoolean(KEY_SHOW_GOLDEN_BLUE_HOUR_MAIN_PAGE, false)
     }
 
-    fun saveNavPaddingEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_NAV_PADDING, enabled).apply()
+    fun saveShowGoldenBlueHourMainPageEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_SHOW_GOLDEN_BLUE_HOUR_MAIN_PAGE, enabled).apply()
     }
 
     fun isLocationTabsSticky(): Boolean {

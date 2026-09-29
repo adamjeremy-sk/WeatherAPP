@@ -124,9 +124,9 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- On-Screen Touchscreen Navigation Bar Padding Switch Card -->
+            <!-- Show Golden & Blue Hour on Main Page Switch Card -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardNavPaddingSwitch"
+                android:id="@+id/cardShowGoldenBlueHourSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -151,27 +151,27 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tvNavPaddingTitle"
+                            android:id="@+id/tvShowGoldenBlueHourTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3-Button Touchscreen Navigation Padding"
+                            android:text="Show Golden &amp; Blue Hour on Main Page"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvNavPaddingDesc"
+                            android:id="@+id/tvShowGoldenBlueHourDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Adds extra bottom padding for devices using 3-button on-screen system menu buttons."
+                            android:text="Display Golden Hour and Blue Hour timing cards directly on the main weather screen."
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchNavPadding"
+                        android:id="@+id/switchShowGoldenBlueHour"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 

@@ -1,173 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Production roadmap and execution plan for WeatherAPP Libre, detailing phased deliverables for compliance, architecture, user value, and release.">
-<title>WeatherAPP Libre: Production Roadmap</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<style>
-:root{--bg:#f4f7fb;--surface:#fff;--primary:#1167b1;--dark:#0d3b66;--text:#172033;--muted:#5d6b7c;--border:#d8e2ee;--shadow:0 10px 28px rgba(23,50,79,.08);--success:#18794e;--danger:#b42318;--warning:#a15c00}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.7}a{color:var(--primary)}
-.hero{padding:58px 24px;color:#fff;background:linear-gradient(135deg,var(--dark),var(--primary) 65%,#2a8bc7)}.hero-inner,.layout,footer{width:min(1180px,calc(100% - 32px));margin-right:auto;margin-left:auto}.hero-inner{display:flex;align-items:center;gap:28px}
-.hero-logo{width:128px;height:128px;flex:0 0 128px;object-fit:contain;border-radius:26px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.24))}.hero-content{min-width:0}h1{margin:0;font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.06}.hero p{max-width:820px;margin-bottom:0;font-size:1.15rem}
-.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;align-items:start;padding:28px 0}.sidebar{position:sticky;top:15px;display:grid;gap:18px;height:fit-content;max-height:calc(100vh - 30px);overflow-y:auto;padding-right:3px}.sidebar-cell{padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow)}.sidebar-cell h2{margin:0 0 12px;font-size:1.12rem;display:flex;align-items:center;gap:8px}.sidebar-cell ol,.sidebar-cell ul{margin:0;padding-left:1.45rem}.sidebar-cell li{margin:.38rem 0}.sidebar-cell a{color:var(--text);text-decoration:none}.sidebar-cell a:hover{color:var(--primary);text-decoration:underline}.sidebar-cell a:focus-visible{outline:3px solid rgba(17,103,177,.3);outline-offset:3px}
-main{min-width:0}section{scroll-margin-top:18px;margin-bottom:20px;padding:28px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow)}section:last-child{margin-bottom:0}h2{margin-top:0;color:var(--dark);line-height:1.25;display:flex;align-items:center;gap:10px}h3{margin:1.6rem 0 .5rem;font-size:1.15rem;color:var(--dark)}
-.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.card{padding:16px;border:1px solid var(--border);border-radius:14px;background:#fafcff}
-.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.score-tile{padding:16px;border:1px solid var(--border);border-radius:14px;background:#fafcff}.score-tile strong{display:block;margin-bottom:4px;font-size:.95rem}.score{color:var(--primary);font-size:1.45rem;font-weight:850}
-.callout{margin:18px 0;padding:16px 18px;border-left:5px solid var(--primary);border-radius:10px;background:#eef4fb}.callout.danger{border-left-color:var(--danger);background:#fff3f2}.callout.warning{border-left-color:var(--warning);background:#fff8eb}.callout.success{border-left-color:var(--success);background:#effaf5}
-.quote{padding:18px;border-radius:12px;color:#fff;background:var(--dark);font-size:1.18rem;font-weight:750;margin:18px 0}
-.checklist{list-style:none;padding:0}.checklist li{position:relative;padding-left:1.8rem;margin:.38rem 0}.checklist li::before{content:"✓";position:absolute;left:0;color:var(--success);font-weight:900}
-.pending-list{list-style:none;padding:0}.pending-list li{position:relative;padding-left:1.8rem;margin:.38rem 0}.pending-list li::before{content:"○";position:absolute;left:0;color:var(--muted);font-weight:900}
-s{text-decoration:line-through;color:var(--muted)}
-.icon{width:24px;height:24px;flex-shrink:0}
-footer{padding:30px;color:var(--muted);text-align:center}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none;overflow:visible;padding-right:0}.hero-inner{align-items:flex-start;gap:16px}.hero-logo{width:88px;height:88px;flex-basis:88px;border-radius:20px}}
-@media print{body{background:#fff}.hero{padding:24px 0;color:#111;background:#fff}.hero p{color:#333}.hero-logo{filter:none}.sidebar{display:none}.layout{display:block;width:100%}section{border-color:#ccc;box-shadow:none;break-inside:avoid}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Production roadmap and execution plan for WeatherAPP Libre, detailing phased deliverables for compliance, architecture, user value, and release.">
+  <title>WeatherAPP Libre: Production Roadmap</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+      --success: #18794e;
+      --danger: #b42318;
+      --warning: #a15c00;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.7;
+    }
+    a { color: var(--primary); }
+
+    /* Hero Section */
+    .hero {
+      padding: 58px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 65%, #2a8bc7);
+    }
+    .hero-inner, .layout, footer {
+      width: min(1180px, calc(100% - 32px));
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .hero-logo {
+      width: 128px;
+      height: 128px;
+      flex: 0 0 128px;
+      object-fit: contain;
+      border-radius: 26px;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .24));
+    }
+    .hero-content { min-width: 0; }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.06;
+    }
+    .hero p {
+      max-width: 820px;
+      margin-bottom: 0;
+      font-size: 1.15rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 28px 0;
+    }
+    .sidebar {
+      position: sticky;
+      top: 15px;
+      display: grid;
+      gap: 18px;
+      height: fit-content;
+      max-height: calc(100vh - 30px);
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+    .sidebar-cell {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .sidebar-cell h2 {
+      margin: 0 0 12px;
+      font-size: 1.12rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-cell ul, .sidebar-cell ol {
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar-cell li { margin: 8px 0; }
+    .sidebar-cell a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .sidebar-cell a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .sidebar-cell a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .3);
+      outline-offset: 3px;
+    }
+
+    /* Main Content */
+    main { min-width: 0; }
+    section {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    section:last-child { margin-bottom: 0; }
+    h2 {
+      margin-top: 0;
+      color: var(--dark);
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h3 {
+      margin: 1.6rem 0 .5rem;
+      font-size: 1.15rem;
+      color: var(--dark);
+    }
+
+    /* Grids & Cards */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .score-tile {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fafcff;
+    }
+    .score-tile strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: .95rem;
+    }
+    .score {
+      color: var(--primary);
+      font-size: 1.45rem;
+      font-weight: 850;
+    }
+
+    /* Callouts & Utilities */
+    .callout {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background: #eef4fb;
+    }
+    .callout.danger { border-left-color: var(--danger); background: #fff3f2; }
+    .callout.warning { border-left-color: var(--warning); background: #fff8eb; }
+    .callout.success { border-left-color: var(--success); background: #effaf5; }
+    
+    .quote {
+      padding: 18px;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--dark);
+      font-size: 1.18rem;
+      font-weight: 750;
+      margin: 18px 0;
+    }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      position: relative;
+      padding-left: 1.8rem;
+      margin: .38rem 0;
+    }
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: 900;
+    }
+
+    .pending-list { list-style: none; padding: 0; }
+    .pending-list li {
+      position: relative;
+      padding-left: 1.8rem;
+      margin: .38rem 0;
+    }
+    .pending-list li::before {
+      content: "○";
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    s { text-decoration: line-through; color: var(--muted); }
+    .icon { width: 24px; height: 24px; flex-shrink: 0; }
+
+    /* Footer */
+    footer {
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+      .hero-inner { align-items: flex-start; gap: 16px; }
+      .hero-logo {
+        width: 88px;
+        height: 88px;
+        flex-basis: 88px;
+        border-radius: 20px;
+      }
+    }
+    @media print {
+      body { background: #fff; }
+      .hero { padding: 24px 0; color: #111; background: #fff; }
+      .hero p { color: #333; }
+      .hero-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; }
+      section { border-color: #ccc; box-shadow: none; break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-inner">
-    <img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
-    <div class="hero-content">
-      <h1>Production Roadmap</h1>
-      <p>A structured, phased execution plan to transition WeatherAPP Libre to a compliant, stable, and production-ready release.</p>
-    </div>
-  </div>
-</header>
-
-<div class="layout">
-  <aside class="sidebar" aria-label="Roadmap navigation">
-    <nav class="sidebar-cell" aria-labelledby="nav-heading">
-      <h2 id="nav-heading">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-        Roadmap Navigation
-      </h2>
-      <ol>
-        <li><a href="#executive-summary">Executive Summary</a></li>
-        <li><a href="#phase-1">Phase 1: Trust & Compliance</a></li>
-        <li><a href="#phase-2">Phase 2: Core Value & Accuracy</a></li>
-        <li><a href="#phase-3">Phase 3: Architecture & Stability</a></li>
-        <li><a href="#phase-4">Phase 4: Release Preparation</a></li>
-        <li><a href="#release-gates">Production Release Gates</a></li>
-      </ol>
-    </nav>
-    <section class="sidebar-cell" aria-labelledby="resources-heading">
-      <h2 id="resources-heading">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Project Resources
-      </h2>
-      <ul>
-        <li><a href="about.html">About WeatherAPP</a></li>
-        <li><a href="privacypolicy.html">Privacy Policy</a></li>
-        <li><a href="support.html">Beta Signup & Support</a></li>
-        <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
-      </ul>
-    </section>
-    <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
-      <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-      <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phase 1 & 2 partially complete. Alert integrity remains the primary outstanding critical risk.</p>
-    </section>
-    <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
-  </aside>
-
-  <main>
-    <section id="executive-summary">
-      <h2>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        1. Executive Summary
-      </h2>
-      <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a strong, highly differentiated product concept centered on privacy, transparency, and specialized astronomical and weather features. The project has undergone focused remediation of data attribution, astronomical accuracy, and testing frameworks, with alert integrity remaining the primary outstanding critical risk.</p>
-
-      <div class="quote">A private, ad-free weather and natural-light planner for photographers, outdoor users, and astronomy enthusiasts, featuring selectable forecast models and zero GPS tracking.</div>
-
-      <h3>Reassessed Readiness Assessment</h3>
-      <div class="score-grid">
-        <div class="score-tile"><strong>Product Concept</strong><span class="score">9/10</span></div>
-        <div class="score-tile"><strong>Privacy Posture</strong><span class="score">9/10</span></div>
-        <div class="score-tile"><strong>Feature Depth</strong><span class="score">9/10</span></div>
-        <div class="score-tile"><strong>Visual Identity</strong><span class="score">8.5/10</span></div>
-        <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">8/10</span></div>
-        <div class="score-tile"><strong>Architecture</strong><span class="score">7.5/10</span></div>
-        <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">8.5/10</span></div>
-        <div class="score-tile"><strong>Alert Integrity</strong><span class="score">4/10</span></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="hero-content">
+        <h1>Production Roadmap</h1>
+        <p>A structured, phased execution plan to transition WeatherAPP Libre to a compliant, stable, and production-ready release.</p>
       </div>
-      <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Astronomical Accuracy and Privacy Posture scores have been elevated to reflect the completion of Sections 3.2 and 6.1 (a, c). Alert Integrity remains the primary outstanding critical risk requiring immediate remediation.</em></p>
-    </section>
+    </div>
+  </header>
 
-    <section id="phase-1">
-      <h2>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        2. Phase 1: Trust, Safety & Compliance
-      </h2>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Roadmap navigation">
+      <!-- CORRECTED NAVIGATION SIDEBAR -->
+      <nav class="sidebar-cell" aria-labelledby="nav-heading">
+        <h2 id="nav-heading">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Roadmap Navigation
+        </h2>
+        <!-- Unnumbered Executive Summary -->
+        <ul style="list-style-type: disc; padding-left: 1.45rem; margin: 0;">
+          <li style="margin: 8px 0;"><a href="#executive-summary">Executive Summary</a></li>
+        </ul>
+        <!-- Numbered Phases -->
+        <ol style="padding-left: 1.45rem; margin: 12px 0 0 0;">
+          <li style="margin: 8px 0;"><a href="#phase-1">Phase 1: Trust, Safety & Compliance</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-2">Phase 2: Core User Value & Accuracy</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-3">Phase 3: Technical Architecture & Stability</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-4">Phase 4: Release Preparation & Compliance</a></li>
+          <li style="margin: 8px 0;"><a href="#release-gates">Production Release Gates</a></li>
+          <li style="margin: 8px 0;"><a href="#sources">References and Compliance Sources</a></li>
+        </ol>
+      </nav>
+      <!-- END CORRECTED NAVIGATION SIDEBAR -->
       
-      <h3>2.1 Alert Integrity Remediation</h3>
-      <div class="callout danger"><strong>Critical Requirement:</strong> Forecast-model conditions must never be labeled as official ECCC or CAP-CP alerts.</div>
-      <ul class="pending-list">
-        <li>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</li>
-        <li>Rebrand model-derived severe weather conditions as "WeatherAPP Forecast Advisory" or "Potential Severe Weather."</li>
-        <li>Ensure no safety-critical alert functionality is gated behind a paywall.</li>
-      </ul>
+      <section class="sidebar-cell" aria-labelledby="resources-heading">
+        <h2 id="resources-heading">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Project Resources
+        </h2>
+        <ul style="list-style-type: disc; padding-left: 1.45rem; margin: 0;">
+          <li style="margin: 8px 0;"><a href="about.html">About WeatherAPP</a></li>
+          <li style="margin: 8px 0;"><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li style="margin: 8px 0;"><a href="support.html">Beta Signup & Support</a></li>
+          <li style="margin: 8px 0;"><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+      
+      <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
+        <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phase 1 & 2 partially complete. Alert integrity remains the primary outstanding critical risk.</p>
+      </section>
+      
+      <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
+    </aside>
 
-      <h3>2.2 Astronomical Data Validation</h3>
-      <ul class="checklist">
-        <li><s>Rebuild the astronomical dataset from documented, authoritative sources.</s></li>
-        <li><s>Implement automated validation to reject impossible phase intervals (e.g., first quarter occurring one day after a new moon).</s></li>
-        <li><s>Store event times in UTC and include visibility regions where applicable.</s></li>
-        <li><s>Remove or replace placeholder lunar azimuth calculations with a defensible lunar-position algorithm.</s></li>
-      </ul>
+    <main>
+      <section id="executive-summary">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Executive Summary
+        </h2>
+        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a strong, highly differentiated product concept centered on privacy, transparency, and specialized astronomical and weather features. The project has undergone focused remediation of data attribution, astronomical accuracy, and testing frameworks, with alert integrity remaining the primary outstanding critical risk.</p>
 
-      <h3>2.3 Licensing and Attribution Compliance</h3>
-      <ul class="pending-list">
-        <li>Update UI attribution to clearly state: "Forecast model: Environment Canada GEM | Weather data provided by: Open-Meteo."</li>
-        <li>Formalize the commercial-use arrangement with Open-Meteo to ensure compliance with their pricing and terms of service.</li>
-      </ul>
-    </section>
+        <div class="quote">A private, ad-free weather and natural-light planner for photographers, outdoor users, and astronomy enthusiasts, featuring selectable forecast models and zero GPS tracking.</div>
 
-    <section id="phase-2">
-      <h2>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-        3. Phase 2: Core User Value & Accuracy
-      </h2>
+        <h3>Reassessed Readiness Assessment</h3>
+        <div class="score-grid">
+          <div class="score-tile"><strong>Product Concept</strong><span class="score">9/10</span></div>
+          <div class="score-tile"><strong>Privacy Posture</strong><span class="score">9/10</span></div>
+          <div class="score-tile"><strong>Feature Depth</strong><span class="score">9/10</span></div>
+          <div class="score-tile"><strong>Visual Identity</strong><span class="score">8.5/10</span></div>
+          <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">8/10</span></div>
+          <div class="score-tile"><strong>Architecture</strong><span class="score">7.5/10</span></div>
+          <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">8.5/10</span></div>
+          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">4/10</span></div>
+        </div>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Astronomical Accuracy and Privacy Posture scores have been elevated to reflect the completion of Sections 1.2 and 4.1 (a, c). Alert Integrity remains the primary outstanding critical risk requiring immediate remediation.</em></p>
+      </section>
 
-      <h3>3.1 Calculation and Display Refinements</h3>
-      <ul class="checklist">
-        <li><s>Correct solar-noon elevation to account for the absolute difference between latitude and solar declination.</s></li>
-        <li><s>Implement explicit "NeverOccurs" or "AlwaysAboveThreshold" states for polar night and midnight sun, avoiding artificial midnight boundary clamping.</s></li>
-      </ul>
-      <ul class="pending-list">
-        <li>Rename <code>calculate13ChronologicalPhases()</code> to accurately reflect its 15-entry output.</li>
-        <li>Relabel "Ceiling" to "Estimated cloud base" with a clear disclaimer, or remove the metric entirely.</li>
-      </ul>
+      <section id="phase-1">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          1. Phase 1: Trust, Safety & Compliance
+        </h2>
+        
+        <h3>1.1 Alert Integrity Remediation</h3>
+        <div class="callout danger"><strong>Critical Requirement:</strong> Forecast-model conditions must never be labeled as official ECCC or CAP-CP alerts.</div>
+        <ul class="pending-list">
+          <li>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</li>
+          <li>Rebrand model-derived severe weather conditions as "WeatherAPP Forecast Advisory" or "Potential Severe Weather."</li>
+          <li>Ensure no safety-critical alert functionality is gated behind a paywall.</li>
+        </ul>
 
-      <h3>3.2 High-Value Feature Additions</h3>
-      <ul class="pending-list">
-        <li>Integrate hourly forecasts and precipitation probability (contingent on API licensing).</li>
-        <li>Implement visible "last refreshed" and "cached data" indicators.</li>
-        <li>Develop a home-screen widget for immediate at-a-glance utility.</li>
-        <li>Introduce a forecast-model comparison screen displaying model update timestamps.</li>
-        <li>Implement French localization to serve the Canadian market effectively.</li>
-        <li>Ensure all themes pass accessible contrast ratio testing and include a reduced-motion option.</li>
-      </ul>
-    </section>
+        <h3>1.2 Astronomical Data Validation</h3>
+        <ul class="checklist">
+          <li><s>Rebuild the astronomical dataset from documented, authoritative sources.</s></li>
+          <li><s>Implement automated validation to reject impossible phase intervals (e.g., first quarter occurring one day after a new moon).</s></li>
+          <li><s>Store event times in UTC and include visibility regions where applicable.</s></li>
+          <li><s>Remove or replace placeholder lunar azimuth calculations with a defensible lunar-position algorithm.</s></li>
+        </ul>
 
-    <section id="phase-3">
-      <h2>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-        4. Phase 3: Technical Architecture & Stability
-      </h2>
+        <h3>1.3 Licensing and Attribution Compliance</h3>
+        <ul class="pending-list">
+          <li>Update UI attribution to clearly state: "Forecast model: Environment Canada GEM | Weather data provided by: Open-Meteo."</li>
+          <li>Formalize the commercial-use arrangement with Open-Meteo to ensure compliance with their pricing and terms of service.</li>
+        </ul>
+      </section>
 
-      <h3>4.1 Architectural Decoupling</h3>
-      <ul class="pending-list">
-        <li>Decompose the monolithic <code>MainActivity</code> into focused components: <code>MainViewModel</code>, <code>WeatherUiState</code>, <code>AlertCoordinator</code>, <code>ThemeCoordinator</code>, and <code>LocationTabsController</code>.</li>
-        <li>Expose immutable UI state exclusively through <code>StateFlow</code>.</li>
-        <li>Migrate persistent cache storage from <code>SharedPreferences</code> to Room database or structured file storage.</li>
-      </ul>
+      <section id="phase-2">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          2. Phase 2: Core User Value & Accuracy
+        </h2>
 
-      <h3>4.2 Networking and Data Integrity</h3>
-      <ul class="pending-list">
-        <li>Construct all network URLs using <code>Http
+        <h3>2.1 Calculation and Display Refinements</h3>
+        <ul class="checklist">
+          <li><s>Correct solar-noon elevation to account for the absolute difference between latitude and solar declination.</s></li>
+          <li><s>Implement explicit "NeverOccurs" or "AlwaysAboveThreshold" states for polar night and midnight sun, avoiding artificial midnight boundary clamping.</s></li>
+        </ul>
+        <ul class="pending-list">
+          <li>Rename <code>calculate13ChronologicalPhases()</code> to accurately reflect its 15-entry output.</li>
+          <li>Relabel "Ceiling" to "Estimated cloud base" with a clear disclaimer, or remove the metric entirely.</li>
+        </ul>
+
+        <h3>2.2 High-Value Feature Additions</h3>
+        <ul class="pending-list">
+          <li>Integrate hourly forecasts and precipitation probability (contingent on API licensing).</li>
+          <li>Implement visible "last refreshed" and "cached data" indicators.</li>
+          <li>Develop a home-screen widget for immediate at-a-glance utility.</li>
+          <li>Introduce a forecast-model comparison screen displaying model update timestamps.</li>
+          <li>Implement French localization to serve the Canadian market effectively.</li>
+          <li>Ensure all themes pass accessible contrast ratio testing and include a reduced-motion option.</li>
+        </ul>
+      </section>
+
+      <section id="phase-3">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          3. Phase 3: Technical Architecture & Stability
+        </h2>
+
+        <h3>3.1 Architectural Decoupling</h3>
+        <ul class="pending-list">
+          <li>Decompose the monolithic <code>MainActivity</code> into focused components: <code>MainViewModel</code>, <code>WeatherUiState</code>, <code>AlertCoordinator</code>, <code>ThemeCoordinator</code>, and <code>LocationTabsController</code>.</li>
+          <li>Expose immutable UI state exclusively through <code>StateFlow</code>.</li>
+          <li>Migrate persistent cache storage from <code>SharedPreferences</code> to Room database or structured file storage.</li>
+        </ul>
+
+        <h3>3.2 Networking and Data Integrity</h3>
+        <ul class="pending-list">
+          <li>Construct all network URLs using <code>HttpUrl.Builder</code> to prevent injection and formatting errors.</li>
+          <li>Inject <code>OkHttpClient</code> and <code>Gson</code> dependencies for testability.</li>
+          <li>Implement request deduplication and memory-cache eviction policies.</li>
+          <li>Map external DTOs into immutable domain models; do not mutate API response objects directly.</li>
+          <li>Retain <code>Double</code> precision for coordinates; utilize location IDs or rounded coordinates for cache keys.</li>
+        </ul>
+
+        <h3>3.3 Testing Matrix Implementation</h3>
+        <p>Establish automated test coverage for the following edge cases:</p>
+        <ul class="checklist">
+          <li><s>Daylight-saving transitions and Saskatchewan's non-DST behavior.</s></li>
+          <li><s>Locations east and west of the International Date Line.</s></li>
+          <li><s>Southern Hemisphere solar noon and Arctic summer/winter extremes.</s></li>
+          <li><s>Malformed XML records and impossible lunar-phase sequences.</s></li>
+        </ul>
+        <ul class="pending-list">
+          <li>Cache expiry, offline fallback, and concurrent duplicate requests.</li>
+        </ul>
+      </section>
+
+      <section id="phase-4">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          4. Phase 4: Release Preparation & Compliance
+        </h2>
+        <p style="color: var(--muted); font-size: 0.95rem;"><em>(Note: Monetization strategy has been removed per directive.)</em></p>
+
+        <h3>4.1 Privacy and Store Compliance</h3>
+        <ul class="checklist">
+          <li><s>Publish a comprehensive privacy policy detailing data transmission (latitude/longitude to Open-Meteo, IP metadata, geocoding terms).</s></li>
+          <li><s>Ensure the Google Play Data Safety declaration accurately reflects the absence of advertising, analytics, and GPS tracking SDKs.</s></li>
+        </ul>
+        <ul class="pending-list">
+          <li>Implement a one-tap "Delete local app data" control within the application settings.</li>
+          <li>Externalize all hardcoded interface strings into Android string resources.</li>
+        </ul>
+      </section>
+
+      <section id="release-gates">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          5. Production Release Gates
+        </h2>
+        <p>The application must not proceed to public release until the following non-negotiable criteria are met and verified by QA:</p>
+        
+        <div class="callout danger">
+          <strong>Mandatory Release Criteria:</strong>
+          <ol style="margin-top: 8px; padding-left: 1.2rem;">
+            <li>Alert labeling is strictly truthful, safe, and legally compliant (no synthetic ECCC alerts).</li>
+            <li>Open-Meteo attribution is visibly implemented, and commercial-use licensing is formally resolved.</li>
+            <li>Core architecture refactoring (ViewModel, StateFlow) is complete and covered by automated tests.</li>
+          </ol>
+        </div>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Astronomical data validation (Section 1.2) and core privacy compliance (Section 4.1) have been satisfied and are no longer blocking release gates.</em></p>
+      </section>
+
+      <section id="sources">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          6. References and Compliance Sources
+        </h2>
+        <ul style="padding-left: 1.35rem; color: var(--muted);">
+          <li><a href="https://open-meteo.com/en/licence">Open-Meteo Licence</a></li>
+          <li><a href="https://open-meteo.com/en/pricing">Open-Meteo Pricing</a></li>
+          <li><a href="https://open-meteo.com/en/terms">Open-Meteo Terms</a></li>
+          <li><a href="https://support.google.com/googleplay/android-developer/answer/112622">Google Play Console Service Fees</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/11416267">Google Play Data Safety Information</a></li>
+        </ul>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 16px;"><em>Note: Pricing, platform rules, API terms, and competitor offerings are subject to change. Reverify all linked sources prior to final release.</em></p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre Production Roadmap • Prepared for Adam • Updated September 30, 2026
+  </footer>
+
+</body>
+</html>
