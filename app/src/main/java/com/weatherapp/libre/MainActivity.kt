@@ -450,7 +450,6 @@ class MainActivity : AppCompatActivity() {
         binding.layoutMetricAqi.setBackgroundColor(palette.surfaceCardSecondary)
         binding.layoutMetricUv.setBackgroundColor(palette.surfaceCardSecondary)
         binding.layoutMetricVisibility.setBackgroundColor(palette.surfaceCardSecondary)
-        binding.layoutMetricHumidity.setBackgroundColor(palette.surfaceCardSecondary)
         binding.layoutMetricCeiling.setBackgroundColor(palette.surfaceCardSecondary)
 
         binding.layoutMetricSunrise.setBackgroundColor(palette.surfaceCardSecondary)
@@ -1950,11 +1949,11 @@ class MainActivity : AppCompatActivity() {
 
         val currentTemp = currentWeatherData?.temperature
         if (currentTemp != null && isToday) {
-            binding.tvCurrentTemp.text = "Current: ${UnitUtils.formatTempPrecise(currentTemp, unitSystem)}"
-            binding.tvCurrentTemp.visibility = View.VISIBLE
+            binding.tvCurrentTemp.text = UnitUtils.formatTempPrecise(currentTemp, unitSystem)
         } else {
-            binding.tvCurrentTemp.visibility = View.GONE
+            binding.tvCurrentTemp.text = UnitUtils.formatTemp(day.tempMax, unitSystem)
         }
+        binding.tvCurrentTemp.visibility = View.VISIBLE
 
         // Daily High and Low
         binding.tvDailyHigh.text = UnitUtils.formatTemp(day.tempMax, unitSystem)
@@ -1965,7 +1964,15 @@ class MainActivity : AppCompatActivity() {
         val windSpeed = current?.windSpeed ?: day.windSpeedMaxKmH
         val windDir = current?.windDirection
         val windGust = current?.windGusts ?: day.windGustsMaxKmH
-        binding.tvWindSpeed.text = UnitUtils.formatWindSpeed(windSpeed, unitSystem, windDir, windGust)
+
+        binding.tvWindSpeed.text = UnitUtils.formatWindSpeedPrimary(windSpeed, unitSystem, windDir)
+        val gustText = UnitUtils.formatWindSpeedGusts(windGust, windSpeed, unitSystem)
+        if (gustText != null) {
+            binding.tvWindGust.text = gustText
+            binding.tvWindGust.visibility = View.VISIBLE
+        } else {
+            binding.tvWindGust.visibility = View.GONE
+        }
 
         val aqi = current?.airQualityIndex ?: day.airQualityIndex
         if (aqi != null) {
@@ -1981,10 +1988,16 @@ class MainActivity : AppCompatActivity() {
         binding.tvVisibility.text = UnitUtils.formatVisibility(visibility, unitSystem)
 
         val humidity = current?.relativeHumidity?.toInt() ?: day.humidityPct
-        binding.tvHumidity.text = "$humidity%"
+        binding.tvHumidity.text = "Humidity: $humidity%"
 
         val cloudCover = current?.cloudCoverPct?.toInt() ?: day.cloudCoverPct
-        binding.tvCeiling.text = UnitUtils.formatCeiling(cloudCover, humidity, unitSystem)
+        val rawCeiling = UnitUtils.formatCeiling(cloudCover, humidity, unitSystem)
+        if (rawCeiling.equals("Unlimited", ignoreCase = true) || cloudCover < 10) {
+            binding.layoutMetricCeiling.visibility = View.GONE
+        } else {
+            binding.tvCeiling.text = rawCeiling
+            binding.layoutMetricCeiling.visibility = View.VISIBLE
+        }
 
         // Sunrise and Sunset + Azimuth
         val solar = day.solarTimes
