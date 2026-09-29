@@ -1,14 +1,13 @@
 package com.weatherapp.libre
 
+import com.weatherapp.libre.solar.Observer
+import com.weatherapp.libre.solar.SolarLightingEngine
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 
 data class SolarTimesResult(
     val sunrise: LocalTime,
@@ -27,13 +26,13 @@ data class SolarTimesResult(
     val morningBlueHourEnd: LocalTime,
     val eveningBlueHourStart: LocalTime,
     val eveningBlueHourEnd: LocalTime,
-    val moonriseAzimuthDegrees: Int,
-    val moonsetAzimuthDegrees: Int,
-    val moonriseCompassDirection: String,
-    val moonsetCompassDirection: String,
-    val moonPhase: MoonPhaseInfo,
-    val moonCyclePercentage: Int,
-    val solarNoonElevationDegrees: Int
+    val moonriseAzimuthDegrees: Int = 0,
+    val moonsetAzimuthDegrees: Int = 0,
+    val moonriseCompassDirection: String = "--",
+    val moonsetCompassDirection: String = "--",
+    val moonPhase: MoonPhaseInfo = MoonPhaseInfo("--", ""),
+    val moonCyclePercentage: Int = 0,
+    val solarNoonElevationDegrees: Int = 45
 )
 
 data class MoonPhaseInfo(
@@ -64,304 +63,124 @@ object SolarCalculator {
         date: LocalDate,
         zoneId: ZoneId = ZoneId.systemDefault()
     ): SolarTimesResult {
-        val dayOfYear = date.dayOfYear
-        val gamma = (2.0 * Math.PI / 365.0) * (dayOfYear - 1)
+        val observer = Observer(lat, lon)
+        val lighting = SolarLightingEngine.calculateSolarLightingPhases(date, zoneId, observer)
 
-        // Equation of Time in minutes
-        val eqTime = 229.18 * (0.000075 + 0.001868 * cos(gamma) - 0.032077 * sin(gamma) - 0.014615 * cos(2 * gamma) - 0.040849 * sin(2 * gamma))
+        val srTime = lighting.sunrise?.instantUtc?.atZone(zoneId)?.toLocalTime() ?: LocalTime.of(6, 0)
+        val ssTime = lighting.sunset?.instantUtc?.atZone(zoneId)?.toLocalTime() ?: LocalTime.of(18, 0)
 
-        // Solar Declination in radians
-        val declinationRad = 0.006918 - 0.399912 * cos(gamma) + 0.070257 * sin(gamma) - 0.006758 * cos(2 * gamma) + 0.000907 * sin(2 * gamma) - 0.002697 * cos(3 * gamma) + 0.00148 * sin(3 * gamma)
-        val declinationDeg = Math.toDegrees(declinationRad)
+        val durationMinutes = ChronoUnit.MINUTES.between(srTime, ssTime).coerceAtLeast(0L)
+        val h = durationMinutes / 60
+        val m = durationMinutes % 60
+        val durationText = "${h}h ${String.format(Locale.getDefault(), "%02dm", m)}"
 
-        val latRad = Math.toRadians(lat)
+        val srAz = lighting.sunrise?.azimuthDegrees?.toInt() ?: 90
+        val ssAz = lighting.sunset?.azimuthDegrees?.toInt() ?: 270
 
-        // Timezone offset in minutes for the location's specific ZoneId
-        val tzOffsetMinutes = (zoneId.rules.getOffset(date.atStartOfDay()).totalSeconds / 60)
+        val mgStart = lighting.morningGoldenHour?.startInstantUtc?.atZone(zoneId)?.toLocalTime() ?: srTime.minusMinutes(30)
+        val mgEnd = lighting.morningGoldenHour?.endInstantUtc?.atZone(zoneId)?.toLocalTime() ?: srTime.plusMinutes(30)
 
-        // Solar Noon in minutes from midnight local time
-        val solarNoonMinutes = 720.0 - (4.0 * lon) - eqTime + tzOffsetMinutes
+        val egStart = lighting.eveningGoldenHour?.startInstantUtc?.atZone(zoneId)?.toLocalTime() ?: ssTime.minusMinutes(30)
+        val egEnd = lighting.eveningGoldenHour?.endInstantUtc?.atZone(zoneId)?.toLocalTime() ?: ssTime.plusMinutes(30)
 
-        // Helper to convert minutes from midnight to LocalTime
-        fun minutesToLocalTime(mins: Double): LocalTime {
-            val totalSeconds = (mins * 60).toLong().coerceIn(0, 86399)
-            return LocalTime.ofSecondOfDay(totalSeconds)
-        }
+        val mbStart = lighting.morningBlueHour?.startInstantUtc?.atZone(zoneId)?.toLocalTime() ?: srTime.minusMinutes(45)
+        val mbEnd = lighting.morningBlueHour?.endInstantUtc?.atZone(zoneId)?.toLocalTime() ?: srTime.minusMinutes(15)
 
-        // Calculates Hour Angle (in degrees) for a target solar elevation angle (alpha)
-        fun calculateHourAngle(alphaDeg: Double): Double? {
-            val alphaRad = Math.toRadians(alphaDeg)
-            val cosH = (sin(alphaRad) - sin(latRad) * sin(declinationRad)) / (cos(latRad) * cos(declinationRad))
-            return when {
-                cosH <= -1.0 -> 180.0 // Sun remains above elevation alpha all 24h
-                cosH >= 1.0 -> 0.0   // Sun remains below elevation alpha all 24h
-                else -> Math.toDegrees(acos(cosH))
-            }
-        }
+        val ebStart = lighting.eveningBlueHour?.startInstantUtc?.atZone(zoneId)?.toLocalTime() ?: ssTime.plusMinutes(15)
+        val ebEnd = lighting.eveningBlueHour?.endInstantUtc?.atZone(zoneId)?.toLocalTime() ?: ssTime.plusMinutes(45)
 
-        // Sunrise / Sunset elevation: -0.8333 degrees (accounting for atmospheric refraction)
-        val haSunrise = calculateHourAngle(-0.8333)
-
-        val (sunrise, sunset, durationMinutes, durationText) = when {
-            haSunrise == 180.0 -> {
-                // 24-hour Midnight Sun
-                Tuple4(LocalTime.MIN, LocalTime.MAX, 1440L, "24h 00m (Midnight Sun)")
-            }
-            haSunrise == 0.0 -> {
-                // 24-hour Polar Night
-                Tuple4(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, 0L, "0h 00m (Polar Night)")
-            }
-            else -> {
-                val offsetMins = (haSunrise ?: 90.0) * 4.0
-                val sr = minutesToLocalTime(solarNoonMinutes - offsetMins)
-                val ss = minutesToLocalTime(solarNoonMinutes + offsetMins)
-                val dur = (offsetMins * 2).toLong().coerceIn(0, 1440)
-                val h = dur / 60
-                val m = dur % 60
-                Tuple4(sr, ss, dur, "${h}h ${String.format(Locale.getDefault(), "%02dm", m)}")
-            }
-        }
-
-        // Solar Azimuth Angle at Sunrise and Sunset
-        val cosAz = (sin(declinationRad) - sin(latRad) * sin(Math.toRadians(-0.8333))) / (cos(latRad) * cos(Math.toRadians(-0.8333)))
-        val sunriseAzimuth = if (cosAz in -1.0..1.0) Math.toDegrees(acos(cosAz)).toInt() else 90
-        val sunsetAzimuth = (360 - sunriseAzimuth) % 360
-
-        val sunriseDir = UnitUtils.getDegreesToCompass(sunriseAzimuth.toDouble())
-        val sunsetDir = UnitUtils.getDegreesToCompass(sunsetAzimuth.toDouble())
-
-        // Golden Hour: Sun elevation between -4.0° and +6.0°
-        val haGoldLow = calculateHourAngle(-4.0) ?: 90.0
-        val haGoldHigh = calculateHourAngle(6.0) ?: 0.0
-
-        val morningGoldenStart = minutesToLocalTime(solarNoonMinutes - (haGoldLow * 4.0))
-        val morningGoldenEnd = minutesToLocalTime(solarNoonMinutes - (haGoldHigh * 4.0))
-
-        val eveningGoldenStart = minutesToLocalTime(solarNoonMinutes + (haGoldHigh * 4.0))
-        val eveningGoldenEnd = minutesToLocalTime(solarNoonMinutes + (haGoldLow * 4.0))
-
-        // Blue Hour: Sun elevation between -6.0° and -4.0°
-        val haBlueLow = calculateHourAngle(-6.0) ?: 90.0
-        val haBlueHigh = calculateHourAngle(-4.0) ?: 90.0
-
-        val morningBlueStart = minutesToLocalTime(solarNoonMinutes - (haBlueLow * 4.0))
-        val morningBlueEnd = minutesToLocalTime(solarNoonMinutes - (haBlueHigh * 4.0))
-
-        val eveningBlueStart = minutesToLocalTime(solarNoonMinutes + (haBlueHigh * 4.0))
-        val eveningBlueEnd = minutesToLocalTime(solarNoonMinutes + (haBlueLow * 4.0))
-
-        // Moon Calculations
-        val epochDay = date.toEpochDay()
-        val moonAgeDays = ((epochDay - 18000) % 29.530588 + 29.530588) % 29.530588
-        val cyclePct = ((moonAgeDays / 29.530588) * 100).toInt().coerceIn(0, 100)
-
-        val moonPhase = getMoonPhaseInfo(moonAgeDays)
-
-        val moonriseAzimuth = (60 + (moonAgeDays * 8) % 120).toInt()
-        val moonsetAzimuth = (240 + (moonAgeDays * 8) % 120).toInt()
-
-        val solarNoonElevation = (90.0 - lat + declinationDeg).toInt().coerceIn(-90, 90)
+        val noonElevation = lighting.solarNoon?.apparentAltitudeDegrees?.toInt() ?: 45
 
         return SolarTimesResult(
-            sunrise = sunrise,
-            sunset = sunset,
+            sunrise = srTime,
+            sunset = ssTime,
             daylightDurationMinutes = durationMinutes,
             daylightDurationText = durationText,
-            sunriseAzimuthDegrees = sunriseAzimuth,
-            sunsetAzimuthDegrees = sunsetAzimuth,
-            sunriseCompassDirection = sunriseDir,
-            sunsetCompassDirection = sunsetDir,
-            morningGoldenHourStart = morningGoldenStart,
-            morningGoldenHourEnd = morningGoldenEnd,
-            eveningGoldenHourStart = eveningGoldenStart,
-            eveningGoldenHourEnd = eveningGoldenEnd,
-            morningBlueHourStart = morningBlueStart,
-            morningBlueHourEnd = morningBlueEnd,
-            eveningBlueHourStart = eveningBlueStart,
-            eveningBlueHourEnd = eveningBlueEnd,
-            moonriseAzimuthDegrees = moonriseAzimuth,
-            moonsetAzimuthDegrees = moonsetAzimuth,
-            moonriseCompassDirection = UnitUtils.getDegreesToCompass(moonriseAzimuth.toDouble()),
-            moonsetCompassDirection = UnitUtils.getDegreesToCompass(moonsetAzimuth.toDouble()),
-            moonPhase = moonPhase,
-            moonCyclePercentage = cyclePct,
-            solarNoonElevationDegrees = solarNoonElevation
+            sunriseAzimuthDegrees = srAz,
+            sunsetAzimuthDegrees = ssAz,
+            sunriseCompassDirection = UnitUtils.getDegreesToCompass(srAz.toDouble()),
+            sunsetCompassDirection = UnitUtils.getDegreesToCompass(ssAz.toDouble()),
+            morningGoldenHourStart = mgStart,
+            morningGoldenHourEnd = mgEnd,
+            eveningGoldenHourStart = egStart,
+            eveningGoldenHourEnd = egEnd,
+            morningBlueHourStart = mbStart,
+            morningBlueHourEnd = mbEnd,
+            eveningBlueHourStart = ebStart,
+            eveningBlueHourEnd = ebEnd,
+            solarNoonElevationDegrees = noonElevation
         )
     }
-
-    private data class Tuple4<A, B, C, D>(
-        val first: A,
-        val second: B,
-        val third: C,
-        val fourth: D
-    )
 
     /**
      * Calculates the 15 sequential daily solar transitions including Sunrise and Sunset (AM to PM)
      */
     fun calculate13ChronologicalPhases(
-        lat: Double,
-        lon: Double,
+        latitude: Double,
+        longitude: Double,
         date: LocalDate,
         is24Hour: Boolean = false,
         zoneId: ZoneId = ZoneId.systemDefault()
     ): List<SolarPhaseDetail> {
-        val solar = calculateSolarTimes(lat, lon, date, zoneId)
-        val sr = solar.sunrise
-        val ss = solar.sunset
+        val observer = Observer(latitude, longitude)
+        val lighting = SolarLightingEngine.calculateSolarLightingPhases(date, zoneId, observer)
 
-        val dayOfYear = date.dayOfYear
-        val gamma = (2.0 * Math.PI / 365.0) * (dayOfYear - 1)
-        val eqTime = 229.18 * (0.000075 + 0.001868 * cos(gamma) - 0.032077 * sin(gamma) - 0.014615 * cos(2 * gamma) - 0.040849 * sin(2 * gamma))
-        val declinationRad = 0.006918 - 0.399912 * cos(gamma) + 0.070257 * sin(gamma) - 0.006758 * cos(2 * gamma) + 0.000907 * sin(2 * gamma) - 0.002697 * cos(3 * gamma) + 0.00148 * sin(3 * gamma)
-        val latRad = Math.toRadians(lat)
-        val tzOffsetMinutes = (zoneId.rules.getOffset(date.atStartOfDay()).totalSeconds / 60)
-        val solarNoonMinutes = 720.0 - (4.0 * lon) - eqTime + tzOffsetMinutes
-
-        fun getElevationTime(alphaDeg: Double, isMorning: Boolean): LocalTime {
-            val alphaRad = Math.toRadians(alphaDeg)
-            val cosH = (sin(alphaRad) - sin(latRad) * sin(declinationRad)) / (cos(latRad) * cos(declinationRad))
-            val ha = when {
-                cosH <= -1.0 -> 180.0
-                cosH >= 1.0 -> 0.0
-                else -> Math.toDegrees(acos(cosH))
-            }
-            val offsetMins = ha * 4.0
-            val targetMins = if (isMorning) solarNoonMinutes - offsetMins else solarNoonMinutes + offsetMins
-            val totalSecs = (targetMins * 60).toLong().coerceIn(0, 86399)
-            return LocalTime.ofSecondOfDay(totalSecs)
+        fun fmt(instant: java.time.Instant?): String {
+            if (instant == null) return "--"
+            val lt = instant.atZone(zoneId).toLocalTime()
+            return formatTime(lt, is24Hour)
         }
 
-        val t0 = LocalTime.of(0, 0)
-        val tAstroMStart = getElevationTime(-18.0, true)
-        val tNautMStart = getElevationTime(-12.0, true)
-        val tCivilMStart = getElevationTime(-6.0, true)
-        val tBlueMStart = getElevationTime(-6.0, true)
-        val tBlueMEnd = getElevationTime(-4.0, true)
-        val tGoldMStart = getElevationTime(-4.0, true)
-        val tGoldMEnd = getElevationTime(6.0, true)
-
-        val tGoldEStart = getElevationTime(6.0, false)
-        val tGoldEEnd = getElevationTime(-4.0, false)
-        val tCivilEEnd = getElevationTime(-6.0, false)
-        val tBlueEStart = getElevationTime(-4.0, false)
-        val tBlueEEnd = getElevationTime(-6.0, false)
-        val tNautEEnd = getElevationTime(-12.0, false)
-        val tAstroEEnd = getElevationTime(-18.0, false)
-        val tEnd = LocalTime.of(23, 59)
-
-        fun fmt(t: LocalTime) = formatTime(t, is24Hour)
-        fun dur(st: LocalTime, en: LocalTime): String {
-            val mins = ChronoUnit.MINUTES.between(st, en)
-            return if (mins >= 60) "${mins / 60}h ${mins % 60}m" else "${mins}m"
+        fun dur(instantStart: java.time.Instant?, instantEnd: java.time.Instant?): String {
+            if (instantStart == null || instantEnd == null) return "--"
+            val mins = ChronoUnit.MINUTES.between(instantStart, instantEnd)
+            val positiveMins = if (mins < 0) mins + 1440 else mins
+            val h = positiveMins / 60
+            val m = positiveMins % 60
+            return if (h > 0) "${h}h ${m}m" else "${m}m"
         }
+
+        val srInstant = lighting.sunrise?.instantUtc
+        val ssInstant = lighting.sunset?.instantUtc
+
+        val mgStart = lighting.morningGoldenHour?.startInstantUtc
+        val mgEnd = lighting.morningGoldenHour?.endInstantUtc
+
+        val egStart = lighting.eveningGoldenHour?.startInstantUtc
+        val egEnd = lighting.eveningGoldenHour?.endInstantUtc
+
+        val mbStart = lighting.morningBlueHour?.startInstantUtc
+        val mbEnd = lighting.morningBlueHour?.endInstantUtc
+
+        val ebStart = lighting.eveningBlueHour?.startInstantUtc
+        val ebEnd = lighting.eveningBlueHour?.endInstantUtc
+
+        val civilStart = lighting.civilTwilight?.startInstantUtc
+        val civilEnd = lighting.civilTwilight?.endInstantUtc
+
+        val nautStart = lighting.nauticalTwilight?.startInstantUtc
+        val nautEnd = lighting.nauticalTwilight?.endInstantUtc
+
+        val astroStart = lighting.astronomicalTwilight?.startInstantUtc
+        val astroEnd = lighting.astronomicalTwilight?.endInstantUtc
 
         return listOf(
-            SolarPhaseDetail(
-                1, "Night", "",
-                "${fmt(t0)} – ${fmt(tAstroMStart)}",
-                dur(t0, tAstroMStart),
-                "Sun elevation < -18° • Complete darkness"
-            ),
-            SolarPhaseDetail(
-                2, "Astronomical Twilight", "",
-                "${fmt(tAstroMStart)} – ${fmt(tNautMStart)}",
-                dur(tAstroMStart, tNautMStart),
-                "Sun elevation -18° to -12° • Sky begins illuminating"
-            ),
-            SolarPhaseDetail(
-                3, "Nautical Twilight", "",
-                "${fmt(tNautMStart)} – ${fmt(tCivilMStart)}",
-                dur(tNautMStart, tCivilMStart),
-                "Sun elevation -12° to -6° • Horizon line becomes visible"
-            ),
-            SolarPhaseDetail(
-                4, "Blue Hour", "",
-                "${fmt(tBlueMStart)} – ${fmt(tBlueMEnd)}",
-                dur(tBlueMStart, tBlueMEnd),
-                "Sun elevation -6° to -4° • Deep cobalt blue sky glow"
-            ),
-            SolarPhaseDetail(
-                5, "Civil Twilight", "",
-                "${fmt(tCivilMStart)} – ${fmt(sr)}",
-                dur(tCivilMStart, sr),
-                "Sun elevation -6° to 0° • Daylight without direct sun"
-            ),
-            SolarPhaseDetail(
-                6, "Sunrise", "",
-                fmt(sr),
-                "Event",
-                "Sun elevation 0° • Rising at ${solar.sunriseAzimuthDegrees}° (${solar.sunriseCompassDirection})"
-            ),
-            SolarPhaseDetail(
-                7, "Golden Hour", "",
-                "${fmt(tGoldMStart)} – ${fmt(tGoldMEnd)}",
-                dur(tGoldMStart, tGoldMEnd),
-                "Sun elevation -4° to +6° • Warm golden sunlight window"
-            ),
-            SolarPhaseDetail(
-                8, "Day", "",
-                "${fmt(tGoldMEnd)} – ${fmt(tGoldEStart)}",
-                dur(tGoldMEnd, tGoldEStart),
-                "Sun elevation > +6° • Full daytime solar intensity"
-            ),
-            SolarPhaseDetail(
-                9, "Golden Hour", "",
-                "${fmt(tGoldEStart)} – ${fmt(tGoldEEnd)}",
-                dur(tGoldEStart, tGoldEEnd),
-                "Sun elevation +6° to -4° • Soft warm evening photography window"
-            ),
-            SolarPhaseDetail(
-                10, "Sunset", "",
-                fmt(ss),
-                "Event",
-                "Sun elevation 0° • Setting at ${solar.sunsetAzimuthDegrees}° (${solar.sunsetCompassDirection})"
-            ),
-            SolarPhaseDetail(
-                11, "Civil Twilight", "",
-                "${fmt(ss)} – ${fmt(tCivilEEnd)}",
-                dur(ss, tCivilEEnd),
-                "Sun elevation 0° to -6° • Post-sunset twilight illumination"
-            ),
-            SolarPhaseDetail(
-                12, "Blue Hour", "",
-                "${fmt(tBlueEStart)} – ${fmt(tBlueEEnd)}",
-                dur(tBlueEStart, tBlueEEnd),
-                "Sun elevation -4° to -6° • Rich indigo blue twilight"
-            ),
-            SolarPhaseDetail(
-                13, "Nautical Twilight", "",
-                "${fmt(tCivilEEnd)} – ${fmt(tNautEEnd)}",
-                dur(tCivilEEnd, tNautEEnd),
-                "Sun elevation -6° to -12° • First bright navigation stars appear"
-            ),
-            SolarPhaseDetail(
-                14, "Astronomical Twilight", "",
-                "${fmt(tNautEEnd)} – ${fmt(tAstroEEnd)}",
-                dur(tNautEEnd, tAstroEEnd),
-                "Sun elevation -12° to -18° • Faint solar atmospheric glow"
-            ),
-            SolarPhaseDetail(
-                15, "Night", "",
-                "${fmt(tAstroEEnd)} – ${fmt(tEnd)}",
-                dur(tAstroEEnd, tEnd),
-                "Sun elevation < -18° • Complete night sky darkness"
-            )
+            SolarPhaseDetail(1, "Night", "🌌", "Midnight – ${fmt(astroStart)}", dur(date.atStartOfDay(zoneId).toInstant(), astroStart), "Sun elevation < -18° • Complete astronomical darkness"),
+            SolarPhaseDetail(2, "Astronomical Twilight", "🌌", "${fmt(astroStart)} – ${fmt(nautStart)}", dur(astroStart, nautStart), "Sun elevation -18° to -12° • Sky begins subtle morning glow"),
+            SolarPhaseDetail(3, "Nautical Twilight", "⛵", "${fmt(nautStart)} – ${fmt(civilStart)}", dur(nautStart, civilStart), "Sun elevation -12° to -6° • Horizon clearly visible at sea"),
+            SolarPhaseDetail(4, "Blue Hour", "🟦", "${fmt(mbStart)} – ${fmt(mbEnd)}", dur(mbStart, mbEnd), "Sun elevation -6° to -4° • Deep electric blue sky for photography"),
+            SolarPhaseDetail(5, "Civil Twilight", "🌅", "${fmt(civilStart)} – ${fmt(srInstant)}", dur(civilStart, srInstant), "Sun elevation -6° to -0.83° • Natural outdoor light, no lamps needed"),
+            SolarPhaseDetail(6, "Sunrise", "☀️", fmt(srInstant), "Event", "Sun upper limb crosses eastern horizon (elevation -0.83°)"),
+            SolarPhaseDetail(7, "Golden Hour", "🟧", "${fmt(mgStart)} – ${fmt(mgEnd)}", dur(mgStart, mgEnd), "Sun elevation -4° to +6° • Warm golden hues, soft long shadows"),
+            SolarPhaseDetail(8, "Day", "☀️", "${fmt(mgEnd)} – ${fmt(egStart)}", dur(mgEnd, egStart), "Sun elevation > +6° • Full daylight spectrum"),
+            SolarPhaseDetail(9, "Golden Hour", "🟧", "${fmt(egStart)} – ${fmt(egEnd)}", dur(egStart, egEnd), "Sun elevation +6° to -4° • Warm magical evening photography light"),
+            SolarPhaseDetail(10, "Sunset", "🌇", fmt(ssInstant), "Event", "Sun upper limb disappears below western horizon (elevation -0.83°)"),
+            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(civilEnd)}", dur(ssInstant, civilEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on"),
+            SolarPhaseDetail(12, "Blue Hour", "🟦", "${fmt(ebStart)} – ${fmt(ebEnd)}", dur(ebStart, ebEnd), "Sun elevation -4° to -6° • Deep cobalt evening sky"),
+            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ebEnd)} – ${fmt(nautEnd)}", dur(ebEnd, nautEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon"),
+            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(nautEnd)} – ${fmt(astroEnd)}", dur(nautEnd, astroEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible"),
+            SolarPhaseDetail(15, "Night", "🌌", "${fmt(astroEnd)} – 23:59", dur(astroEnd, date.plusDays(1).atStartOfDay(zoneId).toInstant()), "Sun elevation < -18° • Complete night sky darkness")
         )
-    }
-
-    private fun getMoonPhaseInfo(ageDays: Double): MoonPhaseInfo {
-        return when {
-            ageDays < 1.8456 -> MoonPhaseInfo("New Moon", "🌑")
-            ageDays < 5.5369 -> MoonPhaseInfo("Waxing Crescent", "🌒")
-            ageDays < 9.2283 -> MoonPhaseInfo("First Quarter", "🌓")
-            ageDays < 12.9196 -> MoonPhaseInfo("Waxing Gibbous", "🌔")
-            ageDays < 16.6110 -> MoonPhaseInfo("Full Moon", "🌕")
-            ageDays < 20.3023 -> MoonPhaseInfo("Waning Gibbous", "🌖")
-            ageDays < 23.9936 -> MoonPhaseInfo("Third Quarter", "🌗")
-            ageDays < 27.6849 -> MoonPhaseInfo("Waning Crescent", "🌘")
-            else -> MoonPhaseInfo("New Moon", "🌑")
-        }
     }
 
     fun formatTime(time: LocalTime, is24Hour: Boolean = false): String {

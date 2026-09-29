@@ -18,9 +18,9 @@ object AstronomyMath {
      * Meeus Ch. 12 Eq. 12.4
      */
     fun gmstDegrees(jdUtc: Double): Double {
-        val T = AstroTime.julianCenturies(jdUtc)
-        val gmstSeconds = 28016.0298 + (36000.7689254 * 36525.0 * T) + (0.000387933 * T * T) - (T * T * T / 38710000.0)
-        val gmstDeg = (gmstSeconds / 240.0) % 360.0
+        val d = jdUtc - 2451545.0
+        val T = d / 36525.0
+        val gmstDeg = 280.46061837 + 360.98564736629 * d + 0.000387933 * T * T - (T * T * T / 38710000.0)
         return normalizeDegrees(gmstDeg)
     }
 
