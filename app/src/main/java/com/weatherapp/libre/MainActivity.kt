@@ -84,14 +84,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var forecastAdapter: DayForecastAdapter
     private lateinit var inlineSolarPhaseAdapter: SolarPhaseAdapter
-    private lateinit var inlineSolarEventAdapter: AstronomicalEventAdapter
 
     private var isUpdatingTabsProgrammatically = false
 
     enum class InlineSubTab {
         WEATHER_DETAILS,
-        GOLDEN_HOUR,
-        SOLAR_EVENTS
+        GOLDEN_HOUR
     }
 
     private var activeInlineSubTab: InlineSubTab = InlineSubTab.WEATHER_DETAILS
@@ -218,7 +216,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateAlertBanner()
-        checkTodaySolarEvents()
         updateTabsStickyPosition()
         applyPaletteToUI()
     }
@@ -480,21 +477,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnInlineMenu.strokeColor = ColorStateList.valueOf(palette.dividerColor)
 
         inlineSolarPhaseAdapter.setPalette(palette)
-        inlineSolarEventAdapter.setPalette(palette)
         forecastAdapter.setPalette(palette)
-    }
-
-    private fun checkTodaySolarEvents() {
-        val (_, upcomingEvents) = LunarInfoRepository.generateEventsFromLunarInfo(this)
-        val todayEvent = upcomingEvents.find { it.isHappeningToday }
-
-        if (todayEvent != null) {
-            val goldColor = ContextCompat.getColor(this, R.color.golden_hour_primary)
-            binding.btnInlineMenu.strokeColor = ColorStateList.valueOf(goldColor)
-        } else {
-            val dividerColor = ContextCompat.getColor(this, R.color.divider_color)
-            binding.btnInlineMenu.strokeColor = ColorStateList.valueOf(dividerColor)
-        }
     }
 
     private fun updateAlertBanner() {
@@ -548,12 +531,6 @@ class MainActivity : AppCompatActivity() {
         binding.rvInlineSolarPhases.layoutManager = LinearLayoutManager(this)
         binding.rvInlineSolarPhases.adapter = inlineSolarPhaseAdapter
 
-        inlineSolarEventAdapter = AstronomicalEventAdapter { event ->
-            promptAddCalendarEvent(event)
-        }
-        binding.rvInlineSolarEvents.layoutManager = LinearLayoutManager(this)
-        binding.rvInlineSolarEvents.adapter = inlineSolarEventAdapter
-
         // Hamburger button closes drawer if open, opens drawer if closed
         binding.btnMenu.setOnClickListener {
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -572,13 +549,11 @@ class MainActivity : AppCompatActivity() {
             val popup = PopupMenu(this, view)
             popup.menu.add(0, 1, 0, "Weather")
             popup.menu.add(0, 2, 1, "Golden Hour")
-            popup.menu.add(0, 3, 2, "Solar Events")
 
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     1 -> switchInlineSubTab(InlineSubTab.WEATHER_DETAILS)
                     2 -> switchInlineSubTab(InlineSubTab.GOLDEN_HOUR)
-                    3 -> switchInlineSubTab(InlineSubTab.SOLAR_EVENTS)
                 }
                 true
             }
@@ -610,16 +585,6 @@ class MainActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Inline Solar Events Tab Setup
-        binding.tabLayoutInlineEvents.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                updateInlineSolarEventsDisplay(tab?.position ?: 1)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-
         // Easter Egg 1: Tap Daily Low 5 Times -> Snowflakes Effect
         binding.tvDailyLow.setOnClickListener { handleDailyLowTap() }
         binding.cardLowTemp.setOnClickListener { handleDailyLowTap() }
@@ -646,24 +611,16 @@ class MainActivity : AppCompatActivity() {
 
         binding.layoutWeatherDetailsContainer.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
         binding.layoutInlineGoldenHourContainer.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
-        binding.layoutInlineSolarEventsContainer.visibility = if (subTab == InlineSubTab.SOLAR_EVENTS) View.VISIBLE else View.GONE
 
         when (subTab) {
             InlineSubTab.WEATHER_DETAILS -> {
                 binding.btnInlineMenu.text = "Weather ▾"
                 binding.btnInlineMenu.setIconResource(R.drawable.ic_weather)
-                checkTodaySolarEvents()
             }
             InlineSubTab.GOLDEN_HOUR -> {
                 binding.btnInlineMenu.text = "Golden Hour ▾"
                 binding.btnInlineMenu.setIconResource(R.drawable.ic_golden_hour)
                 updateInlineGoldenHourDisplay()
-            }
-            InlineSubTab.SOLAR_EVENTS -> {
-                binding.btnInlineMenu.text = "Solar Events ▾"
-                binding.btnInlineMenu.setIconResource(R.drawable.ic_solar_events)
-                val activeTabPos = binding.tabLayoutInlineEvents.selectedTabPosition.coerceAtLeast(0)
-                updateInlineSolarEventsDisplay(if (activeTabPos in 0..1) activeTabPos else 1)
             }
         }
     }
@@ -691,12 +648,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         inlineSolarPhaseAdapter.submitList(phases)
-    }
-
-    private fun updateInlineSolarEventsDisplay(tabPosition: Int) {
-        val (pastEvents, upcomingEvents) = LunarInfoRepository.generateEventsFromLunarInfo(this)
-        val eventsToShow = if (tabPosition == 0) pastEvents else upcomingEvents
-        inlineSolarEventAdapter.submitList(eventsToShow)
     }
 
     private fun promptSetSolarAlarm(item: SolarPhaseDetail) {
@@ -729,35 +680,6 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 } catch (e: Exception) {
                     Toast.makeText(this, "Alarm set for $alarmFormatted", Toast.LENGTH_SHORT).show()
-                }
-                dialog.dismiss()
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun promptAddCalendarEvent(event: AstronomicalEventItem) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Add to Calendar")
-            .setMessage("Would you like to add '${event.title}' (${event.dateText}) to your device calendar?")
-            .setPositiveButton("Add Event") { dialog, _ ->
-                try {
-                    val startMillis = event.eventDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                    val endMillis = startMillis + (2 * 60 * 60 * 1000L)
-
-                    val intent = Intent(Intent.ACTION_INSERT).apply {
-                        data = CalendarContract.Events.CONTENT_URI
-                        putExtra(CalendarContract.Events.TITLE, event.title)
-                        putExtra(CalendarContract.Events.DESCRIPTION, "${event.shortDescription}\n\n${event.detailedDescription}")
-                        putExtra(CalendarContract.Events.EVENT_LOCATION, "Outdoor Night Sky")
-                        putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
-                        putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis)
-                    }
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Could not open Calendar application.", Toast.LENGTH_SHORT).show()
                 }
                 dialog.dismiss()
             }
