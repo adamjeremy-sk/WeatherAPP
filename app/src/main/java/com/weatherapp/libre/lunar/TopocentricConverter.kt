@@ -13,6 +13,26 @@ object TopocentricConverter {
         val apparentAltitudeDegrees: Double // Refracted altitude
     )
 
+    fun topocentricHorizontalState(
+        instantUtc: java.time.Instant,
+        observer: Observer
+    ): LunarTopocentricHorizontalState {
+        val jdUtc = AstroTime.instantToJdUtc(instantUtc)
+        val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
+        val lunar = LunarPosition.compute(jdeTT)
+        val topo = computeTopocentric(lunar, observer, jdUtc, jdeTT)
+        val h0 = (0.7275 * lunar.horizontalParallaxDeg) - 0.5667
+
+        return LunarTopocentricHorizontalState(
+            instantUtc = instantUtc,
+            altitudeDegrees = topo.apparentAltitudeDegrees,
+            azimuthDegrees = topo.azimuthDegrees,
+            topocentricRightAscensionDegrees = topo.topocentricRaDeg,
+            topocentricDeclinationDegrees = topo.topocentricDecDeg,
+            horizonThresholdDegrees = h0
+        )
+    }
+
     /**
      * Converts geocentric lunar coordinates (RA, Dec, Parallax, Distance)
      * to topocentric coordinates for an observer on the WGS84 ellipsoid.

@@ -49,6 +49,10 @@ object MoonPhaseCalculator {
         }
     }
 
+    /**
+     * Meeus Ch. 49 algorithm for phase event instants.
+     * k = 0 corresponds to the New Moon of Jan 6, 2000 (JDE 2451550.09766).
+     */
     fun computeMeeusPhaseJde(k: Double): Double {
         val T = k / 1236.85
         val T2 = T * T
@@ -58,7 +62,7 @@ object MoonPhaseCalculator {
         val phaseFrac = k - floor(k)
         val phaseIndex = (round(phaseFrac * 4.0).toInt() % 4 + 4) % 4
 
-        var jde0 = 2451534.85610 + 29.530588861 * k + 0.0001178 * T2 - 0.000000155 * T3 + 0.00033 * sin(AstronomyMath.degToRad(166.56 + 132.87 * T - 0.009173 * T2))
+        var jde0 = 2451550.09766 + 29.530588861 * k + 0.0001178 * T2 - 0.000000155 * T3 + 0.00033 * sin(AstronomyMath.degToRad(166.56 + 132.87 * T - 0.009173 * T2))
 
         val M = AstronomyMath.degToRad(2.5534 + 29.10535670 * k - 0.0000218 * T2 - 0.00000011 * T3)
         val Mdash = AstronomyMath.degToRad(201.5643 + 385.81693528 * k + 0.0107438 * T2 + 0.00001239 * T3 - 0.000000058 * T4)
@@ -70,7 +74,7 @@ object MoonPhaseCalculator {
         var corr = 0.0
 
         when (phaseIndex) {
-            0 -> {
+            0 -> { // New Moon
                 corr = -0.40720 * sin(Mdash) +
                         0.17241 * E * sin(M) +
                         0.01608 * sin(2.0 * Mdash) +
@@ -87,7 +91,7 @@ object MoonPhaseCalculator {
                         0.00024 * E * sin(2.0 * Mdash - M) -
                         0.00017 * sin(Omega)
             }
-            2 -> {
+            2 -> { // Full Moon
                 corr = -0.40614 * sin(Mdash) +
                         0.17302 * E * sin(M) +
                         0.01614 * sin(2.0 * Mdash) +
@@ -104,7 +108,7 @@ object MoonPhaseCalculator {
                         0.00024 * E * sin(2.0 * Mdash - M) -
                         0.00017 * sin(Omega)
             }
-            1, 3 -> {
+            1, 3 -> { // Quarters
                 val sign = if (phaseIndex == 1) +1.0 else -1.0
                 corr = -0.38662 * sin(Mdash) +
                         0.16524 * E * sin(M) +
@@ -130,12 +134,35 @@ object MoonPhaseCalculator {
                 0.000056 * sin(AstronomyMath.degToRad(154.21 + 29.225698 * k))
 
         jde0 += additionalCorr
-        return jde0
+
+        val targetElongation = when (phaseIndex) {
+            0 -> 0.0
+            1 -> 90.0
+            2 -> 180.0
+            3 -> 270.0
+            else -> 0.0
+        }
+
+        var refinedJde = jde0
+        for (iter in 0..2) {
+            val sun = SolarPosition.compute(refinedJde)
+            val moon = LunarPosition.compute(refinedJde)
+            val currentElongation = AstronomyMath.normalizeDegrees(moon.apparentLongitudeDeg - sun.apparentLongitudeDeg)
+
+            var diff = currentElongation - targetElongation
+            if (diff > 180.0) diff -= 360.0
+            if (diff < -180.0) diff += 360.0
+
+            val deltaDays = diff / 12.190749
+            refinedJde -= deltaDays
+        }
+
+        return refinedJde
     }
 
     private fun findPrecedingNewMoonInstant(instant: Instant): Instant {
         val jdUtc = AstroTime.instantToJdUtc(instant)
-        val kEstimate = floor((jdUtc - 2451534.85610) / 29.53058867)
+        val kEstimate = floor((jdUtc - 2451550.09766) / 29.53058867)
         var bestJde = computeMeeusPhaseJde(kEstimate)
         var bestInstant = AstroTime.jdeTTToInstant(bestJde)
 
@@ -153,8 +180,8 @@ object MoonPhaseCalculator {
         val startJdUtc = AstroTime.instantToJdUtc(startUtc)
         val endJdUtc = AstroTime.instantToJdUtc(endUtc)
 
-        val kStart = floor((startJdUtc - 2451534.85610) / 29.53058867) - 1.0
-        val kEnd = ceil((endJdUtc - 2451534.85610) / 29.53058867) + 1.0
+        val kStart = floor((startJdUtc - 2451550.09766) / 29.53058867) - 1.0
+        val kEnd = ceil((endJdUtc - 2451550.09766) / 29.53058867) + 1.0
 
         val results = mutableListOf<MoonPhaseEvent>()
 
@@ -166,14 +193,8 @@ object MoonPhaseCalculator {
                 val eventInstant = AstroTime.jdeTTToInstant(jdeTT)
 
                 if (!eventInstant.isBefore(startUtc) && eventInstant.isBefore(endUtc)) {
-                    val phaseType = when (phaseQuarter) {
-                        0 -> MoonPhaseName.NEW_MOON
-                        1 -> MoonPhaseName.FIRST_QUARTER
-                        2 -> MoonPhaseName.FULL_MOON
-                        3 -> MoonPhaseName.LAST_QUARTER
-                        else -> MoonPhaseName.NEW_MOON
-                    }
-                    results.add(MoonPhaseEvent(phaseType, eventInstant))
+                    val phaseInfo = phaseAt(eventInstant)
+                    results.add(MoonPhaseEvent(phaseInfo.phaseName, eventInstant))
                 }
             }
             k += 1.0

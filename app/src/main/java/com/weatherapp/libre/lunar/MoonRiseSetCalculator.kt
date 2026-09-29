@@ -8,6 +8,17 @@ import kotlin.math.abs
 object MoonRiseSetCalculator {
 
     /**
+     * Dynamically calculates the lunar horizon threshold h0 in degrees for a given Instant UTC.
+     * h0 = (0.7275 * horizontalParallaxDegrees) - 0.5667
+     */
+    fun lunarHorizonThresholdDegrees(instantUtc: Instant): Double {
+        val jdUtc = AstroTime.instantToJdUtc(instantUtc)
+        val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
+        val lunar = LunarPosition.compute(jdeTT)
+        return (0.7275 * lunar.horizontalParallaxDeg) - 0.5667
+    }
+
+    /**
      * Finds all Moonrise and Moonset events for a given local date and observer.
      */
     fun moonEventsForLocalDate(
@@ -30,10 +41,10 @@ object MoonRiseSetCalculator {
         return filtered.sortedBy { it.instantUtc }
     }
 
-    private fun computeTargetAltitude(observer: Observer, lunar: LunarPosition.LunarCoordinates): Double {
-        val semidiameterDeg = lunar.semidiameterDeg
+    private fun computeTargetAltitude(observer: Observer, instantUtc: Instant): Double {
+        val h0 = lunarHorizonThresholdDegrees(instantUtc)
         val dipDeg = observer.horizonDipDegrees ?: 0.0
-        return -semidiameterDeg - dipDeg
+        return h0 - dipDeg
     }
 
     private fun getApparentAltitudeAt(instant: Instant, observer: Observer): Pair<Double, TopocentricConverter.TopocentricPosition> {
@@ -41,7 +52,7 @@ object MoonRiseSetCalculator {
         val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
         val lunar = LunarPosition.compute(jdeTT)
         val topo = TopocentricConverter.computeTopocentric(lunar, observer, jdUtc, jdeTT)
-        val targetAlt = computeTargetAltitude(observer, lunar)
+        val targetAlt = computeTargetAltitude(observer, instant)
         val fVal = topo.apparentAltitudeDegrees - targetAlt
         return Pair(fVal, topo)
     }
@@ -120,9 +131,9 @@ object MoonRiseSetCalculator {
         var mflag = true
         var d = 0.0
 
-        var iterations = 0
-        while (abs(b - a) > toleranceSeconds && iterations < 50) {
-            iterations++
+        var iter = 0
+        while (abs(b - a) > toleranceSeconds && iter < 50) {
+            iter++
 
             var s: Double
             if (fa != fc && fb != fc) {

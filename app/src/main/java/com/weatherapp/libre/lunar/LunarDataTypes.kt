@@ -35,3 +35,21 @@ data class MoonEvent(
     val altitudeDegrees: Double,
     val observer: Observer
 )
+
+data class LunarGeocentricState(
+    val instantUtc: Instant,
+    val apparentGeocentricLongitudeDegrees: Double,
+    val apparentGeocentricLatitudeDegrees: Double,
+    val distanceKm: Double,
+    val horizontalParallaxDegrees: Double,
+    val apparentSemidiameterDegrees: Double
+)
+
+data class LunarTopocentricHorizontalState(
+    val instantUtc: Instant,
+    val altitudeDegrees: Double,
+    val azimuthDegrees: Double,
+    val topocentricRightAscensionDegrees: Double,
+    val topocentricDeclinationDegrees: Double,
+    val horizonThresholdDegrees: Double
+)

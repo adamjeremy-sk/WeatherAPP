@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -8,73 +8,433 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <style>
-    :root{--bg:#f3f7fb;--card:#fff;--text:#172033;--muted:#5f6d7d;--primary:#1167b1;--primary-dark:#0d3b66;--border:#d8e3ee;--note:#eaf5fc;--shadow:0 10px 28px rgba(23,50,79,.08)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.68}a{color:var(--primary)}
-    header{padding:46px 24px;color:#fff;background:linear-gradient(135deg,var(--primary-dark),var(--primary) 68%,#288bc4)}
-    .header-inner,.layout,footer{width:min(1200px,calc(100% - 32px));margin-right:auto;margin-left:auto}.header-inner{display:flex;align-items:center;gap:24px}
-    /* LOGO IMAGE GUIDANCE: Save the logo as logo.png beside this HTML file. Recommended source size: 512 x 512 pixels, square PNG with a transparent background. It displays at 112 x 112 pixels on desktop and 82 x 82 pixels on mobile. */
-    .app-logo{width:112px;height:112px;flex:0 0 112px;object-fit:contain;border-radius:24px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.22))}.header-copy{min-width:0}h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.7rem);line-height:1.08}header p{max-width:760px;margin:4px 0 0;color:#e9f5fd;font-size:1.08rem}
-    .layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:26px;align-items:start;padding:30px 0 54px}.sidebar{position:sticky;top:18px;grid-column:1;display:grid;gap:18px;max-height:calc(100vh - 36px);overflow-y:auto;padding-right:3px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}.toc,.more-info{padding:21px;border:1px solid var(--border);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.toc h2,.more-info h2{margin:0 0 12px;color:var(--primary-dark);font-size:1.08rem;line-height:1.3}.toc>nav>ol{margin:0;padding-left:1.55rem}.toc ol ol{margin:5px 0 9px;padding-left:1.4rem;font-size:.89rem}.toc li{margin:5px 0}.toc a,.more-info a{color:var(--text);text-decoration:none}.toc a:hover,.more-info a:hover{color:var(--primary);text-decoration:underline}.toc a:focus-visible,.more-info a:focus-visible{outline:3px solid rgba(17,103,177,.28);outline-offset:3px}.more-info p{margin:0 0 12px;color:var(--muted);font-size:.92rem}.more-info ul{margin:0;padding-left:1.25rem}.more-info .sidebar-tagline{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);color:var(--primary-dark);font-weight:700}
-    main{grid-column:2;min-width:0}.card{scroll-margin-top:18px;margin-bottom:19px;padding:27px;border:1px solid var(--border);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.card:last-child{margin-bottom:0}.card h2{margin-top:0;margin-bottom:14px;color:var(--primary-dark);line-height:1.23}.card h3{scroll-margin-top:18px;margin-top:28px;margin-bottom:10px;color:#174f7d;line-height:1.3}.card p:last-child,.card ul:last-child{margin-bottom:0}.version{color:#fff;background:linear-gradient(135deg,var(--primary-dark),var(--primary))}.version h2{color:#fff}.version p{margin-bottom:0;color:#e9f5fd;font-size:1.08rem}.highlight{margin:18px 0;padding:16px 18px;border-left:5px solid var(--primary);border-radius:10px;background:var(--note);font-weight:650}li{margin:.38rem 0}footer{padding-bottom:44px;color:var(--muted);text-align:center}
-    @media(max-width:880px){.layout{grid-template-columns:1fr;padding-top:18px}.sidebar,main{grid-column:1}.sidebar{position:static;max-height:none;overflow:visible;padding-right:0}}
-    @media(max-width:540px){header{padding:34px 20px}.header-inner{align-items:flex-start;gap:16px}.app-logo{width:82px;height:82px;flex-basis:82px;border-radius:18px}.layout,.header-inner,footer{width:min(100% - 24px,1200px)}.card,.toc,.more-info{padding:20px;border-radius:14px}}
-    @media print{body{background:#fff}header{padding:24px 0;color:#111;background:#fff}header p{color:#444}.app-logo{filter:none}.layout{display:block;width:100%;padding:0}.sidebar{display:none}main{display:block}.card{border-color:#ccc;box-shadow:none;break-inside:avoid}.version{color:#111;background:#fff}.version h2,.version p{color:#111}}
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .app-logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 112px;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+      max-height: calc(100vh - 36px);
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc > nav > ol {
+      margin: 0;
+      padding-left: 1.55rem;
+    }
+    .toc ol ol {
+      margin: 5px 0 9px;
+      padding-left: 1.4rem;
+      font-size: .89rem;
+    }
+    .toc li { margin: 5px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    .more-info .sidebar-tagline {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 19px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      color: var(--dark);
+      line-height: 1.23;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 {
+      scroll-margin-top: 18px;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      color: #174f7d;
+      line-height: 1.3;
+    }
+    .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+    
+    .version {
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary));
+    }
+    .version h2 { color: #fff; }
+    .version p {
+      margin-bottom: 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+    .highlight {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background: var(--note);
+      font-weight: 650;
+    }
+    li { margin: .38rem 0; }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        flex-basis: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { padding: 24px 0; color: #111; background: #fff; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .sidebar { display: none; }
+      main { display: block; }
+      .card { border-color: #ccc; box-shadow: none; break-inside: avoid; }
+      .version { color: #111; background: #fff; }
+      .version h2, .version p { color: #111; }
+    }
   </style>
 </head>
 <body>
-  <header><div class="header-inner">
-    <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
-    <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
-    <div class="header-copy"><h1>About WeatherAPP Libre</h1><p>Private, ad-free weather forecasting and astronomy information.</p></div>
-  </div></header>
+
+  <header>
+    <div class="header-inner">
+      <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
+      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="header-copy">
+        <h1>About WeatherAPP Libre</h1>
+        <p>Private, ad-free weather forecasting and astronomy information.</p>
+      </div>
+    </div>
+  </header>
 
   <div class="layout">
     <aside class="sidebar" aria-label="Page sidebar">
-      <section class="toc"><nav aria-labelledby="contents-heading">
-        <h2 id="contents-heading">Contents</h2>
-        <ol>
-          <li><a href="#forecasting">Weather Forecasting</a></li>
-          <li><a href="#astronomy">Sun, Moon &amp; Astronomy</a><ol><li><a href="#solar">Solar Information</a></li><li><a href="#lunar">Lunar Information</a></li><li><a href="#events">Astronomical Events</a></li></ol></li>
-          <li><a href="#alerts">Weather Alerts</a></li>
-          <li><a href="#privacy">Privacy</a><ol><li><a href="#principles">Privacy Principles</a></li><li><a href="#storage">Local Storage</a></li></ol></li>
-          <li><a href="#design">Design &amp; Customization</a></li>
-        </ol>
-      </nav></section>
+      <section class="toc">
+        <nav aria-labelledby="contents-heading">
+          <h2 id="contents-heading">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            Contents
+          </h2>
+          <ol>
+            <li><a href="#forecasting">Weather Forecasting</a></li>
+            <li>
+              <a href="#astronomy">Sun, Moon &amp; Astronomy</a>
+              <ol>
+                <li><a href="#solar">Solar Information</a></li>
+                <li><a href="#lunar">Lunar Information</a></li>
+                <li><a href="#events">Astronomical Events</a></li>
+              </ol>
+            </li>
+            <li><a href="#alerts">Weather Alerts</a></li>
+            <li>
+              <a href="#privacy">Privacy</a>
+              <ol>
+                <li><a href="#principles">Privacy Principles</a></li>
+                <li><a href="#storage">Local Storage</a></li>
+              </ol>
+            </li>
+            <li><a href="#design">Design &amp; Customization</a></li>
+          </ol>
+        </nav>
+      </section>
+
       <section class="more-info" aria-labelledby="more-info-heading">
-        <h2 id="more-info-heading">More Information</h2>
+        <h2 id="more-info-heading">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          More Information
+        </h2>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="support.html">Beta Signup & Support</a></li>
-          <li>
-            <a
-              href="https://ko-fi.com/adamjeremy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Support on Ko-fi</a>
-          </li>
-          <li>
-            <a
-              href="https://play.google.com/store/apps/details?id=com.weatherapp.libre"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Google Play Store</a>
-          </li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Google Play Store</a></li>
         </ul>
-
       </section>
     </aside>
 
     <main>
-      <section id="forecasting" class="card"><h2>1. Weather Forecasting</h2><p>WeatherAPP provides privacy-focused weather forecasting using multiple meteorological models.</p><ul><li>Environment Canada GEM</li><li>NOAA GFS</li><li>NOAA GEFS</li><li>ECMWF</li><li>CMA-GFS</li></ul><p>Current conditions, forecasts, AQI, UV, visibility, humidity, wind, and more.</p></section>
-      <section id="astronomy" class="card"><h2>2. Sun, Moon &amp; Astronomy</h2><p>Detailed solar and astronomical information for photographers, outdoor enthusiasts, and stargazers.</p><h3 id="solar">2.1 Solar Information</h3><ul><li>Sunrise and sunset</li><li>Golden hour</li><li>Blue hour</li><li>Solar azimuth</li><li>Daylight duration</li></ul><h3 id="lunar">2.2 Lunar Information</h3><ul><li>Moon phases</li><li>Lunar illumination</li></ul><h3 id="events">2.3 Astronomical Events</h3><ul><li>Meteor showers</li><li>Astronomical calendar</li><li>Calendar export</li><li>Solar alarms</li></ul></section>
-      <section id="alerts" class="card"><h2>3. Weather Alerts</h2><ul><li>Official Environment and Climate Change Canada (ECCC) alerts</li><li>Opt-in notifications</li><li>Per-city alert management</li><li>Built-in test notifications</li></ul></section>
-      <section id="privacy" class="card"><h2>4. Privacy</h2><div class="highlight">No ads. No GPS permission. No user accounts. No behavioural analytics.</div><h3 id="principles">4.1 Privacy Principles</h3><ul><li>No GPS or location permission required</li><li>No advertising SDKs</li><li>No behavioural tracking</li><li>No user accounts</li><li>No data selling</li></ul><h3 id="storage">4.2 Local Storage</h3><p>Saved locations, preferences, and cached forecasts are stored locally on your device.</p></section>
-      <section id="design" class="card"><h2>5. Design &amp; Customization</h2><ul><li>Eleven handcrafted themes</li><li>Nine boutique color palettes</li><li>Light and dark options</li><li>Metric and Imperial units</li><li>Flexible location tabs</li></ul></section>
-      <section id="support" class="card"><h2>6. Support WeatherAPP</h2><p>WeatherAPP is supported through direct purchases and optional community donations. The application is committed to remaining ad-free and privacy-focused.</p></section>
-      <section id="credits" class="card"><h2>7. Credits</h2><p>WeatherAPP utilizes weather, geocoding, and air-quality information provided through Open-Meteo.</p><ul><li>Environment Canada GEM</li><li>NOAA GFS</li><li>NOAA GEFS</li><li>ECMWF</li><li>CMA-GFS</li></ul><p>Official alerts are provided by Environment and Climate Change Canada (ECCC).</p></section>
+      <section id="forecasting" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+          1. Weather Forecasting
+        </h2>
+        <p>WeatherAPP provides privacy-focused weather forecasting using multiple meteorological models.</p>
+        <ul>
+          <li>Environment Canada GEM</li>
+          <li>NOAA GFS</li>
+          <li>NOAA GEFS</li>
+          <li>ECMWF</li>
+          <li>CMA-GFS</li>
+        </ul>
+        <p>Current conditions, forecasts, AQI, UV, visibility, humidity, wind, and more.</p>
+      </section>
+
+      <section id="astronomy" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          2. Sun, Moon &amp; Astronomy
+        </h2>
+        <p>Detailed solar and astronomical information for photographers, outdoor enthusiasts, and stargazers.</p>
+        
+        <h3 id="solar">2.1 Solar Information</h3>
+        <ul>
+          <li>Sunrise and sunset</li>
+          <li>Golden hour</li>
+          <li>Blue hour</li>
+          <li>Solar azimuth</li>
+          <li>Daylight duration</li>
+        </ul>
+        
+        <h3 id="lunar">2.2 Lunar Information</h3>
+        <ul>
+          <li>Moon phases</li>
+          <li>Lunar illumination</li>
+        </ul>
+        
+        <h3 id="events">2.3 Astronomical Events</h3>
+        <ul>
+          <li>Meteor showers</li>
+          <li>Astronomical calendar</li>
+          <li>Calendar export</li>
+          <li>Solar alarms</li>
+        </ul>
+      </section>
+
+      <section id="alerts" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          3. Weather Alerts
+        </h2>
+        <ul>
+          <li>Official Environment and Climate Change Canada (ECCC) alerts</li>
+          <li>Opt-in notifications</li>
+          <li>Per-city alert management</li>
+          <li>Built-in test notifications</li>
+        </ul>
+      </section>
+
+      <section id="privacy" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          4. Privacy
+        </h2>
+        <div class="highlight">No ads. No GPS permission. No user accounts. No behavioural analytics.</div>
+        
+        <h3 id="principles">4.1 Privacy Principles</h3>
+        <ul>
+          <li>No GPS or location permission required</li>
+          <li>No advertising SDKs</li>
+          <li>No behavioural tracking</li>
+          <li>No user accounts</li>
+          <li>No data selling</li>
+        </ul>
+        
+        <h3 id="storage">4.2 Local Storage</h3>
+        <p>Saved locations, preferences, and cached forecasts are stored locally on your device.</p>
+      </section>
+
+      <section id="design" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          5. Design &amp; Customization
+        </h2>
+        <ul>
+          <li>Eleven handcrafted themes</li>
+          <li>Nine boutique color palettes</li>
+          <li>Light and dark options</li>
+          <li>Metric and Imperial units</li>
+          <li>Flexible location tabs</li>
+        </ul>
+      </section>
+
+      <section id="support" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          6. Support WeatherAPP
+        </h2>
+        <p>WeatherAPP is supported through direct purchases and optional community donations. The application is committed to remaining ad-free and privacy-focused.</p>
+      </section>
+
+      <section id="credits" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          7. Credits
+        </h2>
+        <p>WeatherAPP utilizes weather, geocoding, and air-quality information provided through Open-Meteo.</p>
+        <ul>
+          <li>Environment Canada GEM</li>
+          <li>NOAA GFS</li>
+          <li>NOAA GEFS</li>
+          <li>ECMWF</li>
+          <li>CMA-GFS</li>
+        </ul>
+        <p>Official alerts are provided by Environment and Climate Change Canada (ECCC).</p>
+      </section>
     </main>
   </div>
-  <footer>WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy</footer>
+
+  <footer>
+    WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy
+  </footer>
+
 </body>
 </html>

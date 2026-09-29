@@ -3,7 +3,7 @@ package com.weatherapp.libre.lunar
 object DeltaT {
     /**
      * Estimates Delta T = TT - UTC in seconds for a given decimal year.
-     * Polynomial fits based on Espenak & Meeus (NASA GSFC).
+     * Polynomial fits based on Espenak & Meeus (NASA GSFC / IERS).
      */
     fun estimateSeconds(year: Double): Double {
         return when {
@@ -19,13 +19,9 @@ object DeltaT {
                 val t = year - 2000.0
                 63.86 + 0.3345 * t - 0.0033584 * t * t
             }
-            year in 2005.0..2049.999 -> {
-                val t = year - 2000.0
-                62.92 + 0.32217 * t + 0.005589 * t * t
-            }
-            year in 2050.0..2100.0 -> {
-                val t = (year - 1820.0) / 100.0
-                -20.0 + 32.0 * t * t
+            year in 2005.0..2050.0 -> {
+                val t = year - 2015.0
+                67.80 + 0.12 * t
             }
             else -> {
                 val t = (year - 1820.0) / 100.0

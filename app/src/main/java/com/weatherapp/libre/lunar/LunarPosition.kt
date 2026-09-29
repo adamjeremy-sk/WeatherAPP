@@ -15,6 +15,24 @@ object LunarPosition {
     )
 
     /**
+     * Returns LunarGeocentricState for a given Instant UTC.
+     */
+    fun geocentricState(instantUtc: java.time.Instant): LunarGeocentricState {
+        val jdUtc = AstroTime.instantToJdUtc(instantUtc)
+        val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
+        val coords = compute(jdeTT)
+
+        return LunarGeocentricState(
+            instantUtc = instantUtc,
+            apparentGeocentricLongitudeDegrees = coords.apparentLongitudeDeg,
+            apparentGeocentricLatitudeDegrees = coords.latitudeDeg,
+            distanceKm = coords.distanceKm,
+            horizontalParallaxDegrees = coords.horizontalParallaxDeg,
+            apparentSemidiameterDegrees = coords.semidiameterDeg
+        )
+    }
+
+    /**
      * Computes the geocentric apparent coordinates of the Moon according to Meeus Ch. 47.
      */
     fun compute(jdeTT: Double): LunarCoordinates {

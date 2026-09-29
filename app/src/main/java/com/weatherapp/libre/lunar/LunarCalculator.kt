@@ -20,6 +20,31 @@ object LunarCalculator {
     }
 
     /**
+     * Returns LunarGeocentricState for a given Instant UTC.
+     */
+    fun geocentricState(instantUtc: Instant): LunarGeocentricState {
+        return LunarPosition.geocentricState(instantUtc)
+    }
+
+    /**
+     * Returns LunarTopocentricHorizontalState for a given Instant UTC and Observer.
+     */
+    fun topocentricHorizontalState(
+        instantUtc: Instant,
+        observer: Observer
+    ): LunarTopocentricHorizontalState {
+        return TopocentricConverter.topocentricHorizontalState(instantUtc, observer)
+    }
+
+    /**
+     * Calculates the dynamic lunar horizon threshold in degrees.
+     * h0 = (0.7275 * horizontalParallaxDegrees) - 0.5667
+     */
+    fun lunarHorizonThresholdDegrees(instantUtc: Instant): Double {
+        return MoonRiseSetCalculator.lunarHorizonThresholdDegrees(instantUtc)
+    }
+
+    /**
      * Formats MoonPhaseInfo into user-friendly phase name with emoji and illumination percentage text.
      */
     fun formatPhaseDisplay(moonInfo: MoonPhaseInfo): FormattedLunarPhase {

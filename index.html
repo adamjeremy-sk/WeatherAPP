@@ -1,60 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="WeatherAPP Libre provides private, ad-free weather forecasting, official ECCC alerts, and astronomy tools.">
-<title>WeatherAPP Libre</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<style>
-:root{--bg:#f4f7fb;--surface:#fff;--primary:#1167b1;--dark:#0d3b66;--text:#172033;--muted:#5d6b7c;--border:#d8e2ee;--shadow:0 10px 28px rgba(23,50,79,.08)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.7}a{color:var(--primary)}
-.hero{padding:58px 24px;color:#fff;background:linear-gradient(135deg,var(--dark),var(--primary) 65%,#2a8bc7)}.hero-inner,.layout,footer{width:min(1180px,calc(100% - 32px));margin-right:auto;margin-left:auto}.hero-inner{display:flex;align-items:center;gap:28px}
-/* LOGO IMAGE GUIDANCE: Save logo.png beside index.html. Use a 512 x 512 pixel square PNG, preferably with a transparent background. It displays at 128 x 128 pixels on desktop and 88 x 88 pixels on small screens. */
-.hero-logo{width:128px;height:128px;flex:0 0 128px;object-fit:contain;border-radius:26px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.24))}.hero-content{min-width:0}h1{margin:0;font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.06}.hero p{max-width:820px;margin-bottom:0;font-size:1.15rem}.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.btn{display:inline-block;padding:12px 18px;border-radius:12px;font-weight:700;text-decoration:none;transition:transform 160ms ease,box-shadow 160ms ease}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.16)}.btn-primary{color:#17324f;background:#fff}.btn-secondary{color:#2a1400;background:#ffb74d}
-.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;align-items:start;padding:28px 0}.sidebar{position:sticky;top:15px;display:grid;gap:18px;height:fit-content;max-height:calc(100vh - 30px);overflow-y:auto;padding-right:3px}.sidebar-cell{padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow)}.sidebar-cell h2{margin:0 0 12px;font-size:1.12rem}.sidebar-cell ol,.sidebar-cell ul{margin:0;padding-left:1.45rem}.sidebar-cell li{margin:.38rem 0}.sidebar-cell a{color:var(--text);text-decoration:none}.sidebar-cell a:hover{color:var(--primary);text-decoration:underline}.sidebar-cell a:focus-visible,.btn:focus-visible,.carousel-button:focus-visible,.carousel-dot:focus-visible{outline:3px solid rgba(17,103,177,.3);outline-offset:3px}
-main{min-width:0}section{scroll-margin-top:18px;margin-bottom:20px;padding:28px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow)}section:last-child{margin-bottom:0}.cardgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{padding:16px;border:1px solid var(--border);border-radius:14px;background:#fafcff}h2{margin-top:0;color:var(--dark);line-height:1.25}
-.feature-showcase{margin-top:18px;padding:18px;border:1px solid var(--border);border-radius:14px;background:#fafcff}.feature-showcase h3{margin:0 0 6px;color:var(--dark);font-size:1.15rem}.feature-showcase>p{margin:0 0 15px;color:var(--muted)}.carousel{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:14px;background:#0b1624}.carousel-viewport{overflow:hidden}.carousel-track{display:flex;transition:transform 420ms ease}.carousel-slide{min-width:100%;margin:0}.carousel-slide img{display:block;width:100%;height:clamp(340px,68vw,760px);object-fit:contain;background:#0b1624}.carousel-button{position:absolute;top:50%;z-index:2;width:46px;height:46px;border:1px solid rgba(255,255,255,.48);border-radius:50%;color:#fff;background:rgba(5,20,35,.76);font-size:1.65rem;line-height:1;cursor:pointer;transform:translateY(-50%)}.carousel-button:hover{background:rgba(17,103,177,.96)}.carousel-button.previous{left:14px}.carousel-button.next{right:14px}.carousel-status{position:absolute;right:14px;bottom:14px;z-index:2;padding:5px 10px;border-radius:999px;color:#fff;background:rgba(5,20,35,.78);font-size:.84rem}.carousel-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}.carousel-dot{width:11px;height:11px;padding:0;border:0;border-radius:50%;background:#b9c8d7;cursor:pointer}.carousel-dot[aria-current="true"]{background:var(--primary)}.carousel-help{margin:12px 0 0;color:var(--muted);text-align:center;font-size:.9rem}footer{padding:30px;color:var(--muted);text-align:center}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.carousel-track{transition:none}}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none;overflow:visible;padding-right:0}}
-@media(max-width:620px){.hero{padding:38px 20px}.hero-inner{align-items:flex-start;gap:16px}.hero-logo{width:88px;height:88px;flex-basis:88px;border-radius:20px}.cardgrid{grid-template-columns:1fr}section{padding:21px}.feature-showcase{padding:14px}.carousel-button{width:40px;height:40px}.carousel-slide img{height:clamp(300px,120vw,680px)}}
-@media(max-width:440px){.hero-inner{display:grid}}
-@media print{body{background:#fff}.hero{padding:24px 0;color:#111;background:#fff}.hero p{color:#333}.hero-logo{filter:none}.buttons,.sidebar,.carousel-button,.carousel-dots,.carousel-status,.carousel-help{display:none}.layout{display:block;width:100%}section{border-color:#ccc;box-shadow:none;break-inside:avoid}.carousel-slide{display:none}.carousel-slide:first-child{display:block}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WeatherAPP Libre provides private, ad-free weather forecasting, official ECCC alerts, and astronomy tools.">
+  <title>WeatherAPP Libre</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.7;
+    }
+    a { color: var(--primary); }
+
+    /* Hero Section */
+    .hero {
+      padding: 58px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 65%, #2a8bc7);
+    }
+    .hero-inner, .layout, footer {
+      width: min(1180px, calc(100% - 32px));
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .hero-logo {
+      width: 128px;
+      height: 128px;
+      flex: 0 0 128px;
+      object-fit: contain;
+      border-radius: 26px;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .24));
+    }
+    .hero-content { min-width: 0; }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.06;
+    }
+    .hero p {
+      max-width: 820px;
+      margin-bottom: 0;
+      font-size: 1.15rem;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .16);
+    }
+    .btn-primary { color: #17324f; background: #fff; }
+    .btn-secondary { color: #2a1400; background: #ffb74d; }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 28px 0;
+    }
+    .sidebar {
+      position: sticky;
+      top: 15px;
+      display: grid;
+      gap: 18px;
+      height: fit-content;
+      max-height: calc(100vh - 30px);
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+    .sidebar-cell {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .sidebar-cell h2 {
+      margin: 0 0 12px;
+      font-size: 1.12rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-cell ol, .sidebar-cell ul {
+      margin: 0;
+      padding-left: 1.45rem;
+    }
+    .sidebar-cell li { margin: .38rem 0; }
+    .sidebar-cell a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .sidebar-cell a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* Main Content */
+    main { min-width: 0; }
+    section {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    section:last-child { margin-bottom: 0; }
+    h2 {
+      margin-top: 0;
+      color: var(--dark);
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h3 {
+      margin: 0 0 6px;
+      color: var(--dark);
+      font-size: 1.15rem;
+    }
+
+    /* Cards & Grid */
+    .cardgrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fafcff;
+    }
+
+    /* Feature Showcase & Carousel */
+    .feature-showcase {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fafcff;
+    }
+    .feature-showcase > p {
+      margin: 0 0 15px;
+      color: var(--muted);
+    }
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #0b1624;
+    }
+    .carousel-viewport { overflow: hidden; }
+    .carousel-track {
+      display: flex;
+      transition: transform 420ms ease;
+    }
+    .carousel-slide {
+      min-width: 100%;
+      margin: 0;
+    }
+    .carousel-slide img {
+      display: block;
+      width: 100%;
+      height: clamp(340px, 68vw, 760px);
+      object-fit: contain;
+      background: #0b1624;
+    }
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      z-index: 2;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255, 255, 255, .48);
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(5, 20, 35, .76);
+      font-size: 1.65rem;
+      line-height: 1;
+      cursor: pointer;
+      transform: translateY(-50%);
+    }
+    .carousel-button:hover { background: rgba(17, 103, 177, .96); }
+    .carousel-button.previous { left: 14px; }
+    .carousel-button.next { right: 14px; }
+    .carousel-status {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      z-index: 2;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(5, 20, 35, .78);
+      font-size: .84rem;
+    }
+    .carousel-dots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .carousel-dot {
+      width: 11px;
+      height: 11px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #b9c8d7;
+      cursor: pointer;
+    }
+    .carousel-dot[aria-current="true"] { background: var(--primary); }
+    .carousel-help {
+      margin: 12px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Focus States */
+    .sidebar-cell a:focus-visible,
+    .btn:focus-visible,
+    .carousel-button:focus-visible,
+    .carousel-dot:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .3);
+      outline-offset: 3px;
+    }
+
+    /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn, .carousel-track { transition: none; }
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+    }
+    @media (max-width: 620px) {
+      .hero { padding: 38px 20px; }
+      .hero-inner { align-items: flex-start; gap: 16px; }
+      .hero-logo {
+        width: 88px;
+        height: 88px;
+        flex-basis: 88px;
+        border-radius: 20px;
+      }
+      .cardgrid { grid-template-columns: 1fr; }
+      section { padding: 21px; }
+      .feature-showcase { padding: 14px; }
+      .carousel-button { width: 40px; height: 40px; }
+      .carousel-slide img { height: clamp(300px, 120vw, 680px); }
+    }
+    @media (max-width: 440px) {
+      .hero-inner { display: grid; }
+    }
+    @media print {
+      body { background: #fff; }
+      .hero { padding: 24px 0; color: #111; background: #fff; }
+      .hero p { color: #333; }
+      .hero-logo { filter: none; }
+      .buttons, .sidebar, .carousel-button, .carousel-dots, .carousel-status, .carousel-help { display: none; }
+      .layout { display: block; width: 100%; }
+      section { border-color: #ccc; box-shadow: none; break-inside: avoid; }
+      .carousel-slide { display: none; }
+      .carousel-slide:first-child { display: block; }
+    }
+  </style>
 </head>
 <body>
-<header class="hero"><div class="hero-inner">
-<!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
-<img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
-<div class="hero-content"><h1>WeatherAPP Libre</h1><p>Private, ad-free weather and astronomy tools. Multiple forecast models, official ECCC alerts, Golden Hour, Blue Hour, moon phases, astronomical events, and no GPS permission required.</p><div class="buttons"><a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Get on Google Play</a><a class="btn btn-secondary" href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support Development</a></div></div>
-</div></header>
-<div class="layout">
-<aside class="sidebar" aria-label="Page sidebar">
-<nav class="sidebar-cell" aria-labelledby="navigation-heading"><h2 id="navigation-heading">Navigation</h2><ol><li><a href="#features">Features</a></li><li><a href="#privacy">Privacy</a></li><li><a href="#forecasts">Forecast Models</a></li><li><a href="#astronomy">Astronomy Tools</a></li><li><a href="#alerts">Weather Alerts</a></li></ol></nav>
-<section class="sidebar-cell" aria-labelledby="more-information-heading"><h2 id="more-information-heading">More Information</h2><ul><li><a href="about.html">About WeatherAPP</a></li><li><a href="privacypolicy.html">Privacy Policy</a></li><li><a href="support.html">Beta Signup & Support</a></li><li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li><li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Google Play Store</a></li></ul></section>
-</aside>
-<main>
 
-<section id="beta-testers"><h2>Beta Testers Needed</h2>
-<p>WeatherAPP is in need of beta testers. Currently the only way to use the app is through the closed beta. Please use the signup link and you will receive your invite to the program. Currently the purchase price is 1$USD, but wll increase to 4.99$USD upon full release.</p>
-</section>
+  <header class="hero">
+    <div class="hero-inner">
+      <img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="hero-content">
+        <h1>WeatherAPP Libre</h1>
+        <p>Private, ad-free weather and astronomy tools. Multiple forecast models, official ECCC alerts, Golden Hour, Blue Hour, moon phases, astronomical events, and no GPS permission required.</p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Get on Google Play</a>
+          <a class="btn btn-secondary" href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support Development</a>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<section id="features"><h2>Features</h2><div class="cardgrid"><div class="card"><b>Multi-Model Forecasts</b><br>Choose between GEM, GFS, GEFS, ECMWF, and CMA-GFS.</div><div class="card"><b>Official ECCC Alerts</b><br>Receive Environment and Climate Change Canada weather alerts.</div><div class="card"><b>Golden &amp; Blue Hour</b><br>Detailed sunlight planning for photographers and outdoor users.</div><div class="card"><b>Astronomy Events</b><br>Moon phases, meteor showers, eclipses, and seasonal events.</div></div>
-<div class="feature-showcase"><h3>WeatherAPP Libre in Action</h3><p>Browse screenshots highlighting WeatherAPP Libre's features and interface.</p>
-<!-- CAROUSEL IMAGE GUIDANCE: Save 1.webp  through 8.webp  beside index.html. Use the same dimensions and aspect ratio for all eight images. Recommended portrait phone screenshot size: 1080 x 2400 pixels. -->
-<div class="carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="WeatherAPP Libre feature screenshots"><div class="carousel-viewport"><div class="carousel-track">
-<figure class="carousel-slide"><img src="1.webp" alt="WeatherAPP Libre feature screenshot 1" loading="eager"></figure><figure class="carousel-slide"><img src="2.webp " alt="WeatherAPP Libre feature screenshot 2" loading="lazy"></figure><figure class="carousel-slide"><img src="3.webp " alt="WeatherAPP Libre feature screenshot 3" loading="lazy"></figure><figure class="carousel-slide"><img src="4.webp " alt="WeatherAPP Libre feature screenshot 4" loading="lazy"></figure><figure class="carousel-slide"><img src="5.webp " alt="WeatherAPP Libre feature screenshot 5" loading="lazy"></figure><figure class="carousel-slide"><img src="6.webp " alt="WeatherAPP Libre feature screenshot 6" loading="lazy"></figure><figure class="carousel-slide"><img src="7.webp " alt="WeatherAPP Libre feature screenshot 7" loading="lazy"></figure>
-</div></div><button class="carousel-button previous" type="button" aria-label="Show previous screenshot">&#8249;</button><button class="carousel-button next" type="button" aria-label="Show next screenshot">&#8250;</button><div class="carousel-status" aria-live="polite">1 / 8</div></div><div class="carousel-dots" aria-label="Choose a feature screenshot"></div><p class="carousel-help">Use the arrow buttons, navigation dots, or left and right arrow keys to browse.</p></div>
-</section>
-<section id="privacy"><h2>Privacy First</h2><p>WeatherAPP Libre is designed around privacy and user control.</p><ul><li>No ads</li><li>No user accounts</li><li>No GPS permission required</li><li>No behavioural analytics</li><li>No advertising SDKs</li><li>Locations selected manually by you</li></ul></section>
-<section id="forecasts"><h2>Forecast Models</h2><p>Select your preferred forecast source:</p><ul><li>Environment Canada GEM</li><li>NOAA GFS</li><li>NOAA GEFS</li><li>ECMWF</li><li>CMA-GFS</li></ul></section>
-<section id="astronomy"><h2>Astronomy &amp; Natural Light Planning</h2><ul><li>Sunrise and sunset</li><li>Golden Hour and Blue Hour</li><li>Solar azimuth information</li><li>Moon phases and illumination</li><li>Meteor showers and astronomical events</li><li>Solar alarms and calendar export</li></ul></section>
-<section id="alerts"><h2>Weather Alerts</h2><p>Monitor official Environment and Climate Change Canada alerts for your selected locations and receive optional notifications directly on your device.</p></section>
-</main></div>
-<footer>WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy</footer>
-<script>
-(()=>{const c=document.querySelector('.carousel'),t=c.querySelector('.carousel-track'),s=[...c.querySelectorAll('.carousel-slide')],p=c.querySelector('.previous'),n=c.querySelector('.next'),status=c.querySelector('.carousel-status'),dc=document.querySelector('.carousel-dots'),reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;let i=0,timer;const dots=s.map((_,x)=>{const d=document.createElement('button');d.className='carousel-dot';d.type='button';d.setAttribute('aria-label',`Show screenshot ${x+1}`);d.addEventListener('click',()=>{show(x);start()});dc.appendChild(d);return d});function show(x){i=(x+s.length)%s.length;t.style.transform=`translateX(-${i*100}%)`;status.textContent=`${i+1} / ${s.length}`;s.forEach((slide,j)=>slide.setAttribute('aria-hidden',j===i?'false':'true'));dots.forEach((d,j)=>d.setAttribute('aria-current',j===i?'true':'false'))}function stop(){clearInterval(timer)}function start(){stop();if(!reduced)timer=setInterval(()=>show(i+1),6000)}p.addEventListener('click',()=>{show(i-1);start()});n.addEventListener('click',()=>{show(i+1);start()});c.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();p.click()}if(e.key==='ArrowRight'){e.preventDefault();n.click()}});c.addEventListener('mouseenter',stop);c.addEventListener('mouseleave',start);c.addEventListener('focusin',stop);c.addEventListener('focusout',start);document.addEventListener('visibilitychange',()=>document.hidden?stop():start());show(0);start()})();
-</script>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <nav class="sidebar-cell" aria-labelledby="navigation-heading">
+        <h2 id="navigation-heading">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Navigation
+        </h2>
+        <ol>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#forecasts">Forecast Models</a></li>
+          <li><a href="#astronomy">Astronomy Tools</a></li>
+          <li><a href="#alerts">Weather Alerts</a></li>
+        </ol>
+      </nav>
+
+      <section class="sidebar-cell" aria-labelledby="more-information-heading">
+        <h2 id="more-information-heading">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          More Information
+        </h2>
+        <ul>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="roadmap.html">Production Roadmap</a></li>
+          <li><a href="support.html">Beta Signup & Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Google Play Store</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="beta-testers">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Beta Testers Needed
+        </h2>
+        <p>WeatherAPP is in need of beta testers. Currently, the only way to use the app is through the closed beta. Please use the signup link and you will receive your invite to the program. Currently, the purchase price is $1 USD, but it will increase to $4.99 USD upon full release.</p>
+      </section>
+
+      <section id="features">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          Features
+        </h2>
+        <div class="cardgrid">
+          <div class="card"><strong>Multi-Model Forecasts</strong><br>Choose between GEM, GFS, GEFS, ECMWF, and CMA-GFS.</div>
+          <div class="card"><strong>Official ECCC Alerts</strong><br>Receive Environment and Climate Change Canada weather alerts.</div>
+          <div class="card"><strong>Golden &amp; Blue Hour</strong><br>Detailed sunlight planning for photographers and outdoor users.</div>
+          <div class="card"><strong>Astronomy Events</strong><br>Moon phases, meteor showers, eclipses, and seasonal events.</div>
+        </div>
+
+        <div class="feature-showcase">
+          <h3>WeatherAPP Libre in Action</h3>
+          <p>Browse screenshots highlighting WeatherAPP Libre's features and interface.</p>
+          
+          <div class="carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="WeatherAPP Libre feature screenshots">
+            <div class="carousel-viewport">
+              <div class="carousel-track">
+                <figure class="carousel-slide"><img src="1.webp" alt="WeatherAPP Libre feature screenshot 1" loading="eager"></figure>
+                <figure class="carousel-slide"><img src="2.webp" alt="WeatherAPP Libre feature screenshot 2" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="3.webp" alt="WeatherAPP Libre feature screenshot 3" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="4.webp" alt="WeatherAPP Libre feature screenshot 4" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="5.webp" alt="WeatherAPP Libre feature screenshot 5" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="6.webp" alt="WeatherAPP Libre feature screenshot 6" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="7.webp" alt="WeatherAPP Libre feature screenshot 7" loading="lazy"></figure>
+                <figure class="carousel-slide"><img src="8.webp" alt="WeatherAPP Libre feature screenshot 8" loading="lazy"></figure>
+              </div>
+            </div>
+            <button class="carousel-button previous" type="button" aria-label="Show previous screenshot">&#8249;</button>
+            <button class="carousel-button next" type="button" aria-label="Show next screenshot">&#8250;</button>
+            <div class="carousel-status" aria-live="polite">1 / 8</div>
+          </div>
+          <div class="carousel-dots" aria-label="Choose a feature screenshot"></div>
+          <p class="carousel-help">Use the arrow buttons, navigation dots, or left and right arrow keys to browse.</p>
+        </div>
+      </section>
+
+      <section id="privacy">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Privacy First
+        </h2>
+        <p>WeatherAPP Libre is designed around privacy and user control.</p>
+        <ul>
+          <li>No ads</li>
+          <li>No user accounts</li>
+          <li>No GPS permission required</li>
+          <li>No behavioural analytics</li>
+          <li>No advertising SDKs</li>
+          <li>Locations selected manually by you</li>
+        </ul>
+      </section>
+
+      <section id="forecasts">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+          Forecast Models
+        </h2>
+        <p>Select your preferred forecast source:</p>
+        <ul>
+          <li>Environment Canada GEM</li>
+          <li>NOAA GFS</li>
+          <li>NOAA GEFS</li>
+          <li>ECMWF</li>
+          <li>CMA-GFS</li>
+        </ul>
+      </section>
+
+      <section id="astronomy">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          Astronomy &amp; Natural Light Planning
+        </h2>
+        <ul>
+          <li>Sunrise and sunset</li>
+          <li>Golden Hour and Blue Hour</li>
+          <li>Solar azimuth information</li>
+          <li>Moon phases and illumination</li>
+          <li>Meteor showers and astronomical events</li>
+          <li>Solar alarms and calendar export</li>
+        </ul>
+      </section>
+
+      <section id="alerts">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          Weather Alerts
+        </h2>
+        <p>Monitor official Environment and Climate Change Canada alerts for your selected locations and receive optional notifications directly on your device.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy
+  </footer>
+
+  <script>
+    (() => {
+      const carousel = document.querySelector('.carousel');
+      if (!carousel) return;
+
+      const track = carousel.querySelector('.carousel-track');
+      const slides = [...carousel.querySelectorAll('.carousel-slide')];
+      const prevBtn = carousel.querySelector('.previous');
+      const nextBtn = carousel.querySelector('.next');
+      const status = carousel.querySelector('.carousel-status');
+      const dotsContainer = document.querySelector('.carousel-dots');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let currentIndex = 0;
+      let timer;
+
+      const dots = slides.map((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        dot.type = 'button';
+        dot.setAttribute('aria-label', `Show screenshot ${index + 1}`);
+        dot.addEventListener('click', () => {
+          showSlide(index);
+          startAutoPlay();
+        });
+        dotsContainer.appendChild(dot);
+        return dot;
+      });
+
+      function showSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        status.textContent = `${currentIndex + 1} / ${slides.length}`;
+        
+        slides.forEach((slide, i) => {
+          slide.setAttribute('aria-hidden', i === currentIndex ? 'false' : 'true');
+        });
+        
+        dots.forEach((dot, i) => {
+          dot.setAttribute('aria-current', i === currentIndex ? 'true' : 'false');
+        });
+      }
+
+      function stopAutoPlay() {
+        clearInterval(timer);
+      }
+
+      function startAutoPlay() {
+        stopAutoPlay();
+        if (!reducedMotion) {
+          timer = setInterval(() => showSlide(currentIndex + 1), 6000);
+        }
+      }
+
+      prevBtn.addEventListener('click', () => {
+        showSlide(currentIndex - 1);
+        startAutoPlay();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        showSlide(currentIndex + 1);
+        startAutoPlay();
+      });
+
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevBtn.click();
+        }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextBtn.click();
+        }
+      });
+
+      carousel.addEventListener('mouseenter', stopAutoPlay);
+      carousel.addEventListener('mouseleave', startAutoPlay);
+      carousel.addEventListener('focusin', stopAutoPlay);
+      carousel.addEventListener('focusout', startAutoPlay);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoPlay();
+        } else {
+          startAutoPlay();
+        }
+      });
+
+      showSlide(0);
+      startAutoPlay();
+    })();
+  </script>
 </body>
 </html>
