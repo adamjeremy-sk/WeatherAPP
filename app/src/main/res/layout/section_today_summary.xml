@@ -94,12 +94,11 @@
                                         android:layout_height="wrap_content"
                                         android:orientation="horizontal">
 
-                                        <!-- High Temp Card -->
                                         <LinearLayout
                                             android:id="@+id/cardHighTemp"
                                             android:layout_width="0dp"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginEnd="6dp"
+                                            android:layout_margin="3dp"
                                             android:layout_weight="1"
                                             android:background="@drawable/bg_temp_high"
                                             android:clickable="true"
@@ -148,12 +147,11 @@
 
                                         </LinearLayout>
 
-                                        <!-- Low Temp Card -->
                                         <LinearLayout
                                             android:id="@+id/cardLowTemp"
                                             android:layout_width="0dp"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginStart="6dp"
+                                            android:layout_margin="3dp"
                                             android:layout_weight="1"
                                             android:background="@drawable/bg_temp_low"
                                             android:clickable="true"

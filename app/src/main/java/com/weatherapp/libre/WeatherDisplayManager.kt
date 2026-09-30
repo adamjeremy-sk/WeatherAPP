@@ -190,20 +190,11 @@ class WeatherDisplayManager(
         val visibility = current?.visibilityMeters ?: day.visibilityMeters
         val visStr = UnitUtils.formatVisibility(visibility, unitSystem)
 
-        val cloudCover = current?.cloudCoverPct?.toInt() ?: day.cloudCoverPct
-        val rawCeiling = UnitUtils.formatCeiling(cloudCover, humidity, unitSystem)
-        val ceilingStr = "Ceiling: $rawCeiling"
-        
         val metrics = mutableListOf<MetricCell>()
         metrics.add(MetricCell(MetricType.WIND, "Wind Speed", windSpeedStr, gustText, R.drawable.ic_wind))
         metrics.add(MetricCell(MetricType.AIR_QUALITY, "Air Quality & Humidity", aqiStr, humidityStr, R.drawable.ic_aqi))
         metrics.add(MetricCell(MetricType.UV, "UV Index", uvStr, null, R.drawable.ic_uv))
-        
-        if (rawCeiling.equals("Unlimited", ignoreCase = true) || cloudCover < 10) {
-            metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility", visStr, null, R.drawable.ic_visibility))
-        } else {
-            metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility & Ceiling", visStr, ceilingStr, R.drawable.ic_visibility))
-        }
+        metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility", visStr, null, R.drawable.ic_visibility))
         
         metricGridAdapter?.submitList(metrics)
 
