@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/cardAlertBanner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="0dp"
+                            android:visibility="gone"
+                            app:cardBackgroundColor="#2A1015"
+                            app:cardCornerRadius="0dp"
+                            app:cardElevation="4dp"
+                            app:strokeColor="#FF4D4D"
+                            app:strokeWidth="2dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvAlertHeaderTitle"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:textColor="#FF4D4D"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        tools:text="🚨 ECCC SEVERE WEATHER ALERT" />
+
+                                    <com.google.android.material.button.MaterialButton
+                                        android:id="@+id/btnDismissAlert"
+                                        style="@style/Widget.Material3.Button.TextButton"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="36dp"
+                                        android:paddingHorizontal="8dp"
+                                        android:text="Dismiss"
+                                        android:textColor="#FF9999"
+                                        android:textSize="12sp" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tvAlertHeadline"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    tools:text="Tornado Warning in effect for Ottawa - Gatineau" />
+
+                                <TextView
+                                    android:id="@+id/tvAlertInstructions"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    tools:text="Take cover immediately if threatening weather approaches. Go indoors to a room on the lowest floor, away from outside walls and windows." />
+
+                                <TextView
+                                    android:id="@+id/tvAlertSource"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:text="Source: Environment and Climate Change Canada (ECCC / CAP-CP Protocol)"
+                                    android:textColor="#FFB3B3"
+                                    android:textSize="11sp" />
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>

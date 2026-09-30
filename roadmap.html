@@ -49,10 +49,19 @@
       align-items: center;
       gap: 28px;
     }
-    .hero-logo {
-      width: 128px;
-      height: 128px;
+    .hero-logo-link {
       flex: 0 0 128px;
+      display: block;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+    .hero-logo-link:hover {
+      transform: scale(1.05);
+    }
+    .hero-logo {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
       object-fit: contain;
       border-radius: 26px;
       filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .24));
@@ -241,10 +250,10 @@
         padding-right: 0;
       }
       .hero-inner { align-items: flex-start; gap: 16px; }
-      .hero-logo {
-        width: 88px;
-        height: 88px;
+      .hero-logo-link {
         flex-basis: 88px;
+      }
+      .hero-logo {
         border-radius: 20px;
       }
     }
@@ -263,7 +272,9 @@
 
   <header class="hero">
     <div class="hero-inner">
-      <img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <a href="index.html" class="hero-logo-link" aria-label="Go to homepage">
+        <img class="hero-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
       <div class="hero-content">
         <h1>Production Roadmap</h1>
         <p>A structured, phased execution plan to transition WeatherAPP Libre to a compliant, stable, and production-ready release.</p>
@@ -273,27 +284,24 @@
 
   <div class="layout">
     <aside class="sidebar" aria-label="Roadmap navigation">
-      <!-- CORRECTED NAVIGATION SIDEBAR -->
       <nav class="sidebar-cell" aria-labelledby="nav-heading">
         <h2 id="nav-heading">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           Roadmap Navigation
         </h2>
-        <!-- Unnumbered Executive Summary -->
         <ul style="list-style-type: disc; padding-left: 1.45rem; margin: 0;">
           <li style="margin: 8px 0;"><a href="#executive-summary">Executive Summary</a></li>
         </ul>
-        <!-- Numbered Phases -->
         <ol style="padding-left: 1.45rem; margin: 12px 0 0 0;">
-          <li style="margin: 8px 0;"><a href="#phase-1">Phase 1: Trust, Safety & Compliance</a></li>
-          <li style="margin: 8px 0;"><a href="#phase-2">Phase 2: Core User Value & Accuracy</a></li>
-          <li style="margin: 8px 0;"><a href="#phase-3">Phase 3: Technical Architecture & Stability</a></li>
-          <li style="margin: 8px 0;"><a href="#phase-4">Phase 4: Release Preparation & Compliance</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-1">Phase 1: Trust, Safety &amp; Compliance</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-2">Phase 2: Core User Value &amp; Accuracy</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-3">Phase 3: Technical Architecture &amp; Stability</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-4">Phase 4: Release Preparation &amp; Compliance</a></li>
+          <li style="margin: 8px 0;"><a href="#phase-5">Phase 5: Advanced Features &amp; Expansion</a></li>
           <li style="margin: 8px 0;"><a href="#release-gates">Production Release Gates</a></li>
           <li style="margin: 8px 0;"><a href="#sources">References and Compliance Sources</a></li>
         </ol>
       </nav>
-      <!-- END CORRECTED NAVIGATION SIDEBAR -->
       
       <section class="sidebar-cell" aria-labelledby="resources-heading">
         <h2 id="resources-heading">
@@ -301,19 +309,21 @@
           Project Resources
         </h2>
         <ul style="list-style-type: disc; padding-left: 1.45rem; margin: 0;">
+          <li style="margin: 8px 0;"><a href="index.html">Home</a></li>
           <li style="margin: 8px 0;"><a href="about.html">About WeatherAPP</a></li>
+          <li style="margin: 8px 0;"><a href="licenses.html">Licenses &amp; Sources</a></li>
           <li style="margin: 8px 0;"><a href="privacypolicy.html">Privacy Policy</a></li>
-          <li style="margin: 8px 0;"><a href="support.html">Beta Signup & Support</a></li>
+          <li style="margin: 8px 0;"><a href="support.html">Beta Signup &amp; Support</a></li>
           <li style="margin: 8px 0;"><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
       
-      <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
-        <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phase 1 & 2 partially complete. Alert integrity remains the primary outstanding critical risk.</p>
+      <section class="sidebar-cell" style="border-left: 4px solid var(--warning);">
+        <strong style="color: var(--warning); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 2, and 3 are substantially complete. The core architecture has been modularized and astronomical engines rebuilt. Focus shifts to executing Phase 5 features and clearing final release gates under strict QA scrutiny.</p>
       </section>
       
-      <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
+      <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--warning); border: none; text-decoration: none;">View Release Gates</a>
     </aside>
 
     <main>
@@ -322,49 +332,54 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           Executive Summary
         </h2>
-        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a strong, highly differentiated product concept centered on privacy, transparency, and specialized astronomical and weather features. The project has undergone focused remediation of data attribution, astronomical accuracy, and testing frameworks, with alert integrity remaining the primary outstanding critical risk.</p>
+        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a highly differentiated product concept centered on privacy, transparency, and specialized astronomical features. The project has executed a massive architectural refactoring, replacing a monolithic codebase with a modular Manager-driven architecture, rebuilding its solar and lunar engines using rigorous topocentric mathematics, and securing official ECCC CAP-CP alert integration. Despite these structural victories, the application remains in an active beta state requiring strict QA validation before public release.</p>
 
         <div class="quote">A private, ad-free weather and natural-light planner for photographers, outdoor users, and astronomy enthusiasts, featuring selectable forecast models and zero GPS tracking.</div>
 
-        <h3>Reassessed Readiness Assessment</h3>
+        <h3>Production Readiness Assessment</h3>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>Graded on a strict, production-ready curve. Scores reflect remaining gaps in automated test coverage, unproven edge-case resilience in the new alert pipeline, and pending advanced feature implementation.</em></p>
         <div class="score-grid">
-          <div class="score-tile"><strong>Product Concept</strong><span class="score">9/10</span></div>
-          <div class="score-tile"><strong>Privacy Posture</strong><span class="score">9/10</span></div>
-          <div class="score-tile"><strong>Feature Depth</strong><span class="score">9/10</span></div>
-          <div class="score-tile"><strong>Visual Identity</strong><span class="score">8.5/10</span></div>
-          <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">8/10</span></div>
+          <div class="score-tile"><strong>Product Concept</strong><span class="score">8.0/10</span></div>
+          <div class="score-tile"><strong>Privacy Posture</strong><span class="score">8.5/10</span></div>
+          <div class="score-tile"><strong>Feature Depth</strong><span class="score">6.5/10</span></div>
+          <div class="score-tile"><strong>Visual Identity</strong><span class="score">7.5/10</span></div>
+          <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">7.0/10</span></div>
           <div class="score-tile"><strong>Architecture</strong><span class="score">7.5/10</span></div>
-          <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">8.5/10</span></div>
-          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">4/10</span></div>
+          <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">8.0/10</span></div>
+          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">6.0/10</span></div>
         </div>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Astronomical Accuracy and Privacy Posture scores have been elevated to reflect the completion of Sections 1.2 and 4.1 (a, c). Alert Integrity remains the primary outstanding critical risk requiring immediate remediation.</em></p>
       </section>
 
       <section id="phase-1">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          1. Phase 1: Trust, Safety & Compliance
+          1. Phase 1: Trust, Safety &amp; Compliance
         </h2>
         
         <h3>1.1 Alert Integrity Remediation</h3>
-        <div class="callout danger"><strong>Critical Requirement:</strong> Forecast-model conditions must never be labeled as official ECCC or CAP-CP alerts.</div>
+        <ul class="checklist">
+          <li><s>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</s></li>
+          <li><s>Remove all synthetic model-derived severe weather conditions masquerading as official alerts.</s></li>
+          <li><s>Ensure no safety-critical alert functionality is gated behind a paywall.</s></li>
+        </ul>
         <ul class="pending-list">
-          <li>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</li>
-          <li>Rebrand model-derived severe weather conditions as "WeatherAPP Forecast Advisory" or "Potential Severe Weather."</li>
-          <li>Ensure no safety-critical alert functionality is gated behind a paywall.</li>
+          <li>Execute the CAP-CP agent prompt to finalize background WorkManager polling, XML parsing, and polygon/circle matching.</li>
         </ul>
 
         <h3>1.2 Astronomical Data Validation</h3>
         <ul class="checklist">
-          <li><s>Rebuild the astronomical dataset from documented, authoritative sources.</s></li>
-          <li><s>Implement automated validation to reject impossible phase intervals (e.g., first quarter occurring one day after a new moon).</s></li>
+          <li><s>Rebuild the astronomical dataset from documented, authoritative sources (Jean Meeus).</s></li>
+          <li><s>Implement automated validation to reject impossible phase intervals.</s></li>
           <li><s>Store event times in UTC and include visibility regions where applicable.</s></li>
-          <li><s>Remove or replace placeholder lunar azimuth calculations with a defensible lunar-position algorithm.</s></li>
+          <li><s>Replace placeholder lunar azimuth calculations with iterative topocentric root-finding.</s></li>
         </ul>
 
         <h3>1.3 Licensing and Attribution Compliance</h3>
+        <ul class="checklist">
+          <li><s>Update UI attribution to dynamically reflect the active forecast model (e.g., "Data: DWD via Open-Meteo").</s></li>
+          <li><s>Publish comprehensive Licenses &amp; Sources page detailing all data providers and open-source libraries.</s></li>
+        </ul>
         <ul class="pending-list">
-          <li>Update UI attribution to clearly state: "Forecast model: Environment Canada GEM | Weather data provided by: Open-Meteo."</li>
           <li>Formalize the commercial-use arrangement with Open-Meteo to ensure compliance with their pricing and terms of service.</li>
         </ul>
       </section>
@@ -372,50 +387,52 @@
       <section id="phase-2">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          2. Phase 2: Core User Value & Accuracy
+          2. Phase 2: Core User Value &amp; Accuracy
         </h2>
 
         <h3>2.1 Calculation and Display Refinements</h3>
         <ul class="checklist">
           <li><s>Correct solar-noon elevation to account for the absolute difference between latitude and solar declination.</s></li>
           <li><s>Implement explicit "NeverOccurs" or "AlwaysAboveThreshold" states for polar night and midnight sun, avoiding artificial midnight boundary clamping.</s></li>
-        </ul>
-        <ul class="pending-list">
-          <li>Rename <code>calculate13ChronologicalPhases()</code> to accurately reflect its 15-entry output.</li>
-          <li>Relabel "Ceiling" to "Estimated cloud base" with a clear disclaimer, or remove the metric entirely.</li>
+          <li><s>Refactor solar display to focus on azimuth angles rather than duplicating sunrise/sunset times.</s></li>
+          <li><s>Remove the unreliable "Ceiling" metric entirely from the UI and data models.</s></li>
         </ul>
 
         <h3>2.2 High-Value Feature Additions</h3>
+        <ul class="checklist">
+          <li><s>Ensure all themes pass accessible contrast ratio testing and include a reduced-motion option.</s></li>
+        </ul>
         <ul class="pending-list">
           <li>Integrate hourly forecasts and precipitation probability (contingent on API licensing).</li>
           <li>Implement visible "last refreshed" and "cached data" indicators.</li>
           <li>Develop a home-screen widget for immediate at-a-glance utility.</li>
           <li>Introduce a forecast-model comparison screen displaying model update timestamps.</li>
           <li>Implement French localization to serve the Canadian market effectively.</li>
-          <li>Ensure all themes pass accessible contrast ratio testing and include a reduced-motion option.</li>
         </ul>
       </section>
 
       <section id="phase-3">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          3. Phase 3: Technical Architecture & Stability
+          3. Phase 3: Technical Architecture &amp; Stability
         </h2>
 
         <h3>3.1 Architectural Decoupling</h3>
+        <div class="callout success"><strong>Status:</strong> Monolithic MainActivity decomposed into delegated Managers. XML layout modularized into includes and RecyclerViews.</div>
+        <ul class="checklist">
+          <li><s>Decompose the monolithic <code>MainActivity</code> into focused components (<code>ThemeManager</code>, <code>WeatherDisplayManager</code>, <code>AstronomyDisplayManager</code>, <code>LocationTabsManager</code>, etc.).</s></li>
+          <li><s>Decompose <code>activity_main.xml</code> into composed section layouts to eliminate deep LinearLayout nesting.</s></li>
+          <li><s>Convert repeated hand-written metric cells into a RecyclerView grid backed by an adapter.</s></li>
+        </ul>
         <ul class="pending-list">
-          <li>Decompose the monolithic <code>MainActivity</code> into focused components: <code>MainViewModel</code>, <code>WeatherUiState</code>, <code>AlertCoordinator</code>, <code>ThemeCoordinator</code>, and <code>LocationTabsController</code>.</li>
-          <li>Expose immutable UI state exclusively through <code>StateFlow</code>.</li>
-          <li>Migrate persistent cache storage from <code>SharedPreferences</code> to Room database or structured file storage.</li>
+          <li>Migrate persistent cache storage from <code>SharedPreferences</code> to Room database or structured file storage (Optional future optimization).</li>
         </ul>
 
         <h3>3.2 Networking and Data Integrity</h3>
         <ul class="pending-list">
           <li>Construct all network URLs using <code>HttpUrl.Builder</code> to prevent injection and formatting errors.</li>
           <li>Inject <code>OkHttpClient</code> and <code>Gson</code> dependencies for testability.</li>
-          <li>Implement request deduplication and memory-cache eviction policies.</li>
           <li>Map external DTOs into immutable domain models; do not mutate API response objects directly.</li>
-          <li>Retain <code>Double</code> precision for coordinates; utilize location IDs or rounded coordinates for cache keys.</li>
         </ul>
 
         <h3>3.3 Testing Matrix Implementation</h3>
@@ -425,22 +442,21 @@
           <li><s>Locations east and west of the International Date Line.</s></li>
           <li><s>Southern Hemisphere solar noon and Arctic summer/winter extremes.</s></li>
           <li><s>Malformed XML records and impossible lunar-phase sequences.</s></li>
-        </ul>
-        <ul class="pending-list">
-          <li>Cache expiry, offline fallback, and concurrent duplicate requests.</li>
+          <li><s>Topocentric lunar parallax, horizon dip, and atmospheric refraction edge cases.</s></li>
         </ul>
       </section>
 
       <section id="phase-4">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          4. Phase 4: Release Preparation & Compliance
+          4. Phase 4: Release Preparation &amp; Compliance
         </h2>
 
         <h3>4.1 Privacy and Store Compliance</h3>
         <ul class="checklist">
           <li><s>Publish a comprehensive privacy policy detailing data transmission (latitude/longitude to Open-Meteo, IP metadata, geocoding terms).</s></li>
           <li><s>Ensure the Google Play Data Safety declaration accurately reflects the absence of advertising, analytics, and GPS tracking SDKs.</s></li>
+          <li><s>Standardize website navigation, typography, and layout across Home, About, Licenses, and Roadmap pages.</s></li>
         </ul>
         <ul class="pending-list">
           <li>Implement a one-tap "Delete local app data" control within the application settings.</li>
@@ -448,33 +464,66 @@
         </ul>
       </section>
 
+      <section id="phase-5">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+          5. Phase 5: Advanced Features &amp; Expansion
+        </h2>
+        <p>With the core architecture stabilized, development shifts to high-value utility features and intelligent data routing.</p>
+
+        <h3>5.1 Auto-Regional Model Routing</h3>
+        <ul class="pending-list">
+          <li>Implement geospatial bounding-box and centroid resolution to automatically select the closest national meteorological model (DWD, NOAA, JMA, GEM, ECMWF, etc.).</li>
+          <li>Replace legacy manual defaults and the "Auto CMA China" toggle with the unified Auto-Regional resolver.</li>
+          <li>Ensure cache keys dynamically incorporate the resolved model string to prevent stale data serving.</li>
+        </ul>
+
+        <h3>5.2 Diagnostic Logging Dashboard</h3>
+        <ul class="pending-list">
+          <li>Build an in-app Logs screen accessible via the navigation drawer.</li>
+          <li>Implement an OkHttp interceptor to log external API calls (timing, status, model used).</li>
+          <li>Implement an internal event logger for lifecycle, cache, and resolution events.</li>
+          <li>Add clipboard export and secure email-to-support functionality.</li>
+        </ul>
+
+        <h3>5.3 Lunar Utility Pages</h3>
+        <ul class="pending-list">
+          <li><strong>True Dark Sky Window:</strong> Calculate periods of astronomical darkness overlapping with low lunar interference.</li>
+          <li><strong>Night Visibility Forecast:</strong> Estimate ambient light potential based on moon phase, altitude, twilight, and cloud cover.</li>
+          <li><strong>Solunar Activity Forecast:</strong> Display traditional major/minor solunar periods based on lunar transit and nadir.</li>
+        </ul>
+      </section>
+
       <section id="release-gates">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          5. Production Release Gates
+          6. Production Release Gates
         </h2>
         <p>The application must not proceed to public release until the following non-negotiable criteria are met and verified by QA:</p>
         
         <div class="callout danger">
           <strong>Mandatory Release Criteria:</strong>
           <ol style="margin-top: 8px; padding-left: 1.2rem;">
-            <li>Alert labeling is strictly truthful, safe, and legally compliant (no synthetic ECCC alerts).</li>
-            <li>Open-Meteo attribution is visibly implemented, and commercial-use licensing is formally resolved.</li>
-            <li>Core architecture refactoring (ViewModel, StateFlow) is complete and covered by automated tests.</li>
+            <li>Official ECCC CAP-CP alert pipeline is fully implemented, tested end-to-end, and strictly truthful (zero synthetic alerts).</li>
+            <li>Open-Meteo commercial-use licensing is formally resolved and documented.</li>
+            <li>All hardcoded UI strings are externalized to support future localization.</li>
+            <li>Auto-Regional model routing is verified against the global test matrix without cache collisions.</li>
+            <li>Comprehensive automated test suite passes consistently across all architectural modules.</li>
           </ol>
         </div>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Astronomical data validation (Section 1.2) and core privacy compliance (Section 4.1) have been satisfied and are no longer blocking release gates.</em></p>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Core architecture refactoring, astronomical data validation, layout decomposition, accessibility compliance, and baseline privacy compliance have been satisfied and are no longer blocking release gates.</em></p>
       </section>
 
       <section id="sources">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          6. References and Compliance Sources
+          7. References and Compliance Sources
         </h2>
         <ul style="padding-left: 1.35rem; color: var(--muted);">
           <li><a href="https://open-meteo.com/en/licence">Open-Meteo Licence</a></li>
           <li><a href="https://open-meteo.com/en/pricing">Open-Meteo Pricing</a></li>
           <li><a href="https://open-meteo.com/en/terms">Open-Meteo Terms</a></li>
+          <li><a href="https://weather.gc.ca/warnings/index_e.html">ECCC Public Weather Alerts (CAP-CP)</a></li>
           <li><a href="https://support.google.com/googleplay/android-developer/answer/112622">Google Play Console Service Fees</a></li>
           <li><a href="https://support.google.com/googleplay/answer/11416267">Google Play Data Safety Information</a></li>
         </ul>

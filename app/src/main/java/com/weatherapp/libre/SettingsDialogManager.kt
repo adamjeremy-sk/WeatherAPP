@@ -220,6 +220,7 @@ class SettingsDialogManager(
         dialogBinding.cardStickyTabsSwitch.strokeColor = palette.dividerColor
         dialogBinding.tvStickyTitle.setTextColor(palette.textPrimary)
         dialogBinding.tvStickyDesc.setTextColor(palette.textSecondary)
+        dialogBinding.tvTabsCountHeader.setTextColor(palette.textPrimary)
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
@@ -348,6 +349,10 @@ class SettingsDialogManager(
         }
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.tvWesternHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvChineseHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvAutoChinaHeader.setTextColor(palette.textPrimary)
 
         dialogBinding.cardAutoChina.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardAutoChina.strokeColor = palette.dividerColor
@@ -547,6 +552,7 @@ class SettingsDialogManager(
         dialogBinding.cardTestAlert.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardTestAlert.strokeColor = palette.dividerColor
         dialogBinding.cardAlertInfo.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
+        dialogBinding.tvAlertIsolationHeader.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
@@ -597,7 +603,8 @@ class SettingsDialogManager(
 
         dialogBinding.cardCacheSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardCacheSwitch.strokeColor = palette.dividerColor
-        dialogBinding.tvTtlHeader.setTextColor(palette.brandPrimary)
+        dialogBinding.tvTtlHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvTtlReasoningHeader.setTextColor(palette.textPrimary)
         dialogBinding.cardTtlReasoning.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
         dialogBinding.cardRateLimiting.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
 

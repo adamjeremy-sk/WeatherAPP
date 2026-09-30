@@ -48,24 +48,24 @@ class EasterEggManager(
     fun startSnowEffect() {
         stopShimmerEffect()
         binding.snowflakeOverlay.startSnowing()
-        binding.btnDismissLowEffect.visibility = View.VISIBLE
+        binding.root.findViewById<android.view.View>(R.id.btnDismissLowEffect)?.visibility = View.VISIBLE
         Toast.makeText(activity.applicationContext, "❄️ Snowfall Effect Activated!", Toast.LENGTH_SHORT).show()
     }
 
     fun stopSnowEffect() {
         binding.snowflakeOverlay.stopSnowing()
-        binding.btnDismissLowEffect.visibility = View.GONE
+        binding.root.findViewById<android.view.View>(R.id.btnDismissLowEffect)?.visibility = View.GONE
     }
 
     fun startShimmerEffect() {
         stopSnowEffect()
         binding.heatShimmerOverlay.startHeatShimmer()
-        binding.btnDismissHighEffect.visibility = View.VISIBLE
+        binding.root.findViewById<android.view.View>(R.id.btnDismissHighEffect)?.visibility = View.VISIBLE
         Toast.makeText(activity.applicationContext, "🔥 Extreme Heat Mirage Shimmer Activated!", Toast.LENGTH_SHORT).show()
     }
 
     fun stopShimmerEffect() {
         binding.heatShimmerOverlay.stopHeatShimmer()
-        binding.btnDismissHighEffect.visibility = View.GONE
+        binding.root.findViewById<android.view.View>(R.id.btnDismissHighEffect)?.visibility = View.GONE
     }
 }

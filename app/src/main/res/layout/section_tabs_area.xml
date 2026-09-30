@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/layoutScrollableTabsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="16dp"
+                            android:paddingTop="8dp">
+
+                            <!-- Location Tabs Card -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardLocationTabs"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:cardBackgroundColor="@color/surface_card"
+                                app:cardCornerRadius="14dp"
+                                app:cardElevation="2dp"
+                                app:strokeColor="@color/divider_color"
+                                app:strokeWidth="1dp">
+
+                                <com.google.android.material.tabs.TabLayout
+                                    android:id="@+id/tabLayoutLocations"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="44dp"
+                                    android:background="@android:color/transparent"
+                                    app:tabGravity="fill"
+                                    app:tabIndicatorColor="@color/brand_primary"
+                                    app:tabIndicatorHeight="3dp"
+                                    app:tabMode="fixed"
+                                    app:tabRippleColor="@android:color/transparent"
+                                    app:tabSelectedTextColor="@color/brand_primary"
+                                    app:tabTextColor="@color/text_secondary" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </FrameLayout>

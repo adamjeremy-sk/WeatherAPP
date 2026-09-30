@@ -167,10 +167,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Easter Egg Clicks
-        binding.cardHighTemp.setOnClickListener { easterEggManager.handleDailyHighTap() }
-        binding.cardLowTemp.setOnClickListener { easterEggManager.handleDailyLowTap() }
-        binding.btnDismissHighEffect.setOnClickListener { easterEggManager.stopShimmerEffect() }
-        binding.btnDismissLowEffect.setOnClickListener { easterEggManager.stopSnowEffect() }
+        findViewById<android.view.View>(R.id.cardHighTemp)?.setOnClickListener { easterEggManager.handleDailyHighTap() }
+        findViewById<android.view.View>(R.id.cardLowTemp)?.setOnClickListener { easterEggManager.handleDailyLowTap() }
+        findViewById<android.view.View>(R.id.btnDismissHighEffect)?.setOnClickListener { easterEggManager.stopShimmerEffect() }
+        findViewById<android.view.View>(R.id.btnDismissLowEffect)?.setOnClickListener { easterEggManager.stopSnowEffect() }
 
         // Sub-Tab Navigation Button (Weather ▾ / Golden Hour ▾)
         binding.btnInlineMenu.setOnClickListener { view ->
@@ -178,17 +178,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Date Controls for Inline Golden Hour View
-        binding.btnInlinePrevDay.setOnClickListener {
+        findViewById<android.view.View>(R.id.btnInlinePrevDay)?.setOnClickListener {
             astronomyManager.inlineGoldenDate = astronomyManager.inlineGoldenDate.minusDays(1)
             astronomyManager.updateInlineGoldenHourDisplay()
         }
 
-        binding.btnInlineNextDay.setOnClickListener {
+        findViewById<android.view.View>(R.id.btnInlineNextDay)?.setOnClickListener {
             astronomyManager.inlineGoldenDate = astronomyManager.inlineGoldenDate.plusDays(1)
             astronomyManager.updateInlineGoldenHourDisplay()
         }
 
-        binding.layoutInlineDateClickable.setOnClickListener {
+        findViewById<android.view.View>(R.id.layoutInlineDateClickable)?.setOnClickListener {
             val currDate = astronomyManager.inlineGoldenDate
             DatePickerDialog(
                 this,
@@ -204,17 +204,27 @@ class MainActivity : AppCompatActivity() {
 
         // Adapters
         val unitSystem = locationPreferences.getUnitSystem()
-        val forecastAdapter = DayForecastAdapter(unitSystem)
+                val forecastAdapter = DayForecastAdapter(unitSystem)
+        val metricGridAdapter = MetricGridAdapter()
         binding.rvForecast.layoutManager = LinearLayoutManager(this)
         binding.rvForecast.adapter = forecastAdapter
         weatherDisplayManager.forecastAdapter = forecastAdapter
+        weatherDisplayManager.metricGridAdapter = metricGridAdapter
         themeManager.forecastAdapter = forecastAdapter
+        themeManager.metricGridAdapter = metricGridAdapter
+        
+        // Let's make sure section_metric_grid uses rvMetricGrid 
+        // We'll need to find rvMetricGrid in the view hierarchy 
+        val rvMetricGrid = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvMetricGrid)
+        rvMetricGrid?.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
+        rvMetricGrid?.adapter = metricGridAdapter
+
 
         val solarAdapter = SolarPhaseAdapter { item ->
             astronomyManager.promptSetSolarAlarm(item)
         }
-        binding.rvInlineSolarPhases.layoutManager = LinearLayoutManager(this)
-        binding.rvInlineSolarPhases.adapter = solarAdapter
+        findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.layoutManager = LinearLayoutManager(this)
+        findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.adapter = solarAdapter
         astronomyManager.inlineSolarPhaseAdapter = solarAdapter
         themeManager.inlineSolarPhaseAdapter = solarAdapter
         
@@ -225,36 +235,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInlineMenu(anchorView: View) {
-        val listPopupWindow = androidx.appcompat.widget.ListPopupWindow(this)
-        listPopupWindow.anchorView = anchorView
+        val popup = androidx.appcompat.widget.PopupMenu(this, anchorView)
+        popup.menu.add(0, 0, 0, "Weather Details")
+        popup.menu.add(0, 1, 1, "Golden Hour")
 
-        val options = listOf("Weather Details", "Golden Hour")
-        val adapter = object : android.widget.ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options) {
-            override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
-                val view = super.getView(position, convertView, parent)
-                val tv = view.findViewById<android.widget.TextView>(android.R.id.text1)
-                val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
-                tv.setTextColor(palette.textPrimary)
-                tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f)
-                return view
-            }
-        }
-        listPopupWindow.setAdapter(adapter)
-
-        val density = resources.displayMetrics.density
-        val calculatedWidth = (anchorView.width * 1.30f).toInt().coerceAtLeast((180 * density).toInt())
-        listPopupWindow.width = calculatedWidth
-        listPopupWindow.setDropDownGravity(android.view.Gravity.END)
-
-        listPopupWindow.setOnItemClickListener { _, _, position, _ ->
-            when (position) {
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
                 0 -> astronomyManager.switchInlineSubTab(InlineSubTab.WEATHER_DETAILS, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
                 1 -> astronomyManager.switchInlineSubTab(InlineSubTab.GOLDEN_HOUR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
             }
-            listPopupWindow.dismiss()
+            true
         }
 
-        listPopupWindow.show()
+        popup.show()
     }
 
     fun setupLocationTabs() {

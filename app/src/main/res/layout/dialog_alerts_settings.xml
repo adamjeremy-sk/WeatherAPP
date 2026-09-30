@@ -245,10 +245,11 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvAlertIsolationHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Regional Alert Isolation"
-                        android:textColor="@color/brand_primary"
+                        android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 

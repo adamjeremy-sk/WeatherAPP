@@ -33,6 +33,7 @@ class WeatherDisplayManager(
     var selectedDayForecast: DayForecast? = null
     var dailyForecasts: List<DayForecast> = emptyList()
     var forecastAdapter: DayForecastAdapter? = null
+    var metricGridAdapter: MetricGridAdapter? = null
 
     fun updateLocationHeader() {
         binding.tvLocationName.text = "${currentLocation.displayName} ▾"
@@ -165,39 +166,47 @@ class WeatherDisplayManager(
         }
         binding.tvCurrentTemp.visibility = View.VISIBLE
 
-        binding.tvDailyHigh.text = UnitUtils.formatTemp(day.tempMax, unitSystem)
-        binding.tvDailyLow.text = UnitUtils.formatTemp(day.tempMin, unitSystem)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDailyHigh)?.text = UnitUtils.formatTemp(day.tempMax, unitSystem)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDailyLow)?.text = UnitUtils.formatTemp(day.tempMin, unitSystem)
 
+        
         val current = currentWeatherData
         val windSpeed = current?.windSpeed ?: day.windSpeedMaxKmH
         val windDir = current?.windDirection
         val windGust = current?.windGusts ?: day.windGustsMaxKmH
 
-        binding.tvWindSpeed.text = UnitUtils.formatWindSpeedPrimary(windSpeed, unitSystem, windDir)
+        val windSpeedStr = UnitUtils.formatWindSpeedPrimary(windSpeed, unitSystem, windDir)
         val gustText = UnitUtils.formatWindSpeedGusts(windGust, windSpeed, unitSystem)
-        if (gustText != null) {
-            binding.tvWindGust.text = gustText
-            binding.tvWindGust.visibility = View.VISIBLE
-        } else {
-            binding.tvWindGust.visibility = View.GONE
-        }
 
         val aqi = current?.airQualityIndex ?: day.airQualityIndex
         val aqiStr = if (aqi != null) "$aqi • ${UnitUtils.getAqiDescription(aqi)}" else "Good"
-        binding.tvAirQuality.text = aqiStr
 
         val humidity = current?.relativeHumidity?.toInt() ?: day.humidityPct
-        binding.tvHumidity.text = "Humidity: $humidity%"
+        val humidityStr = "Humidity: $humidity%"
 
         val uv = current?.uvIndex ?: day.uvIndexMax
-        binding.tvUvIndex.text = String.format(Locale.getDefault(), "%.1f • %s", uv, UnitUtils.getUvDescription(uv))
+        val uvStr = String.format(java.util.Locale.getDefault(), "%.1f • %s", uv, UnitUtils.getUvDescription(uv))
 
         val visibility = current?.visibilityMeters ?: day.visibilityMeters
-        binding.tvVisibility.text = UnitUtils.formatVisibility(visibility, unitSystem)
+        val visStr = UnitUtils.formatVisibility(visibility, unitSystem)
 
         val cloudCover = current?.cloudCoverPct?.toInt() ?: day.cloudCoverPct
         val rawCeiling = UnitUtils.formatCeiling(cloudCover, humidity, unitSystem)
-        binding.tvCeiling.text = "Ceiling: $rawCeiling"
+        val ceilingStr = "Ceiling: $rawCeiling"
+        
+        val metrics = mutableListOf<MetricCell>()
+        metrics.add(MetricCell(MetricType.WIND, "Wind Speed", windSpeedStr, gustText, R.drawable.ic_wind))
+        metrics.add(MetricCell(MetricType.AIR_QUALITY, "Air Quality & Humidity", aqiStr, humidityStr, R.drawable.ic_aqi))
+        metrics.add(MetricCell(MetricType.UV, "UV Index", uvStr, null, R.drawable.ic_uv))
+        
+        if (rawCeiling.equals("Unlimited", ignoreCase = true) || cloudCover < 10) {
+            metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility", visStr, null, R.drawable.ic_visibility))
+        } else {
+            metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility & Ceiling", visStr, ceilingStr, R.drawable.ic_visibility))
+        }
+        
+        metricGridAdapter?.submitList(metrics)
+
 
         // Solar Summary
         val zoneId = astronomyManager.resolveZoneId(locationTimezone)
@@ -206,21 +215,21 @@ class WeatherDisplayManager(
         val srTimeStr = astronomyManager.formatInstant(solar?.sunrise, zoneId, is24Hour)
         val ssTimeStr = astronomyManager.formatInstant(solar?.sunset, zoneId, is24Hour)
 
-        binding.tvSunrise.text = if (solar?.sunrise != null) srTimeStr else "No Sunrise"
-        binding.tvSunset.text = if (solar?.sunset != null) ssTimeStr else "No Sunset"
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunrise)?.text = if (solar?.sunrise != null) srTimeStr else "No Sunrise"
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunset)?.text = if (solar?.sunset != null) ssTimeStr else "No Sunset"
 
         val srAz = solar?.sunriseAzimuthDegrees
         val ssAz = solar?.sunsetAzimuthDegrees
-        binding.tvSunriseAzimuth.text = if (srAz != null) "Rising at $srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else "Rising at —"
-        binding.tvSunsetAzimuth.text = if (ssAz != null) "Setting at $ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else "Setting at —"
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunriseAzimuth)?.text = if (srAz != null) "Rising at $srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else "Rising at —"
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunsetAzimuth)?.text = if (ssAz != null) "Setting at $ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else "Setting at —"
 
         val durationMins = solar?.daylightDurationMinutes
         if (durationMins != null) {
             val h = durationMins / 60
             val m = durationMins % 60
-            binding.tvTotalDaylight.text = "${h}h ${String.format(Locale.getDefault(), "%02dm", m)}"
+            binding.root.findViewById<android.widget.TextView>(R.id.tvTotalDaylight)?.text = "${h}h ${String.format(Locale.getDefault(), "%02dm", m)}"
         } else {
-            binding.tvTotalDaylight.text = "——"
+            binding.root.findViewById<android.widget.TextView>(R.id.tvTotalDaylight)?.text = "——"
         }
 
         // Single reference Instant and single Observer for Lunar calculations
@@ -230,10 +239,10 @@ class WeatherDisplayManager(
         val moonInfo = LunarCalculator.phaseAt(targetInstant, lunarObserver)
         val formattedPhase = LunarCalculator.formatPhaseDisplay(moonInfo)
 
-        binding.tvMoonPhase.text = formattedPhase.phaseNameWithEmoji
-        binding.tvMoonCyclePercentage.text = formattedPhase.illuminationText
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.text = formattedPhase.phaseNameWithEmoji
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.text = formattedPhase.illuminationText
 
-        binding.layoutMetricGoldenBlueHourContainer.visibility =
+        activity.findViewById<android.view.View>(com.weatherapp.libre.R.id.layoutMetricGoldenBlueHourContainer)?.visibility =
             if (locationPreferences.isShowGoldenBlueHourMainPageEnabled()) View.VISIBLE else View.GONE
 
         // Golden Hour Start & End
@@ -242,8 +251,8 @@ class WeatherDisplayManager(
         val egStart = astronomyManager.formatInstant(solar?.eveningGoldenHourStart, zoneId, is24Hour)
         val egEnd = astronomyManager.formatInstant(solar?.eveningGoldenHourEnd, zoneId, is24Hour)
 
-        binding.tvMorningGolden.text = "$mgStart – $mgEnd"
-        binding.tvEveningGolden.text = "$egStart – $egEnd"
+        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvMorningGolden)?.text = "$mgStart – $mgEnd"
+        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvEveningGolden)?.text = "$egStart – $egEnd"
 
         // Blue Hour Start & End
         val mbStart = astronomyManager.formatInstant(solar?.morningBlueHourStart, zoneId, is24Hour)
@@ -251,10 +260,10 @@ class WeatherDisplayManager(
         val ebStart = astronomyManager.formatInstant(solar?.eveningBlueHourStart, zoneId, is24Hour)
         val ebEnd = astronomyManager.formatInstant(solar?.eveningBlueHourEnd, zoneId, is24Hour)
 
-        binding.tvMorningBlue.text = "$mbStart – $mbEnd"
-        binding.tvEveningBlue.text = "$ebStart – $ebEnd"
+        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvMorningBlue)?.text = "$mbStart – $mbEnd"
+        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvEveningBlue)?.text = "$ebStart – $ebEnd"
 
-        binding.layoutMetricMoon.setOnClickListener {
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricMoon)?.setOnClickListener {
             showMoonPhaseDetailDialog(targetInstant, lunarObserver, zoneId)
         }
     }

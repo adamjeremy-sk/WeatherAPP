@@ -24,6 +24,7 @@ class ThemeManager(
 ) {
 
     var forecastAdapter: DayForecastAdapter? = null
+    var metricGridAdapter: MetricGridAdapter? = null
     var inlineSolarPhaseAdapter: SolarPhaseAdapter? = null
 
     fun applyTheme(themeMode: Int) {
@@ -35,16 +36,28 @@ class ThemeManager(
         binding.drawerLayout.setBackgroundColor(palette.background)
         binding.main.setBackgroundColor(palette.background)
 
-        binding.navigationView.setBackgroundColor(palette.surfaceCard)
-        binding.navigationView.itemTextColor = ColorStateList.valueOf(palette.textPrimary)
-        binding.navigationView.itemIconTintList = ColorStateList.valueOf(palette.textPrimary)
-        if (binding.navigationView.headerCount > 0) {
-            val headerView = binding.navigationView.getHeaderView(0)
-            headerView.setBackgroundColor(palette.surfaceCardSecondary)
-        }
-
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density
+
+        binding.navigationView.setBackgroundColor(palette.surfaceCard)
+        binding.navigationView.itemTextColor = ColorStateList.valueOf(palette.textPrimary)
+        binding.navigationView.itemIconTintList = ColorStateList.valueOf(palette.brandPrimary)
+
+        if (binding.navigationView.headerCount > 0) {
+            val headerView = binding.navigationView.getHeaderView(0)
+            val tvNavHeaderTitle = headerView.findViewById<android.widget.TextView>(R.id.tvNavHeaderTitle)
+            val ivNavHeaderIcon = headerView.findViewById<android.widget.ImageView>(R.id.ivNavHeaderIcon)
+
+            if (isFireEngine) {
+                headerView.setBackgroundColor(Color.parseColor("#DC2626"))
+                tvNavHeaderTitle?.setTextColor(Color.WHITE)
+                ivNavHeaderIcon?.setColorFilter(Color.WHITE)
+            } else {
+                headerView.setBackgroundColor(palette.surfaceCardSecondary)
+                tvNavHeaderTitle?.setTextColor(palette.textPrimary)
+                ivNavHeaderIcon?.setColorFilter(palette.brandPrimary)
+            }
+        }
 
         if (isFireEngine) {
             binding.cardHeader.setCardBackgroundColor(Color.parseColor("#DC2626"))
@@ -80,39 +93,42 @@ class ThemeManager(
         binding.tvMainCondition.setTextColor(palette.textPrimary)
         binding.tvCurrentTemp.setTextColor(palette.textPrimary)
 
-        binding.cardHighTemp.backgroundTintList = ColorStateList.valueOf(palette.tempHighBg)
-        binding.cardLowTemp.backgroundTintList = ColorStateList.valueOf(palette.tempLowBg)
-        binding.tvDailyHigh.setTextColor(palette.tempHigh)
-        binding.tvDailyLow.setTextColor(palette.tempLow)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvForecastHeaderTitle)?.setTextColor(palette.textPrimary)
+
+        binding.root.findViewById<android.view.View>(R.id.cardHighTemp)?.backgroundTintList = ColorStateList.valueOf(palette.tempHighBg)
+        binding.root.findViewById<android.view.View>(R.id.cardLowTemp)?.backgroundTintList = ColorStateList.valueOf(palette.tempLowBg)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDailyHigh)?.setTextColor(palette.tempHigh)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDailyLow)?.setTextColor(palette.tempLow)
 
         binding.layoutHeroSection.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricWind.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricAqi.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricUv.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricVisibility.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        
+        
+        
+        
 
-        binding.layoutMetricSunrise.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricSunset.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricDaylight.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
-        binding.layoutMetricMoon.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricSunrise)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricSunset)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricDaylight)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricMoon)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
-        binding.tvWindSpeed.setTextColor(palette.textPrimary)
-        binding.tvWindGust.setTextColor(palette.textSecondary)
-        binding.tvAirQuality.setTextColor(palette.textPrimary)
-        binding.tvUvIndex.setTextColor(palette.textPrimary)
-        binding.tvVisibility.setTextColor(palette.textPrimary)
-        binding.tvHumidity.setTextColor(palette.textSecondary)
-        binding.tvCeiling.setTextColor(palette.textPrimary)
+        
+        
+        
+        
+        
+        
+        
 
-        binding.tvSunrise.setTextColor(palette.textPrimary)
-        binding.tvSunset.setTextColor(palette.textPrimary)
-        binding.tvSunriseAzimuth.setTextColor(palette.textSecondary)
-        binding.tvSunsetAzimuth.setTextColor(palette.textSecondary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunrise)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunset)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunriseAzimuth)?.setTextColor(palette.textSecondary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunsetAzimuth)?.setTextColor(palette.textSecondary)
 
-        binding.tvTotalDaylight.setTextColor(palette.textPrimary)
-        binding.tvMoonPhase.setTextColor(palette.textPrimary)
-        binding.tvMoonCyclePercentage.setTextColor(palette.textSecondary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvTotalDaylight)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.setTextColor(palette.textSecondary)
 
+        metricGridAdapter?.setPalette(palette)
         forecastAdapter?.setPalette(palette)
         inlineSolarPhaseAdapter?.setPalette(palette)
     }
@@ -156,7 +172,7 @@ class ThemeManager(
         dialogBinding.switchShowGoldenBlueHour.isChecked = isShowGoldenBlueHourOn
         dialogBinding.switchShowGoldenBlueHour.setOnCheckedChangeListener { _, isChecked ->
             locationPreferences.saveShowGoldenBlueHourMainPageEnabled(isChecked)
-            binding.layoutMetricGoldenBlueHourContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
+            activity.findViewById<android.view.View>(com.weatherapp.libre.R.id.layoutMetricGoldenBlueHourContainer)?.visibility = if (isChecked) View.VISIBLE else View.GONE
 
             val msg = if (isChecked) "Golden & Blue Hour enabled on Main Page" else "Golden & Blue Hour hidden from Main Page"
             Toast.makeText(activity.applicationContext, msg, Toast.LENGTH_SHORT).show()
@@ -234,6 +250,10 @@ class ThemeManager(
                 applyTheme(modeToSet)
             }
         }
+
+        dialogBinding.tvStandardHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvBoutiqueHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvVolumeSpeedLabel.setTextColor(palette.textPrimary)
 
         val standardModes = listOf(
             LocationPreferences.THEME_LIGHT to ("Light Theme" to "Clean light background and high contrast typography."),

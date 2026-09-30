@@ -94,17 +94,17 @@ class AstronomyDisplayManager(
         currentLocationItem = location
         locationTimezoneStr = timezone
 
-        binding.layoutWeatherDetailsContainer.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
-        binding.layoutInlineGoldenHourContainer.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
+        activity.findViewById<android.view.View>(R.id.layoutWeatherDetailsContainer)?.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
+        activity.findViewById<android.view.View>(R.id.layoutInlineGoldenHourContainer)?.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
 
         when (subTab) {
             InlineSubTab.WEATHER_DETAILS -> {
-                binding.btnInlineMenu.text = "Weather ▾"
-                binding.btnInlineMenu.setIconResource(R.drawable.ic_weather)
+                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.text = "Weather ▾"
+                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.GOLDEN_HOUR -> {
-                binding.btnInlineMenu.text = "Golden Hour ▾"
-                binding.btnInlineMenu.setIconResource(R.drawable.ic_golden_hour)
+                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.text = "Golden Hour ▾"
+                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.setIconResource(R.drawable.ic_golden_hour)
                 updateInlineGoldenHourDisplay(location)
             }
         }
@@ -113,7 +113,7 @@ class AstronomyDisplayManager(
     fun updateInlineGoldenHourDisplay(location: LocationItem = currentLocationItem) {
         currentLocationItem = location
         val dateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy", Locale.getDefault())
-        binding.tvInlineSelectedDate.text = if (inlineGoldenDate.isEqual(LocalDate.now())) {
+        activity.findViewById<android.widget.TextView>(R.id.tvInlineSelectedDate)?.text = if (inlineGoldenDate.isEqual(LocalDate.now())) {
             "TODAY • ${inlineGoldenDate.format(dateFormatter).uppercase(Locale.getDefault())}"
         } else {
             inlineGoldenDate.format(dateFormatter).uppercase(Locale.getDefault())
