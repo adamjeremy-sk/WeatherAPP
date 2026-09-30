@@ -39,16 +39,26 @@ class WeatherDisplayManager(
     }
 
     fun loadWeather(forceRefresh: Boolean = false, onWeatherLoaded: (() -> Unit)? = null) {
-        binding.pbLoading.visibility = View.VISIBLE
+        val activeModel = locationPreferences.getActiveModelForLocation(currentLocation)
+        val isCacheEnabled = locationPreferences.isCacheTtlEnabled()
+        val ttlMinutes = locationPreferences.getCacheTtlMinutes()
+
+        val hasCache = isCacheEnabled && repository.hasValidCache(
+            latitude = currentLocation.latitude,
+            longitude = currentLocation.longitude,
+            model = activeModel,
+            ttlMinutes = ttlMinutes,
+            locationPreferences = locationPreferences
+        )
+
+        if (forceRefresh || !hasCache) {
+            binding.pbLoading.visibility = View.VISIBLE
+        }
         binding.layoutError.visibility = View.GONE
 
         lifecycleScope.launch {
-            val activeModel = locationPreferences.getActiveModelForLocation(currentLocation)
             val modelKey = activeModel.openMeteoKey
             binding.tvAttribution.text = activeModel.sourceAttribution
-
-            val isCacheEnabled = locationPreferences.isCacheTtlEnabled()
-            val ttlMinutes = locationPreferences.getCacheTtlMinutes()
 
             val result = repository.getWeatherForecast(
                 latitude = currentLocation.latitude,
@@ -138,7 +148,7 @@ class WeatherDisplayManager(
         val dateHeader = if (isToday) {
             val baseDateStr = day.formattedDate.uppercase(Locale.getDefault())
             val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour)
-            "$baseDateStr • $currentTime"
+            "$baseDateStr • $currentTime • Local Time"
         } else {
             day.formattedDate.uppercase(Locale.getDefault())
         }
@@ -187,12 +197,7 @@ class WeatherDisplayManager(
 
         val cloudCover = current?.cloudCoverPct?.toInt() ?: day.cloudCoverPct
         val rawCeiling = UnitUtils.formatCeiling(cloudCover, humidity, unitSystem)
-        if (rawCeiling.equals("Unlimited", ignoreCase = true) || cloudCover < 10) {
-            binding.layoutMetricCeiling.visibility = View.GONE
-        } else {
-            binding.tvCeiling.text = rawCeiling
-            binding.layoutMetricCeiling.visibility = View.VISIBLE
-        }
+        binding.tvCeiling.text = "Ceiling: $rawCeiling"
 
         // Solar Summary
         val zoneId = astronomyManager.resolveZoneId(locationTimezone)

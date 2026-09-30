@@ -113,8 +113,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (locationPreferences.isFirstLaunch()) {
+            locationPreferences.saveTabCount(3)
+            locationPreferences.saveTabLocation(0, LocationPreferences.DEFAULT_WINNIPEG)
+            locationPreferences.saveTabLocation(1, LocationPreferences.DEFAULT_EDMONTON)
+            locationPreferences.saveTabLocation(2, LocationPreferences.DEFAULT_QUEBEC)
+            setupLocationTabs()
+
             locationDialogManager.showFirstLaunchLocationPrompt { newLoc ->
+                locationPreferences.saveTabLocation(0, newLoc)
                 weatherDisplayManager.currentLocation = newLoc
+                setupLocationTabs()
                 weatherDisplayManager.updateLocationHeader()
                 weatherDisplayManager.loadWeather()
             }
@@ -152,6 +160,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnRetry.setOnClickListener {
             weatherDisplayManager.loadWeather()
+        }
+
+        binding.btnDismissError.setOnClickListener {
+            binding.layoutError.visibility = View.GONE
         }
 
         // Easter Egg Clicks
@@ -213,18 +225,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInlineMenu(anchorView: View) {
-        val popup = PopupMenu(this, anchorView)
-        popup.menu.add(0, 1, 0, "Weather Details")
-        popup.menu.add(0, 2, 1, "Golden Hour")
+        val listPopupWindow = androidx.appcompat.widget.ListPopupWindow(this)
+        listPopupWindow.anchorView = anchorView
 
-        popup.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                1 -> astronomyManager.switchInlineSubTab(InlineSubTab.WEATHER_DETAILS, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                2 -> astronomyManager.switchInlineSubTab(InlineSubTab.GOLDEN_HOUR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+        val options = listOf("Weather Details", "Golden Hour")
+        val adapter = object : android.widget.ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options) {
+            override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
+                val view = super.getView(position, convertView, parent)
+                val tv = view.findViewById<android.widget.TextView>(android.R.id.text1)
+                val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+                tv.setTextColor(palette.textPrimary)
+                tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f)
+                return view
             }
-            true
         }
-        popup.show()
+        listPopupWindow.setAdapter(adapter)
+
+        val density = resources.displayMetrics.density
+        val calculatedWidth = (anchorView.width * 1.30f).toInt().coerceAtLeast((180 * density).toInt())
+        listPopupWindow.width = calculatedWidth
+        listPopupWindow.setDropDownGravity(android.view.Gravity.END)
+
+        listPopupWindow.setOnItemClickListener { _, _, position, _ ->
+            when (position) {
+                0 -> astronomyManager.switchInlineSubTab(InlineSubTab.WEATHER_DETAILS, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                1 -> astronomyManager.switchInlineSubTab(InlineSubTab.GOLDEN_HOUR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+            }
+            listPopupWindow.dismiss()
+        }
+
+        listPopupWindow.show()
     }
 
     fun setupLocationTabs() {
@@ -271,12 +301,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_alerts -> settingsDialogManager.showWeatherAlertsSettingsScreen()
                 R.id.menu_item_cache -> settingsDialogManager.showCacheSettingsScreen()
                 R.id.menu_item_default_location -> settingsDialogManager.showDefaultLocationSettingsScreen(locationDialogManager)
+                R.id.menu_item_about -> settingsDialogManager.showAboutSettingsScreen()
+                R.id.menu_item_donate -> settingsDialogManager.showDonateSettingsScreen()
                 R.id.menu_item_licenses -> settingsDialogManager.showLicensesSettingsScreen()
                 R.id.menu_item_privacy -> settingsDialogManager.showPrivacySettingsScreen()
-                R.id.menu_item_about -> settingsDialogManager.showAboutSettingsScreen()
-                R.id.menu_item_roadmap -> settingsDialogManager.showRoadmapSettingsScreen()
-                R.id.menu_item_donate -> openUrl("https://ko-fi.com/adamjeremy")
                 R.id.menu_item_rate -> openUrl("https://play.google.com/store/apps/details?id=$packageName")
+                R.id.menu_item_roadmap -> settingsDialogManager.showRoadmapSettingsScreen()
             }
             true
         }

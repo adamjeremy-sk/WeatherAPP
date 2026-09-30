@@ -1,6 +1,8 @@
 package com.weatherapp.libre
 
+import android.app.Dialog
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -14,13 +16,23 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
 import com.weatherapp.libre.databinding.ActivityMainBinding
+import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
 import com.weatherapp.libre.databinding.DialogCacheSettingsBinding
+import com.weatherapp.libre.databinding.DialogLicensesSettingsBinding
 import com.weatherapp.libre.databinding.DialogModelsSettingsBinding
+import com.weatherapp.libre.databinding.DialogPrivacySettingsBinding
 import com.weatherapp.libre.databinding.DialogTabsSettingsBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class SettingsDialogManager(
     private val activity: AppCompatActivity,
@@ -31,8 +43,9 @@ class SettingsDialogManager(
     fun showWebViewSettingsPage(title: String, url: String) {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = android.app.Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density
 
         val root = LinearLayout(activity).apply {
@@ -41,11 +54,17 @@ class SettingsDialogManager(
             setBackgroundColor(palette.backgroundLight)
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
         // Top Header Bar
         val cardHeader = MaterialCardView(activity).apply {
             radius = 0f
             strokeWidth = 0
-            setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            setCardBackgroundColor(ColorStateList.valueOf(if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard))
             cardElevation = 2 * density
         }
 
@@ -62,7 +81,7 @@ class SettingsDialogManager(
             activity.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, typedValue, true)
             setBackgroundResource(typedValue.resourceId)
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            setColorFilter(palette.textPrimary)
+            setColorFilter(if (isFireEngine) Color.WHITE else palette.textPrimary)
             setOnClickListener { dialog.dismiss() }
         }
 
@@ -70,7 +89,7 @@ class SettingsDialogManager(
             text = title
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             typeface = android.graphics.Typeface.DEFAULT_BOLD
-            setTextColor(palette.textPrimary)
+            setTextColor(if (isFireEngine) Color.WHITE else palette.textPrimary)
             val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
             lp.setMargins((16 * density).toInt(), 0, 0, 0)
             layoutParams = lp
@@ -88,20 +107,79 @@ class SettingsDialogManager(
         }
         root.addView(progressBar)
 
-        // In-App WebView Page
-        val webView = WebView(activity).apply {
+        // Fullscreen In-App WebView with Pull-to-Refresh
+        val swipeRefresh = androidx.swiperefreshlayout.widget.SwipeRefreshLayout(activity).apply {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+
+        val webView = WebView(activity).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     progressBar.visibility = View.GONE
+                    swipeRefresh.isRefreshing = false
                 }
             }
-            loadUrl(url)
         }
-        root.addView(webView)
+
+        swipeRefresh.addView(webView)
+        root.addView(swipeRefresh)
+
+        fun fetchPageContent(forceRefresh: Boolean = false) {
+            val pageKey = url.substringAfterLast("/")
+            val cachedHtml = locationPreferences.getCachedPageHtml(pageKey)
+            val cachedTime = locationPreferences.getCachedPageTime(pageKey)
+            val sevenDaysMs = 7 * 24 * 60 * 60 * 1000L
+            val isCacheValid = !forceRefresh && cachedHtml != null && (System.currentTimeMillis() - cachedTime) < sevenDaysMs
+
+            if (isCacheValid && cachedHtml != null) {
+                progressBar.visibility = View.GONE
+                swipeRefresh.isRefreshing = false
+                webView.loadDataWithBaseURL(url, cachedHtml, "text/html", "UTF-8", null)
+            } else {
+                if (!forceRefresh) progressBar.visibility = View.VISIBLE
+                activity.lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val client = OkHttpClient()
+                        val request = Request.Builder().url(url).build()
+                        client.newCall(request).execute().use { response ->
+                            val html = response.body?.string()
+                            if (response.isSuccessful && !html.isNullOrEmpty()) {
+                                locationPreferences.saveCachedPageHtml(pageKey, html)
+                                withContext(Dispatchers.Main) {
+                                    if (!activity.isFinishing && !activity.isDestroyed) {
+                                        progressBar.visibility = View.GONE
+                                        swipeRefresh.isRefreshing = false
+                                        webView.loadDataWithBaseURL(url, html, "text/html", "UTF-8", null)
+                                    }
+                                }
+                            } else throw java.io.IOException("HTTP ${response.code}")
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            if (!activity.isFinishing && !activity.isDestroyed) {
+                                progressBar.visibility = View.GONE
+                                swipeRefresh.isRefreshing = false
+                                if (cachedHtml != null) {
+                                    webView.loadDataWithBaseURL(url, cachedHtml, "text/html", "UTF-8", null)
+                                } else {
+                                    webView.loadUrl(url)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        swipeRefresh.setOnRefreshListener {
+            fetchPageContent(forceRefresh = true)
+        }
+
+        fetchPageContent(forceRefresh = false)
 
         dialog.setContentView(root)
 
@@ -113,14 +191,31 @@ class SettingsDialogManager(
     fun showLocationTabsSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = BottomSheetDialog(activity)
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogTabsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        if (isFireEngine) {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
+            dialogBinding.btnBack.setColorFilter(Color.WHITE)
+            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
+        } else {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
+        }
+
         dialogBinding.cardStickyTabsSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardStickyTabsSwitch.strokeColor = palette.dividerColor
         dialogBinding.tvStickyTitle.setTextColor(palette.textPrimary)
@@ -148,23 +243,74 @@ class SettingsDialogManager(
         )
 
         for ((count, info) in tabOptions) {
-            val rb = RadioButton(activity).apply {
-                text = "${info.first}\n${info.second}"
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                setTextColor(palette.textPrimary)
-                isChecked = (currentCount == count)
-                setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-                setOnClickListener {
-                    locationPreferences.saveTabCount(count)
-                    if (activity is MainActivity) {
-                        activity.setupLocationTabs()
-                    }
-                    Toast.makeText(activity.applicationContext, "Tab count updated to $count", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                    showLocationTabsSettingsScreen()
-                }
+            val card = MaterialCardView(activity).apply {
+                radius = 12 * density
+                strokeWidth = (1 * density).toInt()
+                strokeColor = palette.dividerColor
+                setCardBackgroundColor(palette.surfaceCard)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, 0, 0, (10 * density).toInt())
+                layoutParams = lp
             }
-            dialogBinding.rgTabOptions.addView(rb)
+
+            val row = LinearLayout(activity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+            }
+
+            val rb = RadioButton(activity).apply {
+                isChecked = (currentCount == count)
+                isClickable = false
+                isFocusable = false
+            }
+
+            val col = LinearLayout(activity).apply {
+                orientation = LinearLayout.VERTICAL
+                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                lp.setMargins((12 * density).toInt(), 0, 0, 0)
+                layoutParams = lp
+            }
+
+            val titleTv = TextView(activity).apply {
+                text = info.first
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                setTextColor(palette.textPrimary)
+            }
+
+            val descTv = TextView(activity).apply {
+                text = info.second
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(palette.textSecondary)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, (2 * density).toInt(), 0, 0)
+                layoutParams = lp
+            }
+
+            col.addView(titleTv)
+            col.addView(descTv)
+            row.addView(rb)
+            row.addView(col)
+            card.addView(row)
+
+            card.setOnClickListener {
+                locationPreferences.saveTabCount(count)
+                if (activity is MainActivity) {
+                    activity.setupLocationTabs()
+                }
+                Toast.makeText(activity.applicationContext, "Tab count updated to $count", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                showLocationTabsSettingsScreen()
+            }
+
+            dialogBinding.rgTabOptions.addView(card)
         }
 
         if (!activity.isFinishing && !activity.isDestroyed) {
@@ -175,15 +321,36 @@ class SettingsDialogManager(
     fun showModelsSettingsScreen(weatherDisplayManager: WeatherDisplayManager) {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = BottomSheetDialog(activity)
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogModelsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val density = activity.resources.displayMetrics.density
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        if (isFireEngine) {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
+            dialogBinding.btnBack.setColorFilter(Color.WHITE)
+            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
+        } else {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
+        }
+
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.cardAutoChina.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardAutoChina.strokeColor = palette.dividerColor
 
         val currentModel = locationPreferences.getSavedForecastModel()
 
@@ -191,38 +358,144 @@ class SettingsDialogManager(
         dialogBinding.rgWesternModels.removeAllViews()
         val westernModels = ForecastModel.values().filter { it.isWestern }
         for (model in westernModels) {
-            val rb = RadioButton(activity).apply {
-                text = "${model.displayName}\n${model.description}"
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                setTextColor(palette.textPrimary)
-                isChecked = (currentModel == model)
-                setOnClickListener {
-                    locationPreferences.saveForecastModel(model)
-                    weatherDisplayManager.loadWeather(forceRefresh = true)
-                    Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
+            val card = MaterialCardView(activity).apply {
+                radius = 12 * density
+                strokeWidth = (1 * density).toInt()
+                strokeColor = palette.dividerColor
+                setCardBackgroundColor(palette.surfaceCard)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, 0, 0, (10 * density).toInt())
+                layoutParams = lp
             }
-            dialogBinding.rgWesternModels.addView(rb)
+
+            val row = LinearLayout(activity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+            }
+
+            val rb = RadioButton(activity).apply {
+                isChecked = (currentModel == model)
+                isClickable = false
+                isFocusable = false
+            }
+
+            val col = LinearLayout(activity).apply {
+                orientation = LinearLayout.VERTICAL
+                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                lp.setMargins((12 * density).toInt(), 0, 0, 0)
+                layoutParams = lp
+            }
+
+            val titleTv = TextView(activity).apply {
+                text = model.displayName
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                setTextColor(palette.textPrimary)
+            }
+
+            val descTv = TextView(activity).apply {
+                text = model.description
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(palette.textSecondary)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, (2 * density).toInt(), 0, 0)
+                layoutParams = lp
+            }
+
+            col.addView(titleTv)
+            col.addView(descTv)
+            row.addView(rb)
+            row.addView(col)
+            card.addView(row)
+
+            card.setOnClickListener {
+                locationPreferences.saveForecastModel(model)
+                weatherDisplayManager.loadWeather(forceRefresh = true)
+                Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                showModelsSettingsScreen(weatherDisplayManager)
+            }
+
+            dialogBinding.rgWesternModels.addView(card)
         }
 
         // Populate Chinese Models
         dialogBinding.rgChineseModels.removeAllViews()
         val chineseModels = ForecastModel.values().filter { !it.isWestern }
         for (model in chineseModels) {
-            val rb = RadioButton(activity).apply {
-                text = "${model.displayName}\n${model.description}"
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                setTextColor(palette.textPrimary)
-                isChecked = (currentModel == model)
-                setOnClickListener {
-                    locationPreferences.saveForecastModel(model)
-                    weatherDisplayManager.loadWeather(forceRefresh = true)
-                    Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
+            val card = MaterialCardView(activity).apply {
+                radius = 12 * density
+                strokeWidth = (1 * density).toInt()
+                strokeColor = palette.dividerColor
+                setCardBackgroundColor(palette.surfaceCard)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, 0, 0, (10 * density).toInt())
+                layoutParams = lp
             }
-            dialogBinding.rgChineseModels.addView(rb)
+
+            val row = LinearLayout(activity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+            }
+
+            val rb = RadioButton(activity).apply {
+                isChecked = (currentModel == model)
+                isClickable = false
+                isFocusable = false
+            }
+
+            val col = LinearLayout(activity).apply {
+                orientation = LinearLayout.VERTICAL
+                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                lp.setMargins((12 * density).toInt(), 0, 0, 0)
+                layoutParams = lp
+            }
+
+            val titleTv = TextView(activity).apply {
+                text = model.displayName
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                setTextColor(palette.textPrimary)
+            }
+
+            val descTv = TextView(activity).apply {
+                text = model.description
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(palette.textSecondary)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, (2 * density).toInt(), 0, 0)
+                layoutParams = lp
+            }
+
+            col.addView(titleTv)
+            col.addView(descTv)
+            row.addView(rb)
+            row.addView(col)
+            card.addView(row)
+
+            card.setOnClickListener {
+                locationPreferences.saveForecastModel(model)
+                weatherDisplayManager.loadWeather(forceRefresh = true)
+                Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                showModelsSettingsScreen(weatherDisplayManager)
+            }
+
+            dialogBinding.rgChineseModels.addView(card)
         }
 
         val isAutoChina = locationPreferences.isAutoCmaChinaEnabled()
@@ -240,15 +513,42 @@ class SettingsDialogManager(
     fun showWeatherAlertsSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = BottomSheetDialog(activity)
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogAlertsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        if (isFireEngine) {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
+            dialogBinding.btnBack.setColorFilter(Color.WHITE)
+            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
+        } else {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
+        }
+
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.cardAlertsSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardAlertsSwitch.strokeColor = palette.dividerColor
+        dialogBinding.cardSolarLeadTime.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardSolarLeadTime.strokeColor = palette.dividerColor
+        dialogBinding.cardTestAlert.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardTestAlert.strokeColor = palette.dividerColor
+        dialogBinding.cardAlertInfo.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
+        dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
+        dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
         val isAlertsOn = locationPreferences.isWeatherAlertsEnabled()
         dialogBinding.switchAlerts.isChecked = isAlertsOn
@@ -268,15 +568,38 @@ class SettingsDialogManager(
     fun showCacheSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = BottomSheetDialog(activity)
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogCacheSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        if (isFireEngine) {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
+            dialogBinding.btnBack.setColorFilter(Color.WHITE)
+            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
+        } else {
+            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
+        }
+
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.cardCacheSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardCacheSwitch.strokeColor = palette.dividerColor
+        dialogBinding.tvTtlHeader.setTextColor(palette.brandPrimary)
+        dialogBinding.cardTtlReasoning.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
+        dialogBinding.cardRateLimiting.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
 
         val isCacheOn = locationPreferences.isCacheTtlEnabled()
         dialogBinding.switchCacheEnabled.isChecked = isCacheOn
@@ -379,6 +702,10 @@ class SettingsDialogManager(
 
     fun showAboutSettingsScreen() {
         showWebViewSettingsPage("About WeatherAPP", "https://adamjeremy-sk.github.io/WeatherAPP/about.html")
+    }
+
+    fun showDonateSettingsScreen() {
+        showWebViewSettingsPage("Donate", "https://ko-fi.com/adamjeremy")
     }
 
     fun showRoadmapSettingsScreen() {

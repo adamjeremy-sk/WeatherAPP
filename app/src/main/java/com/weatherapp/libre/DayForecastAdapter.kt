@@ -84,6 +84,8 @@ class DayForecastAdapter(
                 binding.tvWeatherDesc.setTextColor(p.textSecondary)
                 binding.tvTempHigh.setTextColor(p.tempHigh)
                 binding.tvTempMin.setTextColor(p.tempLow)
+                binding.tvTempHigh.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempHighBg)
+                binding.tvTempMin.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempLowBg)
                 binding.layoutExpandedDetails.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvExpandedMoonPhase.setTextColor(p.textPrimary)
                 binding.tvExpandedDaylight.setTextColor(p.textPrimary)

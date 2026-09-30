@@ -64,6 +64,9 @@ class LocationDialogManager(
         val dialogBinding = DialogSearchLocationBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        dialogBinding.root.setBackgroundColor(palette.surfaceCard)
+
         val searchAdapter = LocationSearchAdapter { selected ->
             if (isSettingDefaultLocation) {
                 locationPreferences.saveStartupMode(LocationPreferences.STARTUP_FIXED_DEFAULT)
@@ -86,6 +89,7 @@ class LocationDialogManager(
         dialogBinding.btnCloseDialog.setOnClickListener {
             if (isFirstLaunchPrompt) {
                 locationPreferences.setFirstLaunchCompleted()
+                onLocationSelected(LocationPreferences.DEFAULT_WINNIPEG)
             }
             dialog.dismiss()
         }
@@ -164,8 +168,10 @@ class LocationDialogManager(
         val dialogBinding = DialogRecentLocationsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        dialogBinding.layoutRecentList.removeAllViews()
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        dialogBinding.root.setBackgroundColor(palette.surfaceCard)
+
+        dialogBinding.layoutRecentList.removeAllViews()
         val density = activity.resources.displayMetrics.density
 
         for (loc in recentLocations) {

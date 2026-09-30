@@ -33,6 +33,35 @@ class WeatherRepository {
 
     private val forecastCache = ConcurrentHashMap<String, CachedWeatherEntry>()
 
+    fun hasValidCache(
+        latitude: Double,
+        longitude: Double,
+        model: ForecastModel,
+        ttlMinutes: Int,
+        locationPreferences: LocationPreferences?
+    ): Boolean {
+        val modelKey = model.openMeteoKey
+        val cacheKey = String.format(Locale.US, "cache_%.4f_%.4f_%s", latitude, longitude, modelKey)
+        val now = System.currentTimeMillis()
+        val ttlMillis = ttlMinutes.toLong() * 60 * 1000L
+
+        val cached = forecastCache[cacheKey]
+        if (cached != null && (now - cached.timestampMillis) < ttlMillis) {
+            return true
+        }
+
+        if (locationPreferences != null) {
+            val diskTime = locationPreferences.getPersistentCacheTime(cacheKey)
+            if (diskTime > 0L && (now - diskTime) < ttlMillis) {
+                val diskJson = locationPreferences.getPersistentCacheJson(cacheKey)
+                if (!diskJson.isNullOrEmpty()) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     /**
      * Fetches weather forecast from Open-Meteo API.
      * Serves from memory or persistent disk cache if enabled and fetched less than ttlMinutes ago.

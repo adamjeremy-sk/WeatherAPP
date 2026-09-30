@@ -637,7 +637,7 @@
                                             <LinearLayout
                                                 android:id="@+id/layoutMetricUv"
                                                 android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
+                                                android:layout_height="match_parent"
                                                 android:layout_marginEnd="6dp"
                                                 android:layout_weight="1"
                                                 android:background="@drawable/bg_metric_card"
@@ -687,7 +687,7 @@
                                             <LinearLayout
                                                 android:id="@+id/layoutMetricVisibility"
                                                 android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
+                                                android:layout_height="match_parent"
                                                 android:layout_marginStart="6dp"
                                                 android:layout_weight="1"
                                                 android:background="@drawable/bg_metric_card"
@@ -713,7 +713,7 @@
                                                         android:layout_height="wrap_content"
                                                         android:layout_marginStart="6dp"
                                                         android:gravity="center"
-                                                        android:text="Visibility"
+                                                        android:text="Visibility &amp; Ceiling"
                                                         android:textColor="@color/text_secondary"
                                                         android:textSize="12sp" />
 
@@ -732,39 +732,19 @@
                                                     android:textStyle="bold"
                                                     tools:text="24.7 km" />
 
+                                                <TextView
+                                                    android:id="@+id/tvCeiling"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_marginTop="2dp"
+                                                    android:ellipsize="end"
+                                                    android:gravity="center"
+                                                    android:maxLines="1"
+                                                    android:textColor="@color/text_secondary"
+                                                    android:textSize="12sp"
+                                                    tools:text="Ceiling: 2,400 m" />
+
                                             </LinearLayout>
-
-                                        </LinearLayout>
-
-                                        <!-- Row 3: Ceiling (Hidden when Unlimited) -->
-                                        <LinearLayout
-                                            android:id="@+id/layoutMetricCeiling"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginTop="12dp"
-                                            android:background="@drawable/bg_metric_card"
-                                            android:gravity="center"
-                                            android:orientation="vertical"
-                                            android:padding="14dp">
-
-                                            <TextView
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:gravity="center"
-                                                android:text="Ceiling"
-                                                android:textColor="@color/text_secondary"
-                                                android:textSize="12sp" />
-
-                                            <TextView
-                                                android:id="@+id/tvCeiling"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_marginTop="4dp"
-                                                android:gravity="center"
-                                                android:textColor="@color/text_primary"
-                                                android:textSize="15sp"
-                                                android:textStyle="bold"
-                                                tools:text="2,400 m" />
 
                                         </LinearLayout>
 
@@ -1183,8 +1163,6 @@
 
                                     </LinearLayout>
 
-                                </LinearLayout>
-
                                 <!-- Container 2: Inline Golden Hour View -->
                                 <LinearLayout
                                     android:id="@+id/layoutInlineGoldenHourContainer"
@@ -1267,6 +1245,8 @@
 
                         </LinearLayout>
 
+                        </LinearLayout>
+
                         </com.google.android.material.card.MaterialCardView>
 
                         <!-- 7-Day Forecast Title -->
@@ -1332,13 +1312,29 @@
                 android:textSize="15sp"
                 tools:text="Failed to load weather data." />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnRetry"
-                style="@style/Widget.Material3.Button.TonalButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Retry" />
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetry"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Retry" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDismissError"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Dismiss" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

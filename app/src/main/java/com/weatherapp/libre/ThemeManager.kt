@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -34,11 +35,34 @@ class ThemeManager(
         binding.drawerLayout.setBackgroundColor(palette.background)
         binding.main.setBackgroundColor(palette.background)
 
-        binding.cardHeader.setCardBackgroundColor(palette.surfaceCard)
-        binding.btnMenu.setColorFilter(palette.textPrimary)
-        binding.ivPin.setColorFilter(palette.brandPrimary)
-        binding.tvLocationName.setTextColor(palette.textPrimary)
-        binding.tvAttribution.setTextColor(palette.textSecondary)
+        binding.navigationView.setBackgroundColor(palette.surfaceCard)
+        binding.navigationView.itemTextColor = ColorStateList.valueOf(palette.textPrimary)
+        binding.navigationView.itemIconTintList = ColorStateList.valueOf(palette.textPrimary)
+        if (binding.navigationView.headerCount > 0) {
+            val headerView = binding.navigationView.getHeaderView(0)
+            headerView.setBackgroundColor(palette.surfaceCardSecondary)
+        }
+
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val density = activity.resources.displayMetrics.density
+
+        if (isFireEngine) {
+            binding.cardHeader.setCardBackgroundColor(Color.parseColor("#DC2626"))
+            binding.cardHeader.strokeColor = Color.WHITE
+            binding.cardHeader.strokeWidth = (2 * density).toInt()
+            binding.btnMenu.setColorFilter(Color.WHITE)
+            binding.ivPin.setColorFilter(Color.WHITE)
+            binding.tvLocationName.setTextColor(Color.WHITE)
+            binding.tvAttribution.setTextColor(Color.parseColor("#FEE2E2"))
+        } else {
+            binding.cardHeader.setCardBackgroundColor(palette.surfaceCard)
+            binding.cardHeader.strokeColor = palette.dividerColor
+            binding.cardHeader.strokeWidth = (1 * density).toInt()
+            binding.btnMenu.setColorFilter(palette.textPrimary)
+            binding.ivPin.setColorFilter(palette.brandPrimary)
+            binding.tvLocationName.setTextColor(palette.textPrimary)
+            binding.tvAttribution.setTextColor(palette.textSecondary)
+        }
 
         binding.cardLocationTabs.setCardBackgroundColor(palette.surfaceCard)
         binding.cardLocationTabs.strokeColor = palette.dividerColor
@@ -56,22 +80,21 @@ class ThemeManager(
         binding.tvMainCondition.setTextColor(palette.textPrimary)
         binding.tvCurrentTemp.setTextColor(palette.textPrimary)
 
-        binding.cardHighTemp.setBackgroundResource(R.drawable.bg_temp_high)
-        binding.cardLowTemp.setBackgroundResource(R.drawable.bg_temp_low)
+        binding.cardHighTemp.backgroundTintList = ColorStateList.valueOf(palette.tempHighBg)
+        binding.cardLowTemp.backgroundTintList = ColorStateList.valueOf(palette.tempLowBg)
         binding.tvDailyHigh.setTextColor(palette.tempHigh)
         binding.tvDailyLow.setTextColor(palette.tempLow)
 
-        binding.layoutHeroSection.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricWind.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricAqi.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricUv.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricVisibility.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricCeiling.setBackgroundResource(R.drawable.bg_metric_card)
+        binding.layoutHeroSection.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricWind.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricAqi.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricUv.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricVisibility.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
-        binding.layoutMetricSunrise.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricSunset.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricDaylight.setBackgroundResource(R.drawable.bg_metric_card)
-        binding.layoutMetricMoon.setBackgroundResource(R.drawable.bg_metric_card)
+        binding.layoutMetricSunrise.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricSunset.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricDaylight.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.layoutMetricMoon.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
         binding.tvWindSpeed.setTextColor(palette.textPrimary)
         binding.tvWindGust.setTextColor(palette.textSecondary)
@@ -97,9 +120,15 @@ class ThemeManager(
     fun showThemeSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = BottomSheetDialog(activity)
+        val dialog = android.app.Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogThemeSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
+
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         val currentTheme = locationPreferences.getThemeMode()
         val palette = ColorPalette.forMode(currentTheme, activity)
@@ -111,6 +140,11 @@ class ThemeManager(
 
         val isSystemDefault = (currentTheme == LocationPreferences.THEME_SYSTEM)
         dialogBinding.switchSystemDefault.isChecked = isSystemDefault
+
+        dialogBinding.cardSystemDefaultSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardSystemDefaultSwitch.strokeColor = palette.dividerColor
+        dialogBinding.tvSystemDefaultTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvSystemDefaultDesc.setTextColor(palette.textSecondary)
 
         // Show Golden & Blue Hour on Main Page Switch Card
         dialogBinding.cardShowGoldenBlueHourSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))

@@ -141,6 +141,33 @@ class LocationPreferences(context: Context) {
             latitude = 45.4215,
             longitude = -75.6972
         )
+
+        val DEFAULT_WINNIPEG = LocationItem(
+            id = 2L,
+            name = "Winnipeg",
+            admin1 = "Manitoba",
+            country = "Canada",
+            latitude = 49.8951,
+            longitude = -97.1384
+        )
+
+        val DEFAULT_EDMONTON = LocationItem(
+            id = 3L,
+            name = "Edmonton",
+            admin1 = "Alberta",
+            country = "Canada",
+            latitude = 53.5461,
+            longitude = -113.4938
+        )
+
+        val DEFAULT_QUEBEC = LocationItem(
+            id = 4L,
+            name = "Quebec City",
+            admin1 = "Quebec",
+            country = "Canada",
+            latitude = 46.8139,
+            longitude = -71.2080
+        )
     }
 
     fun setPendingReopenThemeSettings(pending: Boolean) {
@@ -323,6 +350,21 @@ class LocationPreferences(context: Context) {
 
     fun getPersistentCacheTime(cacheKey: String): Long {
         return prefs.getLong("disk_cache_time_$cacheKey", 0L)
+    }
+
+    fun getCachedPageHtml(pageKey: String): String? {
+        return prefs.getString("web_page_html_$pageKey", null)
+    }
+
+    fun getCachedPageTime(pageKey: String): Long {
+        return prefs.getLong("web_page_time_$pageKey", 0L)
+    }
+
+    fun saveCachedPageHtml(pageKey: String, html: String) {
+        prefs.edit()
+            .putString("web_page_html_$pageKey", html)
+            .putLong("web_page_time_$pageKey", System.currentTimeMillis())
+            .apply()
     }
 
     fun savePersistentCache(cacheKey: String, json: String, timestampMillis: Long) {
