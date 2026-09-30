@@ -770,24 +770,11 @@
 
                                     </LinearLayout>
 
-                                    <!-- Astronomy & Solar Group Section Header (Centered) -->
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_horizontal"
-                                        android:layout_marginTop="20dp"
-                                        android:layout_marginBottom="10dp"
-                                        android:gravity="center"
-                                        android:text="Astronomy &amp; Solar"
-                                        android:textAlignment="center"
-                                        android:textColor="@color/brand_primary"
-                                        android:textSize="15sp"
-                                        android:textStyle="bold" />
-
                                     <!-- Sunrise & Sunset Times -->
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="12dp"
                                         android:orientation="horizontal">
 
                                         <LinearLayout

@@ -22,6 +22,7 @@ android {
         release {
             optimization {
                 enable = false
+
             }
         }
     }

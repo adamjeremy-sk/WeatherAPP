@@ -126,7 +126,11 @@ class DayForecastAdapter(
             val windStr = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem, gustKmh = item.windGustsMaxKmH)
             binding.tvExpandedWindUv.text = "Wind: $windStr"
 
-            binding.tvExpandedSunAzimuth.text = "Sunrise: $srStr • Sunset: $ssStr"
+            val srAz = solar?.sunriseAzimuthDegrees
+            val ssAz = solar?.sunsetAzimuthDegrees
+            val srAzText = if (srAz != null) "$srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else "—"
+            val ssAzText = if (ssAz != null) "$ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else "—"
+            binding.tvExpandedSunAzimuth.text = "Rise $srAzText • Set $ssAzText"
 
             // Calculate Lunar Phase & Moonrise/Set via LunarCalculator
             val loc = currentLocation

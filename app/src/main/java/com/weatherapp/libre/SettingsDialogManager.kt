@@ -1,35 +1,114 @@
 package com.weatherapp.libre
 
 import android.content.res.ColorStateList
-import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.weatherapp.libre.databinding.ActivityMainBinding
-import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
 import com.weatherapp.libre.databinding.DialogCacheSettingsBinding
-import com.weatherapp.libre.databinding.DialogLicensesSettingsBinding
 import com.weatherapp.libre.databinding.DialogModelsSettingsBinding
-import com.weatherapp.libre.databinding.DialogPrivacySettingsBinding
 import com.weatherapp.libre.databinding.DialogTabsSettingsBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 class SettingsDialogManager(
     private val activity: AppCompatActivity,
     private val binding: ActivityMainBinding,
     private val locationPreferences: LocationPreferences
 ) {
+
+    fun showWebViewSettingsPage(title: String, url: String) {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = android.app.Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val density = activity.resources.displayMetrics.density
+
+        val root = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundColor(palette.backgroundLight)
+        }
+
+        // Top Header Bar
+        val cardHeader = MaterialCardView(activity).apply {
+            radius = 0f
+            strokeWidth = 0
+            setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            cardElevation = 2 * density
+        }
+
+        val headerRow = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+        }
+
+        val btnBack = ImageButton(activity).apply {
+            setImageResource(R.drawable.ic_back)
+            contentDescription = "Back"
+            val typedValue = TypedValue()
+            activity.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, typedValue, true)
+            setBackgroundResource(typedValue.resourceId)
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
+            setColorFilter(palette.textPrimary)
+            setOnClickListener { dialog.dismiss() }
+        }
+
+        val tvTitle = TextView(activity).apply {
+            text = title
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setTextColor(palette.textPrimary)
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+            lp.setMargins((16 * density).toInt(), 0, 0, 0)
+            layoutParams = lp
+        }
+
+        headerRow.addView(btnBack)
+        headerRow.addView(tvTitle)
+        cardHeader.addView(headerRow)
+        root.addView(cardHeader)
+
+        // Progress Bar
+        val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal).apply {
+            isIndeterminate = true
+            visibility = View.VISIBLE
+        }
+        root.addView(progressBar)
+
+        // In-App WebView Page
+        val webView = WebView(activity).apply {
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    progressBar.visibility = View.GONE
+                }
+            }
+            loadUrl(url)
+        }
+        root.addView(webView)
+
+        dialog.setContentView(root)
+
+        if (!activity.isFinishing && !activity.isDestroyed) {
+            dialog.show()
+        }
+    }
 
     fun showLocationTabsSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
@@ -206,28 +285,83 @@ class SettingsDialogManager(
         }
 
         val currentTtl = locationPreferences.getCacheTtlMinutes()
-        dialogBinding.rgTtlDuration.removeAllViews()
+        dialogBinding.layoutTtlOptions.removeAllViews()
 
+        val density = activity.resources.displayMetrics.density
         val ttlOptions = listOf(
-            30 to "30 Minutes",
-            60 to "60 Minutes (1 Hour)",
-            120 to "120 Minutes (2 Hours - Default)",
-            240 to "240 Minutes (4 Hours)",
-            360 to "360 Minutes (6 Hours)"
+            30 to ("30 Minutes" to "Refreshes weather data if older than 30 minutes."),
+            60 to ("60 Minutes (1 Hour)" to "Refreshes weather data if older than 1 hour."),
+            120 to ("120 Minutes (2 Hours - Default)" to "Standard cache TTL duration. Reuses weather data for up to 2 hours."),
+            240 to ("240 Minutes (4 Hours)" to "Extended cache TTL for reduced mobile data usage."),
+            360 to ("360 Minutes (6 Hours)" to "Maximum cache TTL duration for offline resilience.")
         )
 
-        for ((mins, label) in ttlOptions) {
-            val rb = RadioButton(activity).apply {
-                text = label
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-                setTextColor(palette.textPrimary)
-                isChecked = (currentTtl == mins)
-                setOnClickListener {
-                    locationPreferences.saveCacheTtlMinutes(mins)
-                    Toast.makeText(activity.applicationContext, "Cache TTL set to $label", Toast.LENGTH_SHORT).show()
-                }
+        for ((mins, info) in ttlOptions) {
+            val card = MaterialCardView(activity).apply {
+                radius = 12 * density
+                strokeWidth = (1 * density).toInt()
+                strokeColor = palette.dividerColor
+                setCardBackgroundColor(palette.surfaceCard)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, 0, 0, (10 * density).toInt())
+                layoutParams = lp
             }
-            dialogBinding.rgTtlDuration.addView(rb)
+
+            val row = LinearLayout(activity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+            }
+
+            val rb = RadioButton(activity).apply {
+                isChecked = (currentTtl == mins)
+                isClickable = false
+                isFocusable = false
+            }
+
+            val col = LinearLayout(activity).apply {
+                orientation = LinearLayout.VERTICAL
+                val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                lp.setMargins((12 * density).toInt(), 0, 0, 0)
+                layoutParams = lp
+            }
+
+            val titleTv = TextView(activity).apply {
+                text = info.first
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                setTextColor(palette.textPrimary)
+            }
+
+            val descTv = TextView(activity).apply {
+                text = info.second
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(palette.textSecondary)
+                val lp = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                lp.setMargins(0, (2 * density).toInt(), 0, 0)
+                layoutParams = lp
+            }
+
+            col.addView(titleTv)
+            col.addView(descTv)
+            row.addView(rb)
+            row.addView(col)
+            card.addView(row)
+
+            card.setOnClickListener {
+                locationPreferences.saveCacheTtlMinutes(mins)
+                Toast.makeText(activity.applicationContext, "Cache TTL set to ${info.first}", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+                showCacheSettingsScreen()
+            }
+
+            dialogBinding.layoutTtlOptions.addView(card)
         }
 
         if (!activity.isFinishing && !activity.isDestroyed) {
@@ -236,84 +370,19 @@ class SettingsDialogManager(
     }
 
     fun showLicensesSettingsScreen() {
-        if (activity.isFinishing || activity.isDestroyed) return
-
-        val dialog = BottomSheetDialog(activity)
-        val dialogBinding = DialogLicensesSettingsBinding.inflate(activity.layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
-
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
-        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
-
-        if (!activity.isFinishing && !activity.isDestroyed) {
-            dialog.show()
-        }
+        showWebViewSettingsPage("Licenses & Sources", "https://adamjeremy-sk.github.io/WeatherAPP/licenses.html")
     }
 
     fun showPrivacySettingsScreen() {
-        if (activity.isFinishing || activity.isDestroyed) return
-
-        val dialog = BottomSheetDialog(activity)
-        val dialogBinding = DialogPrivacySettingsBinding.inflate(activity.layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
-
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
-        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
-
-        dialogBinding.tvPrivacyPolicyContent.text = "Loading Privacy Policy..."
-
-        activity.lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val client = OkHttpClient()
-                val request = Request.Builder().url("https://adamjeremy-sk.github.io/WeatherAPP/privacypolicy.html").build()
-                client.newCall(request).execute().use { response ->
-                    val htmlStr = response.body?.string() ?: ""
-                    withContext(Dispatchers.Main) {
-                        if (!activity.isFinishing && !activity.isDestroyed) {
-                            dialogBinding.tvPrivacyPolicyContent.text = Html.fromHtml(htmlStr, Html.FROM_HTML_MODE_COMPACT)
-                            dialogBinding.tvPrivacyPolicyContent.movementMethod = LinkMovementMethod.getInstance()
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    if (!activity.isFinishing && !activity.isDestroyed) {
-                        dialogBinding.tvPrivacyPolicyContent.text = "WeatherAPP respects your privacy. All location queries are manual and no device GPS tracking is used."
-                    }
-                }
-            }
-        }
-
-        if (!activity.isFinishing && !activity.isDestroyed) {
-            dialog.show()
-        }
+        showWebViewSettingsPage("Privacy Policy", "https://adamjeremy-sk.github.io/WeatherAPP/privacypolicy.html")
     }
 
     fun showAboutSettingsScreen() {
-        if (activity.isFinishing || activity.isDestroyed) return
+        showWebViewSettingsPage("About WeatherAPP", "https://adamjeremy-sk.github.io/WeatherAPP/about.html")
+    }
 
-        val dialog = BottomSheetDialog(activity)
-        val dialogBinding = DialogAboutSettingsBinding.inflate(activity.layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-
-        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
-
-        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardHeader.strokeColor = palette.dividerColor
-        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
-
-        val pInfo = activity.packageManager.getPackageInfo(activity.packageName, 0)
-        dialogBinding.tvAboutAppVersion.text = "Version ${pInfo.versionName} (${pInfo.longVersionCode})"
-
-        if (!activity.isFinishing && !activity.isDestroyed) {
-            dialog.show()
-        }
+    fun showRoadmapSettingsScreen() {
+        showWebViewSettingsPage("WeatherAPP Roadmap", "https://adamjeremy-sk.github.io/WeatherAPP/roadmap.html")
     }
 
     fun showDefaultLocationSettingsScreen(locationDialogManager: LocationDialogManager) {

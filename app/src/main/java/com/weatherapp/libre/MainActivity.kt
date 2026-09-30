@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_licenses -> settingsDialogManager.showLicensesSettingsScreen()
                 R.id.menu_item_privacy -> settingsDialogManager.showPrivacySettingsScreen()
                 R.id.menu_item_about -> settingsDialogManager.showAboutSettingsScreen()
-                R.id.menu_item_roadmap -> openUrl("https://adamjeremy-sk.github.io/WeatherAPP/roadmap.html")
+                R.id.menu_item_roadmap -> settingsDialogManager.showRoadmapSettingsScreen()
                 R.id.menu_item_donate -> openUrl("https://ko-fi.com/adamjeremy")
                 R.id.menu_item_rate -> openUrl("https://play.google.com/store/apps/details?id=$packageName")
             }
