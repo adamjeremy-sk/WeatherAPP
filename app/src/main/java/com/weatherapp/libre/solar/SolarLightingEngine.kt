@@ -98,27 +98,46 @@ object SolarLightingEngine {
         val dayStartInstant = date.atStartOfDay(zoneId).toInstant()
         val dayEndInstant = date.plusDays(1).atStartOfDay(zoneId).toInstant()
 
-        fun isActive(start: Instant?, end: Instant?): Boolean {
-            if (!isToday || start == null || end == null) return false
-            return !nowInstant.isBefore(start) && nowInstant.isBefore(end)
+        val rawPhases = listOf(
+            SolarPhaseDetail(1, "Night", "🌌", "Midnight – ${fmt(astroStart)}", dur(dayStartInstant, astroStart), "Sun elevation < -18° • Complete astronomical darkness", false, dayStartInstant, astroStart),
+            SolarPhaseDetail(2, "Astronomical Twilight", "🌌", "${fmt(astroStart)} – ${fmt(nautStart)}", dur(astroStart, nautStart), "Sun elevation -18° to -12° • Sky begins subtle morning glow", false, astroStart, nautStart),
+            SolarPhaseDetail(3, "Nautical Twilight", "⛵", "${fmt(nautStart)} – ${fmt(civilStart)}", dur(nautStart, civilStart), "Sun elevation -12° to -6° • Horizon clearly visible at sea", false, nautStart, civilStart),
+            SolarPhaseDetail(4, "Blue Hour", "🟦", "${fmt(mbStart)} – ${fmt(mbEnd)}", dur(mbStart, mbEnd), "Sun elevation -6° to -4° • Deep electric blue sky for photography", false, mbStart, mbEnd),
+            SolarPhaseDetail(5, "Civil Twilight", "🌅", "${fmt(civilStart)} – ${fmt(srInstant)}", dur(civilStart, srInstant), "Sun elevation -6° to -0.83° • Natural outdoor light, no lamps needed", false, civilStart, srInstant),
+            SolarPhaseDetail(6, "Sunrise", "☀️", fmt(srInstant), "Event", "Sun upper limb crosses eastern horizon (elevation -0.83°)", false, srInstant, srInstant),
+            SolarPhaseDetail(7, "Golden Hour", "🟧", "${fmt(mgStart)} – ${fmt(mgEnd)}", dur(mgStart, mgEnd), "Sun elevation -4° to +6° • Warm golden hues, soft long shadows", false, mgStart, mgEnd),
+            SolarPhaseDetail(8, "Daytime", "☀️", "${fmt(srInstant)} – ${fmt(ssInstant)}", dur(srInstant, ssInstant), "Sun elevation > -0.83° • Daylight from end of morning civil twilight to start of evening civil twilight", false, srInstant, ssInstant),
+            SolarPhaseDetail(9, "Golden Hour", "🟧", "${fmt(egStart)} – ${fmt(egEnd)}", dur(egStart, egEnd), "Sun elevation +6° to -4° • Warm magical evening photography light", false, egStart, egEnd),
+            SolarPhaseDetail(10, "Sunset", "🌇", fmt(ssInstant), "Event", "Sun upper limb disappears below western horizon (elevation -0.83°)", false, ssInstant, ssInstant),
+            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(civilEnd)}", dur(ssInstant, civilEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on", false, ssInstant, civilEnd),
+            SolarPhaseDetail(12, "Blue Hour", "🟦", "${fmt(ebStart)} – ${fmt(ebEnd)}", dur(ebStart, ebEnd), "Sun elevation -4° to -6° • Deep cobalt evening sky", false, ebStart, ebEnd),
+            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ebEnd)} – ${fmt(nautEnd)}", dur(ebEnd, nautEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon", false, ebEnd, nautEnd),
+            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(nautEnd)} – ${fmt(astroEnd)}", dur(nautEnd, astroEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible", false, nautEnd, astroEnd),
+            SolarPhaseDetail(15, "Night", "🌌", "${fmt(astroEnd)} – 23:59", dur(astroEnd, dayEndInstant), "Sun elevation < -18° • Complete night sky darkness", false, astroEnd, dayEndInstant)
+        )
+
+        if (!isToday) {
+            return rawPhases
         }
 
-        return listOf(
-            SolarPhaseDetail(1, "Night", "🌌", "Midnight – ${fmt(astroStart)}", dur(dayStartInstant, astroStart), "Sun elevation < -18° • Complete astronomical darkness", isActive(dayStartInstant, astroStart), dayStartInstant, astroStart),
-            SolarPhaseDetail(2, "Astronomical Twilight", "🌌", "${fmt(astroStart)} – ${fmt(nautStart)}", dur(astroStart, nautStart), "Sun elevation -18° to -12° • Sky begins subtle morning glow", isActive(astroStart, nautStart), astroStart, nautStart),
-            SolarPhaseDetail(3, "Nautical Twilight", "⛵", "${fmt(nautStart)} – ${fmt(civilStart)}", dur(nautStart, civilStart), "Sun elevation -12° to -6° • Horizon clearly visible at sea", isActive(nautStart, civilStart), nautStart, civilStart),
-            SolarPhaseDetail(4, "Blue Hour", "🟦", "${fmt(mbStart)} – ${fmt(mbEnd)}", dur(mbStart, mbEnd), "Sun elevation -6° to -4° • Deep electric blue sky for photography", isActive(mbStart, mbEnd), mbStart, mbEnd),
-            SolarPhaseDetail(5, "Civil Twilight", "🌅", "${fmt(civilStart)} – ${fmt(srInstant)}", dur(civilStart, srInstant), "Sun elevation -6° to -0.83° • Natural outdoor light, no lamps needed", isActive(civilStart, srInstant), civilStart, srInstant),
-            SolarPhaseDetail(6, "Sunrise", "☀️", fmt(srInstant), "Event", "Sun upper limb crosses eastern horizon (elevation -0.83°)", isActive(srInstant?.minusSeconds(180), srInstant?.plusSeconds(180)), srInstant, srInstant),
-            SolarPhaseDetail(7, "Golden Hour", "🟧", "${fmt(mgStart)} – ${fmt(mgEnd)}", dur(mgStart, mgEnd), "Sun elevation -4° to +6° • Warm golden hues, soft long shadows", isActive(mgStart, mgEnd), mgStart, mgEnd),
-            SolarPhaseDetail(8, "Daytime", "☀️", "${fmt(srInstant)} – ${fmt(ssInstant)}", dur(srInstant, ssInstant), "Sun elevation > -0.83° • Daylight from end of morning civil twilight to start of evening civil twilight", isActive(srInstant, ssInstant), srInstant, ssInstant),
-            SolarPhaseDetail(9, "Golden Hour", "🟧", "${fmt(egStart)} – ${fmt(egEnd)}", dur(egStart, egEnd), "Sun elevation +6° to -4° • Warm magical evening photography light", isActive(egStart, egEnd), egStart, egEnd),
-            SolarPhaseDetail(10, "Sunset", "🌇", fmt(ssInstant), "Event", "Sun upper limb disappears below western horizon (elevation -0.83°)", isActive(ssInstant?.minusSeconds(180), ssInstant?.plusSeconds(180)), ssInstant, ssInstant),
-            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(civilEnd)}", dur(ssInstant, civilEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on", isActive(ssInstant, civilEnd), ssInstant, civilEnd),
-            SolarPhaseDetail(12, "Blue Hour", "🟦", "${fmt(ebStart)} – ${fmt(ebEnd)}", dur(ebStart, ebEnd), "Sun elevation -4° to -6° • Deep cobalt evening sky", isActive(ebStart, ebEnd), ebStart, ebEnd),
-            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ebEnd)} – ${fmt(nautEnd)}", dur(ebEnd, nautEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon", isActive(ebEnd, nautEnd), ebEnd, nautEnd),
-            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(nautEnd)} – ${fmt(astroEnd)}", dur(nautEnd, astroEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible", isActive(nautEnd, astroEnd), nautEnd, astroEnd),
-            SolarPhaseDetail(15, "Night", "🌌", "${fmt(astroEnd)} – 23:59", dur(astroEnd, dayEndInstant), "Sun elevation < -18° • Complete night sky darkness", isActive(astroEnd, dayEndInstant), astroEnd, dayEndInstant)
-        )
+        // Strictly evaluate the single active phase for today
+        val activeItem = rawPhases.firstOrNull { item ->
+            val s = item.startInstant
+            val e = item.endInstant
+            if (s == null || e == null) false
+            else if (item.name == "Sunrise" || item.name == "Sunset") {
+                !nowInstant.isBefore(s.minusSeconds(180)) && nowInstant.isBefore(s.plusSeconds(180))
+            } else {
+                s.isBefore(e) && !nowInstant.isBefore(s) && nowInstant.isBefore(e)
+            }
+        } ?: rawPhases.find { item ->
+            val s = item.startInstant
+            val e = item.endInstant
+            s != null && e != null && s.isBefore(e) && !nowInstant.isBefore(s) && nowInstant.isBefore(e)
+        }
+
+        return rawPhases.map { item ->
+            item.copy(isCurrentActivePhase = (item == activeItem))
+        }
     }
 }

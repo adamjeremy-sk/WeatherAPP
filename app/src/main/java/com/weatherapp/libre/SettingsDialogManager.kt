@@ -40,6 +40,19 @@ class SettingsDialogManager(
     private val locationPreferences: LocationPreferences
 ) {
 
+    private fun getAaaTitleColor(bgColor: Int): Int {
+        val r = Color.red(bgColor) / 255.0
+        val g = Color.green(bgColor) / 255.0
+        val b = Color.blue(bgColor) / 255.0
+
+        val rs = if (r <= 0.03928) r / 12.92 else Math.pow((r + 0.055) / 1.055, 2.4)
+        val gs = if (g <= 0.03928) g / 12.92 else Math.pow((g + 0.055) / 1.055, 2.4)
+        val bs = if (b <= 0.03928) b / 12.92 else Math.pow((b + 0.055) / 1.055, 2.4)
+
+        val luminance = 0.2126 * rs + 0.7152 * gs + 0.0722 * bs
+        return if (luminance > 0.4) Color.BLACK else Color.WHITE
+    }
+
     fun showWebViewSettingsPage(title: String, url: String) {
         if (activity.isFinishing || activity.isDestroyed) return
 
@@ -47,6 +60,9 @@ class SettingsDialogManager(
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density
+
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         val root = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
@@ -64,7 +80,7 @@ class SettingsDialogManager(
         val cardHeader = MaterialCardView(activity).apply {
             radius = 0f
             strokeWidth = 0
-            setCardBackgroundColor(ColorStateList.valueOf(if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard))
+            setCardBackgroundColor(ColorStateList.valueOf(headerBg))
             cardElevation = 2 * density
         }
 
@@ -81,7 +97,7 @@ class SettingsDialogManager(
             activity.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, typedValue, true)
             setBackgroundResource(typedValue.resourceId)
             setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
-            setColorFilter(if (isFireEngine) Color.WHITE else palette.textPrimary)
+            setColorFilter(headerTitleColor)
             setOnClickListener { dialog.dismiss() }
         }
 
@@ -89,7 +105,7 @@ class SettingsDialogManager(
             text = title
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             typeface = android.graphics.Typeface.DEFAULT_BOLD
-            setTextColor(if (isFireEngine) Color.WHITE else palette.textPrimary)
+            setTextColor(headerTitleColor)
             val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
             lp.setMargins((16 * density).toInt(), 0, 0, 0)
             layoutParams = lp
@@ -203,17 +219,16 @@ class SettingsDialogManager(
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.root.setBackgroundColor(palette.backgroundLight)
-        if (isFireEngine) {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
-            dialogBinding.btnBack.setColorFilter(Color.WHITE)
-            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
-            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
-        } else {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
             dialogBinding.cardHeader.strokeColor = palette.dividerColor
-            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
         }
 
         dialogBinding.cardStickyTabsSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
@@ -335,17 +350,16 @@ class SettingsDialogManager(
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.root.setBackgroundColor(palette.backgroundLight)
-        if (isFireEngine) {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
-            dialogBinding.btnBack.setColorFilter(Color.WHITE)
-            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
-            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
-        } else {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
             dialogBinding.cardHeader.strokeColor = palette.dividerColor
-            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
         }
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
@@ -530,17 +544,16 @@ class SettingsDialogManager(
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.root.setBackgroundColor(palette.backgroundLight)
-        if (isFireEngine) {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
-            dialogBinding.btnBack.setColorFilter(Color.WHITE)
-            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
-            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
-        } else {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
             dialogBinding.cardHeader.strokeColor = palette.dividerColor
-            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
         }
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
@@ -586,17 +599,16 @@ class SettingsDialogManager(
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.root.setBackgroundColor(palette.backgroundLight)
-        if (isFireEngine) {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#DC2626")))
-            dialogBinding.btnBack.setColorFilter(Color.WHITE)
-            val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
-            (headerRow?.getChildAt(1) as? TextView)?.setTextColor(Color.WHITE)
-        } else {
-            dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
             dialogBinding.cardHeader.strokeColor = palette.dividerColor
-            dialogBinding.btnBack.setColorFilter(palette.textPrimary)
         }
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }

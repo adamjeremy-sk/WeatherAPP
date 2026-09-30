@@ -128,9 +128,27 @@ class ThemeManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.setTextColor(palette.textSecondary)
 
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMorningGolden)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvEveningGolden)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvMorningBlue)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvEveningBlue)?.setTextColor(palette.textPrimary)
+
         metricGridAdapter?.setPalette(palette)
         forecastAdapter?.setPalette(palette)
         inlineSolarPhaseAdapter?.setPalette(palette)
+    }
+
+    private fun getAaaTitleColor(bgColor: Int): Int {
+        val r = Color.red(bgColor) / 255.0
+        val g = Color.green(bgColor) / 255.0
+        val b = Color.blue(bgColor) / 255.0
+
+        val rs = if (r <= 0.03928) r / 12.92 else Math.pow((r + 0.055) / 1.055, 2.4)
+        val gs = if (g <= 0.03928) g / 12.92 else Math.pow((g + 0.055) / 1.055, 2.4)
+        val bs = if (b <= 0.03928) b / 12.92 else Math.pow((b + 0.055) / 1.055, 2.4)
+
+        val luminance = 0.2126 * rs + 0.7152 * gs + 0.0722 * bs
+        return if (luminance > 0.4) Color.BLACK else Color.WHITE
     }
 
     fun showThemeSettingsScreen() {
@@ -148,10 +166,18 @@ class ThemeManager(
 
         val currentTheme = locationPreferences.getThemeMode()
         val palette = ColorPalette.forMode(currentTheme, activity)
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.mainThemeSettings.setBackgroundColor(palette.background)
-        dialogBinding.cardHeader.setCardBackgroundColor(palette.surfaceCard)
-        dialogBinding.btnBack.setColorFilter(palette.textPrimary)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        }
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
         val isSystemDefault = (currentTheme == LocationPreferences.THEME_SYSTEM)

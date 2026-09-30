@@ -111,6 +111,19 @@
                                 android:textSize="11sp"
                                 tools:text="Source: Environment Canada GEM Model" />
 
+                            <TextView
+                                android:id="@+id/tvOpenMeteoAccreditation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:paddingVertical="1dp"
+                                android:text="Weather data provided by Open-Meteo.com"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp" />
+
                         </LinearLayout>
 
                     </LinearLayout>
