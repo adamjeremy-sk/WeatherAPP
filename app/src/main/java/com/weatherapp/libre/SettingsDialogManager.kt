@@ -367,6 +367,8 @@ class SettingsDialogManager(
         dialogBinding.tvWesternHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvChineseHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvAutoChinaHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvAutoChinaTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvAutoChinaDesc.setTextColor(palette.textSecondary)
 
         dialogBinding.cardAutoChina.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardAutoChina.strokeColor = palette.dividerColor

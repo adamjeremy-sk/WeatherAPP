@@ -101,6 +101,17 @@ class ThemeManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvDailyLow)?.setTextColor(palette.tempLow)
 
         binding.layoutHeroSection.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+
+        binding.root.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.apply {
+            setTextColor(palette.brandPrimary)
+            iconTint = ColorStateList.valueOf(palette.brandPrimary)
+            strokeColor = ColorStateList.valueOf(palette.dividerColor)
+            backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        }
+
+        binding.root.findViewById<android.widget.TextView>(R.id.tvInlineSelectedDate)?.setTextColor(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlinePrevDay)?.setColorFilter(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineNextDay)?.setColorFilter(palette.textPrimary)
         
         
         
@@ -127,11 +138,6 @@ class ThemeManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvTotalDaylight)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.setTextColor(palette.textSecondary)
-
-        binding.root.findViewById<android.widget.TextView>(R.id.tvMorningGolden)?.setTextColor(palette.textPrimary)
-        binding.root.findViewById<android.widget.TextView>(R.id.tvEveningGolden)?.setTextColor(palette.textPrimary)
-        binding.root.findViewById<android.widget.TextView>(R.id.tvMorningBlue)?.setTextColor(palette.textPrimary)
-        binding.root.findViewById<android.widget.TextView>(R.id.tvEveningBlue)?.setTextColor(palette.textPrimary)
 
         metricGridAdapter?.setPalette(palette)
         forecastAdapter?.setPalette(palette)
@@ -188,21 +194,7 @@ class ThemeManager(
         dialogBinding.tvSystemDefaultTitle.setTextColor(palette.textPrimary)
         dialogBinding.tvSystemDefaultDesc.setTextColor(palette.textSecondary)
 
-        // Show Golden & Blue Hour on Main Page Switch Card
-        dialogBinding.cardShowGoldenBlueHourSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardShowGoldenBlueHourSwitch.strokeColor = palette.dividerColor
-        dialogBinding.tvShowGoldenBlueHourTitle.setTextColor(palette.textPrimary)
-        dialogBinding.tvShowGoldenBlueHourDesc.setTextColor(palette.textSecondary)
 
-        val isShowGoldenBlueHourOn = locationPreferences.isShowGoldenBlueHourMainPageEnabled()
-        dialogBinding.switchShowGoldenBlueHour.isChecked = isShowGoldenBlueHourOn
-        dialogBinding.switchShowGoldenBlueHour.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveShowGoldenBlueHourMainPageEnabled(isChecked)
-            activity.findViewById<android.view.View>(com.weatherapp.libre.R.id.layoutMetricGoldenBlueHourContainer)?.visibility = if (isChecked) View.VISIBLE else View.GONE
-
-            val msg = if (isChecked) "Golden & Blue Hour enabled on Main Page" else "Golden & Blue Hour hidden from Main Page"
-            Toast.makeText(activity.applicationContext, msg, Toast.LENGTH_SHORT).show()
-        }
 
         // Volume Key Date Cycling Card
         dialogBinding.cardVolumeScrollSettings.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))

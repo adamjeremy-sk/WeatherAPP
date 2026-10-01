@@ -233,27 +233,6 @@ class WeatherDisplayManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.text = formattedPhase.phaseNameWithEmoji
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.text = formattedPhase.illuminationText
 
-        activity.findViewById<android.view.View>(com.weatherapp.libre.R.id.layoutMetricGoldenBlueHourContainer)?.visibility =
-            if (locationPreferences.isShowGoldenBlueHourMainPageEnabled()) View.VISIBLE else View.GONE
-
-        // Golden Hour Start & End
-        val mgStart = astronomyManager.formatInstant(solar?.morningGoldenHourStart, zoneId, is24Hour)
-        val mgEnd = astronomyManager.formatInstant(solar?.morningGoldenHourEnd, zoneId, is24Hour)
-        val egStart = astronomyManager.formatInstant(solar?.eveningGoldenHourStart, zoneId, is24Hour)
-        val egEnd = astronomyManager.formatInstant(solar?.eveningGoldenHourEnd, zoneId, is24Hour)
-
-        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvMorningGolden)?.text = "$mgStart – $mgEnd"
-        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvEveningGolden)?.text = "$egStart – $egEnd"
-
-        // Blue Hour Start & End
-        val mbStart = astronomyManager.formatInstant(solar?.morningBlueHourStart, zoneId, is24Hour)
-        val mbEnd = astronomyManager.formatInstant(solar?.morningBlueHourEnd, zoneId, is24Hour)
-        val ebStart = astronomyManager.formatInstant(solar?.eveningBlueHourStart, zoneId, is24Hour)
-        val ebEnd = astronomyManager.formatInstant(solar?.eveningBlueHourEnd, zoneId, is24Hour)
-
-        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvMorningBlue)?.text = "$mbStart – $mbEnd"
-        activity.findViewById<android.widget.TextView>(com.weatherapp.libre.R.id.tvEveningBlue)?.text = "$ebStart – $ebEnd"
-
         binding.root.findViewById<android.view.View>(R.id.layoutMetricMoon)?.setOnClickListener {
             showMoonPhaseDetailDialog(targetInstant, lunarObserver, zoneId)
         }

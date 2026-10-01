@@ -318,9 +318,9 @@
         </ul>
       </section>
       
-      <section class="sidebar-cell" style="border-left: 4px solid var(--warning);">
-        <strong style="color: var(--warning); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 2, and 3 are substantially complete. The core architecture has been modularized and astronomical engines rebuilt. Focus shifts to executing Phase 5 features and clearing final release gates under strict QA scrutiny.</p>
+      <section class="sidebar-cell" style="border-left: 4px solid var(--danger);">
+        <strong style="color: var(--danger); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phase 1 is currently blocked due to incomplete official CAP-CP alert sourcing. While Phases 2 and 3 are substantially complete, the application cannot proceed to release until Alert Integrity is fully remediated.</p>
       </section>
       
       <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--warning); border: none; text-decoration: none;">View Release Gates</a>
@@ -332,12 +332,12 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           Executive Summary
         </h2>
-        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a highly differentiated product concept centered on privacy, transparency, and specialized astronomical features. The project has executed a massive architectural refactoring, replacing a monolithic codebase with a modular Manager-driven architecture, rebuilding its solar and lunar engines using rigorous topocentric mathematics, and securing official ECCC CAP-CP alert integration. Despite these structural victories, the application remains in an active beta state requiring strict QA validation before public release.</p>
+        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre possesses a highly differentiated product concept centered on privacy, transparency, and specialized astronomical features. The project has executed a massive architectural refactoring, replacing a monolithic codebase with a modular Manager-driven architecture, rebuilding its solar and lunar engines using rigorous topocentric mathematics, and initiating official ECCC CAP-CP alert integration. Despite these structural victories, the application remains in an active beta state requiring strict QA validation before public release.</p>
 
         <div class="quote">A private, ad-free weather and natural-light planner for photographers, outdoor users, and astronomy enthusiasts, featuring selectable forecast models and zero GPS tracking.</div>
 
         <h3>Production Readiness Assessment</h3>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>Graded on a strict, production-ready curve. Scores reflect remaining gaps in automated test coverage, unproven edge-case resilience in the new alert pipeline, and pending advanced feature implementation.</em></p>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>Graded on a strict, production-ready curve. The assessment reflects a critical regression in safety compliance: official CAP-CP alert sourcing remains incomplete, and paywall gating verification has been deprioritized. These gaps severely impact the Alert Integrity score and represent hard blockers for public release.</em></p>
         <div class="score-grid">
           <div class="score-tile"><strong>Product Concept</strong><span class="score">8.0/10</span></div>
           <div class="score-tile"><strong>Privacy Posture</strong><span class="score">8.5/10</span></div>
@@ -346,7 +346,7 @@
           <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">7.0/10</span></div>
           <div class="score-tile"><strong>Architecture</strong><span class="score">7.5/10</span></div>
           <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">8.0/10</span></div>
-          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">6.0/10</span></div>
+          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">4.0/10</span></div>
         </div>
       </section>
 
@@ -358,11 +358,10 @@
         
         <h3>1.1 Alert Integrity Remediation</h3>
         <ul class="checklist">
-          <li><s>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</s></li>
           <li><s>Remove all synthetic model-derived severe weather conditions masquerading as official alerts.</s></li>
-          <li><s>Ensure no safety-critical alert functionality is gated behind a paywall.</s></li>
         </ul>
         <ul class="pending-list">
+          <li>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</li>
           <li>Execute the CAP-CP agent prompt to finalize background WorkManager polling, XML parsing, and polygon/circle matching.</li>
         </ul>
 
@@ -533,7 +532,7 @@
   </div>
 
   <footer>
-    WeatherAPP Libre Production Roadmap • Updated September 30, 2026
+    WeatherAPP Libre Production Roadmap • Updated October 01, 2026
   </footer>
 
 </body>

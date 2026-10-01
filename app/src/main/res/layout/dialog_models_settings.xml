@@ -141,6 +141,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvAutoChinaTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Auto-Switch for Chinese Cities"
@@ -149,6 +150,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvAutoChinaDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"

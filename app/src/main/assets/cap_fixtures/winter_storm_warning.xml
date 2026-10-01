@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-WINTERSTORM-003</identifier>
+  <sender>cap-pac@ec.gc.ca</sender>
+  <sent>2026-09-30T13:00:00Z</sent>
+  <status>Test</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en-CA</language>
+    <category>Met</category>
+    <event>Winter Storm Warning</event>
+    <urgency>Expected</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-09-30T13:00:00Z</effective>
+    <onset>2026-09-30T15:00:00Z</onset>
+    <expires>2026-10-01T06:00:00Z</expires>
+    <senderName>Environment and Climate Change Canada</senderName>
+    <headline>TEST — Winter Storm Warning in effect</headline>
+    <description>TEST — Heavy snowfall and blowing snow expected. Total snowfall accumulations of 20 to 30 cm expected.</description>
+    <instruction>TEST — Consider postponing non-essential travel until conditions improve.</instruction>
+    <web>https://weather.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Test Region</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+    </area>
+  </info>
+</alert>

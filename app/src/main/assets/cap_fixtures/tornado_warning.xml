@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-TORNADO-001</identifier>
+  <sender>cap-pac@ec.gc.ca</sender>
+  <sent>2026-09-30T12:00:00Z</sent>
+  <status>Test</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en-CA</language>
+    <category>Met</category>
+    <event>Tornado Warning</event>
+    <urgency>Immediate</urgency>
+    <severity>Extreme</severity>
+    <certainty>Observed</certainty>
+    <effective>2026-09-30T12:00:00Z</effective>
+    <onset>2026-09-30T12:00:00Z</onset>
+    <expires>2026-09-30T16:00:00Z</expires>
+    <senderName>Environment and Climate Change Canada</senderName>
+    <headline>TEST — Tornado Warning in effect for target region</headline>
+    <description>TEST — ECCC meteorologists are tracking a severe thunderstorm producing a tornado. Heavy rain and damaging wind gusts expected.</description>
+    <instruction>TEST — Take cover immediately if threatening weather approaches. Go indoors to a room on the lowest floor, away from outside walls and windows.</instruction>
+    <web>https://weather.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Test Region</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+      <geocode>
+        <valueName>CLC</valueName>
+        <value>054321</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>fr-CA</language>
+    <category>Met</category>
+    <event>Alerte de tornade</event>
+    <urgency>Immediate</urgency>
+    <severity>Extreme</severity>
+    <certainty>Observed</certainty>
+    <effective>2026-09-30T12:00:00Z</effective>
+    <onset>2026-09-30T12:00:00Z</onset>
+    <expires>2026-09-30T16:00:00Z</expires>
+    <senderName>Environnement et Changement climatique Canada</senderName>
+    <headline>TEST — Alerte de tornade en vigueur</headline>
+    <description>TEST — Les météorologues d'ECCC surveillent un orage violent produisant une tornade.</description>
+    <instruction>TEST — Mettez-vous immédiatement à l'abri.</instruction>
+    <web>https://meteo.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Région d'essai</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+    </area>
+  </info>
+</alert>

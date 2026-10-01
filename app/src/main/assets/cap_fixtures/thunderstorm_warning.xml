@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-THUNDERSTORM-002</identifier>
+  <sender>cap-pac@ec.gc.ca</sender>
+  <sent>2026-09-30T12:30:00Z</sent>
+  <status>Test</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en-CA</language>
+    <category>Met</category>
+    <event>Severe Thunderstorm Warning</event>
+    <urgency>Immediate</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-09-30T12:30:00Z</effective>
+    <onset>2026-09-30T12:30:00Z</onset>
+    <expires>2026-09-30T17:00:00Z</expires>
+    <senderName>Environment and Climate Change Canada</senderName>
+    <headline>TEST — Severe Thunderstorm Warning in effect</headline>
+    <description>TEST — ECCC meteorologists are tracking a line of severe thunderstorms capable of producing strong wind gusts and large hail.</description>
+    <instruction>TEST — Fasten loose objects and stay indoors during severe lightning and high winds.</instruction>
+    <web>https://weather.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Test Region</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+    </area>
+  </info>
+</alert>

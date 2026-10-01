@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-STATEMENT-004</identifier>
+  <sender>cap-pac@ec.gc.ca</sender>
+  <sent>2026-09-30T14:00:00Z</sent>
+  <status>Test</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en-CA</language>
+    <category>Met</category>
+    <event>Special Weather Statement</event>
+    <urgency>Expected</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <effective>2026-09-30T14:00:00Z</effective>
+    <onset>2026-09-30T14:00:00Z</onset>
+    <expires>2026-10-01T00:00:00Z</expires>
+    <senderName>Environment and Climate Change Canada</senderName>
+    <headline>TEST — Special Weather Statement in effect</headline>
+    <description>TEST — Unsettled weather conditions with gusty winds and brief heavy rain expected later today.</description>
+    <instruction>TEST — Monitor local weather forecasts for updates.</instruction>
+    <web>https://weather.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Test Region</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+    </area>
+  </info>
+</alert>

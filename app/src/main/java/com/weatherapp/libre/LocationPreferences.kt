@@ -99,6 +99,7 @@ class LocationPreferences(context: Context) {
         private const val KEY_DEFAULT_MODEL = "app_default_model"
         private const val KEY_AUTO_CMA_CHINA = "app_auto_cma_china"
         private const val KEY_WEATHER_ALERTS = "app_weather_alerts_enabled"
+        private const val KEY_ALERT_CONSENT_VERSION = "app_alert_consent_version"
         private const val KEY_CACHE_TTL_ENABLED = "app_cache_ttl_enabled"
         private const val KEY_CACHE_TTL_MINUTES = "app_cache_ttl_minutes"
         private const val KEY_ACTIVE_ALERT_JSON = "app_active_alert_json"
@@ -326,6 +327,14 @@ class LocationPreferences(context: Context) {
 
     fun saveWeatherAlertsEnabled(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_WEATHER_ALERTS, enabled).apply()
+    }
+
+    fun getAlertConsentVersion(): Int {
+        return prefs.getInt(KEY_ALERT_CONSENT_VERSION, 0)
+    }
+
+    fun saveAlertConsentVersion(version: Int) {
+        prefs.edit().putInt(KEY_ALERT_CONSENT_VERSION, version).apply()
     }
 
     fun isCacheTtlEnabled(): Boolean {

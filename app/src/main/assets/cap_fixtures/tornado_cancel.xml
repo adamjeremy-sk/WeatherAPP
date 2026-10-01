@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-TORNADO-001-CANCEL</identifier>
+  <sender>cap-pac@ec.gc.ca</sender>
+  <sent>2026-09-30T13:15:00Z</sent>
+  <status>Test</status>
+  <msgType>Cancel</msgType>
+  <scope>Public</scope>
+  <references>cap-pac@ec.gc.ca,urn:oid:2.49.0.1.124.0.2026.CAP-CP-ECCC-TEST-TORNADO-001,2026-09-30T12:00:00Z</references>
+  <info>
+    <language>en-CA</language>
+    <category>Met</category>
+    <event>Tornado Warning</event>
+    <urgency>Past</urgency>
+    <severity>Minor</severity>
+    <certainty>Unlikely</certainty>
+    <effective>2026-09-30T13:15:00Z</effective>
+    <expires>2026-09-30T13:30:00Z</expires>
+    <senderName>Environment and Climate Change Canada</senderName>
+    <headline>TEST — Tornado Warning CANCELLED for target region</headline>
+    <description>TEST — The tornado warning for this region has been cancelled as severe weather has moved out of the area.</description>
+    <web>https://weather.gc.ca/warnings/</web>
+    <area>
+      <areaDesc>Test Region</areaDesc>
+      <circle>45.4215,-75.6972 50.0</circle>
+    </area>
+  </info>
+</alert>
