@@ -320,7 +320,7 @@
       
       <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
         <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 2, 3, and 4 are substantially complete. The core architecture, official ECCC CAP-CP alerts, and astronomical engines are fully validated. Development is now focused on Phase 5 Lunar Utility Pages, the Diagnostic Logging Dashboard, and final localization.</p>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 3, and 4 are substantially complete. Phase 2 has seen massive UI and feature expansion with the addition of the 36-hour Hourly Forecast, a custom 28-state vector icon set, and the Current/Hourly/Natural Light inline tabs. Development continues on Phase 5 Lunar Utility Pages and Diagnostic Logging.</p>
       </section>
       
       <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
@@ -337,12 +337,12 @@
         <div class="quote">A private, ad-free weather and natural-light planner for photographers, outdoor users, and astronomy enthusiasts, featuring selectable forecast models and zero GPS tracking.</div>
 
         <h3>Production Readiness Assessment</h3>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>Graded on a strict, production-ready curve. The critical blocker regarding official CAP-CP alert sourcing has been fully resolved. Alert Integrity has been elevated to reflect the successful implementation of the end-to-end ECCC pipeline. Remaining gaps are limited to advanced feature expansion and final localization.</em></p>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>Graded on a strict, production-ready curve. The critical blocker regarding official CAP-CP alert sourcing has been fully resolved. Feature Depth and Visual Identity scores have been elevated to reflect the successful integration of the 36-hour Hourly Forecast, the custom 28-state vector icon system, and comprehensive cache management utilities. Remaining gaps are limited to advanced feature expansion and final localization.</em></p>
         <div class="score-grid">
           <div class="score-tile"><strong>Product Concept</strong><span class="score">8.5/10</span></div>
           <div class="score-tile"><strong>Privacy Posture</strong><span class="score">9.0/10</span></div>
-          <div class="score-tile"><strong>Feature Depth</strong><span class="score">7.0/10</span></div>
-          <div class="score-tile"><strong>Visual Identity</strong><span class="score">8.0/10</span></div>
+          <div class="score-tile"><strong>Feature Depth</strong><span class="score">8.5/10</span></div>
+          <div class="score-tile"><strong>Visual Identity</strong><span class="score">9.0/10</span></div>
           <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">8.5/10</span></div>
           <div class="score-tile"><strong>Architecture</strong><span class="score">8.5/10</span></div>
           <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">9.0/10</span></div>
@@ -398,9 +398,11 @@
         <h3>2.2 High-Value Feature Additions</h3>
         <ul class="checklist">
           <li><s>Ensure all themes pass accessible contrast ratio testing and include a reduced-motion option.</s></li>
+          <li><s>Integrate a 36-hour Hourly Forecast with expandable stat panels and theme-reactive surfaces.</s></li>
+          <li><s>Replace all weather condition emojis with a custom, theme-reactive 28-state vector icon set.</s></li>
+          <li><s>Restructure inline sub-tabs into Current, Hourly, and Natural Light categories.</s></li>
         </ul>
         <ul class="pending-list">
-          <li>Integrate hourly forecasts and precipitation probability (contingent on API licensing).</li>
           <li>Implement visible "last refreshed" and "cached data" indicators.</li>
           <li>Develop a home-screen widget for immediate at-a-glance utility.</li>
           <li>Introduce a forecast-model comparison screen displaying model update timestamps.</li>
@@ -443,9 +445,7 @@
           <li><s>Publish a comprehensive privacy policy detailing data transmission (latitude/longitude to Open-Meteo, IP metadata, geocoding terms).</s></li>
           <li><s>Ensure the Google Play Data Safety declaration accurately reflects the absence of advertising, analytics, and GPS tracking SDKs.</s></li>
           <li><s>Standardize website navigation, typography, and layout across Home, About, Licenses, and Roadmap pages.</s></li>
-        </ul>
-        <ul class="pending-list">
-          <li>Implement a one-tap "Delete local app data" control within the application settings.</li>
+          <li><s>Implement a one-tap "Delete local app data" control within the application settings.</s></li>
         </ul>
       </section>
 

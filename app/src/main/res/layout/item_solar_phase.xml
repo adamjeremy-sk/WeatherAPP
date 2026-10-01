@@ -5,7 +5,7 @@
     android:id="@+id/cardPhase"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="2dp"
     app:cardBackgroundColor="@color/surface_card"
     app:cardCornerRadius="10dp"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="14dp"
-        android:paddingVertical="8dp">
+        android:paddingVertical="14dp">
 
         <!-- Column 1: Stage Name (Left) -->
         <TextView

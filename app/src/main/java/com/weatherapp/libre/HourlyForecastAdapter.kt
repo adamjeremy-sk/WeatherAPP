@@ -191,6 +191,7 @@ class HourlyForecastAdapter(
                 binding.tvDroplet.setTextColor(p.brandPrimary)
                 binding.tvPrecipProb.setTextColor(p.brandPrimary)
 
+                binding.layoutExpandedPanel.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvStatFeelsLike.setTextColor(p.textPrimary)
                 binding.tvStatWind.setTextColor(p.textPrimary)
                 binding.tvStatHumidity.setTextColor(p.textPrimary)

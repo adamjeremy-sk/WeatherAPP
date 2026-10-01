@@ -232,6 +232,8 @@ class WeatherDisplayManager(
     private fun showMoonPhaseDetailDialog(targetInstant: Instant, observer: LunarObserver, zoneId: ZoneId) {
         if (activity.isFinishing || activity.isDestroyed) return
 
+        val palette = ColorPalette.forMode(locationPreferences.getThemeMode(), activity)
+
         val currMoonInfo = LunarCalculator.phaseAt(targetInstant, observer)
         val formatted = LunarCalculator.formatPhaseDisplay(currMoonInfo)
 
@@ -279,10 +281,19 @@ class WeatherDisplayManager(
             $upcomingText
         """.trimIndent()
 
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle("Current Moon Phase")
             .setMessage(message)
             .setPositiveButton("Close", null)
-            .show()
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(palette.surfaceCard))
+            dialog.findViewById<android.widget.TextView>(androidx.appcompat.R.id.alertTitle)?.setTextColor(palette.textPrimary)
+            dialog.findViewById<android.widget.TextView>(android.R.id.message)?.setTextColor(palette.textPrimary)
+            dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE)?.setTextColor(palette.brandPrimary)
+        }
+
+        dialog.show()
     }
 }
