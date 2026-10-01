@@ -1,13 +1,11 @@
 package com.weatherapp.libre
 
-import android.content.Context
-import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.weatherapp.libre.databinding.ItemHourlyDividerBinding
 import com.weatherapp.libre.databinding.ItemHourlyFooterBinding
 import com.weatherapp.libre.databinding.ItemHourlyRowBinding
@@ -27,19 +25,68 @@ class HourlyForecastAdapter(
     }
 
     private val items = mutableListOf<HourlyListItem>()
+    private var allForecasts = listOf<HourlyForecast>()
     private var palette: ColorPalette? = null
     private var locationTimezone: String? = null
     private var expandedInstant: Instant? = null
 
-    fun submitList(newList: List<HourlyListItem>) {
+    fun submitForecastData(
+        forecasts: List<HourlyForecast>,
+        timezone: String?
+    ) {
+        allForecasts = forecasts
+        locationTimezone = timezone
+
+        val zoneId = try {
+            if (!timezone.isNullOrEmpty()) ZoneId.of(timezone) else ZoneId.systemDefault()
+        } catch (e: Exception) {
+            ZoneId.systemDefault()
+        }
+
+        val newItems = HourlyMapper.build36HourList(
+            forecasts = allForecasts,
+            now = Instant.now(),
+            zoneId = zoneId
+        )
+
+        val oldItems = ArrayList(items)
         items.clear()
-        items.addAll(newList)
-        notifyDataSetChanged()
+        items.addAll(newItems)
+
+        if (oldItems.isEmpty()) {
+            notifyDataSetChanged()
+        } else {
+            dispatchDiff(oldItems, newItems)
+        }
+    }
+
+    private fun dispatchDiff(oldItems: List<HourlyListItem>, newItems: List<HourlyListItem>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldItems.size
+            override fun getNewListSize(): Int = newItems.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldItem = oldItems[oldItemPosition]
+                val newItem = newItems[newItemPosition]
+                return when {
+                    oldItem is HourlyListItem.DayDivider && newItem is HourlyListItem.DayDivider -> oldItem.dateLabel == newItem.dateLabel
+                    oldItem is HourlyListItem.HourRow && newItem is HourlyListItem.HourRow -> oldItem.forecast.time == newItem.forecast.time
+                    oldItem is HourlyListItem.HorizonFooter && newItem is HourlyListItem.HorizonFooter -> true
+                    else -> false
+                }
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldItem = oldItems[oldItemPosition]
+                val newItem = newItems[newItemPosition]
+                return oldItem == newItem
+            }
+        })
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun setLocationTimezone(timezone: String?) {
         locationTimezone = timezone
-        notifyDataSetChanged()
     }
 
     fun setUnitSystem(newUnitSystem: UnitSystem) {
@@ -82,19 +129,6 @@ class HourlyForecastAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    private fun isReducedMotionEnabled(context: Context): Boolean {
-        return try {
-            val durationScale = Settings.Global.getFloat(
-                context.contentResolver,
-                Settings.Global.ANIMATOR_DURATION_SCALE,
-                1.0f
-            )
-            durationScale == 0f
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     inner class RowViewHolder(
         val binding: ItemHourlyRowBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -110,7 +144,6 @@ class HourlyForecastAdapter(
                 ZoneId.systemDefault()
             }
 
-            // Column 1: Time Label ("Now" for current hour)
             val timeText = if (item.isCurrentHour) {
                 "Now"
             } else {
@@ -119,14 +152,12 @@ class HourlyForecastAdapter(
             }
             binding.tvHourlyTime.text = timeText
 
-            // Column 2: Condition Icon & Text
             val code = forecast.weatherCode ?: 0
             val iconRes = WeatherCodeUtils.conditionIconRes(code)
             binding.ivHourlyConditionIcon.setImageResource(iconRes)
             val conditionText = WeatherCodeUtils.getWeatherDescription(code)
             binding.tvHourlyConditionText.text = conditionText
 
-            // Column 3: Temp & Precip Probability
             val tempText = forecast.temperature?.let { UnitUtils.formatTemp(it, unitSystem) } ?: "——"
             binding.tvHourlyTemp.text = tempText
 
@@ -138,14 +169,11 @@ class HourlyForecastAdapter(
                 binding.layoutPrecip.visibility = View.GONE
             }
 
-            // Accordion Expansion State
             val isExpanded = (expandedInstant == forecast.time)
-            binding.layoutExpandedPanel.visibility = if (isExpanded) View.VISIBLE else View.GONE
+            ExpandCollapseHelper.togglePanel(binding.layoutExpandedPanel, isExpanded, binding.cardHourlyRow)
 
-            // Bind Stat Grid inside Expanded Panel
-            bindStatGrid(forecast, zoneId)
+            bindStatGrid(forecast)
 
-            // Theme & Palette Styling
             val p = palette
             if (p != null) {
                 val isHighlighted = item.isCurrentHour
@@ -157,13 +185,12 @@ class HourlyForecastAdapter(
                 binding.cardHourlyRow.strokeWidth = (strokeWidthDp * context.resources.displayMetrics.density).toInt()
 
                 binding.tvHourlyTime.setTextColor(if (isHighlighted) p.brandPrimary else p.textPrimary)
-                binding.tvHourlyConditionText.setTextColor(p.textPrimary)
+                binding.tvHourlyConditionText.setTextColor(p.textSecondary)
                 binding.tvHourlyTemp.setTextColor(p.textPrimary)
                 binding.ivHourlyConditionIcon.setColorFilter(p.brandPrimary)
                 binding.tvDroplet.setTextColor(p.brandPrimary)
                 binding.tvPrecipProb.setTextColor(p.brandPrimary)
 
-                binding.layoutExpandedPanel.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvStatFeelsLike.setTextColor(p.textPrimary)
                 binding.tvStatWind.setTextColor(p.textPrimary)
                 binding.tvStatHumidity.setTextColor(p.textPrimary)
@@ -174,97 +201,93 @@ class HourlyForecastAdapter(
                 binding.tvStatUvIndex.setTextColor(p.textPrimary)
             }
 
-            // Accessibility Spoken Summary
             val precipSummary = if (precipProb != null && precipProb > 0) ", precipitation chance $precipProb percent" else ""
-            val stateSummary = if (isExpanded) ", expanded" else ", collapsed"
-            binding.cardHourlyRow.contentDescription = "$timeText, $conditionText, $tempText$precipSummary$stateSummary"
+            ExpandCollapseHelper.setupExpandableAccessibility(
+                binding.cardHourlyRow,
+                "$timeText, $conditionText, $tempText$precipSummary",
+                isExpanded
+            )
 
-            // Click listener to toggle expansion accordion
             binding.cardHourlyRow.setOnClickListener {
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     val newExpanded = if (expandedInstant == forecast.time) null else forecast.time
                     expandedInstant = newExpanded
 
-                    if (!isReducedMotionEnabled(context) && itemView.parent is ViewGroup) {
-                        TransitionManager.beginDelayedTransition(itemView.parent as ViewGroup)
-                    }
-                    notifyDataSetChanged()
+                    ExpandCollapseHelper.togglePanel(binding.layoutExpandedPanel, newExpanded == forecast.time, binding.cardHourlyRow)
+                    ExpandCollapseHelper.setupExpandableAccessibility(
+                        binding.cardHourlyRow,
+                        "$timeText, $conditionText, $tempText$precipSummary",
+                        newExpanded == forecast.time
+                    )
+                    notifyItemChanged(pos)
                 }
             }
         }
 
-        private fun bindStatGrid(forecast: HourlyForecast, zoneId: ZoneId) {
-            // Stat 1: Feels like
+        private fun bindStatGrid(forecast: HourlyForecast) {
             val feelsLike = forecast.apparentTemperature
             if (feelsLike != null) {
-                binding.tvStatFeelsLike.visibility = View.VISIBLE
-                binding.tvStatFeelsLike.text = "Feels like: ${UnitUtils.formatTemp(feelsLike, unitSystem)}"
+                binding.boxFeelsLike.visibility = View.VISIBLE
+                binding.tvStatFeelsLike.text = UnitUtils.formatTemp(feelsLike, unitSystem)
             } else {
-                binding.tvStatFeelsLike.visibility = View.GONE
+                binding.boxFeelsLike.visibility = View.GONE
             }
 
-            // Stat 2: Wind
             val windSpeed = forecast.windSpeed
             if (windSpeed != null) {
-                binding.tvStatWind.visibility = View.VISIBLE
-                binding.tvStatWind.text = "Wind: ${UnitUtils.formatWindSpeed(windSpeed, unitSystem, directionDeg = forecast.windDirection, gustKmh = forecast.windGusts)}"
+                binding.boxWind.visibility = View.VISIBLE
+                binding.tvStatWind.text = UnitUtils.formatWindSpeed(windSpeed, unitSystem, directionDeg = forecast.windDirection, gustKmh = forecast.windGusts)
             } else {
-                binding.tvStatWind.visibility = View.GONE
+                binding.boxWind.visibility = View.GONE
             }
 
-            // Stat 3: Humidity
             val hum = forecast.humidity
             if (hum != null) {
-                binding.tvStatHumidity.visibility = View.VISIBLE
-                binding.tvStatHumidity.text = "Humidity: $hum%"
+                binding.boxHumidity.visibility = View.VISIBLE
+                binding.tvStatHumidity.text = "$hum%"
             } else {
-                binding.tvStatHumidity.visibility = View.GONE
+                binding.boxHumidity.visibility = View.GONE
             }
 
-            // Stat 4: Dew point
             val dew = forecast.dewPoint
             if (dew != null) {
-                binding.tvStatDewPoint.visibility = View.VISIBLE
-                binding.tvStatDewPoint.text = "Dew point: ${UnitUtils.formatTemp(dew, unitSystem)}"
+                binding.boxDewPoint.visibility = View.VISIBLE
+                binding.tvStatDewPoint.text = UnitUtils.formatTemp(dew, unitSystem)
             } else {
-                binding.tvStatDewPoint.visibility = View.GONE
+                binding.boxDewPoint.visibility = View.GONE
             }
 
-            // Stat 5: Precipitation amount
             val precip = forecast.precipitation
             if (precip != null) {
-                binding.tvStatPrecipAmount.visibility = View.VISIBLE
-                binding.tvStatPrecipAmount.text = "Precipitation: ${UnitUtils.formatPrecipitation(precip, unitSystem)}"
+                binding.boxPrecipAmount.visibility = View.VISIBLE
+                binding.tvStatPrecipAmount.text = UnitUtils.formatPrecipitation(precip, unitSystem)
             } else {
-                binding.tvStatPrecipAmount.visibility = View.GONE
+                binding.boxPrecipAmount.visibility = View.GONE
             }
 
-            // Stat 6: Cloud cover
             val cloud = forecast.cloudCover
             if (cloud != null) {
-                binding.tvStatCloudCover.visibility = View.VISIBLE
-                binding.tvStatCloudCover.text = "Cloud cover: $cloud%"
+                binding.boxCloudCover.visibility = View.VISIBLE
+                binding.tvStatCloudCover.text = "$cloud%"
             } else {
-                binding.tvStatCloudCover.visibility = View.GONE
+                binding.boxCloudCover.visibility = View.GONE
             }
 
-            // Stat 7: Visibility
             val vis = forecast.visibility
             if (vis != null) {
-                binding.tvStatVisibility.visibility = View.VISIBLE
-                binding.tvStatVisibility.text = "Visibility: ${UnitUtils.formatVisibility(vis, unitSystem)}"
+                binding.boxVisibility.visibility = View.VISIBLE
+                binding.tvStatVisibility.text = UnitUtils.formatVisibility(vis, unitSystem)
             } else {
-                binding.tvStatVisibility.visibility = View.GONE
+                binding.boxVisibility.visibility = View.GONE
             }
 
-            // Stat 8: UV Index (Omit at night when UV index is null or <= 0.0)
             val uv = forecast.uvIndex
             if (uv != null && uv > 0.0) {
-                binding.tvStatUvIndex.visibility = View.VISIBLE
-                binding.tvStatUvIndex.text = String.format(Locale.getDefault(), "UV index: %.1f", uv)
+                binding.boxUvIndex.visibility = View.VISIBLE
+                binding.tvStatUvIndex.text = String.format(Locale.getDefault(), "%.1f", uv)
             } else {
-                binding.tvStatUvIndex.visibility = View.GONE
+                binding.boxUvIndex.visibility = View.GONE
             }
         }
     }

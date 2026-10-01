@@ -182,12 +182,23 @@ class DayForecastAdapter(
                 binding.tvExpandedMoonAzimuth.text = "——"
             }
 
-            binding.layoutExpandedDetails.visibility = if (item.isExpanded) View.VISIBLE else View.GONE
+            ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)
+            ExpandCollapseHelper.setupExpandableAccessibility(
+                binding.cardDay,
+                "${item.dayOfWeek}, ${item.formattedDate}, ${item.weatherDescription}",
+                item.isExpanded
+            )
 
             binding.cardDay.setOnClickListener {
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     item.isExpanded = !item.isExpanded
+                    ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)
+                    ExpandCollapseHelper.setupExpandableAccessibility(
+                        binding.cardDay,
+                        "${item.dayOfWeek}, ${item.formattedDate}, ${item.weatherDescription}",
+                        item.isExpanded
+                    )
                     notifyItemChanged(pos)
                 }
             }

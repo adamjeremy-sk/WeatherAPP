@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -82,6 +83,9 @@ object HourlyMapper {
 
         val items = mutableListOf<HourlyListItem>()
         val dividerFormatter = DateTimeFormatter.ofPattern("EEEE • MMM d", Locale.getDefault())
+
+        val firstDate = sliced[0].time.atZone(zoneId).toLocalDate()
+        items.add(HourlyListItem.DayDivider(dateLabel = firstDate.format(dividerFormatter)))
 
         for (i in sliced.indices) {
             val item = sliced[i]

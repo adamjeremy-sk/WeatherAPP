@@ -37,9 +37,12 @@ class HourlyMapperTest {
         val zoneId = ZoneId.of("America/New_York")
         val items = HourlyMapper.build36HourList(mapped, now, zoneId)
 
-        // Hour 14:00:00Z is index 14 in raw data. 36 hours sliced -> 36 HourRows + day dividers (Oct 2 -> Oct 3)
+        // Hour 14:00:00Z is index 14 in raw data. 36 hours sliced -> 36 HourRows + static day dividers
         val hourRows = items.filterIsInstance<HourlyListItem.HourRow>()
         assertEquals(36, hourRows.size)
+
+        val dividers = items.filterIsInstance<HourlyListItem.DayDivider>()
+        assertTrue(dividers.isNotEmpty())
 
         // First row is the current hour (14:00Z)
         val firstRow = hourRows.first()
@@ -122,5 +125,27 @@ class HourlyMapperTest {
         val footer = items.filterIsInstance<HourlyListItem.HorizonFooter>()
         assertEquals(1, footer.size)
         assertEquals("Hourly data ends here for this model", footer.first().message)
+    }
+
+    @Test
+    fun testContinuousListWithStaticDividers() {
+        val now = Instant.parse("2023-10-02T14:00:00Z")
+        val times = mutableListOf<String>()
+        val startInstant = Instant.parse("2023-10-02T00:00:00Z")
+        for (i in 0 until 60) {
+            times.add(startInstant.plus(i.toLong(), ChronoUnit.HOURS).toString())
+        }
+
+        val rawData = HourlyData(time = times)
+        val mapped = HourlyMapper.mapRawHourly(rawData)
+        val zoneId = ZoneId.of("America/New_York")
+
+        val items = HourlyMapper.build36HourList(mapped, now, zoneId)
+        val hourRows = items.filterIsInstance<HourlyListItem.HourRow>()
+        val dividers = items.filterIsInstance<HourlyListItem.DayDivider>()
+
+        // All 36 hour rows rendered continuously in order
+        assertEquals(36, hourRows.size)
+        assertTrue(dividers.size >= 2)
     }
 }

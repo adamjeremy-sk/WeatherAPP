@@ -50,14 +50,10 @@ class HourlyDisplayManager(
 
         val unitSystem = locationPreferences.getUnitSystem()
         hourlyAdapter.setUnitSystem(unitSystem)
-        hourlyAdapter.setLocationTimezone(locationTimezoneStr)
-
-        val items = HourlyMapper.build36HourList(
+        hourlyAdapter.submitForecastData(
             forecasts = cachedHourlyForecasts,
-            now = Instant.now(),
-            zoneId = zoneId
+            timezone = locationTimezoneStr
         )
-        hourlyAdapter.submitList(items)
     }
 
     fun setPalette(palette: ColorPalette) {
