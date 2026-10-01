@@ -242,7 +242,7 @@ class WeatherDisplayManager(
         val upcomingPhases = LunarCalculator.phaseEventsBetween(startUtc, endUtc)
 
         val formatter = DateTimeFormatter.ofPattern("EEE, MMM d • h:mm a", Locale.getDefault())
-        val upcomingText = upcomingPhases.take(4).joinToString("\n") { ev ->
+        val upcomingLines = upcomingPhases.take(4).map { ev ->
             val localTimeStr = ev.instantUtc.atZone(zoneId).format(formatter)
             val phaseNameStr = when (ev.type) {
                 MoonPhaseName.NEW_MOON -> "🌑 New Moon"
@@ -268,18 +268,17 @@ class WeatherDisplayManager(
             "$t (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
         } else "Moon does not set today"
 
-        val message = """
-            Phase: ${formatted.phaseNameWithEmoji}
-            Illumination: ${formatted.illuminationText}
-            Moon Age: ${String.format(Locale.US, "%.1f", currMoonInfo.ageDays)} days
-            Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm ?: 384400.0)} km
-            
-            Moonrise: $riseStr
-            Moonset: $setStr
-            
-            Upcoming Moon Phases:
-            $upcomingText
-        """.trimIndent()
+        val message = (listOf(
+            "Phase: ${formatted.phaseNameWithEmoji}",
+            "Illumination: ${formatted.illuminationText}",
+            "Moon Age: ${String.format(Locale.US, "%.1f", currMoonInfo.ageDays)} days",
+            "Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm ?: 384400.0)} km",
+            "",
+            "Moonrise: $riseStr",
+            "Moonset: $setStr",
+            "",
+            "Upcoming Moon Phases:"
+        ) + upcomingLines).joinToString("\n")
 
         val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle("Current Moon Phase")
