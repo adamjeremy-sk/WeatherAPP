@@ -46,4 +46,10 @@
             android:title="WeatherAPP Roadmap" />
     </group>
 
+    <group android:id="@+id/group_share">
+        <item
+            android:id="@+id/menu_item_share"
+            android:title="@string/menu_item_share_title" />
+    </group>
+
 </menu>

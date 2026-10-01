@@ -321,8 +321,7 @@ class MainActivity : AppCompatActivity() {
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (menuItem.itemId) {
-                R.id.menu_item_theme -> themeManager.showThemeSettingsScreen()
-                R.id.menu_item_tabs -> settingsDialogManager.showLocationTabsSettingsScreen()
+                R.id.menu_item_theme -> themeManager.showThemeSettingsScreen(); R.id.menu_item_tabs -> settingsDialogManager.showLocationTabsSettingsScreen()
                 R.id.menu_item_models -> settingsDialogManager.showModelsSettingsScreen(weatherDisplayManager)
                 R.id.menu_item_alerts -> settingsDialogManager.showWeatherAlertsSettingsScreen()
                 R.id.menu_item_cache -> settingsDialogManager.showCacheSettingsScreen()
@@ -333,6 +332,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_privacy -> settingsDialogManager.showPrivacySettingsScreen()
                 R.id.menu_item_rate -> openUrl("https://play.google.com/store/apps/details?id=$packageName")
                 R.id.menu_item_roadmap -> settingsDialogManager.showRoadmapSettingsScreen()
+                R.id.menu_item_share -> settingsDialogManager.shareProject()
             }
             true
         }

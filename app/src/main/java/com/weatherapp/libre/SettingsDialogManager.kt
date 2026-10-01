@@ -1,6 +1,8 @@
 package com.weatherapp.libre
 
+import com.weatherapp.libre.BuildConfig
 import android.app.Dialog
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.TypedValue
@@ -793,7 +795,7 @@ class SettingsDialogManager(
     }
 
     fun showAboutSettingsScreen() {
-        showWebViewSettingsPage("About WeatherAPP", "https://adamjeremy-sk.github.io/WeatherAPP/about.html")
+        showWebViewSettingsPage(activity.getString(R.string.about_page_title, BuildConfig.VERSION_NAME), "https://adamjeremy-sk.github.io/WeatherAPP/about.html")
     }
 
     fun showDonateSettingsScreen() {
@@ -808,5 +810,19 @@ class SettingsDialogManager(
         locationDialogManager.showRecentLocationsDialog(isSettingDefaultLocation = true) {
             Toast.makeText(activity.applicationContext, "Default startup location updated", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun shareProject() {
+        val message = activity.getString(R.string.share_message_body, BETA_SUPPORT_URL)
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, message)
+        }
+        val chooser = Intent.createChooser(sendIntent, activity.getString(R.string.share_chooser_title))
+        activity.startActivity(chooser)
+    }
+
+    companion object {
+        const val BETA_SUPPORT_URL = "https://adamjeremy-sk.github.io/WeatherAPP/support.html"
     }
 }

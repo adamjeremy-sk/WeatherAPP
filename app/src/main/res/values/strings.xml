@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WeatherAPP</string>
+    <string name="menu_item_share_title">Share This Project</string>
+    <string name="share_chooser_title">Share WeatherAPP Libre</string>
+    <string name="share_message_body">I\'m beta testing WeatherAPP Libre, a private ad-free weather and natural-light planner with official Environment Canada alerts. Join the beta: %s</string>
+    <string name="about_page_title">About WeatherAPP v%1$s</string>
 </resources>
