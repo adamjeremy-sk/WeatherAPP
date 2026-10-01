@@ -96,6 +96,7 @@ class AstronomyDisplayManager(
         locationTimezoneStr = timezone
 
         activity.findViewById<android.view.View>(R.id.layoutWeatherDetailsContainer)?.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
+        activity.findViewById<android.view.View>(R.id.layoutHeroSection)?.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
         activity.findViewById<android.view.View>(R.id.layoutInlineGoldenHourContainer)?.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
 
         when (subTab) {
