@@ -20,8 +20,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 enum class InlineSubTab {
-    WEATHER_DETAILS,
-    GOLDEN_HOUR
+    CURRENT,
+    HOURLY,
+    NATURAL_LIGHT
 }
 
 class AstronomyDisplayManager(
@@ -30,9 +31,11 @@ class AstronomyDisplayManager(
     private val locationPreferences: LocationPreferences
 ) {
 
-    var activeInlineSubTab = InlineSubTab.WEATHER_DETAILS
+    val savedSubTabIdx = locationPreferences.getSavedInlineSubTab()
+    var activeInlineSubTab = InlineSubTab.values().getOrElse(savedSubTabIdx) { InlineSubTab.CURRENT }
     var inlineGoldenDate: LocalDate = LocalDate.now()
     lateinit var inlineSolarPhaseAdapter: SolarPhaseAdapter
+    var hourlyDisplayManager: HourlyDisplayManager? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private var isVolumeKeyHeld = false
@@ -94,19 +97,31 @@ class AstronomyDisplayManager(
         activeInlineSubTab = subTab
         currentLocationItem = location
         locationTimezoneStr = timezone
+        locationPreferences.saveInlineSubTab(subTab.ordinal)
 
-        activity.findViewById<android.view.View>(R.id.layoutWeatherDetailsContainer)?.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
-        activity.findViewById<android.view.View>(R.id.layoutHeroSection)?.visibility = if (subTab == InlineSubTab.WEATHER_DETAILS) View.VISIBLE else View.GONE
-        activity.findViewById<android.view.View>(R.id.layoutInlineGoldenHourContainer)?.visibility = if (subTab == InlineSubTab.GOLDEN_HOUR) View.VISIBLE else View.GONE
+        val weatherVis = if (subTab == InlineSubTab.CURRENT) View.VISIBLE else View.GONE
+        val hourlyVis = if (subTab == InlineSubTab.HOURLY) View.VISIBLE else View.GONE
+        val naturalLightVis = if (subTab == InlineSubTab.NATURAL_LIGHT) View.VISIBLE else View.GONE
 
+        activity.findViewById<android.view.View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
+        activity.findViewById<android.view.View>(R.id.layoutHeroSection)?.visibility = weatherVis
+        activity.findViewById<android.view.View>(R.id.layoutInlineHourlyContainer)?.visibility = hourlyVis
+        activity.findViewById<android.view.View>(R.id.layoutInlineGoldenHourContainer)?.visibility = naturalLightVis
+
+        val btnMenu = activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)
         when (subTab) {
-            InlineSubTab.WEATHER_DETAILS -> {
-                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.text = "Weather ▾"
-                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.setIconResource(R.drawable.ic_weather)
+            InlineSubTab.CURRENT -> {
+                btnMenu?.text = "Current ▾"
+                btnMenu?.setIconResource(R.drawable.ic_weather)
             }
-            InlineSubTab.GOLDEN_HOUR -> {
-                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.text = "Golden Hour ▾"
-                activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)?.setIconResource(R.drawable.ic_golden_hour)
+            InlineSubTab.HOURLY -> {
+                btnMenu?.text = "Hourly ▾"
+                btnMenu?.setIconResource(R.drawable.ic_weather)
+                hourlyDisplayManager?.rebuildHourlyList()
+            }
+            InlineSubTab.NATURAL_LIGHT -> {
+                btnMenu?.text = "Natural Light ▾"
+                btnMenu?.setIconResource(R.drawable.ic_golden_hour)
                 updateInlineGoldenHourDisplay(location)
             }
         }
@@ -172,7 +187,7 @@ class AstronomyDisplayManager(
     }
 
     fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (activeInlineSubTab == InlineSubTab.GOLDEN_HOUR && locationPreferences.isVolumeScrollEnabled()) {
+        if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT && locationPreferences.isVolumeScrollEnabled()) {
             when (keyCode) {
                 KeyEvent.KEYCODE_VOLUME_UP -> {
                     if (!isVolumeKeyHeld) {

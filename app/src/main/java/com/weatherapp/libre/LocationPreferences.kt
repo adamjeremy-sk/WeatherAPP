@@ -259,6 +259,14 @@ class LocationPreferences(context: Context) {
         prefs.edit().putInt(KEY_ACTIVE_TAB_INDEX, index.coerceIn(0, maxIndex)).apply()
     }
 
+    fun getSavedInlineSubTab(): Int {
+        return prefs.getInt("app_inline_sub_tab_index", 0).coerceIn(0, 2)
+    }
+
+    fun saveInlineSubTab(index: Int) {
+        prefs.edit().putInt("app_inline_sub_tab_index", index.coerceIn(0, 2)).apply()
+    }
+
     fun getTabLocation(tabIndex: Int): LocationItem {
         val keyName = "tab_${tabIndex}_name"
         val name = prefs.getString(keyName, null)

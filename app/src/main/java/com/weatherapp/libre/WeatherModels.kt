@@ -65,7 +65,8 @@ data class WeatherResponse(
     val elevation: Double? = 0.0,
     val timezone: String?,
     val current: CurrentData?,
-    val daily: DailyData?
+    val daily: DailyData?,
+    var hourly: HourlyData? = null
 )
 
 data class CurrentData(
@@ -111,6 +112,69 @@ data class DailyData(
     @SerializedName("wind_gusts_10m_max")
     var windGustsMax: List<Double?>? = null
 )
+
+data class HourlyData(
+    var time: List<String>? = null,
+    @SerializedName("temperature_2m")
+    var temperature2m: List<Double?>? = null,
+    @SerializedName("apparent_temperature")
+    var apparentTemperature: List<Double?>? = null,
+    @SerializedName("precipitation_probability")
+    var precipitationProbability: List<Int?>? = null,
+    @SerializedName("precipitation")
+    var precipitation: List<Double?>? = null,
+    @SerializedName("weather_code")
+    var weatherCode: List<Int?>? = null,
+    @SerializedName("wind_speed_10m")
+    var windSpeed10m: List<Double?>? = null,
+    @SerializedName("wind_gusts_10m")
+    var windGusts10m: List<Double?>? = null,
+    @SerializedName("wind_direction_10m")
+    var windDirection10m: List<Double?>? = null,
+    @SerializedName("relative_humidity_2m")
+    var relativeHumidity2m: List<Int?>? = null,
+    @SerializedName("dew_point_2m")
+    var dewPoint2m: List<Double?>? = null,
+    @SerializedName("cloud_cover")
+    var cloudCover: List<Int?>? = null,
+    @SerializedName("visibility")
+    var visibility: List<Double?>? = null,
+    @SerializedName("uv_index")
+    var uvIndex: List<Double?>? = null
+)
+
+data class HourlyForecast(
+    val time: Instant,
+    val temperature: Double? = null,
+    val apparentTemperature: Double? = null,
+    val precipitationProbability: Int? = null,
+    val precipitation: Double? = null,
+    val weatherCode: Int? = null,
+    val windSpeed: Double? = null,
+    val windGusts: Double? = null,
+    val windDirection: Double? = null,
+    val humidity: Int? = null,
+    val dewPoint: Double? = null,
+    val cloudCover: Int? = null,
+    val visibility: Double? = null,
+    val uvIndex: Double? = null,
+    var isExpanded: Boolean = false
+)
+
+sealed class HourlyListItem {
+    data class HourRow(
+        val forecast: HourlyForecast,
+        val isCurrentHour: Boolean = false
+    ) : HourlyListItem()
+
+    data class DayDivider(
+        val dateLabel: String
+    ) : HourlyListItem()
+
+    data class HorizonFooter(
+        val message: String = "Hourly data ends here for this model"
+    ) : HourlyListItem()
+}
 
 data class SolarDaySummary(
     val sunrise: Instant? = null,

@@ -27,6 +27,7 @@ class ThemeManager(
     var forecastAdapter: DayForecastAdapter? = null
     var metricGridAdapter: MetricGridAdapter? = null
     var inlineSolarPhaseAdapter: SolarPhaseAdapter? = null
+    var hourlyForecastAdapter: HourlyForecastAdapter? = null
 
     fun applyTheme(themeMode: Int) {
         val palette = ColorPalette.forMode(themeMode, activity)
@@ -156,6 +157,7 @@ class ThemeManager(
         metricGridAdapter?.setPalette(palette)
         forecastAdapter?.setPalette(palette)
         inlineSolarPhaseAdapter?.setPalette(palette)
+        hourlyForecastAdapter?.setPalette(palette)
     }
 
     private fun getAaaTitleColor(bgColor: Int): Int {

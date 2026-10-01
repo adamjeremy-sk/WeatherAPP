@@ -36,6 +36,7 @@ class WeatherDisplayManager(
     var forecastAdapter: DayForecastAdapter? = null
     var alertBannerManager: AlertBannerManager? = null
     var metricGridAdapter: MetricGridAdapter? = null
+    var hourlyDisplayManager: HourlyDisplayManager? = null
 
     fun updateLocationHeader() {
         binding.tvLocationName.text = "${currentLocation.displayName} ▾"
@@ -109,6 +110,7 @@ class WeatherDisplayManager(
 
                     astronomyManager.setLocation(currentLocation, locationTimezone)
                     astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                    hourlyDisplayManager?.updateHourlyData(response, currentLocation, locationTimezone)
 
                     updateAlertBanner()
                     onWeatherLoaded?.invoke()

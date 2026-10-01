@@ -706,7 +706,25 @@
 
     </LinearLayout>
 
-    <!-- Container 2: Inline Golden Hour View -->
+    <!-- Container 2: Inline Hourly Forecast View -->
+    <LinearLayout
+        android:id="@+id/layoutInlineHourlyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvInlineHourly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:nestedScrollingEnabled="false"
+            tools:itemCount="10" />
+
+    </LinearLayout>
+
+    <!-- Container 3: Inline Golden Hour View -->
     <LinearLayout
         android:id="@+id/layoutInlineGoldenHourContainer"
         android:layout_width="match_parent"

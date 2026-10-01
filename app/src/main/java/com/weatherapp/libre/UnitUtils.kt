@@ -78,6 +78,15 @@ object UnitUtils {
         }
     }
 
+    fun formatPrecipitation(mm: Double, unitSystem: UnitSystem): String {
+        return if (unitSystem == UnitSystem.US_CUSTOMARY) {
+            val inches = mm / 25.4
+            String.format(Locale.getDefault(), "%.2f in", inches)
+        } else {
+            String.format(Locale.getDefault(), "%.1f mm", mm)
+        }
+    }
+
     fun formatCeiling(cloudCoverPct: Int, humidityPct: Int, unitSystem: UnitSystem): String {
         if (cloudCoverPct < 25) return "Unlimited"
         val estimatedCeilingMeters = (100 - humidityPct) * 125.0

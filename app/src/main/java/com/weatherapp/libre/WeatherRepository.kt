@@ -46,7 +46,7 @@ class WeatherRepository {
         locationPreferences: LocationPreferences?
     ): Boolean {
         val modelKey = model.openMeteoKey
-        val cacheKey = String.format(Locale.US, "cache_%.4f_%.4f_%s", latitude, longitude, modelKey)
+        val cacheKey = String.format(Locale.US, "cache_v2_%.4f_%.4f_%s", latitude, longitude, modelKey)
         val now = System.currentTimeMillis()
         val ttlMillis = ttlMinutes.toLong() * 60 * 1000L
 
@@ -81,7 +81,7 @@ class WeatherRepository {
         locationPreferences: LocationPreferences? = null
     ): Result<WeatherResponse> = withContext(Dispatchers.IO) {
         val modelKey = model.openMeteoKey
-        val cacheKey = String.format(Locale.US, "cache_%.4f_%.4f_%s", latitude, longitude, modelKey)
+        val cacheKey = String.format(Locale.US, "cache_v2_%.4f_%.4f_%s", latitude, longitude, modelKey)
         val now = System.currentTimeMillis()
         val ttlMillis = ttlMinutes.toLong() * 60 * 1000L
 
@@ -168,6 +168,10 @@ class WeatherRepository {
                     d.sunset = mergedSunset
                 }
 
+                if (weatherResponse.hourly == null && extraResponse?.hourly != null) {
+                    weatherResponse.hourly = extraResponse.hourly
+                }
+
                 forecastCache[cacheKey] = CachedWeatherEntry(weatherResponse, now)
                 if (locationPreferences != null) {
                     try {
@@ -195,8 +199,10 @@ class WeatherRepository {
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
                     "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max" +
+                    "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
                     "&models=$modelApiString" +
+                    "&timeformat=iso8601" +
                     "&timezone=auto"
 
             android.util.Log.d("WeatherAPI_Routing", "Requesting Model: ${model.displayName} | Endpoint: $baseUrl | URL: $url")
@@ -228,7 +234,9 @@ class WeatherRepository {
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
                     "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max" +
+                    "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
+                    "&timeformat=iso8601" +
                     "&timezone=auto"
 
             val request = Request.Builder().url(url).get().build()

@@ -246,40 +246,38 @@ class MainActivity : AppCompatActivity() {
         themeManager.forecastAdapter = forecastAdapter
         themeManager.metricGridAdapter = metricGridAdapter
         
-        // Let's make sure section_metric_grid uses rvMetricGrid 
-        // We'll need to find rvMetricGrid in the view hierarchy 
-        val rvMetricGrid = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvMetricGrid)
-        rvMetricGrid?.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
-        rvMetricGrid?.adapter = metricGridAdapter
-
-
-        val solarAdapter = SolarPhaseAdapter { item ->
-            astronomyManager.promptSetSolarAlarm(item)
-        }
+        val solarAdapter = SolarPhaseAdapter { item -> astronomyManager.promptSetSolarAlarm(item) }
         findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.layoutManager = LinearLayoutManager(this)
         findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.adapter = solarAdapter
         astronomyManager.inlineSolarPhaseAdapter = solarAdapter
         themeManager.inlineSolarPhaseAdapter = solarAdapter
-        
+
+        val hourlyDisplayManager = HourlyDisplayManager(this, locationPreferences)
+        hourlyDisplayManager.setupRecyclerView()
+        weatherDisplayManager.hourlyDisplayManager = hourlyDisplayManager
+        astronomyManager.hourlyDisplayManager = hourlyDisplayManager
+        themeManager.hourlyForecastAdapter = hourlyDisplayManager.hourlyAdapter
+
         // Pass initial palette to adapters
         val currentPalette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         forecastAdapter.setPalette(currentPalette)
         solarAdapter.setPalette(currentPalette)
+        hourlyDisplayManager.setPalette(currentPalette)
     }
 
     private fun showInlineMenu(anchorView: View) {
         val popup = androidx.appcompat.widget.PopupMenu(this, anchorView)
-        popup.menu.add(0, 0, 0, "Weather Details")
-        popup.menu.add(0, 1, 1, "Golden Hour")
-
+        popup.menu.add(0, 0, 0, "Current")
+        popup.menu.add(0, 1, 1, "Hourly")
+        popup.menu.add(0, 2, 2, "Natural Light")
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                0 -> astronomyManager.switchInlineSubTab(InlineSubTab.WEATHER_DETAILS, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                1 -> astronomyManager.switchInlineSubTab(InlineSubTab.GOLDEN_HOUR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                0 -> astronomyManager.switchInlineSubTab(InlineSubTab.CURRENT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                1 -> astronomyManager.switchInlineSubTab(InlineSubTab.HOURLY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                2 -> astronomyManager.switchInlineSubTab(InlineSubTab.NATURAL_LIGHT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
             }
             true
         }
-
         popup.show()
     }
 
@@ -363,8 +361,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else if (astronomyManager.activeInlineSubTab != InlineSubTab.WEATHER_DETAILS) {
-            astronomyManager.switchInlineSubTab(InlineSubTab.WEATHER_DETAILS, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+        } else if (astronomyManager.activeInlineSubTab != InlineSubTab.CURRENT) {
+            astronomyManager.switchInlineSubTab(InlineSubTab.CURRENT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
         } else {
             super.onBackPressed()
         }
