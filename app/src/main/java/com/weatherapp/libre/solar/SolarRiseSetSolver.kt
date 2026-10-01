@@ -40,7 +40,7 @@ object SolarRiseSetSolver {
 
         val solarNoon = findSolarNoon(localStartInstant, localEndInstant, observer)
 
-        val sunriseSunsetTargetAlt = definitions.sunriseSunsetAltitudeDegrees - observer.horizonDipDegrees
+        val sunriseSunsetTargetAlt = definitions.sunriseSunsetAltitudeDegrees
 
         val sunriseEvent = findSingleCrossingForDate(
             samples, localStartInstant, localEndInstant, sunriseSunsetTargetAlt, isRisingTarget = true, observer = observer

@@ -21,7 +21,7 @@ object TopocentricConverter {
         val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
         val lunar = LunarPosition.compute(jdeTT)
         val topo = computeTopocentric(lunar, observer, jdUtc, jdeTT)
-        val h0 = (0.7275 * lunar.horizontalParallaxDeg) - 0.5667
+        val h0 = -lunar.semidiameterDeg
 
         return LunarTopocentricHorizontalState(
             instantUtc = instantUtc,
@@ -77,9 +77,9 @@ object TopocentricConverter {
         val topocentricRaDeg = AstronomyMath.normalizeDegrees(lunar.raDeg + AstronomyMath.radToDeg(deltaRaRad))
         val topocentricHRad = HRad - deltaRaRad
 
-        val sinTopocentricDec = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad) /
+        val tanTopocentricDec = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad) /
                 (cos(decRad) - rhoCosPhiDash * sinPi * cos(HRad))
-        val topocentricDecRad = asin(sinTopocentricDec.coerceIn(-1.0, 1.0))
+        val topocentricDecRad = atan(tanTopocentricDec)
         val topocentricDecDeg = AstronomyMath.radToDeg(topocentricDecRad)
 
         val sinAlt = sin(latRad) * sin(topocentricDecRad) + cos(latRad) * cos(topocentricDecRad) * cos(topocentricHRad)

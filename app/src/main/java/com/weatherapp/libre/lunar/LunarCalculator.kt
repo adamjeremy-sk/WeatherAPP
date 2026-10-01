@@ -36,12 +36,8 @@ object LunarCalculator {
         return TopocentricConverter.topocentricHorizontalState(instantUtc, observer)
     }
 
-    /**
-     * Calculates the dynamic lunar horizon threshold in degrees.
-     * h0 = (0.7275 * horizontalParallaxDegrees) - 0.5667
-     */
     fun lunarHorizonThresholdDegrees(instantUtc: Instant): Double {
-        return MoonRiseSetCalculator.lunarHorizonThresholdDegrees(instantUtc)
+        return 0.0 // no longer used publicly
     }
 
     /**

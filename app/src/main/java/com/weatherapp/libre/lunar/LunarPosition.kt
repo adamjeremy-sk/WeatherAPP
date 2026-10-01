@@ -152,9 +152,9 @@ object LunarPosition {
         val distanceKm = 385000.56 + (sumR / 1000.0)
 
         val sinParallax = 6378.14 / distanceKm
-        val parallaxDeg = AstronomyMath.radToDeg(asin(sinParallax.coerceIn(0.0, 1.0)))
+        val parallaxDeg = AstronomyMath.radToDeg(asin(sinParallax.coerceIn(-1.0, 1.0)))
 
-        val semidiameterDeg = AstronomyMath.radToDeg(asin(0.272481 * sinParallax))
+        val semidiameterDeg = 0.27245 * parallaxDeg
 
         val eq = AstronomyMath.eclipticToEquatorial(lambdaDeg, betaDeg, nut.trueObliquityDeg)
 

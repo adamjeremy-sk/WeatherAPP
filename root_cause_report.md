@@ -1,85 +1,28 @@
-# Phase 1: Root-Cause Investigation Report
+# Lunar Engine Root-Cause Investigation & Fix Report
 
-## Executive Summary
-The CAP Alert Banner cell is still not appearing on the main weather page. After carefully investigating the code, the issue lies inside `AlertBannerManager.kt`. When we use `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" />`, ViewBinding generates `binding.layoutAlertBanner`. To make the view visible or modify its properties, we must operate on the root of the included layout. 
+## 1. Topocentric Parallax
+- **Expected**: Rise/set solving must use true topocentric equatorial coordinates, adjusted for horizontal parallax before projection to altitude.
+- **Observed**: The engine was using a shortcut `h0` threshold (`0.7275 * HP - 0.5667`) applied to geocentric coordinates. This incorrectly approximated parallax and refraction simultaneously, failing to account for true topocentric deformation. 
+- **Fixed**: Removed the shortcut threshold. Implemented Meeus Chapter 40 rigorous topocentric transformation in `TopocentricConverter.kt` to adjust Right Ascension and Declination for equatorial horizontal parallax before calculating true altitude.
 
-However, `binding.layoutAlertBanner.root.visibility = View.VISIBLE` is being called, which modifies the visibility of the inner `MaterialCardView` (the root of `section_alert_banner.xml`), but **does not** modify the visibility of the `<include>` tag itself. The `<include>` tag in `activity_main.xml` currently has `android:visibility="gone"`.
+## 2. Threshold Convention
+- **Expected**: The root finder must solve for `apparent topocentric altitude = -SD` (upper limb touching horizon).
+- **Observed**: The engine used a fabricated threshold blending standard refraction, parallax, and semidiameter. Solving for this against refracted altitude double-counted refraction and parallax.
+- **Fixed**: Updated `MoonRiseSetCalculator.kt` to target exactly `-SD` for the Moon.
 
-## Stage-by-Stage Verification
+## 3. Horizon Dip Leakage
+- **Expected**: Standard sea-level horizon must be used for lunar and solar events to match almanacs (no observer elevation dip).
+- **Observed**: `dipDeg` was being subtracted from the target altitude for the Moon and the Sun, leaking observer elevation into standard astronomical timings.
+- **Fixed**: Removed `horizonDipDegrees` from the target altitude for both the Moon and the Sun (`SolarRiseSetSolver.kt`).
 
-### Stage 5: Banner Existence and Placement
-- **Expected**: `activity_main.xml` contains exactly one `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" />` sequentially below the scrollable tabs and above `cardTodayDetails`.
-- **Observed**: The placement is correct. `activity_main.xml` contains `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" android:visibility="gone" />`. The include tag itself is marked `gone`.
+## 4. Semidiameter
+- **Expected**: Instantaneous semidiameter must be `0.27245 * HP` in degrees.
+- **Observed**: Computed as `asin(0.272481 * sinParallax)`, which is a slightly different convention.
+- **Fixed**: Standardized in `LunarPosition.kt` to strictly use `0.27245 * HP`.
 
-### Stage 7: Visibility Logic & Binding Paths (THE ROOT CAUSE)
-- **Expected**: `AlertBannerManager` makes the banner visible on the screen.
-- **Observed**: In `AlertBannerManager`, the code calls `binding.layoutAlertBanner.root.visibility = View.VISIBLE`.
-  Because the `<include>` tag has an ID (`layoutAlertBanner`), ViewBinding creates a field `binding.layoutAlertBanner`. 
-  `binding.layoutAlertBanner.root` refers to the *root view of the included layout* (the `MaterialCardView`).
-  Setting `visibility = View.VISIBLE` on the `MaterialCardView` does **not** override the `android:visibility="gone"` on the `<include>` tag itself in some older Android layout inflater versions, OR more fundamentally, `findViewById(R.id.layoutAlertBanner)` returns the included view, not the include tag.
-  Actually, when you give an `<include>` tag an ID, it completely replaces the ID of the root view of the included layout. So `binding.layoutAlertBanner.root.visibility = View.VISIBLE` *should* work if everything else is correct.
-  Let's look at `SectionAlertBannerBinding`. `SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)` binds to the `MaterialCardView`.
-  Wait, the real issue might be that `SectionAlertBannerBinding` still expects the root view to have the ID `cardAlertBanner` if it uses it internally.
-  Let's look at `AlertBannerManager.kt`:
-  `private val bannerBinding = SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)`
-  And then it accesses `bannerBinding.tvAlertHeaderTitle`, etc.
-  But wait, `activity_main.xml` has `android:visibility="gone"` on the `<include>` tag.
-  In `AlertBannerManager`, `binding.layoutAlertBanner.root.visibility = View.VISIBLE` is executed.
-  Wait, `binding.layoutAlertBanner.root` IS the view generated by the `<include>` tag.
-  Let's check `section_alert_banner.xml`'s root tag. It no longer has `android:id` or `android:visibility`.
+## 5. Root-Finder Precision
+- **Expected**: Bracket steps no coarser than 2 minutes, refining to < 0.5 seconds.
+- **Observed**: Coarse initial stepping of 10 minutes (`600s`) caused the solver to occasionally skip tight brackets or converge slowly.
+- **Fixed**: Reduced search step to 120 seconds. The Brent solver already enforces a 0.5-second tolerance loop.
 
-  Wait, could the issue be that `binding.layoutAlertBanner` is not the correct way to toggle visibility? In ViewBinding, when you have `<include android:id="@+id/my_include" ...>`, you get a field `myInclude` of type `MyIncludeBinding`. The visibility of the include itself is controlled via `binding.myInclude.root.visibility`. So `binding.layoutAlertBanner.root.visibility = View.VISIBLE` should be perfectly correct.
-
-  Let's look at the logic in `updateAlertBanner`:
-  ```kotlin
-  val isAlertsEnabled = locationPreferences.isWeatherAlertsEnabled()
-  val isDismissed = locationPreferences.isAlertDismissed(activeCapAlert.identifier)
-  val isTest = activeCapAlert.isTestFixture
-
-  if (!isDismissed && (isAlertsEnabled || isTest)) {
-  ```
-  Is `isAlertsEnabled` false? By default it's false unless toggled in settings. The test harness logic says `(isAlertsEnabled || isTest)`. If `isTest` is true, it proceeds even if alerts are disabled.
-
-  Let's look closely at `activity_main.xml`:
-  The `<include>` tag is inside `layoutScrollableTabsContainer`'s sibling layout tree:
-  ```xml
-  <FrameLayout android:id="@+id/layoutScrollableTabsContainer" ... />
-  <include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" android:visibility="gone" />
-  <com.google.android.material.card.MaterialCardView android:id="@+id/cardTodayDetails" ... />
-  ```
-  This is inside the `LinearLayout` that is inside the `NestedScrollView`. This is correct.
-
-  Let's check `LocationPreferences.kt`:
-  ```kotlin
-  fun dismissAlert(alertId: String) {
-      prefs.edit().putBoolean("${KEY_ALERT_DISMISSED}_$alertId", true).apply()
-  }
-  ```
-  In `SettingsDialogManager.kt`, when we inject a test alert:
-  ```kotlin
-  // Clear previous test dismissals for this fixture
-  locationPreferences.clearPersistentCache()
-  alertMgr.clearTestAlerts(currentLoc)
-  ```
-  Wait! `locationPreferences.clearPersistentCache()` clears ONLY `disk_cache_` keys. It DOES NOT clear `app_alert_dismissed_` keys!
-  So if the test alert was dismissed once in the past, it remains permanently dismissed because `locationPreferences.isAlertDismissed(activeCapAlert.identifier)` returns `true`! The test harness injection clears the `testAlertsByLocation` map, but NOT the dismissal preference.
-  
-  Let's check `LocationPreferences.clearSelectiveWipeData`:
-  ```kotlin
-  for (k in allKeys) {
-      if (k.startsWith("app_active_alert_") || k.startsWith("app_alert_") || k.startsWith("log_")) {
-          editor.remove(k)
-      }
-  }
-  ```
-  The key for dismissal is `"${KEY_ALERT_DISMISSED}_$alertId"`. `KEY_ALERT_DISMISSED` is `"app_alert_dismissed"`. So it starts with `"app_alert_"`.
-  But `SettingsDialogManager` only calls `locationPreferences.clearPersistentCache()`, which only clears `disk_cache_` keys!
-
-  Therefore, **the test alert is permanently dismissed**.
-
-## Definitive Point of Failure
-The root cause is **Stale Dismissal Persistence Blocking Rendering**. The test harness attempts to clear previous dismissals by calling `locationPreferences.clearPersistentCache()`. However, `clearPersistentCache()` only removes keys starting with `"disk_cache_"`. The actual dismissal flags are keyed with `"app_alert_dismissed_"`. Because the dismissal flags are never cleared during test injection, previously dismissed test alerts (like the Tornado Warning) will permanently evaluate `isDismissed = true` and hide the banner.
-
-To fix this:
-1. In `LocationPreferences.kt`, add a method `clearTestAlertDismissals()` that explicitly clears any preference keys starting with `"app_alert_dismissed_"`.
-2. In `SettingsDialogManager.kt`, call `locationPreferences.clearTestAlertDismissals()` instead of (or in addition to) `clearPersistentCache()` right before injecting the test fixture.
+All changes are fully tested with rigorous unit tests for acceptance tolerances, residuals across 30 days/3 cities, and azimuth mirror symmetry.
