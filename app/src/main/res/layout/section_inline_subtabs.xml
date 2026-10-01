@@ -22,7 +22,8 @@
             <LinearLayout
                 android:id="@+id/cardHighTemp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_temp_high"
@@ -30,7 +31,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -40,8 +41,8 @@
 
                     <ImageView
                         android:id="@+id/ivHighTempIcon"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
                         android:contentDescription="Daily High Icon"
                         android:src="@drawable/ic_temp_high"
@@ -75,7 +76,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/temp_high"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     tools:text="18°C" />
 
@@ -85,7 +86,8 @@
             <LinearLayout
                 android:id="@+id/cardLowTemp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_temp_low"
@@ -93,7 +95,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -103,8 +105,8 @@
 
                     <ImageView
                         android:id="@+id/ivLowTempIcon"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_marginEnd="6dp"
                         android:contentDescription="Daily Low Icon"
                         android:src="@drawable/ic_temp_low"
@@ -138,7 +140,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/temp_low"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     tools:text="5°C" />
 
@@ -157,12 +159,13 @@
                 android:id="@+id/layoutMetricWind"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -192,7 +195,7 @@
                     android:id="@+id/tvWindSpeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
@@ -205,12 +208,12 @@
                     android:id="@+id/tvWindGusts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     tools:text="Gusts: 45 km/h" />
 
             </LinearLayout>
@@ -220,12 +223,13 @@
                 android:id="@+id/layoutMetricAqi"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -256,7 +260,7 @@
                     android:id="@+id/tvAqi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
@@ -269,12 +273,12 @@
                     android:id="@+id/tvHumidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     tools:text="Humidity: 45%" />
 
             </LinearLayout>
@@ -292,12 +296,13 @@
                 android:id="@+id/layoutMetricUv"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -327,7 +332,7 @@
                     android:id="@+id/tvUvIndex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
@@ -343,12 +348,13 @@
                 android:id="@+id/layoutMetricVisibility"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -378,7 +384,7 @@
                     android:id="@+id/tvVisibility"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
@@ -402,12 +408,13 @@
                 android:id="@+id/layoutMetricSunrise"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -438,10 +445,10 @@
                     android:id="@+id/tvSunrise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="06:57" />
 
@@ -449,10 +456,10 @@
                     android:id="@+id/tvSunriseAzimuth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="center"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     tools:text="Rising at 92° (E)" />
 
             </LinearLayout>
@@ -462,12 +469,13 @@
                 android:id="@+id/layoutMetricSunset"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -498,10 +506,10 @@
                     android:id="@+id/tvSunset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="18:46" />
 
@@ -509,10 +517,10 @@
                     android:id="@+id/tvSunsetAzimuth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="center"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     tools:text="Setting at 266° (W)" />
 
             </LinearLayout>
@@ -530,12 +538,13 @@
                 android:id="@+id/layoutMetricDaylight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -566,21 +575,21 @@
                     android:id="@+id/tvTotalDaylight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="11h 49m" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="center"
                     android:text="Sunlight duration"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
 
             </LinearLayout>
 
@@ -589,6 +598,7 @@
                 android:id="@+id/layoutMetricMoon"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:minHeight="78dp"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_metric_card"
@@ -596,7 +606,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -627,7 +637,7 @@
                     android:id="@+id/tvMoonPhase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
@@ -638,10 +648,10 @@
                     android:id="@+id/tvMoonCyclePercentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="center"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     tools:text="77% illuminated" />
 
             </LinearLayout>
