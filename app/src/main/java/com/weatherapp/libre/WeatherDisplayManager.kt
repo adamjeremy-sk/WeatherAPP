@@ -93,6 +93,7 @@ class WeatherDisplayManager(
                         longitude = currentLocation.longitude
                     )
 
+                    forecastAdapter?.setUnitSystem(unitSystem)
                     forecastAdapter?.setLocation(currentLocation, locationTimezone)
                     forecastAdapter?.submitList(dailyForecasts)
 

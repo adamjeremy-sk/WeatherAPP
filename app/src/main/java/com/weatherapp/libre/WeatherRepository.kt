@@ -33,6 +33,11 @@ class WeatherRepository {
 
     private val forecastCache = ConcurrentHashMap<String, CachedWeatherEntry>()
 
+    fun clearMemoryAndDiskCache(locationPreferences: LocationPreferences?) {
+        forecastCache.clear()
+        locationPreferences?.clearPersistentCache()
+    }
+
     fun hasValidCache(
         latitude: Double,
         longitude: Double,

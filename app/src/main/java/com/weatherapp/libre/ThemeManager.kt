@@ -20,7 +20,8 @@ import com.weatherapp.libre.databinding.DialogThemeSettingsBinding
 class ThemeManager(
     private val activity: AppCompatActivity,
     private val binding: ActivityMainBinding,
-    private val locationPreferences: LocationPreferences
+    private val locationPreferences: LocationPreferences,
+    private val repository: WeatherRepository = WeatherRepository()
 ) {
 
     var forecastAdapter: DayForecastAdapter? = null
@@ -253,6 +254,13 @@ class ThemeManager(
             locationPreferences.saveUnitSystem(newUnits)
             dialogBinding.btnUnitsChoice.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
             dialogBinding.tvUnitsDesc.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
+
+            // Clear weather cache and reload weather for active tab immediately
+            repository.clearMemoryAndDiskCache(locationPreferences)
+            if (activity is MainActivity) {
+                activity.weatherDisplayManager.loadWeather(forceRefresh = true)
+            }
+
             Toast.makeText(activity.applicationContext, "Units updated", Toast.LENGTH_SHORT).show()
         }
 
