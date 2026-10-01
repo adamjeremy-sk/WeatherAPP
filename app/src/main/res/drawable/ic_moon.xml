@@ -1,9 +1,19 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="20dp"
-    android:height="20dp"
+    android:width="24dp"
+    android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-  <path
-      android:fillColor="#FFFFFFFF"
-      android:pathData="M12.3,2a10,10 0,0 0,-1.9 0.18,10 10,0 1,1 11.42,11.42A10,10 0,0 0,12.3 2z"/>
+  <group
+      android:pivotX="12"
+      android:pivotY="12"
+      android:rotation="-30">
+    <!-- 15% Thicker Crescent Moon Body -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,2A10,10 0 0,0 12,22A7.125,10 0 0,1 12,2Z"/>
+    <!-- 13-Point Star (Tridecagram) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M18.00,3.50 L18.38,5.45 L19.63,3.90 L19.06,5.80 L20.88,5.01 L19.50,6.43 L21.47,6.58 L19.59,7.19 L21.27,8.24 L19.32,7.91 L20.32,9.62 L18.74,8.42 L18.84,10.40 L18.00,8.60 L17.16,10.40 L17.26,8.42 L15.68,9.62 L16.68,7.91 L14.73,8.24 L16.41,7.19 L14.53,6.58 L16.50,6.43 L15.12,5.01 L16.94,5.80 L16.37,3.90 L17.62,5.45 Z"/>
+  </group>
 </vector>

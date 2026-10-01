@@ -61,7 +61,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Daily High"
+                            android:text="High"
                             android:textColor="@color/temp_high"
                             android:textSize="12sp" />
 
@@ -136,7 +136,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="Daily Low"
+                            android:text="Low"
                             android:textColor="@color/temp_low"
                             android:textSize="12sp" />
 
