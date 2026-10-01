@@ -109,125 +109,654 @@
 
             </LinearLayout>
 
-            <!-- Consolidated Daily High & Low Summary Cards -->
+            <!-- Container 1: Default Standard Weather Details -->
             <LinearLayout
-                android:id="@+id/cardTempRange"
+                android:id="@+id/layoutWeatherDetailsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <!-- High Temp Card -->
+                <!-- Row 1: Daily High (Left) | Daily Low (Right) -->
                 <LinearLayout
-                    android:id="@+id/cardHighTemp"
-                    android:layout_width="0dp"
+                    android:id="@+id/cardTempRange"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_temp_high"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
 
+                    <!-- High Temp Card -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/cardHighTemp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_temp_high"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Daily High"
-                            android:textColor="@color/temp_high"
-                            android:textSize="12sp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                        <ImageButton
-                            android:id="@+id/btnDismissHighEffect"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Dismiss Shimmer Effect"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone"
-                            app:tint="@color/temp_high" />
+                            <ImageView
+                                android:id="@+id/ivHighTempIcon"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_marginEnd="6dp"
+                                android:contentDescription="Daily High Icon"
+                                android:src="@drawable/ic_temp_high"
+                                app:tint="@color/temp_high" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Daily High"
+                                android:textColor="@color/temp_high"
+                                android:textSize="12sp" />
+
+                            <ImageButton
+                                android:id="@+id/btnDismissHighEffect"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="4dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="Dismiss Shimmer Effect"
+                                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                                android:visibility="gone"
+                                app:tint="@color/temp_high" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvDailyHigh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:textColor="@color/temp_high"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="18°C" />
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvDailyHigh"
-                        android:layout_width="wrap_content"
+                    <!-- Low Temp Card -->
+                    <LinearLayout
+                        android:id="@+id/cardLowTemp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_temp_low"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
-                        android:textColor="@color/temp_high"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        tools:text="18°C" />
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivLowTempIcon"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_marginEnd="6dp"
+                                android:contentDescription="Daily Low Icon"
+                                android:src="@drawable/ic_temp_low"
+                                app:tint="@color/temp_low" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Daily Low"
+                                android:textColor="@color/temp_low"
+                                android:textSize="12sp" />
+
+                            <ImageButton
+                                android:id="@+id/btnDismissLowEffect"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginStart="4dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="Dismiss Snow Effect"
+                                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                                android:visibility="gone"
+                                app:tint="@color/temp_low" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvDailyLow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:textColor="@color/temp_low"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="5°C" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- Low Temp Card -->
+                <!-- Row 2: Wind Speed (Left) | Air Quality & Humidity (Right) -->
                 <LinearLayout
-                    android:id="@+id/cardLowTemp"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_temp_low"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                    android:orientation="horizontal">
 
+                    <!-- Wind Speed Card -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/layoutMetricWind"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivWindIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_wind"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Wind Speed"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvWindSpeed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="30 km/h W" />
+
+                        <TextView
+                            android:id="@+id/tvWindGusts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            tools:text="Gusts: 45 km/h" />
+
+                    </LinearLayout>
+
+                    <!-- Air Quality & Humidity Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricAqi"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivAqiIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_aqi"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:text="Air Quality"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvAqi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="23 • Good" />
+
+                        <TextView
+                            android:id="@+id/tvHumidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            tools:text="Humidity: 45%" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Row 3: UV Index (Left) | Visibility (Right) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- UV Index Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricUv"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivUvIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_uv"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="UV Index"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvUvIndex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="2.4 • Low" />
+
+                    </LinearLayout>
+
+                    <!-- Visibility Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricVisibility"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivVisIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_visibility"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Visibility"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvVisibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="10.0 km" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Row 4: Sunrise (Left) | Sunset (Right) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Sunrise Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricSunrise"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivSunriseIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Sunrise Icon"
+                                android:src="@drawable/ic_sunrise"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Sunrise"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvSunrise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="06:57" />
+
+                        <TextView
+                            android:id="@+id/tvSunriseAzimuth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            tools:text="Rising at 92° (E)" />
+
+                    </LinearLayout>
+
+                    <!-- Sunset Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricSunset"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivSunsetIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Sunset Icon"
+                                android:src="@drawable/ic_sunset"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Sunset"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvSunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="18:46" />
+
+                        <TextView
+                            android:id="@+id/tvSunsetAzimuth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            tools:text="Setting at 266° (W)" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Row 5: Total Daylight (Left) | Moon Phase & Cycle (Right) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Total Daylight Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricDaylight"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivDaylightIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Daylight Icon"
+                                android:src="@drawable/ic_daylight"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Total Daylight"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvTotalDaylight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="11h 49m" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
-                            android:text="Daily Low"
-                            android:textColor="@color/temp_low"
+                            android:text="Sunlight duration"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
-
-                        <ImageButton
-                            android:id="@+id/btnDismissLowEffect"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Dismiss Snow Effect"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone"
-                            app:tint="@color/temp_low" />
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvDailyLow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                    <!-- Moon Phase & Cycle Card -->
+                    <LinearLayout
+                        android:id="@+id/layoutMetricMoon"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_metric_card"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
-                        android:textColor="@color/temp_low"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        tools:text="5°C" />
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ivMoonIcon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Moon Icon"
+                                android:src="@drawable/ic_moon"
+                                app:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:gravity="center"
+                                android:text="Moon Phase &amp; Cycle"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvMoonPhase"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="Waning Gibbous" />
+
+                        <TextView
+                            android:id="@+id/tvMoonCyclePercentage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            tools:text="77% illuminated" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Container 1: Default Standard Weather Details -->
+            <!-- Container 2: Inline Golden Hour View -->
             <include layout="@layout/section_inline_subtabs" />
 
         </LinearLayout>

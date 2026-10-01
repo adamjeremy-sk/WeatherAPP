@@ -190,13 +190,12 @@ class WeatherDisplayManager(
         val visibility = current?.visibilityMeters ?: day.visibilityMeters
         val visStr = UnitUtils.formatVisibility(visibility, unitSystem)
 
-        val metrics = mutableListOf<MetricCell>()
-        metrics.add(MetricCell(MetricType.WIND, "Wind Speed", windSpeedStr, gustText, R.drawable.ic_wind))
-        metrics.add(MetricCell(MetricType.AIR_QUALITY, "Air Quality & Humidity", aqiStr, humidityStr, R.drawable.ic_aqi))
-        metrics.add(MetricCell(MetricType.UV, "UV Index", uvStr, null, R.drawable.ic_uv))
-        metrics.add(MetricCell(MetricType.VISIBILITY, "Visibility", visStr, null, R.drawable.ic_visibility))
-        
-        metricGridAdapter?.submitList(metrics)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvWindSpeed)?.text = windSpeedStr
+        binding.root.findViewById<android.widget.TextView>(R.id.tvWindGusts)?.text = gustText
+        binding.root.findViewById<android.widget.TextView>(R.id.tvAqi)?.text = aqiStr
+        binding.root.findViewById<android.widget.TextView>(R.id.tvHumidity)?.text = humidityStr
+        binding.root.findViewById<android.widget.TextView>(R.id.tvUvIndex)?.text = uvStr
+        binding.root.findViewById<android.widget.TextView>(R.id.tvVisibility)?.text = visStr
 
 
         // Solar Summary

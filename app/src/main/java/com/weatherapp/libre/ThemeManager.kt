@@ -97,6 +97,8 @@ class ThemeManager(
 
         binding.root.findViewById<android.view.View>(R.id.cardHighTemp)?.backgroundTintList = ColorStateList.valueOf(palette.tempHighBg)
         binding.root.findViewById<android.view.View>(R.id.cardLowTemp)?.backgroundTintList = ColorStateList.valueOf(palette.tempLowBg)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivHighTempIcon)?.setColorFilter(palette.tempHigh)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivLowTempIcon)?.setColorFilter(palette.tempLow)
         binding.root.findViewById<android.widget.TextView>(R.id.tvDailyHigh)?.setTextColor(palette.tempHigh)
         binding.root.findViewById<android.widget.TextView>(R.id.tvDailyLow)?.setTextColor(palette.tempLow)
 
@@ -117,19 +119,30 @@ class ThemeManager(
         
         
 
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricWind)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricAqi)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricUv)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        binding.root.findViewById<android.view.View>(R.id.layoutMetricVisibility)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
         binding.root.findViewById<android.view.View>(R.id.layoutMetricSunrise)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
         binding.root.findViewById<android.view.View>(R.id.layoutMetricSunset)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
         binding.root.findViewById<android.view.View>(R.id.layoutMetricDaylight)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
         binding.root.findViewById<android.view.View>(R.id.layoutMetricMoon)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
-        
-        
-        
-        
-        
-        
-        
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivWindIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivAqiIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivUvIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivVisIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivSunriseIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivSunsetIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivDaylightIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivMoonIcon)?.setColorFilter(palette.brandPrimary)
 
+        binding.root.findViewById<android.widget.TextView>(R.id.tvWindSpeed)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvWindGusts)?.setTextColor(palette.textSecondary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvAqi)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvHumidity)?.setTextColor(palette.textSecondary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvUvIndex)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvVisibility)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvSunrise)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvSunset)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvSunriseAzimuth)?.setTextColor(palette.textSecondary)
