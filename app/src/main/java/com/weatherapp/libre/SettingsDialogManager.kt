@@ -571,6 +571,13 @@ class SettingsDialogManager(
         dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
+        // Grey out test notification system cell for now
+        dialogBinding.cardTestAlert.alpha = 0.5f
+        dialogBinding.cardTestAlert.isEnabled = false
+        dialogBinding.btnSendTestAlert.isEnabled = false
+        dialogBinding.btnSendTestAlert.text = "Test Notifications Disabled"
+        dialogBinding.btnSendTestAlert.setOnClickListener(null)
+
         val isAlertsOn = locationPreferences.isWeatherAlertsEnabled()
         dialogBinding.switchAlerts.isChecked = isAlertsOn
         dialogBinding.switchAlerts.setOnCheckedChangeListener { _, isChecked ->

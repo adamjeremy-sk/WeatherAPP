@@ -10,8 +10,8 @@ android {
         applicationId = "com.weatherapp.libre"
         minSdk = 32
         targetSdk = 37
-        versionCode = 8
-        versionName = "0.5.0"
+        versionCode = 7
+        versionName = "0.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
