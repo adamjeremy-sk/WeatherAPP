@@ -36,6 +36,7 @@ class ThemeManager(
     fun applyPaletteToUI(palette: ColorPalette) {
         binding.drawerLayout.setBackgroundColor(palette.background)
         binding.main.setBackgroundColor(palette.background)
+        binding.layoutStickyTabsContainer.setBackgroundColor(palette.background)
 
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density

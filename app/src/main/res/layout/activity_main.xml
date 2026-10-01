@@ -137,8 +137,11 @@
                 android:id="@+id/layoutStickyTabsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/background_light"
+                android:elevation="4dp"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="8dp" />
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
             <!-- Swipe Refresh Layout -->
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -149,6 +152,8 @@
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingTop="4dp"
                     android:fillViewport="true">
 
                     <LinearLayout

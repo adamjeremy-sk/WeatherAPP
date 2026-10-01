@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -131,8 +132,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        updateStickyTabsPosition()
         weatherDisplayManager.updateAlertBanner()
         themeManager.applyTheme(locationPreferences.getThemeMode())
+    }
+
+    fun updateStickyTabsPosition() {
+        val isSticky = locationPreferences.isLocationTabsSticky()
+        val cardTabs = binding.cardLocationTabs
+        val stickyContainer = binding.layoutStickyTabsContainer
+        val scrollableContainer = binding.layoutScrollableTabsContainer
+
+        val targetParent = if (isSticky) stickyContainer else scrollableContainer
+
+        if (cardTabs.parent != targetParent) {
+            (cardTabs.parent as? ViewGroup)?.removeView(cardTabs)
+            targetParent.addView(cardTabs)
+        }
+
+        stickyContainer.visibility = if (isSticky) View.VISIBLE else View.GONE
+        scrollableContainer.visibility = if (isSticky) View.GONE else View.VISIBLE
     }
 
     override fun onDestroy() {
@@ -263,6 +282,8 @@ class MainActivity : AppCompatActivity() {
 
         val activeIndex = locationPreferences.getActiveTabIndex().coerceIn(0, tabCount - 1)
         binding.tabLayoutLocations.getTabAt(activeIndex)?.select()
+
+        updateStickyTabsPosition()
 
         binding.tabLayoutLocations.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) {

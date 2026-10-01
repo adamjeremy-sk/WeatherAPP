@@ -243,6 +243,9 @@ class SettingsDialogManager(
         dialogBinding.switchStickyTabs.isChecked = isSticky
         dialogBinding.switchStickyTabs.setOnCheckedChangeListener { _, checked ->
             locationPreferences.saveLocationTabsSticky(checked)
+            if (activity is MainActivity) {
+                activity.updateStickyTabsPosition()
+            }
             val msg = if (checked) "Location tabs pinned as sticky" else "Location tabs set to scroll with page"
             Toast.makeText(activity.applicationContext, msg, Toast.LENGTH_SHORT).show()
         }
