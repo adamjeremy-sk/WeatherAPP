@@ -616,21 +616,46 @@ class LocationPreferences(context: Context) {
     }
 
     fun checkAndPerformVersionMigration(currentVersionCode: Int, repository: WeatherRepository) {
-        val lastVersionCode = prefs.getInt("app_last_version_code", -1)
+        val lastVersionCode = prefs.getInt("app_last_run_version_code", -1)
         if (lastVersionCode != -1 && currentVersionCode > lastVersionCode) {
+            val lastVersionName = prefs.getString("app_last_run_version_name", "v$lastVersionCode") ?: "v$lastVersionCode"
+            val currentVersionName = "v$currentVersionCode"
+
             clearSelectiveWipeData(repository)
+
+            android.util.Log.i("MigrationManager", "Migration: Cleared transient cache for $lastVersionName -> $currentVersionName, preserved user preferences")
         }
-        prefs.edit().putInt("app_last_version_code", currentVersionCode).apply()
+        prefs.edit()
+            .putInt("app_last_run_version_code", currentVersionCode)
+            .putString("app_last_run_version_name", "v$currentVersionCode")
+            .apply()
     }
 
     fun clearSelectiveWipeData(repository: WeatherRepository) {
         repository.clearMemoryAndDiskCache(this)
         val editor = prefs.edit()
         val allKeys = prefs.all.keys
+        val keysToRemove = mutableListOf<String>()
+
         for (k in allKeys) {
-            if (k.startsWith("app_active_alert_") || k.startsWith("app_alert_") || k.startsWith("log_")) {
-                editor.remove(k)
+            if (k.startsWith("disk_cache_") ||
+                k.startsWith("web_page_") ||
+                k.startsWith("app_active_alert_") ||
+                k.startsWith("app_alert_") ||
+                k.startsWith("app_alert_dismissed_") ||
+                k.startsWith("log_") ||
+                k.startsWith("temp_") ||
+                k == KEY_ALERT_CONSENT_VERSION ||
+                k == "pending_reopen_theme_settings" ||
+                k == "last_fetch_timestamp" ||
+                k == "last_weather_refresh_time"
+            ) {
+                keysToRemove.add(k)
             }
+        }
+
+        for (key in keysToRemove) {
+            editor.remove(key)
         }
         editor.apply()
     }

@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertBannerManager
+import com.weatherapp.libre.alerts.AlertConsentDialog
 import com.weatherapp.libre.BuildConfig
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import java.time.LocalDate
@@ -104,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         setupDrawerNavigation()
         setupLocationTabs()
+
+        AlertConsentDialog.checkAndShowConsentPrompt(this, locationPreferences)
 
         themeManager.applyTheme(savedTheme)
 
