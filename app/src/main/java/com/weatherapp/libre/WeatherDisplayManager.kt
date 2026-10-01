@@ -140,7 +140,12 @@ class WeatherDisplayManager(
         }
 
         binding.tvSelectedDateHeader.text = dateHeader
-        binding.tvMainEmoji.text = day.iconEmoji
+        val iconRes = WeatherCodeUtils.conditionIconRes(day.weatherCode)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivMainConditionIcon)?.apply {
+            setImageResource(iconRes)
+            val currentPalette = ColorPalette.forMode(locationPreferences.getThemeMode(), activity)
+            setColorFilter(currentPalette.brandPrimary)
+        }
         binding.tvMainCondition.text = day.weatherDescription
 
         val currentTemp = currentWeatherData?.temperature

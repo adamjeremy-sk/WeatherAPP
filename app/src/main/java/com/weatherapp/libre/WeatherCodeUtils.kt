@@ -2,6 +2,40 @@ package com.weatherapp.libre
 
 object WeatherCodeUtils {
 
+    fun conditionIconRes(code: Int): Int {
+        return when (code) {
+            0 -> R.drawable.ic_condition_clear_sky
+            1 -> R.drawable.ic_condition_mainly_clear
+            2 -> R.drawable.ic_condition_partly_cloudy
+            3 -> R.drawable.ic_condition_overcast
+            45 -> R.drawable.ic_condition_fog
+            48 -> R.drawable.ic_condition_rime_fog
+            51 -> R.drawable.ic_condition_drizzle_light
+            53 -> R.drawable.ic_condition_drizzle_moderate
+            55 -> R.drawable.ic_condition_drizzle_dense
+            56 -> R.drawable.ic_condition_freezing_drizzle_light
+            57 -> R.drawable.ic_condition_freezing_drizzle_dense
+            61 -> R.drawable.ic_condition_rain_slight
+            63 -> R.drawable.ic_condition_rain_moderate
+            65 -> R.drawable.ic_condition_rain_heavy
+            66 -> R.drawable.ic_condition_freezing_rain_light
+            67 -> R.drawable.ic_condition_freezing_rain_heavy
+            71 -> R.drawable.ic_condition_snow_slight
+            73 -> R.drawable.ic_condition_snow_moderate
+            75 -> R.drawable.ic_condition_snow_heavy
+            77 -> R.drawable.ic_condition_snow_grains
+            80 -> R.drawable.ic_condition_rain_showers_slight
+            81 -> R.drawable.ic_condition_rain_showers_moderate
+            82 -> R.drawable.ic_condition_rain_showers_violent
+            85 -> R.drawable.ic_condition_snow_showers_slight
+            86 -> R.drawable.ic_condition_snow_showers_heavy
+            95 -> R.drawable.ic_condition_thunderstorm
+            96 -> R.drawable.ic_condition_thunderstorm_hail_slight
+            99 -> R.drawable.ic_condition_thunderstorm_hail_heavy
+            else -> R.drawable.ic_condition_unknown
+        }
+    }
+
     fun getWeatherDescription(code: Int): String {
         return when (code) {
             0 -> "Clear Sky"
@@ -27,25 +61,8 @@ object WeatherCodeUtils {
         }
     }
 
+    @Deprecated("Replaced with vector condition icons via conditionIconRes(code)")
     fun getWeatherEmoji(code: Int, isDay: Boolean = true): String {
-        return when (code) {
-            0 -> if (isDay) "☀️" else "🌙"
-            1 -> if (isDay) "🌤️" else "🌙"
-            2 -> "⛅"
-            3 -> "☁️"
-            45, 48 -> "🌫️"
-            51, 53, 55 -> "🌦️"
-            56, 57 -> "🌨️"
-            61, 63 -> "🌧️"
-            65 -> "🌧️"
-            66, 67 -> "🧊"
-            71, 73 -> "🌨️"
-            75 -> "❄️"
-            77 -> "🌨️"
-            80, 81, 82 -> "🌦️"
-            85, 86 -> "🌨️"
-            95, 96, 99 -> "⛈️"
-            else -> "🌡️"
-        }
+        return ""
     }
 }

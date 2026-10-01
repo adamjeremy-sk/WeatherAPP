@@ -57,17 +57,17 @@
 
             </LinearLayout>
 
-            <!-- Column 2: Weather Emoji Icon (Fixed Width 36dp) -->
-            <TextView
-                android:id="@+id/tvWeatherEmoji"
-                android:layout_width="36dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="26sp"
+            <!-- Column 2: Weather Vector Icon (Fixed Width 32dp) -->
+            <ImageView
+                android:id="@+id/ivWeatherIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="2dp"
+                android:importantForAccessibility="no"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/layoutDayInfo"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="☀️" />
+                tools:src="@drawable/ic_condition_clear_sky" />
 
             <!-- Column 3: Weather Description (Flexible Width) -->
             <TextView
@@ -82,7 +82,7 @@
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/layoutTemps"
-                app:layout_constraintStart_toEndOf="@id/tvWeatherEmoji"
+                app:layout_constraintStart_toEndOf="@id/ivWeatherIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Mainly Clear" />
 

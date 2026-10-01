@@ -92,6 +92,7 @@ class ThemeManager(
         binding.tvSelectedDateHeader.setTextColor(palette.textSecondary)
         binding.tvMainCondition.setTextColor(palette.textPrimary)
         binding.tvCurrentTemp.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivMainConditionIcon)?.setColorFilter(palette.brandPrimary)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvForecastHeaderTitle)?.setTextColor(palette.textPrimary)
 

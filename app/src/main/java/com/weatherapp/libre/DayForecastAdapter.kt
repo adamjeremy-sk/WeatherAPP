@@ -69,7 +69,8 @@ class DayForecastAdapter(
         fun bind(item: DayForecast) {
             binding.tvDayName.text = item.dayOfWeek
             binding.tvDayDate.text = item.formattedDate
-            binding.tvWeatherEmoji.text = item.iconEmoji
+            val iconRes = WeatherCodeUtils.conditionIconRes(item.weatherCode)
+            binding.ivWeatherIcon.setImageResource(iconRes)
             binding.tvWeatherDesc.text = item.weatherDescription
 
             binding.tvTempHigh.text = UnitUtils.formatTemp(item.tempMax, unitSystem)
@@ -81,6 +82,7 @@ class DayForecastAdapter(
                 binding.cardDay.strokeColor = p.dividerColor
                 binding.tvDayName.setTextColor(p.textPrimary)
                 binding.tvDayDate.setTextColor(p.textSecondary)
+                binding.ivWeatherIcon.setColorFilter(p.brandPrimary)
                 binding.tvWeatherDesc.setTextColor(p.textSecondary)
                 binding.tvTempHigh.setTextColor(p.tempHigh)
                 binding.tvTempMin.setTextColor(p.tempLow)
