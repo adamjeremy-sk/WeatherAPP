@@ -15,6 +15,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.weatherapp.libre.alerts.AlertManager
+import com.weatherapp.libre.alerts.AlertBannerManager
+import com.weatherapp.libre.BuildConfig
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import java.time.LocalDate
 
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var weatherDisplayManager: WeatherDisplayManager
     lateinit var appUpdateManager: AppUpdateManager
     lateinit var easterEggManager: EasterEggManager
+    lateinit var alertManager: AlertManager
+    lateinit var alertBannerManager: AlertBannerManager
 
     companion object {
         const val EXTRA_REOPEN_THEME_SETTINGS = "extra_reopen_theme_settings"
@@ -81,12 +86,18 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        locationPreferences.checkAndPerformVersionMigration(BuildConfig.VERSION_CODE, repository)
+
+        alertManager = AlertManager(applicationContext, locationPreferences)
+        alertBannerManager = AlertBannerManager(this, binding, locationPreferences, alertManager)
+
         // Initialize Managers
         themeManager = ThemeManager(this, binding, locationPreferences)
         settingsDialogManager = SettingsDialogManager(this, binding, locationPreferences)
         locationDialogManager = LocationDialogManager(this, binding, locationPreferences, repository, lifecycleScope)
         astronomyManager = AstronomyDisplayManager(this, binding, locationPreferences)
         weatherDisplayManager = WeatherDisplayManager(this, binding, locationPreferences, repository, astronomyManager, lifecycleScope)
+        weatherDisplayManager.alertBannerManager = alertBannerManager
         appUpdateManager = AppUpdateManager(this, locationPreferences)
         easterEggManager = EasterEggManager(this, binding)
 

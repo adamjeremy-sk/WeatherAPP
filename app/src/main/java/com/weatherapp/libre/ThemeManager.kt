@@ -84,9 +84,7 @@ class ThemeManager(
         binding.tabLayoutLocations.setSelectedTabIndicatorColor(palette.brandPrimary)
         binding.tabLayoutLocations.setTabTextColors(palette.textSecondary, palette.brandPrimary)
 
-        binding.cardAlertBanner.setCardBackgroundColor(palette.surfaceCardSecondary)
-        binding.cardAlertBanner.strokeColor = palette.brandPrimary
-        binding.tvAlertHeaderTitle.setTextColor(palette.brandPrimary)
+
 
         binding.cardTodayDetails.setCardBackgroundColor(palette.surfaceCard)
         binding.cardTodayDetails.strokeColor = palette.dividerColor

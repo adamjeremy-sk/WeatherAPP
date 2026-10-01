@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.weatherapp.libre.alerts.AlertBannerManager
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.MoonEventType
@@ -33,6 +34,7 @@ class WeatherDisplayManager(
     var selectedDayForecast: DayForecast? = null
     var dailyForecasts: List<DayForecast> = emptyList()
     var forecastAdapter: DayForecastAdapter? = null
+    var alertBannerManager: AlertBannerManager? = null
     var metricGridAdapter: MetricGridAdapter? = null
 
     fun updateLocationHeader() {
@@ -120,25 +122,7 @@ class WeatherDisplayManager(
     }
 
     fun updateAlertBanner() {
-        val isAlertsEnabled = locationPreferences.isWeatherAlertsEnabled()
-        if (!isAlertsEnabled) {
-            binding.cardAlertBanner.visibility = View.GONE
-            return
-        }
-
-        val activeAlert = locationPreferences.getActiveWeatherAlert()
-        if (activeAlert != null && !locationPreferences.isAlertDismissed(activeAlert.id)) {
-            binding.cardAlertBanner.visibility = View.VISIBLE
-            binding.tvAlertHeaderTitle.text = "🚨 ${activeAlert.event.uppercase(Locale.getDefault())}"
-            binding.tvAlertHeadline.text = activeAlert.headline
-            binding.tvAlertInstructions.text = activeAlert.description
-            binding.btnDismissAlert.setOnClickListener {
-                locationPreferences.dismissAlert(activeAlert.id)
-                binding.cardAlertBanner.visibility = View.GONE
-            }
-        } else {
-            binding.cardAlertBanner.visibility = View.GONE
-        }
+        alertBannerManager?.updateAlertBanner(currentLocation)
     }
 
     fun updateDetailCard(day: DayForecast) {

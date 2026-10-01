@@ -16,10 +16,14 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
+import com.weatherapp.libre.alerts.AlertManager
+import com.weatherapp.libre.alerts.AlertTestHarness
+import com.weatherapp.libre.alerts.AlertNotificationHelper
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
@@ -574,12 +578,48 @@ class SettingsDialogManager(
         dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
-        // Grey out test notification system cell for now
-        dialogBinding.cardTestAlert.alpha = 0.5f
-        dialogBinding.cardTestAlert.isEnabled = false
-        dialogBinding.btnSendTestAlert.isEnabled = false
-        dialogBinding.btnSendTestAlert.text = "Test Notifications Disabled"
-        dialogBinding.btnSendTestAlert.setOnClickListener(null)
+        // Test notification system harness
+        dialogBinding.cardTestAlert.alpha = 1.0f
+        dialogBinding.cardTestAlert.isEnabled = true
+        dialogBinding.btnSendTestAlert.isEnabled = true
+        dialogBinding.btnSendTestAlert.text = "Send Test Weather Alert"
+        dialogBinding.btnSendTestAlert.setOnClickListener { v ->
+            val popup = PopupMenu(activity, v)
+            val fixtures = AlertTestHarness.TestFixture.values()
+            for (i in fixtures.indices) {
+                popup.menu.add(0, i, i, fixtures[i].displayName)
+            }
+            popup.setOnMenuItemClickListener { menuItem ->
+                val selectedFixture = fixtures[menuItem.itemId]
+                val currentLoc = if (activity is MainActivity) activity.weatherDisplayManager.currentLocation else locationPreferences.getSavedLocation()
+                val tz = if (activity is MainActivity) activity.weatherDisplayManager.locationTimezone else null
+                val alertMgr = if (activity is MainActivity) activity.alertManager else AlertManager(activity.applicationContext, locationPreferences)
+
+                // Clear previous test dismissals for this fixture so we can re-trigger it
+                locationPreferences.clearPersistentCache()
+                alertMgr.clearTestAlerts(currentLoc)
+
+                val injectedAlert = AlertTestHarness.injectTestFixture(
+                    context = activity.applicationContext,
+                    fixture = selectedFixture,
+                    location = currentLoc,
+                    timezoneStr = tz,
+                    alertManager = alertMgr
+                )
+
+                if (injectedAlert != null) {
+                    AlertNotificationHelper.postNotification(activity.applicationContext, injectedAlert, currentLoc, tz)
+                    if (activity is MainActivity) {
+                        activity.alertBannerManager.updateAlertBanner(currentLoc)
+                    }
+                    Toast.makeText(activity.applicationContext, "Injected & Dispatched: ${selectedFixture.displayName}", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(activity.applicationContext, "Failed to inject ${selectedFixture.displayName}", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            popup.show()
+        }
 
         val isAlertsOn = locationPreferences.isWeatherAlertsEnabled()
         dialogBinding.switchAlerts.isChecked = isAlertsOn

@@ -615,6 +615,26 @@ class LocationPreferences(context: Context) {
         editor.apply()
     }
 
+    fun checkAndPerformVersionMigration(currentVersionCode: Int, repository: WeatherRepository) {
+        val lastVersionCode = prefs.getInt("app_last_version_code", -1)
+        if (lastVersionCode != -1 && currentVersionCode > lastVersionCode) {
+            clearSelectiveWipeData(repository)
+        }
+        prefs.edit().putInt("app_last_version_code", currentVersionCode).apply()
+    }
+
+    fun clearSelectiveWipeData(repository: WeatherRepository) {
+        repository.clearMemoryAndDiskCache(this)
+        val editor = prefs.edit()
+        val allKeys = prefs.all.keys
+        for (k in allKeys) {
+            if (k.startsWith("app_active_alert_") || k.startsWith("app_alert_") || k.startsWith("log_")) {
+                editor.remove(k)
+            }
+        }
+        editor.apply()
+    }
+
     fun getVolumeScrollSpeedLabel(index: Int): String {
         return when (index) {
             1 -> "Speed 1 - Slowest (250ms)"
