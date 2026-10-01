@@ -65,7 +65,8 @@ class AstronomyDisplayManager(
     fun buildObserver(location: LocationItem): Observer {
         return Observer(
             latitudeDegrees = location.latitude,
-            longitudeDegrees = location.longitude
+            longitudeDegrees = location.longitude,
+            elevationMeters = location.elevationMeters
         )
     }
 

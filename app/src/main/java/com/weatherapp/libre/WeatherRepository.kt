@@ -286,7 +286,8 @@ class WeatherRepository {
                         admin1 = it.admin1,
                         country = it.country,
                         latitude = it.latitude,
-                        longitude = it.longitude
+                        longitude = it.longitude,
+                        elevationMeters = it.elevation ?: 0.0
                     )
                 } ?: emptyList()
 
@@ -297,8 +298,8 @@ class WeatherRepository {
         }
     }
 
-    private fun calculateSolarSummary(latitude: Double, longitude: Double, date: LocalDate, zoneId: ZoneId): SolarDaySummary {
-        val observer = Observer(latitude, longitude)
+    private fun calculateSolarSummary(latitude: Double, longitude: Double, elevationMeters: Double, date: LocalDate, zoneId: ZoneId): SolarDaySummary {
+        val observer = Observer(latitude, longitude, elevationMeters)
         val lighting = SolarLightingEngine.calculateSolarLightingPhases(date, zoneId, observer)
 
         val srInstant = lighting.sunrise?.instantUtc
@@ -367,7 +368,7 @@ class WeatherRepository {
         val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
         val aqi = current?.airQualityIndex
 
-        val solarSummary = calculateSolarSummary(latitude, longitude, date, zoneId)
+        val solarSummary = calculateSolarSummary(latitude, longitude, response.elevation ?: 0.0, date, zoneId)
 
         val desc = WeatherCodeUtils.getWeatherDescription(code)
         val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)
@@ -455,7 +456,7 @@ class WeatherRepository {
             val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
             val aqi = current?.airQualityIndex
 
-            val solarSummary = calculateSolarSummary(latitude, longitude, date, zoneId)
+            val solarSummary = calculateSolarSummary(latitude, longitude, response.elevation ?: 0.0, date, zoneId)
 
             val desc = WeatherCodeUtils.getWeatherDescription(code)
             val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)

@@ -139,7 +139,8 @@ class DayForecastAdapter(
             if (loc != null) {
                 val observer = Observer(
                     latitudeDegrees = loc.latitude,
-                    longitudeDegrees = loc.longitude
+                    longitudeDegrees = loc.longitude,
+                    elevationMeters = loc.elevationMeters
                 )
                 val targetInstant = item.date.atStartOfDay(zoneId).toInstant()
                 val phaseInfo = LunarCalculator.phaseAt(targetInstant, observer)

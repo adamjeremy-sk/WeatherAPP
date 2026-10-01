@@ -15,7 +15,8 @@ data class LocationItem(
     val admin1: String? = null,
     val country: String? = null,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val elevationMeters: Double = 0.0
 ) {
     val displayName: String
         get() {
@@ -45,7 +46,8 @@ data class GeocodingResult(
     val admin1: String?,
     val country: String?,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val elevation: Double? = 0.0
 )
 
 data class AirQualityResponse(
@@ -60,6 +62,7 @@ data class AirQualityCurrent(
 data class WeatherResponse(
     val latitude: Double,
     val longitude: Double,
+    val elevation: Double? = 0.0,
     val timezone: String?,
     val current: CurrentData?,
     val daily: DailyData?

@@ -1,5 +1,7 @@
 package com.weatherapp.libre.solar
 
+import kotlin.math.acos
+
 data class Observer(
     val latitudeDegrees: Double,
     val longitudeDegrees: Double,
@@ -9,8 +11,12 @@ data class Observer(
 ) {
     /**
      * Horizon dip in degrees due to observer elevation above sea level.
-     * Dip (degrees) ~ (1.76 / 60.0) * sqrt(elevationMeters)
+     * Calculated using exact geometric formula:
+     * dipDegrees = Math.toDegrees(Math.acos(earthRadiusMeters / (earthRadiusMeters + elevationMeters)))
+     * Where earthRadiusMeters = 6,371,000.
      */
     val horizonDipDegrees: Double
-        get() = if (elevationMeters > 0.0) (1.76 / 60.0) * kotlin.math.sqrt(elevationMeters) else 0.0
+        get() = if (elevationMeters > 0.0) {
+            Math.toDegrees(acos(6_371_000.0 / (6_371_000.0 + elevationMeters)))
+        } else 0.0
 }

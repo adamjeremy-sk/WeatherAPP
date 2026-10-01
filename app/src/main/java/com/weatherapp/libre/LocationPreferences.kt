@@ -140,7 +140,8 @@ class LocationPreferences(context: Context) {
             admin1 = "Ontario",
             country = "Canada",
             latitude = 45.4215,
-            longitude = -75.6972
+            longitude = -75.6972,
+            elevationMeters = 70.0
         )
 
         val DEFAULT_WINNIPEG = LocationItem(
@@ -149,7 +150,8 @@ class LocationPreferences(context: Context) {
             admin1 = "Manitoba",
             country = "Canada",
             latitude = 49.8951,
-            longitude = -97.1384
+            longitude = -97.1384,
+            elevationMeters = 238.0
         )
 
         val DEFAULT_EDMONTON = LocationItem(
@@ -158,7 +160,8 @@ class LocationPreferences(context: Context) {
             admin1 = "Alberta",
             country = "Canada",
             latitude = 53.5461,
-            longitude = -113.4938
+            longitude = -113.4938,
+            elevationMeters = 645.0
         )
 
         val DEFAULT_QUEBEC = LocationItem(
@@ -167,7 +170,8 @@ class LocationPreferences(context: Context) {
             admin1 = "Quebec",
             country = "Canada",
             latitude = 46.8139,
-            longitude = -71.2080
+            longitude = -71.2080,
+            elevationMeters = 98.0
         )
     }
 
@@ -263,15 +267,16 @@ class LocationPreferences(context: Context) {
             val country = prefs.getString("tab_${tabIndex}_country", null)
             val lat = prefs.getFloat("tab_${tabIndex}_lat", 0f).toDouble()
             val lon = prefs.getFloat("tab_${tabIndex}_lon", 0f).toDouble()
-            return LocationItem(name = name, admin1 = admin1, country = country, latitude = lat, longitude = lon)
+            val elev = prefs.getFloat("tab_${tabIndex}_elev", 0f).toDouble()
+            return LocationItem(name = name, admin1 = admin1, country = country, latitude = lat, longitude = lon, elevationMeters = elev)
         }
 
         // Default initial fallbacks for tabs (persist on first read so tabs remain independent and stable)
         val defaultLoc = when (tabIndex) {
             0 -> getInitialLocation()
-            1 -> LocationItem(name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832)
-            2 -> LocationItem(name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702)
-            3 -> LocationItem(name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207)
+            1 -> LocationItem(name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832, elevationMeters = 76.0)
+            2 -> LocationItem(name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702, elevationMeters = 481.0)
+            3 -> LocationItem(name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207, elevationMeters = 0.0)
             else -> getInitialLocation()
         }
 
@@ -286,6 +291,7 @@ class LocationPreferences(context: Context) {
             .putString("tab_${tabIndex}_country", location.country)
             .putFloat("tab_${tabIndex}_lat", location.latitude.toFloat())
             .putFloat("tab_${tabIndex}_lon", location.longitude.toFloat())
+            .putFloat("tab_${tabIndex}_elev", location.elevationMeters.toFloat())
             .apply()
     }
 
