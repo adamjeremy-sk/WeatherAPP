@@ -7,8 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.AppUpdateOptions
-import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 
 class AppUpdateManager(
@@ -16,7 +14,7 @@ class AppUpdateManager(
     private val locationPreferences: LocationPreferences
 ) {
 
-    fun checkPlayStoreUpdate(silent: Boolean = false) {
+    fun checkPlayStoreUpdate(silent: Boolean = true) {
         if (!silent) {
             Toast.makeText(activity.applicationContext, "Checking for WeatherAPP updates...", Toast.LENGTH_SHORT).show()
         }
@@ -27,7 +25,7 @@ class AppUpdateManager(
 
             appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
                 if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                    showUpdateAvailablePrompt(appUpdateInfo, playUpdateManager)
+                    showUpdateAvailablePrompt(appUpdateInfo)
                 } else {
                     if (!silent) {
                         showUpToDatePrompt()
@@ -45,39 +43,20 @@ class AppUpdateManager(
         }
     }
 
-    private fun showUpdateAvailablePrompt(
-        appUpdateInfo: AppUpdateInfo,
-        playUpdateManager: com.google.android.play.core.appupdate.AppUpdateManager
-    ) {
+    private fun showUpdateAvailablePrompt(appUpdateInfo: AppUpdateInfo) {
         if (activity.isFinishing || activity.isDestroyed) return
 
         val currentVersion = try {
-            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "1.4.1"
+            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "0.4.2"
         } catch (e: Exception) {
-            "1.4.1"
+            "0.4.2"
         }
 
         MaterialAlertDialogBuilder(activity)
             .setTitle("🚀 Update Available!")
-            .setMessage("A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version: v$currentVersion\n\nUpdating gives you the latest weather features, model accuracy enhancements, and bug fixes.")
+            .setMessage("A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version: v$currentVersion\n\nWould you like to open the Play Store and update WeatherAPP now?")
             .setPositiveButton("Update Now") { dialog, _ ->
-                try {
-                    val isFlexibleAllowed = appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-                    val isImmediateAllowed = appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-                    if (isFlexibleAllowed || isImmediateAllowed) {
-                        val updateType = if (isFlexibleAllowed) AppUpdateType.FLEXIBLE else AppUpdateType.IMMEDIATE
-                        playUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo,
-                            activity,
-                            AppUpdateOptions.newBuilder(updateType).build(),
-                            1002
-                        )
-                    } else {
-                        openPlayStorePage()
-                    }
-                } catch (e: Exception) {
-                    openPlayStorePage()
-                }
+                openPlayStorePage()
                 dialog.dismiss()
             }
             .setNegativeButton("Not Now") { dialog, _ ->
@@ -90,9 +69,9 @@ class AppUpdateManager(
         if (activity.isFinishing || activity.isDestroyed) return
 
         val currentVersion = try {
-            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "1.4.1"
+            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "0.4.2"
         } catch (e: Exception) {
-            "1.4.1"
+            "0.4.2"
         }
 
         MaterialAlertDialogBuilder(activity)
@@ -141,22 +120,27 @@ class AppUpdateManager(
             .show()
     }
 
-    private fun openPlayStorePage() {
+    fun openPlayStorePage() {
+        val packageName = "com.weatherapp.libre"
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${activity.packageName}"))
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")).apply {
+                setPackage("com.android.vending")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             activity.startActivity(intent)
         } catch (e: Exception) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${activity.packageName}"))
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             activity.startActivity(intent)
         }
     }
 
     private fun openDonateUrl() {
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://ko-fi.com/adamhainstock"))
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://ko-fi.com/adamhainstock")).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             activity.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(activity.applicationContext, "Could not open browser", Toast.LENGTH_SHORT).show()

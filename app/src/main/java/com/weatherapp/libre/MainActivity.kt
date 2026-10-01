@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         val launchCount = locationPreferences.incrementAppLaunchCount()
         if (launchCount >= 500) {
             appUpdateManager.show500LaunchMilestoneDialog()
-        } else if (launchCount % 5 == 0) {
+        } else {
             appUpdateManager.checkPlayStoreUpdate(silent = true)
         }
 

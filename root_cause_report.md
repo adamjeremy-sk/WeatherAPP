@@ -1,33 +1,85 @@
 # Phase 1: Root-Cause Investigation Report
 
 ## Executive Summary
-The CAP Alert Banner cell is still not appearing. Based on our stage-by-stage investigation, the core logic pipeline (Ingestion, Parsing, Matching, Persistence) executes correctly. The wiring is now technically valid: `activity_main.xml` uses `<include android:id="@+id/layoutAlertBanner" ... />`, and `AlertBannerManager` binds to it using `SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)`. 
+The CAP Alert Banner cell is still not appearing on the main weather page. After carefully investigating the code, the issue lies inside `AlertBannerManager.kt`. When we use `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" />`, ViewBinding generates `binding.layoutAlertBanner`. To make the view visible or modify its properties, we must operate on the root of the included layout. 
 
-However, there are two distinct layout nesting/visibility bugs conspiring to keep the banner invisible.
+However, `binding.layoutAlertBanner.root.visibility = View.VISIBLE` is being called, which modifies the visibility of the inner `MaterialCardView` (the root of `section_alert_banner.xml`), but **does not** modify the visibility of the `<include>` tag itself. The `<include>` tag in `activity_main.xml` currently has `android:visibility="gone"`.
 
 ## Stage-by-Stage Verification
 
 ### Stage 5: Banner Existence and Placement
 - **Expected**: `activity_main.xml` contains exactly one `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" />` sequentially below the scrollable tabs and above `cardTodayDetails`.
-- **Observed**: The placement is fundamentally flawed. In `activity_main.xml`, the include is currently placed inside `layoutScrollableTabsContainer`'s sibling layout tree but BEFORE `cardTodayDetails`. However, the root of `section_alert_banner.xml` (`cardAlertBanner`) has `android:visibility="gone"`, BUT crucially, the `<include>` tag ITSELF has no visibility explicitly set or altered by the manager.
-More importantly: `AlertBannerManager` attempts to toggle the visibility of `bannerBinding.cardAlertBanner`. When you use `<include android:id="@+id/layoutAlertBanner" ... />`, the generated `binding.layoutAlertBanner.root` IS the `MaterialCardView` (`cardAlertBanner`). So `bannerBinding.cardAlertBanner` is technically pointing to the root element. BUT, toggling `bannerBinding.cardAlertBanner.visibility = View.VISIBLE` does NOT make the `<include>` tag visible if the generated `ActivityMainBinding` views the `<include>` tag as a separate wrapper/proxy view.
+- **Observed**: The placement is correct. `activity_main.xml` contains `<include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" android:visibility="gone" />`. The include tag itself is marked `gone`.
 
 ### Stage 7: Visibility Logic & Binding Paths (THE ROOT CAUSE)
 - **Expected**: `AlertBannerManager` makes the banner visible on the screen.
-- **Observed**: In `AlertBannerManager`, the binding is created via:
-  `SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)`
-  Because `section_alert_banner.xml` has `android:id="@+id/cardAlertBanner"` on its root tag, and `activity_main.xml` uses `<include android:id="@+id/layoutAlertBanner" ...>`, ViewBinding merges them.
-  When `AlertBannerManager` calls `bannerBinding.cardAlertBanner.visibility = View.VISIBLE`, it is modifying the root view's property. BUT, to ensure the included layout actually appears in a constraint/linear layout, we must toggle the `visibility` of the `binding.layoutAlertBanner.root` directly from the parent's perspective. 
-  The most reliable fix is to NOT assign an `id` to the root tag of `section_alert_banner.xml` (removing `android:id="@+id/cardAlertBanner"`), forcing it to adopt the `layoutAlertBanner` ID from the include tag, and then toggling `binding.layoutAlertBanner.root.visibility = View.VISIBLE`.
+- **Observed**: In `AlertBannerManager`, the code calls `binding.layoutAlertBanner.root.visibility = View.VISIBLE`.
+  Because the `<include>` tag has an ID (`layoutAlertBanner`), ViewBinding creates a field `binding.layoutAlertBanner`. 
+  `binding.layoutAlertBanner.root` refers to the *root view of the included layout* (the `MaterialCardView`).
+  Setting `visibility = View.VISIBLE` on the `MaterialCardView` does **not** override the `android:visibility="gone"` on the `<include>` tag itself in some older Android layout inflater versions, OR more fundamentally, `findViewById(R.id.layoutAlertBanner)` returns the included view, not the include tag.
+  Actually, when you give an `<include>` tag an ID, it completely replaces the ID of the root view of the included layout. So `binding.layoutAlertBanner.root.visibility = View.VISIBLE` *should* work if everything else is correct.
+  Let's look at `SectionAlertBannerBinding`. `SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)` binds to the `MaterialCardView`.
+  Wait, the real issue might be that `SectionAlertBannerBinding` still expects the root view to have the ID `cardAlertBanner` if it uses it internally.
+  Let's look at `AlertBannerManager.kt`:
+  `private val bannerBinding = SectionAlertBannerBinding.bind(binding.layoutAlertBanner.root)`
+  And then it accesses `bannerBinding.tvAlertHeaderTitle`, etc.
+  But wait, `activity_main.xml` has `android:visibility="gone"` on the `<include>` tag.
+  In `AlertBannerManager`, `binding.layoutAlertBanner.root.visibility = View.VISIBLE` is executed.
+  Wait, `binding.layoutAlertBanner.root` IS the view generated by the `<include>` tag.
+  Let's check `section_alert_banner.xml`'s root tag. It no longer has `android:id` or `android:visibility`.
 
-### Stage 8: Dismissal State
-- **Expected**: Dismissal prevents display.
-- **Observed**: Active alerts evaluated correctly using `locationPreferences.isAlertDismissed(identifier)`. If an old test alert with the same ID was dismissed previously, it blocks current rendering. We must clear test dismissals.
+  Wait, could the issue be that `binding.layoutAlertBanner` is not the correct way to toggle visibility? In ViewBinding, when you have `<include android:id="@+id/my_include" ...>`, you get a field `myInclude` of type `MyIncludeBinding`. The visibility of the include itself is controlled via `binding.myInclude.root.visibility`. So `binding.layoutAlertBanner.root.visibility = View.VISIBLE` should be perfectly correct.
+
+  Let's look at the logic in `updateAlertBanner`:
+  ```kotlin
+  val isAlertsEnabled = locationPreferences.isWeatherAlertsEnabled()
+  val isDismissed = locationPreferences.isAlertDismissed(activeCapAlert.identifier)
+  val isTest = activeCapAlert.isTestFixture
+
+  if (!isDismissed && (isAlertsEnabled || isTest)) {
+  ```
+  Is `isAlertsEnabled` false? By default it's false unless toggled in settings. The test harness logic says `(isAlertsEnabled || isTest)`. If `isTest` is true, it proceeds even if alerts are disabled.
+
+  Let's look closely at `activity_main.xml`:
+  The `<include>` tag is inside `layoutScrollableTabsContainer`'s sibling layout tree:
+  ```xml
+  <FrameLayout android:id="@+id/layoutScrollableTabsContainer" ... />
+  <include android:id="@+id/layoutAlertBanner" layout="@layout/section_alert_banner" android:visibility="gone" />
+  <com.google.android.material.card.MaterialCardView android:id="@+id/cardTodayDetails" ... />
+  ```
+  This is inside the `LinearLayout` that is inside the `NestedScrollView`. This is correct.
+
+  Let's check `LocationPreferences.kt`:
+  ```kotlin
+  fun dismissAlert(alertId: String) {
+      prefs.edit().putBoolean("${KEY_ALERT_DISMISSED}_$alertId", true).apply()
+  }
+  ```
+  In `SettingsDialogManager.kt`, when we inject a test alert:
+  ```kotlin
+  // Clear previous test dismissals for this fixture
+  locationPreferences.clearPersistentCache()
+  alertMgr.clearTestAlerts(currentLoc)
+  ```
+  Wait! `locationPreferences.clearPersistentCache()` clears ONLY `disk_cache_` keys. It DOES NOT clear `app_alert_dismissed_` keys!
+  So if the test alert was dismissed once in the past, it remains permanently dismissed because `locationPreferences.isAlertDismissed(activeCapAlert.identifier)` returns `true`! The test harness injection clears the `testAlertsByLocation` map, but NOT the dismissal preference.
+  
+  Let's check `LocationPreferences.clearSelectiveWipeData`:
+  ```kotlin
+  for (k in allKeys) {
+      if (k.startsWith("app_active_alert_") || k.startsWith("app_alert_") || k.startsWith("log_")) {
+          editor.remove(k)
+      }
+  }
+  ```
+  The key for dismissal is `"${KEY_ALERT_DISMISSED}_$alertId"`. `KEY_ALERT_DISMISSED` is `"app_alert_dismissed"`. So it starts with `"app_alert_"`.
+  But `SettingsDialogManager` only calls `locationPreferences.clearPersistentCache()`, which only clears `disk_cache_` keys!
+
+  Therefore, **the test alert is permanently dismissed**.
 
 ## Definitive Point of Failure
-The root cause is a **ViewBinding / Include Tag Identity Collision**. The root of `section_alert_banner.xml` defines its own ID (`cardAlertBanner`), while the `<include>` tag in `activity_main.xml` defines an overlapping ID (`layoutAlertBanner`). `AlertBannerManager` sets `bannerBinding.cardAlertBanner.visibility = View.VISIBLE`, which modifies the inner view, but the outer `<include>` proxy view (or parent container constraints) remains stubbornly hidden or disconnected. 
+The root cause is **Stale Dismissal Persistence Blocking Rendering**. The test harness attempts to clear previous dismissals by calling `locationPreferences.clearPersistentCache()`. However, `clearPersistentCache()` only removes keys starting with `"disk_cache_"`. The actual dismissal flags are keyed with `"app_alert_dismissed_"`. Because the dismissal flags are never cleared during test injection, previously dismissed test alerts (like the Tornado Warning) will permanently evaluate `isDismissed = true` and hide the banner.
 
 To fix this:
-1. Strip `android:id="@+id/cardAlertBanner"` and `android:visibility="gone"` from the root of `section_alert_banner.xml`.
-2. Apply `android:visibility="gone"` strictly to the `<include>` tag in `activity_main.xml`.
-3. In `AlertBannerManager`, toggle `binding.layoutAlertBanner.root.visibility = View.VISIBLE`.
+1. In `LocationPreferences.kt`, add a method `clearTestAlertDismissals()` that explicitly clears any preference keys starting with `"app_alert_dismissed_"`.
+2. In `SettingsDialogManager.kt`, call `locationPreferences.clearTestAlertDismissals()` instead of (or in addition to) `clearPersistentCache()` right before injecting the test fixture.

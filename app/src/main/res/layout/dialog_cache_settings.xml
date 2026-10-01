@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutCacheSettingsRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
@@ -37,6 +38,7 @@
                 app:tint="@color/text_primary" />
 
             <TextView
+                android:id="@+id/tvHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -61,6 +63,7 @@
             android:padding="20dp">
 
             <TextView
+                android:id="@+id/tvCacheHeaderDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -94,6 +97,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvCacheSwitchTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Enable Forecast Data Cache (TTL)"
@@ -102,6 +106,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvCacheSwitchDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -174,6 +179,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvTtlReasoningDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -203,6 +209,7 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvRateLimitingHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="⚠️ API Rate Limiting &amp; 503 Warning"
@@ -211,6 +218,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvRateLimitingDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"

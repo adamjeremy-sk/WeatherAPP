@@ -170,6 +170,8 @@ class LocationDialogManager(
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         dialogBinding.root.setBackgroundColor(palette.surfaceCard)
+        dialogBinding.tvRecentTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvRecentDesc.setTextColor(palette.textSecondary)
 
         dialogBinding.layoutRecentList.removeAllViews()
         val density = activity.resources.displayMetrics.density

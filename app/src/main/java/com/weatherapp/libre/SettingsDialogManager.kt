@@ -567,14 +567,24 @@ class SettingsDialogManager(
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvAlertsHeaderDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardAlertsSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardAlertsSwitch.strokeColor = palette.dividerColor
+        dialogBinding.tvAlertsSwitchTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvAlertsSwitchDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardSolarLeadTime.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardSolarLeadTime.strokeColor = palette.dividerColor
+        dialogBinding.tvSolarLeadTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvSolarLeadDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardTestAlert.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardTestAlert.strokeColor = palette.dividerColor
-        dialogBinding.cardAlertInfo.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
-        dialogBinding.tvAlertIsolationHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvTestAlertTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvTestAlertDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
 
@@ -597,6 +607,7 @@ class SettingsDialogManager(
 
                 // Clear previous test dismissals for this fixture so we can re-trigger it
                 locationPreferences.clearPersistentCache()
+                locationPreferences.clearTestAlertDismissals()
                 alertMgr.clearTestAlerts(currentLoc)
 
                 val injectedAlert = AlertTestHarness.injectTestFixture(
@@ -665,10 +676,20 @@ class SettingsDialogManager(
 
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvCacheHeaderDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardCacheSwitch.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardCacheSwitch.strokeColor = palette.dividerColor
+        dialogBinding.tvCacheSwitchTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvCacheSwitchDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.tvTtlHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvTtlReasoningHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvTtlReasoningDesc.setTextColor(palette.textSecondary)
+        dialogBinding.tvRateLimitingHeader.setTextColor(palette.tempHigh)
+        dialogBinding.tvRateLimitingDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardTtlReasoning.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
         dialogBinding.cardRateLimiting.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCardSecondary))
 

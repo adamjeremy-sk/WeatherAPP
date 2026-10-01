@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutAlertsSettingsRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
@@ -37,6 +38,7 @@
                 app:tint="@color/text_primary" />
 
             <TextView
+                android:id="@+id/tvHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -61,6 +63,7 @@
             android:padding="20dp">
 
             <TextView
+                android:id="@+id/tvAlertsHeaderDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -94,6 +97,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvAlertsSwitchTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Severe Weather Notifications"
@@ -102,6 +106,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvAlertsSwitchDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -147,6 +152,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvSolarLeadTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Solar Phase Alarm Lead Time"
@@ -155,6 +161,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvSolarLeadDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -199,6 +206,7 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvTestAlertTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Test Notification System"
@@ -207,6 +215,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvTestAlertDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -222,45 +231,6 @@
                         android:layout_marginTop="12dp"
                         android:text="Send Test Weather Alert"
                         android:textSize="13sp" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Active Monitored Location Info Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAlertInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/surface_card_secondary"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/tvAlertIsolationHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Regional Alert Isolation"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvAlertsLocationInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        tools:text="Notifications are strictly limited to your selected location.\nCurrently monitoring: Saskatoon, Saskatchewan." />
 
                 </LinearLayout>
 

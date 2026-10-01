@@ -665,6 +665,17 @@ class LocationPreferences(context: Context) {
         }
     }
 
+    fun clearTestAlertDismissals() {
+        val editor = prefs.edit()
+        val allKeys = prefs.all.keys
+        for (k in allKeys) {
+            if (k.startsWith("${KEY_ALERT_DISMISSED}_")) {
+                editor.remove(k)
+            }
+        }
+        editor.apply()
+    }
+
     fun isAlertDismissed(alertId: String): Boolean {
         return prefs.getBoolean("${KEY_ALERT_DISMISSED}_$alertId", false)
     }
