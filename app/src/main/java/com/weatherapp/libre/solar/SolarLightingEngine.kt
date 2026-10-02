@@ -87,13 +87,12 @@ object SolarLightingEngine {
         val ebEnd = lighting.eveningBlueHour?.endInstantUtc
 
         val civilStart = lighting.civilTwilight?.startInstantUtc
-        val civilEnd = lighting.civilTwilight?.endInstantUtc
-
         val nautStart = lighting.nauticalTwilight?.startInstantUtc
-        val nautEnd = lighting.nauticalTwilight?.endInstantUtc
-
         val astroStart = lighting.astronomicalTwilight?.startInstantUtc
-        val astroEnd = lighting.astronomicalTwilight?.endInstantUtc
+
+        val ecEnd = lighting.eveningCivilTwilight?.endInstantUtc
+        val enEnd = lighting.eveningNauticalTwilight?.endInstantUtc
+        val eaEnd = lighting.eveningAstronomicalTwilight?.endInstantUtc
 
         val dayStartInstant = date.atStartOfDay(zoneId).toInstant()
         val dayEndInstant = date.plusDays(1).atStartOfDay(zoneId).toInstant()
@@ -109,11 +108,11 @@ object SolarLightingEngine {
             SolarPhaseDetail(8, "Daytime", "☀️", "${fmt(srInstant)} – ${fmt(ssInstant)}", dur(srInstant, ssInstant), "Sun elevation > -0.83° • Daylight from end of morning civil twilight to start of evening civil twilight", false, srInstant, ssInstant),
             SolarPhaseDetail(9, "Golden Hour", "🟧", "${fmt(egStart)} – ${fmt(egEnd)}", dur(egStart, egEnd), "Sun elevation +6° to -4° • Warm magical evening photography light", false, egStart, egEnd),
             SolarPhaseDetail(10, "Sunset", "🌇", fmt(ssInstant), "Event", "Sun upper limb disappears below western horizon (elevation -0.83°)", false, ssInstant, ssInstant),
-            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(civilEnd)}", dur(ssInstant, civilEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on", false, ssInstant, civilEnd),
+            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(ecEnd)}", dur(ssInstant, ecEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on", false, ssInstant, ecEnd),
             SolarPhaseDetail(12, "Blue Hour", "🟦", "${fmt(ebStart)} – ${fmt(ebEnd)}", dur(ebStart, ebEnd), "Sun elevation -4° to -6° • Deep cobalt evening sky", false, ebStart, ebEnd),
-            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ebEnd)} – ${fmt(nautEnd)}", dur(ebEnd, nautEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon", false, ebEnd, nautEnd),
-            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(nautEnd)} – ${fmt(astroEnd)}", dur(nautEnd, astroEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible", false, nautEnd, astroEnd),
-            SolarPhaseDetail(15, "Night", "🌌", "${fmt(astroEnd)} – 23:59", dur(astroEnd, dayEndInstant), "Sun elevation < -18° • Complete night sky darkness", false, astroEnd, dayEndInstant)
+            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ecEnd)} – ${fmt(enEnd)}", dur(ecEnd, enEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon", false, ecEnd, enEnd),
+            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(enEnd)} – ${fmt(eaEnd)}", dur(enEnd, eaEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible", false, enEnd, eaEnd),
+            SolarPhaseDetail(15, "Night", "🌌", "${fmt(eaEnd)} – 23:59", dur(eaEnd, dayEndInstant), "Sun elevation < -18° • Complete night sky darkness", false, eaEnd, dayEndInstant)
         )
 
         if (!isToday) {

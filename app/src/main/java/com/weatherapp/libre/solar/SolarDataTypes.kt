@@ -40,5 +40,8 @@ data class SolarLightingResult(
     val eveningBlueHour: SolarPhase?,
     val civilTwilight: SolarPhase?,
     val nauticalTwilight: SolarPhase?,
-    val astronomicalTwilight: SolarPhase?
+    val astronomicalTwilight: SolarPhase?,
+    val eveningCivilTwilight: SolarPhase? = null,
+    val eveningNauticalTwilight: SolarPhase? = null,
+    val eveningAstronomicalTwilight: SolarPhase? = null
 )

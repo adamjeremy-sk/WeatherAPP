@@ -54,6 +54,10 @@ object SolarRiseSetSolver {
         val nauticalPhase = buildTwilightPhase(samples, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees, observer)
         val astronomicalPhase = buildTwilightPhase(samples, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees, observer)
 
+        val eveningCivil = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.civilTwilightDegrees, sunriseSunsetTargetAlt, observer)
+        val eveningNautical = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees, observer)
+        val eveningAstronomical = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees, observer)
+
         // Golden Hour
         val morningGolden = buildMorningPhase(samples, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees, observer)
         val eveningGolden = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees, observer)
@@ -72,7 +76,10 @@ object SolarRiseSetSolver {
             eveningBlueHour = eveningBlue,
             civilTwilight = civilPhase,
             nauticalTwilight = nauticalPhase,
-            astronomicalTwilight = astronomicalPhase
+            astronomicalTwilight = astronomicalPhase,
+            eveningCivilTwilight = eveningCivil,
+            eveningNauticalTwilight = eveningNautical,
+            eveningAstronomicalTwilight = eveningAstronomical
         )
     }
 
@@ -211,11 +218,7 @@ object SolarRiseSetSolver {
         upperTarget: Double,
         observer: Observer
     ): SolarPhase? {
-        val morning = buildMorningPhase(samples, localStartInstant, localEndInstant, lowerTarget, upperTarget, observer)
-        if (morning != null) return morning
-
-        val evening = buildEveningPhase(samples, localStartInstant, localEndInstant, lowerTarget, upperTarget, observer)
-        return evening
+        return buildMorningPhase(samples, localStartInstant, localEndInstant, lowerTarget, upperTarget, observer)
     }
 
     private fun findAllCrossings(
