@@ -38,6 +38,34 @@ class WeatherDisplayManager(
     var metricGridAdapter: MetricGridAdapter? = null
     var hourlyDisplayManager: HourlyDisplayManager? = null
 
+    private val clockHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val clockRunnable = object : Runnable {
+        override fun run() {
+            selectedDayForecast?.let { day ->
+                val isToday = day.dayOfWeek.equals("Today", ignoreCase = true)
+                if (isToday) {
+                    val is24Hour = DateFormat.is24HourFormat(activity)
+                    val baseDateStr = day.formattedDate.uppercase(Locale.getDefault())
+                    val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour)
+                    binding.tvSelectedDateHeader.text = "$baseDateStr • $currentTime • Local Time"
+                    astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                }
+            }
+            clockHandler.postDelayed(this, 60000L)
+        }
+    }
+
+    init {
+        activity.lifecycle.addObserver(object : androidx.lifecycle.DefaultLifecycleObserver {
+            override fun onResume(owner: androidx.lifecycle.LifecycleOwner) {
+                clockHandler.post(clockRunnable)
+            }
+            override fun onPause(owner: androidx.lifecycle.LifecycleOwner) {
+                clockHandler.removeCallbacks(clockRunnable)
+            }
+        })
+    }
+
     fun updateLocationHeader() {
         binding.tvLocationName.text = "${currentLocation.displayName} ▾"
     }
