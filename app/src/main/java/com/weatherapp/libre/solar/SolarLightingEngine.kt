@@ -27,12 +27,12 @@ object SolarLightingEngine {
         date: LocalDate,
         zoneId: ZoneId,
         observer: Observer,
-        is24Hour: Boolean = true
+        is24Hour: Boolean = true,
+        nowInstant: Instant = Instant.now()
     ): List<SolarPhaseDetail> {
         val lighting = calculateSolarLightingPhases(date, zoneId, observer)
 
-        val nowInstant = Instant.now()
-        val isToday = date.isEqual(LocalDate.now())
+        val isToday = date.isEqual(LocalDate.now(zoneId))
 
         fun fmt(instant: Instant?): String {
             if (instant == null) return "——"
@@ -119,24 +119,18 @@ object SolarLightingEngine {
             return rawPhases
         }
 
-        // Strictly evaluate the single active phase for today
-        val activeItem = rawPhases.firstOrNull { item ->
+        // Evaluate interval-containment test per phase for today
+        return rawPhases.map { item ->
             val s = item.startInstant
             val e = item.endInstant
-            if (s == null || e == null) false
-            else if (item.name == "Sunrise" || item.name == "Sunset") {
+            val isActive = if (s == null || e == null) {
+                false
+            } else if (item.name == "Sunrise" || item.name == "Sunset") {
                 !nowInstant.isBefore(s.minusSeconds(180)) && nowInstant.isBefore(s.plusSeconds(180))
             } else {
                 s.isBefore(e) && !nowInstant.isBefore(s) && nowInstant.isBefore(e)
             }
-        } ?: rawPhases.find { item ->
-            val s = item.startInstant
-            val e = item.endInstant
-            s != null && e != null && s.isBefore(e) && !nowInstant.isBefore(s) && nowInstant.isBefore(e)
-        }
-
-        return rawPhases.map { item ->
-            item.copy(isCurrentActivePhase = (item == activeItem))
+            item.copy(isCurrentActivePhase = isActive)
         }
     }
 }

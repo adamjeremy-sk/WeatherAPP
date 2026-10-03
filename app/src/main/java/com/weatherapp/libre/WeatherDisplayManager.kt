@@ -41,17 +41,26 @@ class WeatherDisplayManager(
     private val clockHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private val clockRunnable = object : Runnable {
         override fun run() {
+            if (locationTimezone == null) {
+                clockHandler.removeCallbacks(this)
+                return
+            }
+
+            val nowInstant = Instant.now()
             selectedDayForecast?.let { day ->
                 val isToday = day.dayOfWeek.equals("Today", ignoreCase = true)
                 if (isToday) {
                     val is24Hour = DateFormat.is24HourFormat(activity)
                     val baseDateStr = day.formattedDate.uppercase(Locale.getDefault())
-                    val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour)
+                    val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour, nowInstant)
                     binding.tvSelectedDateHeader.text = "$baseDateStr • $currentTime • Local Time"
-                    astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                    astronomyManager.updateInlineGoldenHourDisplay(currentLocation, nowInstant)
                 }
             }
-            clockHandler.postDelayed(this, 60000L)
+            
+            // Align the tick to the top of the next minute
+            val delayMs = 60000L - (System.currentTimeMillis() % 60000L)
+            clockHandler.postDelayed(this, delayMs)
         }
     }
 

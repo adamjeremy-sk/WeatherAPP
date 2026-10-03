@@ -127,15 +127,15 @@ object UnitUtils {
         return directions[index]
     }
 
-    fun formatLocationTime(timezoneStr: String?, is24Hour: Boolean = false): String {
+    fun formatLocationTime(timezoneStr: String?, is24Hour: Boolean = false, nowInstant: java.time.Instant = java.time.Instant.now()): String {
         val zoneId = try {
-            if (!timezoneStr.isNullOrEmpty()) ZoneId.of(timezoneStr) else ZoneId.systemDefault()
+            if (!timezoneStr.isNullOrEmpty()) java.time.ZoneId.of(timezoneStr) else java.time.ZoneId.systemDefault()
         } catch (e: Exception) {
-            ZoneId.systemDefault()
+            java.time.ZoneId.systemDefault()
         }
-        val now = ZonedDateTime.now(zoneId)
+        val now = java.time.ZonedDateTime.ofInstant(nowInstant, zoneId)
         val pattern = if (is24Hour) "HH:mm" else "h:mm a"
-        val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+        val formatter = java.time.format.DateTimeFormatter.ofPattern(pattern, java.util.Locale.getDefault())
         return now.format(formatter)
     }
 }

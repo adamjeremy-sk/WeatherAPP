@@ -127,10 +127,11 @@ class AstronomyDisplayManager(
         }
     }
 
-    fun updateInlineGoldenHourDisplay(location: LocationItem = currentLocationItem) {
+    fun updateInlineGoldenHourDisplay(location: LocationItem = currentLocationItem, nowInstant: Instant = Instant.now()) {
         currentLocationItem = location
         val dateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy", Locale.getDefault())
-        activity.findViewById<android.widget.TextView>(R.id.tvInlineSelectedDate)?.text = if (inlineGoldenDate.isEqual(LocalDate.now())) {
+        val isToday = inlineGoldenDate.isEqual(LocalDate.now(resolveZoneId(locationTimezoneStr)))
+        activity.findViewById<android.widget.TextView>(R.id.tvInlineSelectedDate)?.text = if (isToday) {
             "TODAY • ${inlineGoldenDate.format(dateFormatter).uppercase(Locale.getDefault())}"
         } else {
             inlineGoldenDate.format(dateFormatter).uppercase(Locale.getDefault())
@@ -139,7 +140,7 @@ class AstronomyDisplayManager(
         val zoneId = resolveZoneId(locationTimezoneStr)
         val observer = buildObserver(location)
 
-        val phases = SolarLightingEngine.calculateChronologicalSolarPhases(inlineGoldenDate, zoneId, observer)
+        val phases = SolarLightingEngine.calculateChronologicalSolarPhases(inlineGoldenDate, zoneId, observer, nowInstant = nowInstant)
         inlineSolarPhaseAdapter.submitList(phases)
     }
 
