@@ -232,8 +232,8 @@ object SolarRiseSetSolver {
             val s1 = samples[i]
             val s2 = samples[i + 1]
 
-            val f1 = s1.apparentAltitudeDegrees - targetAltitude
-            val f2 = s2.apparentAltitudeDegrees - targetAltitude
+            val f1 = s1.trueAltitudeDegrees - targetAltitude
+            val f2 = s2.trueAltitudeDegrees - targetAltitude
 
             if (f1 * f2 <= 0.0) {
                 val isRising = f1 < f2
@@ -306,7 +306,7 @@ object SolarRiseSetSolver {
 
             val instS = Instant.ofEpochSecond(s.toLong(), ((s - s.toLong()) * 1e9).toLong())
             val posS = SolarPositionEngine.computeTopocentric(instS, observer)
-            val fs = posS.apparentAltitudeDegrees - targetAltitude
+            val fs = posS.trueAltitudeDegrees - targetAltitude
 
             d = c
             c = b
