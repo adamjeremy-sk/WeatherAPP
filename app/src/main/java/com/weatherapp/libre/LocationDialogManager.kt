@@ -29,28 +29,9 @@ class LocationDialogManager(
     private val lifecycleScope: CoroutineScope
 ) {
 
-    fun showFirstLaunchLocationPrompt(onLocationSelected: (LocationItem) -> Unit) {
+    fun showFirstLaunchLocationSearch(onLocationSelected: (LocationItem) -> Unit) {
         if (activity.isFinishing || activity.isDestroyed) return
-
-        MaterialAlertDialogBuilder(activity)
-            .setTitle("Environment Canada Weather Alerts")
-            .setMessage("Would you like to receive system notifications for active severe weather warnings, watches, and advisories from Environment Canada (GEM/ECCC) for your city?\n\nThis application respects your privacy and does NOT use GPS, location services, or device tracking.")
-            .setPositiveButton("Enable Alerts") { dialog, _ ->
-                locationPreferences.saveWeatherAlertsEnabled(true)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
-                }
-                WeatherNotificationHelper.createNotificationChannel(activity.applicationContext)
-                dialog.dismiss()
-                showSearchLocationDialog(isFirstLaunchPrompt = true, onLocationSelected = onLocationSelected)
-            }
-            .setNegativeButton("No Thanks") { dialog, _ ->
-                locationPreferences.saveWeatherAlertsEnabled(false)
-                dialog.dismiss()
-                showSearchLocationDialog(isFirstLaunchPrompt = true, onLocationSelected = onLocationSelected)
-            }
-            .setCancelable(false)
-            .show()
+        showSearchLocationDialog(isFirstLaunchPrompt = true, onLocationSelected = onLocationSelected)
     }
 
     fun showSearchLocationDialog(

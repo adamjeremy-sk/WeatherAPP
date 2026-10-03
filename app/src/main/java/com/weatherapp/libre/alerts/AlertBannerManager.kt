@@ -26,7 +26,7 @@ class AlertBannerManager(
 
     fun updateAlertBanner(currentLocation: LocationItem) {
         val activeCapAlert = alertManager.getActiveAlertForLocation(currentLocation)
-        val isAlertsEnabled = locationPreferences.isWeatherAlertsEnabled()
+        val isAlertsEnabled = locationPreferences.getAlertConsentState() == LocationPreferences.ALERT_CONSENT_OPT_IN
 
         if (activeCapAlert != null) {
             val isDismissed = locationPreferences.isAlertDismissed(activeCapAlert.identifier)

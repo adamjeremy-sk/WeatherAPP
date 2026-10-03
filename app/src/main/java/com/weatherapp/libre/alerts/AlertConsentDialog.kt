@@ -1,35 +1,39 @@
 package com.weatherapp.libre.alerts
 
 import android.app.Dialog
-import android.content.res.ColorStateList
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.weatherapp.libre.BoutiqueThemeEngine
 import com.weatherapp.libre.LocationPreferences
+import com.weatherapp.libre.R
 
 object AlertConsentDialog {
 
-    const val CURRENT_ALERT_CONSENT_VERSION = 1
+    private var activeDialog: Dialog? = null
 
     fun checkAndShowConsentPrompt(
         activity: AppCompatActivity,
         locationPreferences: LocationPreferences,
-        isUpdateInstall: Boolean = false,
         onConsentCompleted: (() -> Unit)? = null
     ) {
-        val storedVersion = locationPreferences.getAlertConsentVersion()
-        if (storedVersion >= CURRENT_ALERT_CONSENT_VERSION) {
+        if (locationPreferences.getAlertConsentState() != LocationPreferences.ALERT_CONSENT_UNSET) {
             onConsentCompleted?.invoke()
             return
         }
 
+        if (activeDialog?.isShowing == true) return
         if (activity.isFinishing || activity.isDestroyed) return
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
@@ -38,6 +42,28 @@ object AlertConsentDialog {
         val dialog = Dialog(activity)
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        activeDialog = dialog
+
+        activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                if (activeDialog == dialog) {
+                    if (dialog.isShowing) {
+                        try {
+                            dialog.dismiss()
+                        } catch (ignored: Exception) {}
+                    }
+                    activeDialog = null
+                }
+            }
+        })
+
+        dialog.setOnDismissListener {
+            if (activeDialog == dialog) {
+                activeDialog = null
+            }
+        }
 
         val rootCard = MaterialCardView(activity).apply {
             radius = 20 * density
@@ -54,21 +80,15 @@ object AlertConsentDialog {
         }
 
         val titleTv = TextView(activity).apply {
-            text = "🚨 Severe Weather Alerts"
+            text = activity.getString(R.string.alert_consent_title)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 20f)
             typeface = android.graphics.Typeface.DEFAULT_BOLD
             setTextColor(palette.textPrimary)
             gravity = Gravity.CENTER
         }
 
-        val bodyText = if (isUpdateInstall && locationPreferences.isWeatherAlertsEnabled()) {
-            "The alert system has been rebuilt to fetch official, authentic Common Alerting Protocol (CAP-CP) alerts directly from Environment and Climate Change Canada (ECCC).\n\nPrevious notification choices do not carry over. Would you like to enable official ECCC severe weather notifications and background monitoring?"
-        } else {
-            "WeatherAPP can monitor official Environment and Climate Change Canada (ECCC) severe weather warnings in the background and notify you when severe weather threatens your active city.\n\nBackground monitoring and notifications are optional and strictly opt-in. Would you like to enable weather alert notifications?"
-        }
-
         val bodyTv = TextView(activity).apply {
-            text = bodyText
+            text = activity.getString(R.string.alert_consent_message)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
             setTextColor(palette.textSecondary)
             setPadding(0, (12 * density).toInt(), 0, (20 * density).toInt())
@@ -76,7 +96,7 @@ object AlertConsentDialog {
         }
 
         val btnEnable = MaterialButton(activity).apply {
-            text = "Enable Alerts"
+            text = activity.getString(R.string.alert_consent_btn_enable)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15f)
             setBackgroundColor(palette.brandPrimary)
             setTextColor(Color.WHITE)
@@ -85,7 +105,7 @@ object AlertConsentDialog {
         }
 
         val btnNoThanks = MaterialButton(activity, null, com.google.android.material.R.attr.borderlessButtonStyle).apply {
-            text = "No Thanks"
+            text = activity.getString(R.string.alert_consent_btn_no_thanks)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
             setTextColor(palette.textSecondary)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (44 * density).toInt()).apply {
@@ -94,12 +114,13 @@ object AlertConsentDialog {
         }
 
         btnEnable.setOnClickListener {
-            locationPreferences.saveAlertConsentVersion(CURRENT_ALERT_CONSENT_VERSION)
-            locationPreferences.saveWeatherAlertsEnabled(true)
+            locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_IN)
 
             AlertNotificationHelper.createNotificationChannels(activity)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                }
             }
             AlertPollWorker.schedule(activity.applicationContext)
 
@@ -108,19 +129,11 @@ object AlertConsentDialog {
         }
 
         btnNoThanks.setOnClickListener {
-            locationPreferences.saveAlertConsentVersion(CURRENT_ALERT_CONSENT_VERSION)
-            locationPreferences.saveWeatherAlertsEnabled(false)
+            locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_OUT)
 
             AlertPollWorker.cancel(activity.applicationContext)
 
             dialog.dismiss()
-            onConsentCompleted?.invoke()
-        }
-
-        dialog.setOnCancelListener {
-            locationPreferences.saveAlertConsentVersion(CURRENT_ALERT_CONSENT_VERSION)
-            locationPreferences.saveWeatherAlertsEnabled(false)
-            AlertPollWorker.cancel(activity.applicationContext)
             onConsentCompleted?.invoke()
         }
 

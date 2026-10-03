@@ -83,7 +83,7 @@ class AlertManager(
         locationAlerts.add(alert)
 
         // Post system notification if alerts enabled and location matches active foreground/background notification rules
-        if (locationPreferences.isWeatherAlertsEnabled() && isForegroundActiveLocation) {
+        if (locationPreferences.getAlertConsentState() == LocationPreferences.ALERT_CONSENT_OPT_IN && isForegroundActiveLocation) {
             AlertNotificationHelper.postNotification(context, alert, location, timezoneStr)
         }
 

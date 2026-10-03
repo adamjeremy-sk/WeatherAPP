@@ -48,7 +48,7 @@ class AlertPollWorker(
 
     override suspend fun doWork(): Result {
         val prefs = LocationPreferences(appContext)
-        if (!prefs.isWeatherAlertsEnabled()) {
+        if (prefs.getAlertConsentState() != LocationPreferences.ALERT_CONSENT_OPT_IN) {
             Log.d(TAG, "Alerts disabled in preferences. Cancelling worker.")
             cancel(appContext)
             return Result.success()

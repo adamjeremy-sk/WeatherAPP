@@ -3,9 +3,13 @@ package com.weatherapp.libre
 import com.weatherapp.libre.BuildConfig
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +30,7 @@ import com.google.android.material.card.MaterialCardView
 import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertTestHarness
 import com.weatherapp.libre.alerts.AlertNotificationHelper
+import com.weatherapp.libre.alerts.AlertPollWorker
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
@@ -634,12 +639,38 @@ class SettingsDialogManager(
             popup.show()
         }
 
-        val isAlertsOn = locationPreferences.isWeatherAlertsEnabled()
+        val thumbStates = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
+        val thumbColors = intArrayOf(palette.brandPrimary, palette.dividerColor)
+        dialogBinding.switchAlerts.thumbTintList = ColorStateList(thumbStates, thumbColors)
+
+        val trackStates = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
+        val trackColors = intArrayOf(
+            ColorUtils.setAlphaComponent(palette.brandPrimary, 128),
+            ColorUtils.setAlphaComponent(palette.dividerColor, 128)
+        )
+        dialogBinding.switchAlerts.trackTintList = ColorStateList(trackStates, trackColors)
+
+        var isBindingSwitchState = true
+        val isAlertsOn = locationPreferences.getAlertConsentState() == LocationPreferences.ALERT_CONSENT_OPT_IN
         dialogBinding.switchAlerts.isChecked = isAlertsOn
+        isBindingSwitchState = false
+
         dialogBinding.switchAlerts.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveWeatherAlertsEnabled(isChecked)
-            val msg = if (isChecked) "Environment Canada Weather Alerts Enabled" else "Weather Alerts Disabled"
-            Toast.makeText(activity.applicationContext, msg, Toast.LENGTH_SHORT).show()
+            if (isBindingSwitchState) return@setOnCheckedChangeListener
+
+            if (isChecked) {
+                locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_IN)
+                AlertNotificationHelper.createNotificationChannels(activity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                    }
+                }
+                AlertPollWorker.schedule(activity.applicationContext)
+            } else {
+                locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_OUT)
+                AlertPollWorker.cancel(activity.applicationContext)
+            }
         }
 
         dialogBinding.etSolarLeadMins.setText(locationPreferences.getSolarAlarmLeadMinutes().toString())

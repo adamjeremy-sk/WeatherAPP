@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             locationPreferences.saveTabLocation(2, LocationPreferences.DEFAULT_QUEBEC)
             setupLocationTabs()
 
-            locationDialogManager.showFirstLaunchLocationPrompt { newLoc ->
+            locationDialogManager.showFirstLaunchLocationSearch { newLoc ->
                 locationPreferences.saveTabLocation(0, newLoc)
                 weatherDisplayManager.currentLocation = newLoc
                 setupLocationTabs()

@@ -76,6 +76,10 @@ class LocationPreferences(context: Context) {
         context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
 
     companion object {
+        const val ALERT_CONSENT_UNSET = -1
+        const val ALERT_CONSENT_OPT_OUT = 0
+        const val ALERT_CONSENT_OPT_IN = 1
+
         private const val KEY_FIRST_LAUNCH = "is_first_launch"
         private const val KEY_STARTUP_MODE = "app_startup_mode"
 
@@ -98,8 +102,7 @@ class LocationPreferences(context: Context) {
         private const val KEY_UNIT_SYSTEM = "app_unit_system"
         private const val KEY_DEFAULT_MODEL = "app_default_model"
         private const val KEY_AUTO_CMA_CHINA = "app_auto_cma_china"
-        private const val KEY_WEATHER_ALERTS = "app_weather_alerts_enabled"
-        private const val KEY_ALERT_CONSENT_VERSION = "app_alert_consent_version"
+        private const val KEY_ALERT_CONSENT_STATE = "app_alert_consent_state"
         private const val KEY_CACHE_TTL_ENABLED = "app_cache_ttl_enabled"
         private const val KEY_CACHE_TTL_MINUTES = "app_cache_ttl_minutes"
         private const val KEY_ACTIVE_ALERT_JSON = "app_active_alert_json"
@@ -335,20 +338,12 @@ class LocationPreferences(context: Context) {
         prefs.edit().putBoolean(KEY_AUTO_CMA_CHINA, enabled).apply()
     }
 
-    fun isWeatherAlertsEnabled(): Boolean {
-        return prefs.getBoolean(KEY_WEATHER_ALERTS, false)
+    fun getAlertConsentState(): Int {
+        return prefs.getInt(KEY_ALERT_CONSENT_STATE, ALERT_CONSENT_UNSET)
     }
 
-    fun saveWeatherAlertsEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_WEATHER_ALERTS, enabled).apply()
-    }
-
-    fun getAlertConsentVersion(): Int {
-        return prefs.getInt(KEY_ALERT_CONSENT_VERSION, 0)
-    }
-
-    fun saveAlertConsentVersion(version: Int) {
-        prefs.edit().putInt(KEY_ALERT_CONSENT_VERSION, version).apply()
+    fun saveAlertConsentState(state: Int) {
+        prefs.edit().putInt(KEY_ALERT_CONSENT_STATE, state).apply()
     }
 
     fun isCacheTtlEnabled(): Boolean {
@@ -653,7 +648,7 @@ class LocationPreferences(context: Context) {
                 k.startsWith("app_alert_dismissed_") ||
                 k.startsWith("log_") ||
                 k.startsWith("temp_") ||
-                k == KEY_ALERT_CONSENT_VERSION ||
+                k == KEY_ALERT_CONSENT_STATE ||
                 k == "pending_reopen_theme_settings" ||
                 k == "last_fetch_timestamp" ||
                 k == "last_weather_refresh_time"

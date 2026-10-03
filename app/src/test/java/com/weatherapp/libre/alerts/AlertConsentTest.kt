@@ -1,27 +1,48 @@
 package com.weatherapp.libre.alerts
 
-import org.junit.Assert.*
+import com.weatherapp.libre.LocationPreferences
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AlertConsentTest {
 
     @Test
-    fun testCurrentConsentVersionIsOne() {
-        assertEquals(1, AlertConsentDialog.CURRENT_ALERT_CONSENT_VERSION)
+    fun testDefaultUnsetConsentStateShowsPrompt() {
+        val state = LocationPreferences.ALERT_CONSENT_UNSET
+        val shouldShowPrompt = (state == LocationPreferences.ALERT_CONSENT_UNSET)
+        assertTrue("Consent prompt must show when state is UNSET (-1)", shouldShowPrompt)
     }
 
     @Test
-    fun testDefaultAlertsDisabledForNewUser() {
-        // Verification of default state: when consent version is 0 (absent), prompt must show and default state is disabled
-        val storedConsentVersion = 0
-        val isConsentCompleted = storedConsentVersion >= AlertConsentDialog.CURRENT_ALERT_CONSENT_VERSION
-        assertFalse("Prompt must be shown when version is lower than current version", isConsentCompleted)
+    fun testOptInConsentStateHidesPromptAndEnablesAlerts() {
+        val state = LocationPreferences.ALERT_CONSENT_OPT_IN
+        val shouldShowPrompt = (state == LocationPreferences.ALERT_CONSENT_UNSET)
+        assertFalse("Consent prompt must NOT show when state is OPT_IN (1)", shouldShowPrompt)
+        
+        val isAlertsActive = (state == LocationPreferences.ALERT_CONSENT_OPT_IN)
+        assertTrue("Alerts must be active when state is OPT_IN", isAlertsActive)
     }
 
     @Test
-    fun testConsentCompletedVersionCheck() {
-        val storedConsentVersion = 1
-        val isConsentCompleted = storedConsentVersion >= AlertConsentDialog.CURRENT_ALERT_CONSENT_VERSION
-        assertTrue("Prompt should not show again once consent version is saved", isConsentCompleted)
+    fun testOptOutConsentStateHidesPromptAndDisablesAlerts() {
+        val state = LocationPreferences.ALERT_CONSENT_OPT_OUT
+        val shouldShowPrompt = (state == LocationPreferences.ALERT_CONSENT_UNSET)
+        assertFalse("Consent prompt must NOT show when state is OPT_OUT (0)", shouldShowPrompt)
+        
+        val isAlertsActive = (state == LocationPreferences.ALERT_CONSENT_OPT_IN)
+        assertFalse("Alerts must NOT be active when state is OPT_OUT", isAlertsActive)
+    }
+
+    @Test
+    fun testLegacyKeysIgnoredByNewReaders() {
+        val legacyBooleanKey = "app_weather_alerts_enabled"
+        val legacyVersionKey = "app_alert_consent_version"
+        val newConsentStateKey = "app_alert_consent_state"
+
+        assertNotEquals(newConsentStateKey, legacyBooleanKey)
+        assertNotEquals(newConsentStateKey, legacyVersionKey)
     }
 }

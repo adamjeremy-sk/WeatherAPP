@@ -2,4 +2,4 @@ Changelog 0.4.5VC12
 ---------------
 * Natural light time bands fixed
 * Natural light cell highlighting changed to show all current states
-
+* Fixed opt-in notifications and weather alerts

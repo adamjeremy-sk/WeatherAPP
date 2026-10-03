@@ -100,7 +100,7 @@
                             android:id="@+id/tvAlertsSwitchTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Severe Weather Notifications"
+                            android:text="@string/alerts_settings_switch_title"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -110,7 +110,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Receive alerts for tornado watches, severe thunderstorms, winter storms, and weather advisories."
+                            android:text="@string/alerts_settings_switch_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
