@@ -90,17 +90,21 @@ class AlertManager(
         return true
     }
 
-    fun getActiveAlertForLocation(location: LocationItem): CapAlert? {
-        cleanExpiredAlerts(location)
+    fun getActiveAlertForLocation(location: LocationItem): AlertCache.CachedAlert? {
+        val nowMs = Instant.now().toEpochMilli()
+        val key = AlertCache.cacheKey(location)
+        val cachedAlerts = AlertCache.readCache(context)[key] ?: emptyList()
 
-        // Check test alerts first if any exist
-        val testList = testAlertsByLocation[location.id]
-        if (!testList.isNullOrEmpty()) {
-            return testList.firstOrNull()
+        val validAlerts = cachedAlerts.filter { alert ->
+            val isExpired = alert.expiresUtcMs != null && alert.expiresUtcMs < nowMs
+            !isExpired
         }
 
-        val liveList = liveAlertsByLocation[location.id]
-        return liveList?.firstOrNull()
+        return validAlerts.maxByOrNull { it.severityLevel() }
+    }
+
+    fun getLiveAlertsForLocation(locationId: Long): List<CapAlert> {
+        return liveAlertsByLocation[locationId]?.toList() ?: emptyList()
     }
 
     fun cleanExpiredAlerts(location: LocationItem) {

@@ -53,8 +53,8 @@ class AppUpdateManager(
         }
 
         MaterialAlertDialogBuilder(activity)
-            .setTitle("🚀 Update Available!")
-            .setMessage("A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version: v$currentVersion\n\nWould you like to open the Play Store and update WeatherAPP now?")
+            .setTitle("Update Notification")
+            .setMessage("A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version: v$currentVersion\n\nWould you like to open the Play Store and update WeatherAPP?")
             .setPositiveButton("Update Now") { dialog, _ ->
                 openPlayStorePage()
                 dialog.dismiss()

@@ -18,7 +18,8 @@ object AlertTestHarness {
         WINTER_STORM_WARNING("winter_storm_warning.xml", "3. Winter Storm Warning (Severe / Expected)"),
         SPECIAL_STATEMENT("special_weather_statement.xml", "4. Special Weather Statement (Moderate)"),
         TORNADO_UPDATE("tornado_update.xml", "5. Update Message (Supersedes Tornado Warning)"),
-        TORNADO_CANCEL("tornado_cancel.xml", "6. Cancel Message (Dismisses Tornado Warning)")
+        TORNADO_CANCEL("tornado_cancel.xml", "6. Cancel Message (Dismisses Tornado Warning)"),
+        SHORT_EXPIRY_TEST("tornado_warning.xml", "7. Short Expiry Test Alert (2 Minutes)")
     }
 
     fun injectTestFixture(
@@ -58,6 +59,16 @@ object AlertTestHarness {
                 timezoneStr = timezoneStr,
                 isForegroundActiveLocation = true
             )
+            
+            // Write directly to AlertCache with future expiry (2 mins for SHORT_EXPIRY_TEST, 1 hour for others)
+            with(AlertCache) {
+                val cached = parsedAlert.toCachedAlert(location)
+                if (cached != null) {
+                    val expiryOffsetMs = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120000L else 3600000L
+                    val futureCached = cached.copy(expiresUtcMs = System.currentTimeMillis() + expiryOffsetMs)
+                    AlertCache.writeCacheForLocation(context, location, listOf(futureCached))
+                }
+            }
         }
 
         return parsedAlert

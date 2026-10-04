@@ -158,6 +158,8 @@ class ThemeManager(
         forecastAdapter?.setPalette(palette)
         inlineSolarPhaseAdapter?.setPalette(palette)
         hourlyForecastAdapter?.setPalette(palette)
+
+        (activity as? MainActivity)?.weatherDisplayManager?.updateAlertBanner()
     }
 
     private fun getAaaTitleColor(bgColor: Int): Int {

@@ -1,3 +1,13 @@
+---------------
+Changelog 0.4.6VC13
+---------------
+* Audited legacy CAP notification system
+* Fixed in-app CAP notifications
+* Preserved system CAP notifications
+* Fixed About / Privacy Policy / Roadmap / Support links
+
+
+---------------
 Changelog 0.4.5VC12
 ---------------
 * Natural light time bands fixed

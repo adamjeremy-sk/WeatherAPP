@@ -58,6 +58,8 @@ class WeatherDisplayManager(
                 }
             }
             
+            alertBannerManager?.updateAlertBanner(currentLocation)
+            
             // Align the tick to the top of the next minute
             val delayMs = 60000L - (System.currentTimeMillis() % 60000L)
             clockHandler.postDelayed(this, delayMs)

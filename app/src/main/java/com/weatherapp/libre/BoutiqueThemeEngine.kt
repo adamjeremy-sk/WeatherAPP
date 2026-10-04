@@ -15,7 +15,11 @@ data class ColorPalette(
     val tempLowBg: Int,
     val goldenHourPrimary: Int,
     val blueHourPrimary: Int,
-    val dividerColor: Int
+    val dividerColor: Int,
+    val alertExtreme: Int = Color.parseColor("#DC2626"),
+    val alertSevere: Int = Color.parseColor("#EA580C"),
+    val alertModerate: Int = Color.parseColor("#92400E"),
+    val alertMinor: Int = Color.parseColor("#0369A1")
 ) {
     val background: Int get() = backgroundLight
     val brandPrimary: Int get() = primary
@@ -42,7 +46,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#E0F2FE"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#4F46E5"),
-        dividerColor = Color.parseColor("#CBD5E1")
+        dividerColor = Color.parseColor("#CBD5E1"),
+        alertExtreme = Color.parseColor("#DC2626"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val DARK_PALETTE = ColorPalette(
@@ -58,7 +66,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#0D3349"),
         goldenHourPrimary = Color.parseColor("#FBBF24"),
         blueHourPrimary = Color.parseColor("#818CF8"),
-        dividerColor = Color.parseColor("#475569")
+        dividerColor = Color.parseColor("#475569"),
+        alertExtreme = Color.parseColor("#FF6B6B"),
+        alertSevere = Color.parseColor("#FF9900"),
+        alertModerate = Color.parseColor("#FFCC00"),
+        alertMinor = Color.parseColor("#38BDF8")
     )
 
     val CREMA_PALETTE = ColorPalette(
@@ -74,7 +86,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#E8F4F1"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#4338CA"),
-        dividerColor = Color.parseColor("#D5C5B8")
+        dividerColor = Color.parseColor("#D5C5B8"),
+        alertExtreme = Color.parseColor("#B91C1C"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val CHARCOAL_PALETTE = ColorPalette(
@@ -90,7 +106,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#162836"),
         goldenHourPrimary = Color.parseColor("#FBBF24"),
         blueHourPrimary = Color.parseColor("#818CF8"),
-        dividerColor = Color.parseColor("#424242")
+        dividerColor = Color.parseColor("#424242"),
+        alertExtreme = Color.parseColor("#FF6B6B"),
+        alertSevere = Color.parseColor("#FF9900"),
+        alertModerate = Color.parseColor("#FFCC00"),
+        alertMinor = Color.parseColor("#64B5F6")
     )
 
     val COBALT_PALETTE = ColorPalette(
@@ -106,7 +126,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#002855"),
         goldenHourPrimary = Color.parseColor("#FFC107"),
         blueHourPrimary = Color.parseColor("#60A5FA"),
-        dividerColor = Color.parseColor("#1282A2")
+        dividerColor = Color.parseColor("#1282A2"),
+        alertExtreme = Color.parseColor("#FF6B6B"),
+        alertSevere = Color.parseColor("#FF9900"),
+        alertModerate = Color.parseColor("#FFCC00"),
+        alertMinor = Color.parseColor("#38BDF8")
     )
 
     val JADE_PALETTE = ColorPalette(
@@ -122,7 +146,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#0F382C"),
         goldenHourPrimary = Color.parseColor("#FBBF24"),
         blueHourPrimary = Color.parseColor("#60A5FA"),
-        dividerColor = Color.parseColor("#235245")
+        dividerColor = Color.parseColor("#235245"),
+        alertExtreme = Color.parseColor("#FF7675"),
+        alertSevere = Color.parseColor("#FF9900"),
+        alertModerate = Color.parseColor("#FFCC00"),
+        alertMinor = Color.parseColor("#2DD4BF")
     )
 
     val AURORA_PALETTE = ColorPalette(
@@ -138,7 +166,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#0F2D3A"),
         goldenHourPrimary = Color.parseColor("#FBBF24"),
         blueHourPrimary = Color.parseColor("#A5B4FC"),
-        dividerColor = Color.parseColor("#33374C")
+        dividerColor = Color.parseColor("#33374C"),
+        alertExtreme = Color.parseColor("#FF75C3"),
+        alertSevere = Color.parseColor("#FF9900"),
+        alertModerate = Color.parseColor("#FFCC00"),
+        alertMinor = Color.parseColor("#818CF8")
     )
 
     val TERRACOTTA_PALETTE = ColorPalette(
@@ -154,7 +186,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#E6F4EA"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#4338CA"),
-        dividerColor = Color.parseColor("#D9C8BC")
+        dividerColor = Color.parseColor("#D9C8BC"),
+        alertExtreme = Color.parseColor("#B91C1C"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val FROST_PALETTE = ColorPalette(
@@ -170,7 +206,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#93C5FD"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#1D4ED8"),
-        dividerColor = Color.parseColor("#7DD3FC")
+        dividerColor = Color.parseColor("#7DD3FC"),
+        alertExtreme = Color.parseColor("#B91C1C"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#034078")
     )
 
     val FIRE_ENGINE_PALETTE = ColorPalette(
@@ -186,7 +226,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#DBEAFE"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#4338CA"),
-        dividerColor = Color.parseColor("#E5E7EB")
+        dividerColor = Color.parseColor("#E5E7EB"),
+        alertExtreme = Color.parseColor("#DC2626"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val ORANGE_GROVE_PALETTE = ColorPalette(
@@ -202,7 +246,11 @@ object BoutiqueThemeEngine {
         tempLowBg = Color.parseColor("#DCFCE7"),
         goldenHourPrimary = Color.parseColor("#D97706"),
         blueHourPrimary = Color.parseColor("#4338CA"),
-        dividerColor = Color.parseColor("#C2D4B2")
+        dividerColor = Color.parseColor("#C2D4B2"),
+        alertExtreme = Color.parseColor("#B91C1C"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     fun getPalette(isDarkMode: Boolean): ColorPalette {

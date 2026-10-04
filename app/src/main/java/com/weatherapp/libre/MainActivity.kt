@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -120,6 +121,8 @@ class MainActivity : AppCompatActivity() {
             themeManager.showThemeSettingsScreen()
         }
 
+        handleNotificationIntent(intent)
+
         val launchCount = locationPreferences.incrementAppLaunchCount()
         if (launchCount >= 500) {
             appUpdateManager.show500LaunchMilestoneDialog()
@@ -140,6 +143,28 @@ class MainActivity : AppCompatActivity() {
                 setupLocationTabs()
                 weatherDisplayManager.updateLocationHeader()
                 weatherDisplayManager.loadWeather()
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
+    }
+
+    fun handleNotificationIntent(intent: Intent?) {
+        if (intent == null) return
+        val locationKey = intent.getStringExtra("EXTRA_LOCATION_KEY") ?: return
+        intent.removeExtra("EXTRA_LOCATION_KEY")
+
+        val tabCount = locationPreferences.getTabCount()
+        for (i in 0 until tabCount) {
+            val tabLoc = locationPreferences.getTabLocation(i)
+            if (com.weatherapp.libre.alerts.AlertCache.cacheKey(tabLoc).equals(locationKey, ignoreCase = true)) {
+                locationPreferences.saveActiveTabIndex(i)
+                binding.tabLayoutLocations.getTabAt(i)?.select()
+                break
             }
         }
     }

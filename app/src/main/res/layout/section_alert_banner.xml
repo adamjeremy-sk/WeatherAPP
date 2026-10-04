@@ -7,10 +7,10 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="#2A1015"
+    app:cardBackgroundColor="@color/surface_card"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:strokeColor="#FF4D4D"
+    app:strokeColor="@color/divider_color"
     app:strokeWidth="2dp">
 
     <LinearLayout
@@ -30,7 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#FF4D4D"
+                android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:text="🚨 ECCC SEVERE WEATHER ALERT" />
@@ -42,7 +42,7 @@
                 android:layout_height="36dp"
                 android:paddingHorizontal="8dp"
                 android:text="Dismiss"
-                android:textColor="#FF9999"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Source: Environment and Climate Change Canada (ECCC / CAP-CP Protocol)"
-            android:textColor="#FFB3B3"
+            android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 
     </LinearLayout>

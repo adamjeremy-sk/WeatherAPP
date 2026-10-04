@@ -818,15 +818,15 @@ class SettingsDialogManager(
     }
 
     fun showLicensesSettingsScreen() {
-        showWebViewSettingsPage("Licenses & Sources", "https://adamjeremy-sk.github.io/WeatherAPP/licenses.html")
+        showWebViewSettingsPage("Licenses & Sources", "https://www.weatherapplibre.ca/licenses.html")
     }
 
     fun showPrivacySettingsScreen() {
-        showWebViewSettingsPage("Privacy Policy", "https://adamjeremy-sk.github.io/WeatherAPP/privacypolicy.html")
+        showWebViewSettingsPage("Privacy Policy", "https://www.weatherapplibre.ca/privacypolicy.html")
     }
 
     fun showAboutSettingsScreen() {
-        showWebViewSettingsPage(activity.getString(R.string.about_page_title, BuildConfig.VERSION_NAME), "https://adamjeremy-sk.github.io/WeatherAPP/about.html")
+        showWebViewSettingsPage(activity.getString(R.string.about_page_title, BuildConfig.VERSION_NAME), "https://www.weatherapplibre.ca/about.html")
     }
 
     fun showDonateSettingsScreen() {
@@ -834,7 +834,7 @@ class SettingsDialogManager(
     }
 
     fun showRoadmapSettingsScreen() {
-        showWebViewSettingsPage("WeatherAPP Roadmap", "https://adamjeremy-sk.github.io/WeatherAPP/roadmap.html")
+        showWebViewSettingsPage("WeatherAPP Roadmap", "https://www.weatherapplibre.ca/roadmap.html")
     }
 
     fun showDefaultLocationSettingsScreen(locationDialogManager: LocationDialogManager) {
@@ -854,6 +854,6 @@ class SettingsDialogManager(
     }
 
     companion object {
-        const val BETA_SUPPORT_URL = "https://adamjeremy-sk.github.io/WeatherAPP/support.html"
+        const val BETA_SUPPORT_URL = "https://www.weatherapplibre.ca/support.html"
     }
 }

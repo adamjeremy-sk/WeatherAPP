@@ -99,15 +99,17 @@ object AlertNotificationHelper {
             .append("Source: Environment and Climate Change Canada")
             .toString()
 
+        val locationKey = AlertCache.cacheKey(location)
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra("EXTRA_LOCATION_ID", location.id)
+            putExtra("EXTRA_LOCATION_KEY", locationKey)
             putExtra("EXTRA_ALERT_ID", alert.identifier)
         }
 
+        val requestCode = "${alert.identifier}_$locationKey".hashCode()
         val pendingIntent = PendingIntent.getActivity(
             context,
-            alert.identifier.hashCode(),
+            requestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

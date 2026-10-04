@@ -105,7 +105,6 @@ class LocationPreferences(context: Context) {
         private const val KEY_ALERT_CONSENT_STATE = "app_alert_consent_state"
         private const val KEY_CACHE_TTL_ENABLED = "app_cache_ttl_enabled"
         private const val KEY_CACHE_TTL_MINUTES = "app_cache_ttl_minutes"
-        private const val KEY_ACTIVE_ALERT_JSON = "app_active_alert_json"
         private const val KEY_ALERT_DISMISSED = "app_alert_dismissed"
         private const val KEY_SOLAR_EVENTS_FIRST_LAUNCH = "is_solar_events_first_launch"
         private const val KEY_RECENT_LOCATIONS_JSON = "app_recent_locations_json"
@@ -392,41 +391,11 @@ class LocationPreferences(context: Context) {
             .apply()
     }
 
-    private fun getLocationAlertKey(location: LocationItem): String {
-        val cleanName = location.name.lowercase(Locale.getDefault()).replace("\\s+".toRegex(), "_")
-        return "app_active_alert_json_$cleanName"
-    }
+
 
     private fun getLocationDismissedKey(location: LocationItem): String {
-        val cleanName = location.name.lowercase(Locale.getDefault()).replace("\\s+".toRegex(), "_")
+        val cleanName = location.name.lowercase(java.util.Locale.getDefault()).replace("\\s+".toRegex(), "_")
         return "app_alert_dismissed_$cleanName"
-    }
-
-    fun getActiveAlertJsonForLocation(location: LocationItem): String? {
-        val key = getLocationAlertKey(location)
-        val alertJson = prefs.getString(key, null)
-        if (alertJson != null) return alertJson
-
-        // Check legacy global alert if area matches location
-        val legacyJson = prefs.getString(KEY_ACTIVE_ALERT_JSON, null)
-        if (!legacyJson.isNullOrEmpty()) {
-            if (legacyJson.contains(location.name, ignoreCase = true) || legacyJson.contains(location.displayName, ignoreCase = true)) {
-                return legacyJson
-            }
-        }
-        return null
-    }
-
-    fun saveActiveAlertJsonForLocation(location: LocationItem, json: String?) {
-        val key = getLocationAlertKey(location)
-        if (json == null) {
-            prefs.edit().remove(key).remove(KEY_ACTIVE_ALERT_JSON).apply()
-        } else {
-            prefs.edit()
-                .putString(key, json)
-                .putBoolean(getLocationDismissedKey(location), false)
-                .apply()
-        }
     }
 
     fun isAlertDismissedForLocation(location: LocationItem): Boolean {
@@ -676,22 +645,7 @@ class LocationPreferences(context: Context) {
         }
     }
 
-    data class ActiveWeatherAlert(
-        val id: String = "alert_default",
-        val event: String = "Weather Advisory",
-        val headline: String = "Active Advisory",
-        val description: String = "Weather advisory in effect for this region."
-    )
 
-    fun getActiveWeatherAlert(location: LocationItem? = null): ActiveWeatherAlert? {
-        val json = if (location != null) getActiveAlertJsonForLocation(location) else prefs.getString(KEY_ACTIVE_ALERT_JSON, null)
-        if (json.isNullOrEmpty()) return null
-        return try {
-            Gson().fromJson(json, ActiveWeatherAlert::class.java)
-        } catch (e: Exception) {
-            null
-        }
-    }
 
     fun clearTestAlertDismissals() {
         val editor = prefs.edit()

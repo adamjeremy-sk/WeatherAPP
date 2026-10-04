@@ -32,7 +32,7 @@ object SolarLightingEngine {
     ): List<SolarPhaseDetail> {
         val lighting = calculateSolarLightingPhases(date, zoneId, observer)
 
-        val isToday = date.isEqual(LocalDate.now(zoneId))
+        val isToday = date.isEqual(nowInstant.atZone(zoneId).toLocalDate())
 
         fun fmt(instant: Instant?): String {
             if (instant == null) return "——"

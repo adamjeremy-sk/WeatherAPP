@@ -66,6 +66,10 @@ class AlertPollWorker(
                 isForegroundActiveLocation = isFirstTab,
                 forceRefresh = true
             )
+            
+            val activeLiveAlerts = alertManager.getLiveAlertsForLocation(loc.id)
+            val cachedAlerts = activeLiveAlerts.mapNotNull { with(AlertCache) { it.toCachedAlert(loc) } }
+            AlertCache.writeCacheForLocation(appContext, loc, cachedAlerts)
         }
 
         return Result.success()

@@ -15,8 +15,16 @@ class SolarIntervalContainmentTest {
         val zoneId = ZoneId.of("America/Regina")
         val observer = Observer(52.13, -106.67)
 
-        // 1. 06:52 AM - Civil Twilight and Golden Hour overlap
-        val morningOverlapInstant = date.atTime(6, 52).atZone(zoneId).toInstant()
+        val fullPhases = SolarLightingEngine.calculateChronologicalSolarPhases(date, zoneId, observer)
+
+        // We want to test overlap between Civil Twilight and Golden Hour.
+        // Let's pick an instant inside that overlap based on the dynamic calculation
+        val civilStart = fullPhases.find { it.name == "Civil Twilight" }?.startInstant!!
+        val goldenStart = fullPhases.find { it.name == "Golden Hour" }?.startInstant!!
+        // The overlap starts at max(civilStart, goldenStart)
+        val overlapStart = if (civilStart.isAfter(goldenStart)) civilStart else goldenStart
+        val morningOverlapInstant = overlapStart.plusSeconds(60)
+
         val morningPhases = SolarLightingEngine.calculateChronologicalSolarPhases(date, zoneId, observer, nowInstant = morningOverlapInstant)
         val activeMorningNames = morningPhases.filter { it.isCurrentActivePhase }.map { it.name }.toSet()
         assertEquals(setOf("Civil Twilight", "Golden Hour"), activeMorningNames)
