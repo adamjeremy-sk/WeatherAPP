@@ -10,4 +10,5 @@
     <string name="alert_consent_message">WeatherAPP can monitor official Environment and Climate Change Canada (ECCC) severe weather warnings in the background and notify you when severe weather threatens your active city.\n\nBackground monitoring and notifications are optional and strictly opt-in. Would you like to enable weather alert notifications?</string>
     <string name="alert_consent_btn_enable">Enable Alerts</string>
     <string name="alert_consent_btn_no_thanks">No Thanks</string>
+    <string name="feels_like_format">Feels like %1$s</string>
 </resources>

@@ -197,6 +197,15 @@ class WeatherDisplayManager(
         }
         binding.tvCurrentTemp.visibility = View.VISIBLE
 
+        val apparentTemp = currentWeatherData?.apparentTemperature
+        if (shouldShowFeelsLike(isToday, apparentTemp)) {
+            val formattedFeelsLike = UnitUtils.formatTempPrecise(apparentTemp!!, unitSystem)
+            binding.tvFeelsLike.text = activity.getString(R.string.feels_like_format, formattedFeelsLike)
+            binding.tvFeelsLike.visibility = View.VISIBLE
+        } else {
+            binding.tvFeelsLike.visibility = View.GONE
+        }
+
         binding.root.findViewById<android.widget.TextView>(R.id.tvDailyHigh)?.text = UnitUtils.formatTemp(day.tempMax, unitSystem)
         binding.root.findViewById<android.widget.TextView>(R.id.tvDailyLow)?.text = UnitUtils.formatTemp(day.tempMin, unitSystem)
 
@@ -333,5 +342,11 @@ class WeatherDisplayManager(
         }
 
         dialog.show()
+    }
+
+    companion object {
+        fun shouldShowFeelsLike(isToday: Boolean, apparentTemperature: Double?): Boolean {
+            return isToday && apparentTemperature != null
+        }
     }
 }
