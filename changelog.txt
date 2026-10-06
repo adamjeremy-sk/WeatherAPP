@@ -8,7 +8,6 @@ Changelog 0.4.7VC14 - 2026/10/06
 * Changed initial startup, no longer full-screen asks you for a location
 * Fixed alignments on 7-day forecast
 * Long press on location tab will bring up location chooser
-* Added dog-ear to moon phases
 * Changed menu layout
 
 ---------------

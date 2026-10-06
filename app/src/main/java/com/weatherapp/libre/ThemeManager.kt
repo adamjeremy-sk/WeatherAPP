@@ -155,6 +155,7 @@ class ThemeManager(
         binding.root.findViewById<android.widget.ImageView>(R.id.ivSunsetIcon)?.setColorFilter(palette.brandPrimary)
         binding.root.findViewById<android.widget.ImageView>(R.id.ivDaylightIcon)?.setColorFilter(palette.brandPrimary)
         binding.root.findViewById<android.widget.ImageView>(R.id.ivMoonIcon)?.setColorFilter(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageView>(R.id.ivMoonDogEar)?.setColorFilter(palette.dogEarShade)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvWindSpeed)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvWindGusts)?.setTextColor(palette.textSecondary)
