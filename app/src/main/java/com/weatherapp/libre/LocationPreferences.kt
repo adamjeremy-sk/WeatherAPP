@@ -146,16 +146,6 @@ class LocationPreferences(context: Context) {
             elevationMeters = 70.0
         )
 
-        val DEFAULT_WINNIPEG = LocationItem(
-            id = 2L,
-            name = "Winnipeg",
-            admin1 = "Manitoba",
-            country = "Canada",
-            latitude = 49.8951,
-            longitude = -97.1384,
-            elevationMeters = 238.0
-        )
-
         val DEFAULT_EDMONTON = LocationItem(
             id = 3L,
             name = "Edmonton",
@@ -166,14 +156,24 @@ class LocationPreferences(context: Context) {
             elevationMeters = 645.0
         )
 
-        val DEFAULT_QUEBEC = LocationItem(
-            id = 4L,
-            name = "Quebec City",
+        val DEFAULT_MONTREAL = LocationItem(
+            id = 5L,
+            name = "Montreal",
             admin1 = "Quebec",
             country = "Canada",
-            latitude = 46.8139,
-            longitude = -71.2080,
-            elevationMeters = 98.0
+            latitude = 45.5019,
+            longitude = -73.5674,
+            elevationMeters = 216.0
+        )
+
+        val DEFAULT_HALIFAX = LocationItem(
+            id = 6L,
+            name = "Halifax",
+            admin1 = "Nova Scotia",
+            country = "Canada",
+            latitude = 44.6488,
+            longitude = -63.5752,
+            elevationMeters = 60.0
         )
     }
 
@@ -343,6 +343,31 @@ class LocationPreferences(context: Context) {
 
     fun saveAlertConsentState(state: Int) {
         prefs.edit().putInt(KEY_ALERT_CONSENT_STATE, state).apply()
+    }
+
+    fun migrateLegacyConsentState() {
+        if (prefs.contains(KEY_ALERT_CONSENT_STATE)) {
+            return
+        }
+
+        val editor = prefs.edit()
+        var migrated = false
+
+        if (prefs.contains("app_weather_alerts_enabled")) {
+            val legacyEnabled = prefs.getBoolean("app_weather_alerts_enabled", false)
+            val newState = if (legacyEnabled) ALERT_CONSENT_OPT_IN else ALERT_CONSENT_OPT_OUT
+            editor.putInt(KEY_ALERT_CONSENT_STATE, newState)
+            migrated = true
+        } else if (prefs.contains("app_alert_consent_version")) {
+            editor.putInt(KEY_ALERT_CONSENT_STATE, ALERT_CONSENT_OPT_IN)
+            migrated = true
+        }
+
+        if (migrated) {
+            editor.remove("app_weather_alerts_enabled")
+            editor.remove("app_alert_consent_version")
+            editor.apply()
+        }
     }
 
     fun isCacheTtlEnabled(): Boolean {

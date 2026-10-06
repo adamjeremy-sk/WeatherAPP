@@ -29,13 +29,7 @@ class LocationDialogManager(
     private val lifecycleScope: CoroutineScope
 ) {
 
-    fun showFirstLaunchLocationSearch(onLocationSelected: (LocationItem) -> Unit) {
-        if (activity.isFinishing || activity.isDestroyed) return
-        showSearchLocationDialog(isFirstLaunchPrompt = true, onLocationSelected = onLocationSelected)
-    }
-
     fun showSearchLocationDialog(
-        isFirstLaunchPrompt: Boolean = false,
         isSettingDefaultLocation: Boolean = false,
         onLocationSelected: (LocationItem) -> Unit
     ) {
@@ -55,10 +49,6 @@ class LocationDialogManager(
                 Toast.makeText(activity.applicationContext, "Default startup location set to ${selected.name}", Toast.LENGTH_SHORT).show()
             } else {
                 locationPreferences.saveLastUsedLocation(selected)
-                if (isFirstLaunchPrompt) {
-                    locationPreferences.saveFixedDefaultLocation(selected)
-                    locationPreferences.setFirstLaunchCompleted()
-                }
                 onLocationSelected(selected)
             }
             dialog.dismiss()
@@ -68,10 +58,6 @@ class LocationDialogManager(
         dialogBinding.rvLocationResults.adapter = searchAdapter
 
         dialogBinding.btnCloseDialog.setOnClickListener {
-            if (isFirstLaunchPrompt) {
-                locationPreferences.setFirstLaunchCompleted()
-                onLocationSelected(LocationPreferences.DEFAULT_WINNIPEG)
-            }
             dialog.dismiss()
         }
 

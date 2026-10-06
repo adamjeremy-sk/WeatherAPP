@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
 
         setupUI()
         setupDrawerNavigation()
-        setupLocationTabs()
 
         val backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -135,9 +134,20 @@ class MainActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, backCallback)
 
+        locationPreferences.migrateLegacyConsentState()
         AlertConsentDialog.checkAndShowConsentPrompt(this, locationPreferences)
 
         themeManager.applyTheme(savedTheme)
+
+        if (locationPreferences.isFirstLaunch()) {
+            locationPreferences.saveTabCount(3)
+            locationPreferences.saveTabLocation(0, LocationPreferences.DEFAULT_EDMONTON)
+            locationPreferences.saveTabLocation(1, LocationPreferences.DEFAULT_MONTREAL)
+            locationPreferences.saveTabLocation(2, LocationPreferences.DEFAULT_HALIFAX)
+            locationPreferences.setFirstLaunchCompleted()
+        }
+
+        setupLocationTabs()
 
         val activeIndex = locationPreferences.getActiveTabIndex()
         val currentLoc = locationPreferences.getTabLocation(activeIndex)
@@ -156,22 +166,6 @@ class MainActivity : AppCompatActivity() {
             appUpdateManager.show500LaunchMilestoneDialog()
         } else {
             appUpdateManager.checkPlayStoreUpdate(silent = true)
-        }
-
-        if (locationPreferences.isFirstLaunch()) {
-            locationPreferences.saveTabCount(3)
-            locationPreferences.saveTabLocation(0, LocationPreferences.DEFAULT_WINNIPEG)
-            locationPreferences.saveTabLocation(1, LocationPreferences.DEFAULT_EDMONTON)
-            locationPreferences.saveTabLocation(2, LocationPreferences.DEFAULT_QUEBEC)
-            setupLocationTabs()
-
-            locationDialogManager.showFirstLaunchLocationSearch { newLoc ->
-                locationPreferences.saveTabLocation(0, newLoc)
-                weatherDisplayManager.currentLocation = newLoc
-                setupLocationTabs()
-                weatherDisplayManager.updateLocationHeader()
-                weatherDisplayManager.loadWeather()
-            }
         }
     }
 

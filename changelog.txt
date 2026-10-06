@@ -5,6 +5,8 @@ Changelog 0.4.7VC14
 * Fixed main page cells text alignment
 * Back button takes you to main weather
 * Fixed asking for permission to send notifications every update
+* Changed initial startup, no longer full-screen asks you for a location
+
 
 
 ---------------
