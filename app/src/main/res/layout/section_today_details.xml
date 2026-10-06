@@ -159,7 +159,7 @@
                                 android:gravity="center"
                                 android:text="Daily High"
                                 android:textColor="@color/temp_high"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
 
                             <ImageButton
                                 android:id="@+id/btnDismissHighEffect"
@@ -181,7 +181,7 @@
                             android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:textColor="@color/temp_high"
-                            android:textSize="22sp"
+                            android:textSize="24sp"
                             android:textStyle="bold"
                             tools:text="18°C" />
 
@@ -222,7 +222,7 @@
                                 android:gravity="center"
                                 android:text="Daily Low"
                                 android:textColor="@color/temp_low"
-                                android:textSize="12sp" />
+                                android:textSize="14sp" />
 
                             <ImageButton
                                 android:id="@+id/btnDismissLowEffect"
@@ -244,7 +244,7 @@
                             android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:textColor="@color/temp_low"
-                            android:textSize="22sp"
+                            android:textSize="24sp"
                             android:textStyle="bold"
                             tools:text="5°C" />
 
@@ -350,7 +350,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
-                                android:gravity="center_vertical"
+                                android:gravity="center"
                                 android:maxLines="1"
                                 android:text="Air Quality"
                                 android:textColor="@color/text_secondary"
@@ -511,7 +511,7 @@
                         android:layout_margin="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_metric_card"
-                        android:gravity="start|center_vertical"
+                        android:gravity="center"
                         android:orientation="vertical"
                         android:padding="14dp">
 
@@ -533,7 +533,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
-                                android:gravity="start"
+                                android:gravity="center"
                                 android:text="Sunrise"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
@@ -545,7 +545,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:gravity="start"
+                            android:gravity="center"
                             android:textColor="@color/text_primary"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -556,7 +556,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:gravity="start"
+                            android:gravity="center"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp"
                             tools:text="Rising at 92° (E)" />
@@ -571,7 +571,7 @@
                         android:layout_margin="3dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_metric_card"
-                        android:gravity="start|center_vertical"
+                        android:gravity="center"
                         android:orientation="vertical"
                         android:padding="14dp">
 
@@ -593,7 +593,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
-                                android:gravity="start"
+                                android:gravity="center"
                                 android:text="Sunset"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
@@ -605,7 +605,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:gravity="start"
+                            android:gravity="center"
                             android:textColor="@color/text_primary"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -616,7 +616,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:gravity="start"
+                            android:gravity="center"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp"
                             tools:text="Setting at 266° (W)" />

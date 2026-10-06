@@ -63,7 +63,7 @@
                             android:gravity="center"
                             android:text="High"
                             android:textColor="@color/temp_high"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <ImageButton
                             android:id="@+id/btnDismissHighEffect"
@@ -85,7 +85,7 @@
                         android:layout_marginTop="2dp"
                         android:gravity="center"
                         android:textColor="@color/temp_high"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="18°C" />
 
@@ -138,7 +138,7 @@
                             android:gravity="center"
                             android:text="Low"
                             android:textColor="@color/temp_low"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <ImageButton
                             android:id="@+id/btnDismissLowEffect"
@@ -160,7 +160,7 @@
                         android:layout_marginTop="2dp"
                         android:gravity="center"
                         android:textColor="@color/temp_low"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="5°C" />
 
@@ -464,15 +464,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="52dp"
-                    android:gravity="start"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:text="Sunrise"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
@@ -482,7 +481,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -493,7 +492,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         tools:text="Rising at 92° (E)" />
@@ -529,15 +528,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="52dp"
-                    android:gravity="start"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:text="Sunset"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
@@ -547,7 +545,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -558,7 +556,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:gravity="start"
+                        android:gravity="center"
                         android:textColor="@color/text_secondary"
                         android:textSize="11sp"
                         tools:text="Setting at 266° (W)" />
