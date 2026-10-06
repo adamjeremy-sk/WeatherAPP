@@ -42,24 +42,40 @@ class ThemeManager(
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
         val density = activity.resources.displayMetrics.density
 
-        binding.navigationView.setBackgroundColor(palette.surfaceCard)
-        binding.navigationView.itemTextColor = ColorStateList.valueOf(palette.textPrimary)
-        binding.navigationView.itemIconTintList = ColorStateList.valueOf(palette.brandPrimary)
+        val drawerDividers = listOf(
+            binding.drawerDivider1,
+            binding.drawerDivider2,
+            binding.drawerDivider3
+        )
+        val drawerTitles = listOf(
+            binding.tvSettingsTitle,
+            binding.tvThemeTitle,
+            binding.tvInfoTitle,
+            binding.tvDonateTitle,
+            binding.tvRateTitle,
+            binding.tvShareTitle
+        )
+        val drawerSnippets = listOf(
+            binding.tvSettingsSnippet,
+            binding.tvThemeSnippet,
+            binding.tvInfoSnippet,
+            binding.tvDonateSnippet,
+            binding.tvRateSnippet,
+            binding.tvShareSnippet
+        )
 
-        if (binding.navigationView.headerCount > 0) {
-            val headerView = binding.navigationView.getHeaderView(0)
-            val tvNavHeaderTitle = headerView.findViewById<android.widget.TextView>(R.id.tvNavHeaderTitle)
-            val ivNavHeaderIcon = headerView.findViewById<android.widget.ImageView>(R.id.ivNavHeaderIcon)
-
-            if (isFireEngine) {
-                headerView.setBackgroundColor(Color.parseColor("#DC2626"))
-                tvNavHeaderTitle?.setTextColor(Color.WHITE)
-                ivNavHeaderIcon?.setColorFilter(Color.WHITE)
-            } else {
-                headerView.setBackgroundColor(palette.surfaceCardSecondary)
-                tvNavHeaderTitle?.setTextColor(palette.textPrimary)
-                ivNavHeaderIcon?.setColorFilter(palette.brandPrimary)
-            }
+        if (isFireEngine) {
+            binding.drawerScrollView.setBackgroundColor(Color.parseColor("#DC2626"))
+            binding.tvDrawerTitle.setTextColor(Color.WHITE)
+            for (divider in drawerDividers) divider.setBackgroundColor(Color.WHITE)
+            for (tv in drawerTitles) tv.setTextColor(Color.WHITE)
+            for (tv in drawerSnippets) tv.setTextColor(Color.parseColor("#FEE2E2"))
+        } else {
+            binding.drawerScrollView.setBackgroundColor(palette.surfaceCard)
+            binding.tvDrawerTitle.setTextColor(palette.textPrimary)
+            for (divider in drawerDividers) divider.setBackgroundColor(palette.dividerColor)
+            for (tv in drawerTitles) tv.setTextColor(palette.textPrimary)
+            for (tv in drawerSnippets) tv.setTextColor(palette.textSecondary)
         }
 
         if (isFireEngine) {
@@ -213,62 +229,6 @@ class ThemeManager(
         dialogBinding.tvSystemDefaultTitle.setTextColor(palette.textPrimary)
         dialogBinding.tvSystemDefaultDesc.setTextColor(palette.textSecondary)
 
-
-
-        // Volume Key Date Cycling Card
-        dialogBinding.cardVolumeScrollSettings.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardVolumeScrollSettings.strokeColor = palette.dividerColor
-        dialogBinding.tvVolumeScrollTitle.setTextColor(palette.textPrimary)
-        dialogBinding.tvVolumeScrollDesc.setTextColor(palette.textSecondary)
-
-        val isVolumeScrollOn = locationPreferences.isVolumeScrollEnabled()
-        dialogBinding.switchVolumeScroll.isChecked = isVolumeScrollOn
-        dialogBinding.layoutVolumeSpeedContainer.visibility = if (isVolumeScrollOn) View.VISIBLE else View.GONE
-
-        dialogBinding.switchVolumeScroll.setOnCheckedChangeListener { _, isChecked ->
-            locationPreferences.saveVolumeScrollEnabled(isChecked)
-            dialogBinding.layoutVolumeSpeedContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
-        }
-
-        val currentSpeedIndex = locationPreferences.getVolumeScrollSpeedIndex()
-        dialogBinding.seekBarVolumeSpeed.progress = currentSpeedIndex
-        dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(currentSpeedIndex)}"
-
-        dialogBinding.seekBarVolumeSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(progress)}"
-                if (fromUser) {
-                    locationPreferences.saveVolumeScrollSpeedIndex(progress)
-                }
-            }
-            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
-        })
-
-        // Units Card
-        dialogBinding.cardUnitsSelector.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardUnitsSelector.strokeColor = palette.dividerColor
-        dialogBinding.tvUnitsTitle.setTextColor(palette.textPrimary)
-
-        val isUsUnits = (locationPreferences.getUnitSystem() == UnitSystem.US_CUSTOMARY)
-        dialogBinding.btnUnitsChoice.text = if (isUsUnits) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
-        dialogBinding.tvUnitsDesc.text = if (isUsUnits) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
-
-        dialogBinding.btnUnitsChoice.setOnClickListener {
-            val newUnits = if (locationPreferences.getUnitSystem() == UnitSystem.METRIC) UnitSystem.US_CUSTOMARY else UnitSystem.METRIC
-            locationPreferences.saveUnitSystem(newUnits)
-            dialogBinding.btnUnitsChoice.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
-            dialogBinding.tvUnitsDesc.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
-
-            // Clear weather cache and reload weather for active tab immediately
-            repository.clearMemoryAndDiskCache(locationPreferences)
-            if (activity is MainActivity) {
-                activity.weatherDisplayManager.loadWeather(forceRefresh = true)
-            }
-
-            Toast.makeText(activity.applicationContext, "Units updated", Toast.LENGTH_SHORT).show()
-        }
-
         fun setChoicesEnabled(enabled: Boolean) {
             dialogBinding.layoutThemeChoicesContainer.alpha = if (enabled) 1.0f else 0.4f
             for (i in 0 until dialogBinding.layoutStandardThemes.childCount) {
@@ -297,7 +257,6 @@ class ThemeManager(
 
         dialogBinding.tvStandardHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvBoutiqueHeader.setTextColor(palette.textPrimary)
-        dialogBinding.tvVolumeSpeedLabel.setTextColor(palette.textPrimary)
 
         val standardModes = listOf(
             LocationPreferences.THEME_LIGHT to ("Light Theme" to "Clean light background and high contrast typography."),
@@ -396,6 +355,7 @@ class ThemeManager(
         populateThemeGroup(dialogBinding.layoutStandardThemes, standardModes)
         populateThemeGroup(dialogBinding.layoutBoutiqueThemes, boutiqueModes)
 
+        (activity as? MainActivity)?.settingsDialogManager?.trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }

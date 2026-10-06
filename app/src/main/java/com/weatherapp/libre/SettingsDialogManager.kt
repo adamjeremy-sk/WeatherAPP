@@ -27,6 +27,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
+import android.view.KeyEvent
+import androidx.core.view.GravityCompat
 import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertTestHarness
 import com.weatherapp.libre.alerts.AlertNotificationHelper
@@ -34,10 +36,13 @@ import com.weatherapp.libre.alerts.AlertPollWorker
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
+import com.weatherapp.libre.databinding.DialogBehaviourScreenBinding
 import com.weatherapp.libre.databinding.DialogCacheSettingsBinding
+import com.weatherapp.libre.databinding.DialogInfoScreenBinding
 import com.weatherapp.libre.databinding.DialogLicensesSettingsBinding
 import com.weatherapp.libre.databinding.DialogModelsSettingsBinding
 import com.weatherapp.libre.databinding.DialogPrivacySettingsBinding
+import com.weatherapp.libre.databinding.DialogSystemScreenBinding
 import com.weatherapp.libre.databinding.DialogTabsSettingsBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,6 +55,43 @@ class SettingsDialogManager(
     private val binding: ActivityMainBinding,
     private val locationPreferences: LocationPreferences
 ) {
+
+    private val menuStack = mutableListOf<Dialog>()
+    private var wasPopped = false
+
+    fun trackDialog(dialog: Dialog) {
+        menuStack.add(dialog)
+        dialog.setOnDismissListener {
+            menuStack.remove(dialog)
+            if (menuStack.isEmpty() && wasPopped) {
+                openDrawer()
+            }
+        }
+        dialog.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (event.action == KeyEvent.ACTION_UP) {
+                    popTopMenu()
+                }
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    fun popTopMenu() {
+        if (menuStack.isNotEmpty()) {
+            wasPopped = true
+            menuStack.last().dismiss()
+            wasPopped = false
+        }
+    }
+
+    fun getMenuStackDepth() = menuStack.size
+
+    fun openDrawer() {
+        (activity as? MainActivity)?.binding?.drawerLayout?.openDrawer(GravityCompat.START)
+    }
 
     private fun getAaaTitleColor(bgColor: Int): Int {
         val r = Color.red(bgColor) / 255.0
@@ -209,6 +251,7 @@ class SettingsDialogManager(
         fetchPageContent(forceRefresh = false)
 
         dialog.setContentView(root)
+        trackDialog(dialog)
 
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
@@ -343,6 +386,7 @@ class SettingsDialogManager(
             dialogBinding.rgTabOptions.addView(card)
         }
 
+        trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }
@@ -540,6 +584,7 @@ class SettingsDialogManager(
             weatherDisplayManager.loadWeather(forceRefresh = true)
         }
 
+        trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }
@@ -675,6 +720,7 @@ class SettingsDialogManager(
 
         dialogBinding.etSolarLeadMins.setText(locationPreferences.getSolarAlarmLeadMinutes().toString())
 
+        trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }
@@ -812,6 +858,7 @@ class SettingsDialogManager(
             dialogBinding.layoutTtlOptions.addView(card)
         }
 
+        trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }
@@ -841,6 +888,211 @@ class SettingsDialogManager(
         locationDialogManager.showRecentLocationsDialog(isSettingDefaultLocation = true) {
             Toast.makeText(activity.applicationContext, "Default startup location updated", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun showSystemSettingsScreen(weatherDisplayManager: WeatherDisplayManager, locationDialogManager: LocationDialogManager) {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = DialogSystemScreenBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        }
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvHeaderDesc.setTextColor(palette.textSecondary)
+
+        val cards = listOf(
+            dialogBinding.cardBehaviour to (dialogBinding.tvBehaviourTitle to dialogBinding.tvBehaviourDesc),
+            dialogBinding.cardDataCache to (dialogBinding.tvDataCacheTitle to dialogBinding.tvDataCacheDesc),
+            dialogBinding.cardDefaultLocation to (dialogBinding.tvDefaultLocationTitle to dialogBinding.tvDefaultLocationDesc),
+            dialogBinding.cardLocationTabs to (dialogBinding.tvLocationTabsTitle to dialogBinding.tvLocationTabsDesc),
+            dialogBinding.cardNotifications to (dialogBinding.tvNotificationsTitle to dialogBinding.tvNotificationsDesc),
+            dialogBinding.cardWeatherModels to (dialogBinding.tvWeatherModelsTitle to dialogBinding.tvWeatherModelsDesc)
+        )
+
+        for ((card, textPair) in cards) {
+            card.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            card.strokeColor = palette.dividerColor
+            textPair.first.setTextColor(palette.textPrimary)
+            textPair.second.setTextColor(palette.textSecondary)
+        }
+
+        dialogBinding.cardBehaviour.setOnClickListener { showBehaviourSettingsScreen() }
+        dialogBinding.cardDataCache.setOnClickListener { showCacheSettingsScreen() }
+        dialogBinding.cardDefaultLocation.setOnClickListener { showDefaultLocationSettingsScreen(locationDialogManager) }
+        dialogBinding.cardLocationTabs.setOnClickListener { showLocationTabsSettingsScreen() }
+        dialogBinding.cardNotifications.setOnClickListener { showWeatherAlertsSettingsScreen() }
+        dialogBinding.cardWeatherModels.setOnClickListener { showModelsSettingsScreen(weatherDisplayManager) }
+
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    fun showBehaviourSettingsScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = DialogBehaviourScreenBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        }
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvHeaderDesc.setTextColor(palette.textSecondary)
+
+        // Volume Key Date Cycling Card
+        dialogBinding.cardVolumeScrollSettings.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardVolumeScrollSettings.strokeColor = palette.dividerColor
+        dialogBinding.tvVolumeScrollTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvVolumeScrollDesc.setTextColor(palette.textSecondary)
+
+        val isVolumeScrollOn = locationPreferences.isVolumeScrollEnabled()
+        dialogBinding.switchVolumeScroll.isChecked = isVolumeScrollOn
+        dialogBinding.layoutVolumeSpeedContainer.visibility = if (isVolumeScrollOn) View.VISIBLE else View.GONE
+
+        dialogBinding.switchVolumeScroll.setOnCheckedChangeListener { _, isChecked ->
+            locationPreferences.saveVolumeScrollEnabled(isChecked)
+            dialogBinding.layoutVolumeSpeedContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+
+        val currentSpeedIndex = locationPreferences.getVolumeScrollSpeedIndex()
+        dialogBinding.seekBarVolumeSpeed.progress = currentSpeedIndex
+        dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(currentSpeedIndex)}"
+        dialogBinding.tvVolumeSpeedLabel.setTextColor(palette.textPrimary)
+
+        dialogBinding.seekBarVolumeSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+                dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(progress)}"
+                if (fromUser) {
+                    locationPreferences.saveVolumeScrollSpeedIndex(progress)
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
+        })
+
+        // Units Card
+        dialogBinding.cardUnitsSelector.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardUnitsSelector.strokeColor = palette.dividerColor
+        dialogBinding.tvUnitsTitle.setTextColor(palette.textPrimary)
+
+        val isUsUnits = (locationPreferences.getUnitSystem() == UnitSystem.US_CUSTOMARY)
+        dialogBinding.btnUnitsChoice.text = if (isUsUnits) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
+        dialogBinding.tvUnitsDesc.text = if (isUsUnits) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
+
+        dialogBinding.btnUnitsChoice.setOnClickListener {
+            val newUnits = if (locationPreferences.getUnitSystem() == UnitSystem.METRIC) UnitSystem.US_CUSTOMARY else UnitSystem.METRIC
+            locationPreferences.saveUnitSystem(newUnits)
+            dialogBinding.btnUnitsChoice.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
+            dialogBinding.tvUnitsDesc.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
+
+            // Clear weather cache and reload weather for active tab immediately
+            if (activity is MainActivity) {
+                activity.repository.clearMemoryAndDiskCache(locationPreferences)
+                activity.weatherDisplayManager.loadWeather(forceRefresh = true)
+            }
+
+            Toast.makeText(activity.applicationContext, "Units updated", Toast.LENGTH_SHORT).show()
+        }
+
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    fun showInfoSettingsScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = DialogInfoScreenBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        }
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvHeaderDesc.setTextColor(palette.textSecondary)
+
+        val cards = listOf(
+            dialogBinding.cardAbout to (dialogBinding.tvAboutTitle to dialogBinding.tvAboutDesc),
+            dialogBinding.cardLicenses to (dialogBinding.tvLicensesTitle to dialogBinding.tvLicensesDesc),
+            dialogBinding.cardPrivacy to (dialogBinding.tvPrivacyTitle to dialogBinding.tvPrivacyDesc),
+            dialogBinding.cardRoadmap to (dialogBinding.tvRoadmapTitle to dialogBinding.tvRoadmapDesc)
+        )
+
+        for ((card, textPair) in cards) {
+            card.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+            card.strokeColor = palette.dividerColor
+            textPair.first.setTextColor(palette.textPrimary)
+            textPair.second.setTextColor(palette.textSecondary)
+        }
+
+        dialogBinding.cardAbout.setOnClickListener { showAboutSettingsScreen() }
+        dialogBinding.cardLicenses.setOnClickListener { showLicensesSettingsScreen() }
+        dialogBinding.cardPrivacy.setOnClickListener { showPrivacySettingsScreen() }
+        dialogBinding.cardRoadmap.setOnClickListener { showRoadmapSettingsScreen() }
+
+        trackDialog(dialog)
+        dialog.show()
     }
 
     fun shareProject() {

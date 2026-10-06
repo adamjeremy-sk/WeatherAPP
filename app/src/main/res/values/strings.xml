@@ -21,4 +21,17 @@
     <string name="gusts_line_format">Gusts %1$s</string>
     <string name="gusts_inline_format">(Gusts %1$s)</string>
     <string name="gusts_secondary_format">Gusts: %1$s</string>
+    <string name="title_theme">Theme</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_system">System</string>
+    <string name="title_behaviour">Behaviour</string>
+    <string name="title_info">Info</string>
+    <string name="title_weather_models">Weather Models</string>
+    <string name="drawer_title">Drawer</string>
+    <string name="snippet_theme">Palettes, colours, and appearance.</string>
+    <string name="snippet_settings">Behaviour, cache, locations, notifications, and models.</string>
+    <string name="snippet_info">About, licenses, privacy, and roadmap.</string>
+    <string name="snippet_donate">Support continued development.</string>
+    <string name="snippet_rate">Rate and review on the Play Store.</string>
+    <string name="snippet_share">Share WeatherAPP with others.</string>
 </resources>

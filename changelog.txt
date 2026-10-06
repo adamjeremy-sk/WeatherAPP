@@ -1,5 +1,5 @@
 ---------------
-Changelog 0.4.7VC14
+Changelog 0.4.7VC14 - 2026/10/06
 ---------------
 * Added "Feels like" temperature
 * Fixed main page cells text alignment
@@ -8,10 +8,11 @@ Changelog 0.4.7VC14
 * Changed initial startup, no longer full-screen asks you for a location
 * Fixed alignments on 7-day forecast
 * Long press on location tab will bring up location chooser
-
+* Added dog-ear to moon phases
+* Changed menu layout
 
 ---------------
-Changelog 0.4.6VC13
+Changelog 0.4.6VC13 - 2026/10/03
 ---------------
 * Audited legacy CAP notification system
 * Fixed in-app CAP notifications
@@ -20,7 +21,7 @@ Changelog 0.4.6VC13
 
 
 ---------------
-Changelog 0.4.5VC12
+Changelog 0.4.5VC12 - 2026/10/01
 ---------------
 * Natural light time bands fixed
 * Natural light cell highlighting changed to show all current states

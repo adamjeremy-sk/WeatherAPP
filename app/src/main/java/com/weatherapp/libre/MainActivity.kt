@@ -26,9 +26,9 @@ import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private lateinit var locationPreferences: LocationPreferences
-    private val repository = WeatherRepository()
+    val repository = WeatherRepository()
 
     // Decomposed Manager instances
     lateinit var themeManager: ThemeManager
@@ -44,9 +44,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_REOPEN_THEME_SETTINGS = "extra_reopen_theme_settings"
 
-        fun shouldInterceptBack(drawerOpen: Boolean, subTab: InlineSubTab): Boolean {
-            return drawerOpen || subTab != InlineSubTab.CURRENT
-        }
+        fun shouldInterceptBack(menuDepth: Int, drawerOpen: Boolean, subTab: InlineSubTab): Boolean =
+            menuDepth > 0 || drawerOpen || subTab != InlineSubTab.CURRENT
+
+        fun shouldReloadAfterTabEdit(pressedIndex: Int, activeIndex: Int): Boolean =
+            pressedIndex == activeIndex
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,22 +76,13 @@ class MainActivity : AppCompatActivity() {
                 systemBars.right,
                 systemBars.bottom
             )
+            binding.drawerContainer.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
 
-            if (binding.navigationView.headerCount > 0) {
-                val headerView = binding.navigationView.getHeaderView(0)
-                val density = resources.displayMetrics.density
-                headerView.setPadding(
-                    (20 * density).toInt(),
-                    systemBars.top + (12 * density).toInt(),
-                    (20 * density).toInt(),
-                    (16 * density).toInt()
-                )
-                headerView.setOnClickListener {
-                    if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    }
-                }
-            }
             insets
         }
 
@@ -113,10 +106,13 @@ class MainActivity : AppCompatActivity() {
 
         val backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                val menuDepth = settingsDialogManager.getMenuStackDepth()
                 val drawerOpen = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
                 val subTab = astronomyManager.activeInlineSubTab
-                if (shouldInterceptBack(drawerOpen, subTab)) {
-                    if (drawerOpen) {
+                if (shouldInterceptBack(menuDepth, drawerOpen, subTab)) {
+                    if (menuDepth > 0) {
+                        settingsDialogManager.popTopMenu()
+                    } else if (drawerOpen) {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         astronomyManager.switchInlineSubTab(
@@ -337,6 +333,18 @@ class MainActivity : AppCompatActivity() {
             val loc = locationPreferences.getTabLocation(i)
             val tab = binding.tabLayoutLocations.newTab().setText(loc.name)
             binding.tabLayoutLocations.addTab(tab)
+            tab.view.setOnLongClickListener {
+                locationDialogManager.showRecentLocationsDialog { selectedLoc ->
+                    locationPreferences.saveTabLocation(i, selectedLoc)
+                    tab.text = selectedLoc.name
+                    if (shouldReloadAfterTabEdit(i, locationPreferences.getActiveTabIndex())) {
+                        weatherDisplayManager.currentLocation = selectedLoc
+                        weatherDisplayManager.updateLocationHeader()
+                        weatherDisplayManager.loadWeather()
+                    }
+                }
+                true
+            }
         }
 
         val activeIndex = locationPreferences.getActiveTabIndex().coerceIn(0, tabCount - 1)
@@ -365,23 +373,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDrawerNavigation() {
-        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
+        binding.rowTheme.setOnClickListener {
+            themeManager.showThemeSettingsScreen()
+        }
+        binding.rowSettings.setOnClickListener {
+            settingsDialogManager.showSystemSettingsScreen(weatherDisplayManager, locationDialogManager)
+        }
+        binding.rowInfo.setOnClickListener {
+            settingsDialogManager.showInfoSettingsScreen()
+        }
+        binding.rowDonate.setOnClickListener {
+            settingsDialogManager.showDonateSettingsScreen()
+        }
+        binding.rowRate.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-            when (menuItem.itemId) {
-                R.id.menu_item_theme -> themeManager.showThemeSettingsScreen(); R.id.menu_item_tabs -> settingsDialogManager.showLocationTabsSettingsScreen()
-                R.id.menu_item_models -> settingsDialogManager.showModelsSettingsScreen(weatherDisplayManager)
-                R.id.menu_item_alerts -> settingsDialogManager.showWeatherAlertsSettingsScreen()
-                R.id.menu_item_cache -> settingsDialogManager.showCacheSettingsScreen()
-                R.id.menu_item_default_location -> settingsDialogManager.showDefaultLocationSettingsScreen(locationDialogManager)
-                R.id.menu_item_about -> settingsDialogManager.showAboutSettingsScreen()
-                R.id.menu_item_donate -> settingsDialogManager.showDonateSettingsScreen()
-                R.id.menu_item_licenses -> settingsDialogManager.showLicensesSettingsScreen()
-                R.id.menu_item_privacy -> settingsDialogManager.showPrivacySettingsScreen()
-                R.id.menu_item_rate -> openUrl("https://play.google.com/store/apps/details?id=$packageName")
-                R.id.menu_item_roadmap -> settingsDialogManager.showRoadmapSettingsScreen()
-                R.id.menu_item_share -> settingsDialogManager.shareProject()
-            }
-            true
+            openUrl("https://play.google.com/store/apps/details?id=$packageName")
+        }
+        binding.rowShare.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            settingsDialogManager.shareProject()
         }
     }
 
