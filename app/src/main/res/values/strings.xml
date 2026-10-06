@@ -11,4 +11,14 @@
     <string name="alert_consent_btn_enable">Enable Alerts</string>
     <string name="alert_consent_btn_no_thanks">No Thanks</string>
     <string name="feels_like_format">Feels like %1$s</string>
+    <string name="position_rise_format">Rise %1$s</string>
+    <string name="position_set_format">Set %1$s</string>
+    <string name="position_no_rise">No Rise</string>
+    <string name="position_no_set">No Set</string>
+    <string name="position_unavailable">——</string>
+    <string name="azimuth_unavailable">—</string>
+    <string name="wind_line_format">Wind: %1$s</string>
+    <string name="gusts_line_format">Gusts %1$s</string>
+    <string name="gusts_inline_format">(Gusts %1$s)</string>
+    <string name="gusts_secondary_format">Gusts: %1$s</string>
 </resources>

@@ -238,7 +238,14 @@ class HourlyForecastAdapter(
             val windSpeed = forecast.windSpeed
             if (windSpeed != null) {
                 binding.boxWind.visibility = View.VISIBLE
-                binding.tvStatWind.text = UnitUtils.formatWindSpeed(windSpeed, unitSystem, directionDeg = forecast.windDirection, gustKmh = forecast.windGusts)
+                val baseWind = UnitUtils.formatWindSpeed(windSpeed, unitSystem, directionDeg = forecast.windDirection)
+                val gustVal = UnitUtils.formatWindGusts(windSpeed, forecast.windGusts, unitSystem)
+                if (gustVal != null) {
+                    val gustInline = binding.root.context.getString(R.string.gusts_inline_format, gustVal)
+                    binding.tvStatWind.text = "$baseWind $gustInline"
+                } else {
+                    binding.tvStatWind.text = baseWind
+                }
             } else {
                 binding.boxWind.visibility = View.GONE
             }

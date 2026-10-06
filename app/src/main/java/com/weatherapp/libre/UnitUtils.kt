@@ -25,24 +25,29 @@ object UnitUtils {
         }
     }
 
-    fun formatWindSpeed(kmh: Double, unitSystem: UnitSystem, directionDeg: Double? = null, gustKmh: Double? = null): String {
-        val dirText = if (directionDeg != null) " ${getDegreesToCompass(directionDeg)}" else ""
-        val gustText = if (gustKmh != null && gustKmh > kmh + 3.0) {
-            if (unitSystem == UnitSystem.US_CUSTOMARY) {
-                val gustMph = kotlin.math.round(gustKmh * 0.621371).toInt()
-                " (Gusts $gustMph mph)"
-            } else {
-                val gustRounded = kotlin.math.round(gustKmh).toInt()
-                " (Gusts $gustRounded km/h)"
-            }
-        } else ""
+    fun shouldShowGusts(windKmh: Double, gustKmh: Double?): Boolean {
+        return gustKmh != null && gustKmh > windKmh + 3.0
+    }
 
+    fun formatWindGusts(windKmh: Double, gustKmh: Double?, unitSystem: UnitSystem): String? {
+        if (!shouldShowGusts(windKmh, gustKmh) || gustKmh == null) return null
+        return if (unitSystem == UnitSystem.US_CUSTOMARY) {
+            val gustMph = kotlin.math.round(gustKmh * 0.621371).toInt()
+            "$gustMph mph"
+        } else {
+            val gustRounded = kotlin.math.round(gustKmh).toInt()
+            "$gustRounded km/h"
+        }
+    }
+
+    fun formatWindSpeed(kmh: Double, unitSystem: UnitSystem, directionDeg: Double? = null): String {
+        val dirText = if (directionDeg != null) " ${getDegreesToCompass(directionDeg)}" else ""
         return if (unitSystem == UnitSystem.US_CUSTOMARY) {
             val mph = kotlin.math.round(kmh * 0.621371).toInt()
-            "$mph mph$dirText$gustText"
+            "$mph mph$dirText"
         } else {
             val kmhRounded = kotlin.math.round(kmh).toInt()
-            "$kmhRounded km/h$dirText$gustText"
+            "$kmhRounded km/h$dirText"
         }
     }
 
@@ -54,17 +59,6 @@ object UnitUtils {
         } else {
             val kmhRounded = kotlin.math.round(kmh).toInt()
             "$kmhRounded km/h$dirText"
-        }
-    }
-
-    fun formatWindSpeedGusts(gustKmh: Double?, kmh: Double, unitSystem: UnitSystem): String? {
-        if (gustKmh == null || gustKmh <= kmh + 3.0) return null
-        return if (unitSystem == UnitSystem.US_CUSTOMARY) {
-            val gustMph = kotlin.math.round(gustKmh * 0.621371).toInt()
-            "Gusts: $gustMph mph"
-        } else {
-            val gustRounded = kotlin.math.round(gustKmh).toInt()
-            "Gusts: $gustRounded km/h"
         }
     }
 

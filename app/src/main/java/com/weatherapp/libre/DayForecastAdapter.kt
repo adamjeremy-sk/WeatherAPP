@@ -93,8 +93,8 @@ class DayForecastAdapter(
                 binding.tvExpandedDaylight.setTextColor(p.textPrimary)
                 binding.tvExpandedSunriseSunset.setTextColor(p.textPrimary)
                 binding.tvExpandedWindUv.setTextColor(p.textPrimary)
-                binding.tvExpandedSunAzimuth.setTextColor(p.textSecondary)
-                binding.tvExpandedMoonAzimuth.setTextColor(p.textSecondary)
+                binding.tvExpandedSunAzimuth.setTextColor(p.textPrimary)
+                binding.tvExpandedMoonAzimuth.setTextColor(p.textPrimary)
             }
 
             val zoneId = try {
@@ -103,7 +103,8 @@ class DayForecastAdapter(
                 ZoneId.systemDefault()
             }
 
-            val is24Hour = DateFormat.is24HourFormat(binding.root.context)
+            val context = binding.root.context
+            val is24Hour = DateFormat.is24HourFormat(context)
 
             // Populate Expanded Section Data via SolarDaySummary
             val solar = item.solarSummary
@@ -127,14 +128,23 @@ class DayForecastAdapter(
             val ssStr = formatInst(solar?.sunset)
             binding.tvExpandedSunriseSunset.text = "$srStr / $ssStr"
 
-            val windStr = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem, gustKmh = item.windGustsMaxKmH)
-            binding.tvExpandedWindUv.text = "Wind: $windStr"
+            val windVal = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem)
+            val windLine = context.getString(R.string.wind_line_format, windVal)
+            val gustVal = UnitUtils.formatWindGusts(item.windSpeedMaxKmH, item.windGustsMaxKmH, unitSystem)
+            if (gustVal != null) {
+                val gustsLine = context.getString(R.string.gusts_line_format, gustVal)
+                binding.tvExpandedWindUv.text = joinTwoLines(windLine, gustsLine)
+            } else {
+                binding.tvExpandedWindUv.text = windLine
+            }
 
             val srAz = solar?.sunriseAzimuthDegrees
             val ssAz = solar?.sunsetAzimuthDegrees
-            val srAzText = if (srAz != null) "$srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else "—"
-            val ssAzText = if (ssAz != null) "$ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else "—"
-            binding.tvExpandedSunAzimuth.text = "Rise $srAzText • Set $ssAzText"
+            val srAzText = if (srAz != null) "$srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else context.getString(R.string.azimuth_unavailable)
+            val ssAzText = if (ssAz != null) "$ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else context.getString(R.string.azimuth_unavailable)
+            val sunRiseLine = context.getString(R.string.position_rise_format, srAzText)
+            val sunSetLine = context.getString(R.string.position_set_format, ssAzText)
+            binding.tvExpandedSunAzimuth.text = joinTwoLines(sunRiseLine, sunSetLine)
 
             // Calculate Lunar Phase & Moonrise/Set via LunarCalculator
             val loc = currentLocation
@@ -162,24 +172,26 @@ class DayForecastAdapter(
 
                 val timeFormatter = DateTimeFormatter.ofPattern(if (is24Hour) "HH:mm" else "h:mm a", Locale.getDefault())
 
-                val riseText = if (riseEvent != null) {
+                val riseLine = if (riseEvent != null) {
                     val timeStr = riseEvent.instantUtc.atZone(zoneId).format(timeFormatter)
-                    "Rise $timeStr (${riseEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(riseEvent.azimuthDegrees)})"
+                    val segment = "$timeStr (${riseEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(riseEvent.azimuthDegrees)})"
+                    context.getString(R.string.position_rise_format, segment)
                 } else {
-                    "No Rise"
+                    context.getString(R.string.position_no_rise)
                 }
 
-                val setText = if (setEvent != null) {
+                val setLine = if (setEvent != null) {
                     val timeStr = setEvent.instantUtc.atZone(zoneId).format(timeFormatter)
-                    "Set $timeStr (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
+                    val segment = "$timeStr (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
+                    context.getString(R.string.position_set_format, segment)
                 } else {
-                    "No Set"
+                    context.getString(R.string.position_no_set)
                 }
 
-                binding.tvExpandedMoonAzimuth.text = "$riseText • $setText"
+                binding.tvExpandedMoonAzimuth.text = joinTwoLines(riseLine, setLine)
             } else {
                 binding.tvExpandedMoonPhase.text = "——"
-                binding.tvExpandedMoonAzimuth.text = "——"
+                binding.tvExpandedMoonAzimuth.text = context.getString(R.string.position_unavailable)
             }
 
             ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)
@@ -202,6 +214,12 @@ class DayForecastAdapter(
                     notifyItemChanged(pos)
                 }
             }
+        }
+    }
+
+    companion object {
+        fun joinTwoLines(line1: String, line2: String): String {
+            return "$line1\n$line2"
         }
     }
 }

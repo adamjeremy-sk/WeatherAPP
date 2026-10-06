@@ -170,7 +170,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/text_primary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         tools:text="Waxing Crescent 🌒 (18%)" />
 
@@ -195,7 +195,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/text_primary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         tools:text="12h 09m" />
 
@@ -289,6 +289,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
+                        android:textStyle="bold"
                         tools:text="Rise 89° (E) • Set 271° (W)" />
 
                 </LinearLayout>
@@ -313,6 +314,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="@color/text_primary"
                         android:textSize="13sp"
+                        android:textStyle="bold"
                         tools:text="Rise 112° (SE) • Set 248° (SW)" />
 
                 </LinearLayout>

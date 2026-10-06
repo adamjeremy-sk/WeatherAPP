@@ -216,7 +216,8 @@ class WeatherDisplayManager(
         val windGust = current?.windGusts ?: day.windGustsMaxKmH
 
         val windSpeedStr = UnitUtils.formatWindSpeedPrimary(windSpeed, unitSystem, windDir)
-        val gustText = UnitUtils.formatWindSpeedGusts(windGust, windSpeed, unitSystem)
+        val gustVal = UnitUtils.formatWindGusts(windSpeed, windGust, unitSystem)
+        val gustText = if (gustVal != null) activity.getString(R.string.gusts_secondary_format, gustVal) else null
 
         val aqi = current?.airQualityIndex ?: day.airQualityIndex
         val aqiStr = if (aqi != null) "$aqi • ${UnitUtils.getAqiDescription(aqi)}" else "Good"
