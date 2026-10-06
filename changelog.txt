@@ -1,11 +1,11 @@
 ---------------
 Changelog 0.4.7VC14
 ---------------
-* Added "Feels like" temperature line in hero card (left-aligned to condition text start edge, superseding icon-left design draft)
+* Added "Feels like" temperature
 * Fixed main page cells text alignment
 * Back button takes you to main weather
-* Back button from main weather asks to exit
 * Fixed asking for permission to send notifications every update
+
 
 ---------------
 Changelog 0.4.6VC13

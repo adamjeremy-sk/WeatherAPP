@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -42,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_REOPEN_THEME_SETTINGS = "extra_reopen_theme_settings"
+
+        fun shouldInterceptBack(drawerOpen: Boolean, subTab: InlineSubTab): Boolean {
+            return drawerOpen || subTab != InlineSubTab.CURRENT
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +111,29 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         setupDrawerNavigation()
         setupLocationTabs()
+
+        val backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val drawerOpen = binding.drawerLayout.isDrawerOpen(GravityCompat.START)
+                val subTab = astronomyManager.activeInlineSubTab
+                if (shouldInterceptBack(drawerOpen, subTab)) {
+                    if (drawerOpen) {
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    } else {
+                        astronomyManager.switchInlineSubTab(
+                            InlineSubTab.CURRENT,
+                            weatherDisplayManager.currentLocation,
+                            weatherDisplayManager.locationTimezone
+                        )
+                    }
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backCallback)
 
         AlertConsentDialog.checkAndShowConsentPrompt(this, locationPreferences)
 
@@ -381,15 +409,5 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (astronomyManager.onKeyUp(keyCode, event)) return true
         return super.onKeyUp(keyCode, event)
-    }
-
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else if (astronomyManager.activeInlineSubTab != InlineSubTab.CURRENT) {
-            astronomyManager.switchInlineSubTab(InlineSubTab.CURRENT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-        } else {
-            super.onBackPressed()
-        }
     }
 }
