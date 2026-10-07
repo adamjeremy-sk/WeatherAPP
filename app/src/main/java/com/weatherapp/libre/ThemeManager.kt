@@ -171,10 +171,29 @@ class ThemeManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.setTextColor(palette.textSecondary)
 
+        // Astronomical utility sub-tabs theming
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDarkSkyTitle)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvNightVisTitle)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSolunarTitle)?.setTextColor(palette.textPrimary)
+
+        binding.root.findViewById<android.widget.TextView>(R.id.tvDarkSkyEmptyState)?.apply {
+            setTextColor(palette.textSecondary)
+            backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        }
+        binding.root.findViewById<android.widget.TextView>(R.id.tvNightVisEmptyState)?.apply {
+            setTextColor(palette.textSecondary)
+            backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        }
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSolunarEmptyState)?.apply {
+            setTextColor(palette.textSecondary)
+            backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        }
+
         metricGridAdapter?.setPalette(palette)
         forecastAdapter?.setPalette(palette)
         inlineSolarPhaseAdapter?.setPalette(palette)
         hourlyForecastAdapter?.setPalette(palette)
+        (activity as? MainActivity)?.astronomyManager?.updatePalette(palette)
 
         (activity as? MainActivity)?.weatherDisplayManager?.updateAlertBanner()
     }

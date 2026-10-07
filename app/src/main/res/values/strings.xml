@@ -47,4 +47,44 @@
     <string name="alert_log_sort">Sort</string>
     <string name="alert_log_filter">Filter</string>
     <string name="alert_log_clear_confirm">Clear all alert log entries?</string>
+
+    <!-- Sub-Tab Navigation Titles -->
+    <string name="subtab_current">Current Weather</string>
+    <string name="subtab_hourly">Hourly Forecast</string>
+    <string name="subtab_natural_light">Natural Light</string>
+    <string name="subtab_dark_sky">True Dark Sky</string>
+    <string name="subtab_night_vis">Night Visibility</string>
+    <string name="subtab_solunar">Solunar Activity</string>
+
+    <!-- Dropdown Options -->
+    <string name="option_tonight">Tonight</string>
+    <string name="option_next_7_nights">Next 7 Nights</string>
+    <string name="option_today">Today</string>
+    <string name="option_tomorrow">Tomorrow</string>
+    <string name="option_next_7_days">Next 7 Days</string>
+
+    <!-- Section Titles -->
+    <string name="title_dark_sky">True Dark Sky Window</string>
+    <string name="title_night_vis">Night Visibility Forecast</string>
+    <string name="title_solunar">Solunar Activity Forecast</string>
+
+    <!-- Classification & Rating Labels -->
+    <string name="quality_excellent">Excellent</string>
+    <string name="quality_good">Good</string>
+    <string name="quality_moderate">Moderate</string>
+    <string name="quality_poor">Poor</string>
+    <string name="rating_fair">Fair</string>
+
+    <string name="category_no_natural_light">No Natural Light</string>
+    <string name="category_minimal_light">Minimal Light</string>
+    <string name="category_low_light">Low Light</string>
+    <string name="category_moderate_light">Moderate Light</string>
+    <string name="category_bright_night">Bright Night</string>
+
+    <!-- Empty States & Notices -->
+    <string name="empty_dark_sky">No true astronomical darkness available for the selected night.</string>
+    <string name="empty_night_vis">Night visibility data unavailable for the selected night.</string>
+    <string name="empty_solunar">Solunar activity data unavailable for the selected date.</string>
+    <string name="notice_cloud_data_cached">Includes cached weather cloud cover data.</string>
+    <string name="notice_cloud_data_unavailable">Cloud cover data unavailable - showing clear sky estimate.</string>
 </resources>

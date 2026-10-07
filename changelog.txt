@@ -1,8 +1,14 @@
 ---------------
+Changelog 0.5.0VC16 - 2026/10/07
+---------------
+* Added True Dark Sky, Night Visibility, and Solunar Activity forecasts
+
+
+---------------
 Changelog 0.4.8VC15 - 2026/10/07
 ---------------
 * Added alert log history
-
+* Cleaned and hardened compilation tests
 
 ---------------
 Changelog 0.4.7VC14 - 2026/10/06

@@ -262,11 +262,11 @@ class LocationPreferences(context: Context) {
     }
 
     fun getSavedInlineSubTab(): Int {
-        return prefs.getInt("app_inline_sub_tab_index", 0).coerceIn(0, 2)
+        return prefs.getInt("app_inline_sub_tab_index", 0).coerceIn(0, 5)
     }
 
     fun saveInlineSubTab(index: Int) {
-        prefs.edit().putInt("app_inline_sub_tab_index", index.coerceIn(0, 2)).apply()
+        prefs.edit().putInt("app_inline_sub_tab_index", index.coerceIn(0, 5)).apply()
     }
 
     fun getTabLocation(tabIndex: Int): LocationItem {

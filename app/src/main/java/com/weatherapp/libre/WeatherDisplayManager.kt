@@ -147,8 +147,18 @@ class WeatherDisplayManager(
                         updateDetailCard(dailyForecasts.first())
                     }
 
+                    val cloudMap = extractHourlyCloudCoverMap(response)
                     astronomyManager.setLocation(currentLocation, locationTimezone)
-                    astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                    astronomyManager.currentHourlyCloudCoverMap = cloudMap
+
+                    when (astronomyManager.activeInlineSubTab) {
+                        InlineSubTab.NATURAL_LIGHT -> astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                        InlineSubTab.DARK_SKY -> astronomyManager.updateDarkSkyDisplay(currentLocation)
+                        InlineSubTab.NIGHT_VISIBILITY -> astronomyManager.updateNightVisDisplay(currentLocation, cloudMap)
+                        InlineSubTab.SOLUNAR -> astronomyManager.updateSolunarDisplay(currentLocation)
+                        else -> {}
+                    }
+
                     hourlyDisplayManager?.updateHourlyData(response, currentLocation, locationTimezone)
 
                     updateAlertBanner()
@@ -343,6 +353,27 @@ class WeatherDisplayManager(
         }
 
         dialog.show()
+    }
+
+    private fun extractHourlyCloudCoverMap(response: WeatherResponse): Map<Instant, Double>? {
+        val h = response.hourly ?: return null
+        val times = h.time ?: return null
+        val covers = h.cloudCover ?: return null
+        val zoneId = astronomyManager.resolveZoneId(response.timezone)
+
+        val map = mutableMapOf<Instant, Double>()
+        val count = minOf(times.size, covers.size)
+        for (i in 0 until count) {
+            val tStr = times[i]
+            val cPct = covers[i]
+            if (tStr != null && cPct != null) {
+                try {
+                    val inst = java.time.LocalDateTime.parse(tStr).atZone(zoneId).toInstant()
+                    map[inst] = cPct / 100.0
+                } catch (e: Exception) {}
+            }
+        }
+        return if (map.isNotEmpty()) map else null
     }
 
     companion object {

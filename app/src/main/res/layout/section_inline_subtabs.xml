@@ -802,4 +802,13 @@
 
     </LinearLayout>
 
+    <!-- Container 4: Inline True Dark Sky View -->
+    <include layout="@layout/section_inline_dark_sky" />
+
+    <!-- Container 5: Inline Night Visibility View -->
+    <include layout="@layout/section_inline_night_visibility" />
+
+    <!-- Container 6: Inline Solunar Activity View -->
+    <include layout="@layout/section_inline_solunar" />
+
 </merge>

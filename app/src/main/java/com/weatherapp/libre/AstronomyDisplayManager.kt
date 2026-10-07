@@ -8,10 +8,17 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.solar.Observer
 import com.weatherapp.libre.solar.SolarLightingEngine
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -22,7 +29,10 @@ import java.util.Locale
 enum class InlineSubTab {
     CURRENT,
     HOURLY,
-    NATURAL_LIGHT
+    NATURAL_LIGHT,
+    DARK_SKY,
+    NIGHT_VISIBILITY,
+    SOLUNAR
 }
 
 class AstronomyDisplayManager(
@@ -36,6 +46,17 @@ class AstronomyDisplayManager(
     var inlineGoldenDate: LocalDate = LocalDate.now()
     lateinit var inlineSolarPhaseAdapter: SolarPhaseAdapter
     var hourlyDisplayManager: HourlyDisplayManager? = null
+
+    val darkSkyManager = DarkSkyManager()
+    val nightVisibilityManager = NightVisibilityManager()
+    val solunarManager = SolunarManager()
+
+    val darkSkyAdapter = DarkSkyWindowAdapter()
+    val nightVisAdapter = NightVisibilityPeriodAdapter()
+    val solunarAdapter = SolunarDayAdapter()
+
+    var currentHourlyCloudCoverMap: Map<Instant, Double>? = null
+    private var calculationJob: Job? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private var isVolumeKeyHeld = false
@@ -64,6 +85,21 @@ class AstronomyDisplayManager(
 
     private var currentLocationItem: LocationItem = LocationItem(0L, "Ottawa", "Ontario", "Canada", 45.4215, -75.6972)
     private var locationTimezoneStr: String? = null
+
+    fun setupUI() {
+        activity.findViewById<RecyclerView>(R.id.rvDarkSkyWindows)?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = darkSkyAdapter
+        }
+        activity.findViewById<RecyclerView>(R.id.rvNightVisPeriods)?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = nightVisAdapter
+        }
+        activity.findViewById<RecyclerView>(R.id.rvSolunarDays)?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = solunarAdapter
+        }
+    }
 
     fun buildObserver(location: LocationItem): Observer {
         return Observer(
@@ -102,20 +138,26 @@ class AstronomyDisplayManager(
         val weatherVis = if (subTab == InlineSubTab.CURRENT) View.VISIBLE else View.GONE
         val hourlyVis = if (subTab == InlineSubTab.HOURLY) View.VISIBLE else View.GONE
         val naturalLightVis = if (subTab == InlineSubTab.NATURAL_LIGHT) View.VISIBLE else View.GONE
+        val darkSkyVis = if (subTab == InlineSubTab.DARK_SKY) View.VISIBLE else View.GONE
+        val nightVisVis = if (subTab == InlineSubTab.NIGHT_VISIBILITY) View.VISIBLE else View.GONE
+        val solunarVis = if (subTab == InlineSubTab.SOLUNAR) View.VISIBLE else View.GONE
 
-        activity.findViewById<android.view.View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
-        activity.findViewById<android.view.View>(R.id.layoutHeroSection)?.visibility = weatherVis
-        activity.findViewById<android.view.View>(R.id.layoutInlineHourlyContainer)?.visibility = hourlyVis
-        activity.findViewById<android.view.View>(R.id.layoutInlineGoldenHourContainer)?.visibility = naturalLightVis
+        activity.findViewById<View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
+        activity.findViewById<View>(R.id.layoutHeroSection)?.visibility = weatherVis
+        activity.findViewById<View>(R.id.layoutInlineHourlyContainer)?.visibility = hourlyVis
+        activity.findViewById<View>(R.id.layoutInlineGoldenHourContainer)?.visibility = naturalLightVis
+        activity.findViewById<View>(R.id.layoutInlineDarkSkyContainer)?.visibility = darkSkyVis
+        activity.findViewById<View>(R.id.layoutInlineNightVisibilityContainer)?.visibility = nightVisVis
+        activity.findViewById<View>(R.id.layoutInlineSolunarContainer)?.visibility = solunarVis
 
-        val btnMenu = activity.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnInlineMenu)
+        val btnMenu = activity.findViewById<MaterialButton>(R.id.btnInlineMenu)
         when (subTab) {
             InlineSubTab.CURRENT -> {
-                btnMenu?.text = "Current ▾"
+                btnMenu?.text = "Current Weather ▾"
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.HOURLY -> {
-                btnMenu?.text = "Hourly ▾"
+                btnMenu?.text = "Hourly Forecast ▾"
                 btnMenu?.setIconResource(R.drawable.ic_weather)
                 hourlyDisplayManager?.rebuildHourlyList()
             }
@@ -124,7 +166,117 @@ class AstronomyDisplayManager(
                 btnMenu?.setIconResource(R.drawable.ic_golden_hour)
                 updateInlineGoldenHourDisplay(location)
             }
+            InlineSubTab.DARK_SKY -> {
+                btnMenu?.text = "True Dark Sky ▾"
+                btnMenu?.setIconResource(R.drawable.ic_moon_new)
+                updateDarkSkyDisplay(location)
+            }
+            InlineSubTab.NIGHT_VISIBILITY -> {
+                btnMenu?.text = "Night Visibility ▾"
+                btnMenu?.setIconResource(R.drawable.ic_visibility)
+                updateNightVisDisplay(location, currentHourlyCloudCoverMap)
+            }
+            InlineSubTab.SOLUNAR -> {
+                btnMenu?.text = "Solunar Activity ▾"
+                btnMenu?.setIconResource(R.drawable.ic_moon_full)
+                updateSolunarDisplay(location)
+            }
         }
+    }
+
+    fun updateDarkSkyDisplay(location: LocationItem = currentLocationItem) {
+        currentLocationItem = location
+        val zoneId = resolveZoneId(locationTimezoneStr)
+        val currentDate = LocalDate.now(zoneId)
+
+        val dates = (0..6).map { currentDate.plusDays(it.toLong()) }
+
+        calculationJob?.cancel()
+        calculationJob = activity.lifecycleScope.launch {
+            val summaries = darkSkyManager.calculateDarkSkyWindows(dates, zoneId, location)
+            val allWindows = summaries.flatMap { it.windows }
+
+            darkSkyAdapter.submitList(allWindows, isMultiNight = true, zoneId = zoneId)
+
+            val emptyTv = activity.findViewById<android.widget.TextView>(R.id.tvDarkSkyEmptyState)
+            val rv = activity.findViewById<RecyclerView>(R.id.rvDarkSkyWindows)
+
+            if (allWindows.isEmpty()) {
+                val noteText = summaries.firstOrNull { !it.note.isNullOrEmpty() }?.note
+                    ?: "No true astronomical darkness available for the selected night."
+                emptyTv?.text = noteText
+                emptyTv?.visibility = View.VISIBLE
+                rv?.visibility = View.GONE
+            } else {
+                emptyTv?.visibility = View.GONE
+                rv?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    fun updateNightVisDisplay(location: LocationItem = currentLocationItem, hourlyCloudCoverMap: Map<Instant, Double>? = currentHourlyCloudCoverMap) {
+        currentLocationItem = location
+        if (hourlyCloudCoverMap != null) {
+            currentHourlyCloudCoverMap = hourlyCloudCoverMap
+        }
+        val zoneId = resolveZoneId(locationTimezoneStr)
+        val currentDate = LocalDate.now(zoneId)
+
+        val dates = listOf(currentDate)
+
+        calculationJob?.cancel()
+        calculationJob = activity.lifecycleScope.launch {
+            val summaries = nightVisibilityManager.calculateVisibilityPeriods(dates, zoneId, location, currentHourlyCloudCoverMap)
+            val allPeriods = summaries.flatMap { it.periods }
+
+            nightVisAdapter.submitList(allPeriods, isMultiNight = false, zoneId = zoneId)
+
+            val emptyTv = activity.findViewById<android.widget.TextView>(R.id.tvNightVisEmptyState)
+            val rv = activity.findViewById<RecyclerView>(R.id.rvNightVisPeriods)
+
+            if (allPeriods.isEmpty()) {
+                val noteText = summaries.firstOrNull { !it.note.isNullOrEmpty() }?.note
+                    ?: "Night visibility data unavailable for the selected night."
+                emptyTv?.text = noteText
+                emptyTv?.visibility = View.VISIBLE
+                rv?.visibility = View.GONE
+            } else {
+                emptyTv?.visibility = View.GONE
+                rv?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    fun updateSolunarDisplay(location: LocationItem = currentLocationItem) {
+        currentLocationItem = location
+        val zoneId = resolveZoneId(locationTimezoneStr)
+        val currentDate = LocalDate.now(zoneId)
+
+        val dates = (0..7).map { currentDate.plusDays(it.toLong()) }
+
+        calculationJob?.cancel()
+        calculationJob = activity.lifecycleScope.launch {
+            val summaries = solunarManager.calculateSolunarForecast(dates, zoneId, location)
+
+            solunarAdapter.submitList(summaries, zoneId = zoneId)
+
+            val emptyTv = activity.findViewById<android.widget.TextView>(R.id.tvSolunarEmptyState)
+            val rv = activity.findViewById<RecyclerView>(R.id.rvSolunarDays)
+
+            if (summaries.isEmpty()) {
+                emptyTv?.visibility = View.VISIBLE
+                rv?.visibility = View.GONE
+            } else {
+                emptyTv?.visibility = View.GONE
+                rv?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    fun updatePalette(palette: ColorPalette) {
+        darkSkyAdapter.setPalette(palette)
+        nightVisAdapter.setPalette(palette)
+        solunarAdapter.setPalette(palette)
     }
 
     fun updateInlineGoldenHourDisplay(location: LocationItem = currentLocationItem, nowInstant: Instant = Instant.now()) {
@@ -249,6 +401,7 @@ class AstronomyDisplayManager(
     }
 
     fun cleanup() {
+        calculationJob?.cancel()
         isVolumeKeyHeld = false
         handler.removeCallbacksAndMessages(null)
     }

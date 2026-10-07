@@ -295,6 +295,8 @@ class MainActivity : AppCompatActivity() {
         astronomyManager.inlineSolarPhaseAdapter = solarAdapter
         themeManager.inlineSolarPhaseAdapter = solarAdapter
 
+        astronomyManager.setupUI()
+
         val hourlyDisplayManager = HourlyDisplayManager(this, locationPreferences)
         hourlyDisplayManager.setupRecyclerView()
         weatherDisplayManager.hourlyDisplayManager = hourlyDisplayManager
@@ -310,14 +312,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun showInlineMenu(anchorView: View) {
         val popup = androidx.appcompat.widget.PopupMenu(this, anchorView)
-        popup.menu.add(0, 0, 0, "Current")
-        popup.menu.add(0, 1, 1, "Hourly")
+        popup.menu.add(0, 0, 0, "Current Weather")
+        popup.menu.add(0, 1, 1, "Hourly Forecast")
         popup.menu.add(0, 2, 2, "Natural Light")
+        popup.menu.add(0, 3, 3, "True Dark Sky")
+        popup.menu.add(0, 4, 4, "Night Visibility")
+        popup.menu.add(0, 5, 5, "Solunar Activity")
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 0 -> astronomyManager.switchInlineSubTab(InlineSubTab.CURRENT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
                 1 -> astronomyManager.switchInlineSubTab(InlineSubTab.HOURLY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
                 2 -> astronomyManager.switchInlineSubTab(InlineSubTab.NATURAL_LIGHT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                3 -> astronomyManager.switchInlineSubTab(InlineSubTab.DARK_SKY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                4 -> astronomyManager.switchInlineSubTab(InlineSubTab.NIGHT_VISIBILITY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+                5 -> astronomyManager.switchInlineSubTab(InlineSubTab.SOLUNAR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
             }
             true
         }
