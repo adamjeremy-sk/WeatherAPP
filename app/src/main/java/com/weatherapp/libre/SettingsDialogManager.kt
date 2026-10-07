@@ -763,6 +763,19 @@ class SettingsDialogManager(
         dialogBinding.tvCacheSwitchTitle.setTextColor(palette.textPrimary)
         dialogBinding.tvCacheSwitchDesc.setTextColor(palette.textSecondary)
 
+        val alertLogCard = dialogBinding.root.findViewById<com.google.android.material.card.MaterialCardView>(com.weatherapp.libre.R.id.cardAlertLog)
+        val tvAlertLogTitle = dialogBinding.root.findViewById<TextView>(com.weatherapp.libre.R.id.tvAlertLogTitle)
+        val tvAlertLogDesc = dialogBinding.root.findViewById<TextView>(com.weatherapp.libre.R.id.tvAlertLogDesc)
+        
+        alertLogCard?.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        alertLogCard?.strokeColor = palette.dividerColor
+        tvAlertLogTitle?.setTextColor(palette.textPrimary)
+        tvAlertLogDesc?.setTextColor(palette.textSecondary)
+        alertLogCard?.setOnClickListener {
+            dialog.dismiss()
+            showAlertLogScreen()
+        }
+
         dialogBinding.tvTtlHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvTtlReasoningHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvTtlReasoningDesc.setTextColor(palette.textSecondary)
@@ -858,6 +871,238 @@ class SettingsDialogManager(
             dialogBinding.layoutTtlOptions.addView(card)
         }
 
+        trackDialog(dialog)
+        if (!activity.isFinishing && !activity.isDestroyed) {
+            dialog.show()
+        }
+    }
+
+    fun showAlertLogScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val view = activity.layoutInflater.inflate(com.weatherapp.libre.R.layout.dialog_alert_log, null)
+        dialog.setContentView(view)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        view.setBackgroundColor(palette.backgroundLight)
+        val cardHeader = view.findViewById<com.google.android.material.card.MaterialCardView>(com.weatherapp.libre.R.id.cardHeader)
+        cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        
+        val btnBack = view.findViewById<ImageButton>(com.weatherapp.libre.R.id.btnBack)
+        btnBack.setColorFilter(headerTitleColor)
+        
+        val tvHeaderTitle = view.findViewById<TextView>(com.weatherapp.libre.R.id.tvHeaderTitle)
+        tvHeaderTitle.setTextColor(headerTitleColor)
+        
+        if (!isFireEngine) {
+            cardHeader.strokeColor = palette.dividerColor
+        }
+
+        btnBack.setOnClickListener { dialog.dismiss() }
+
+        val btnSort = view.findViewById<android.widget.Button>(com.weatherapp.libre.R.id.btnSort)
+        val btnFilter = view.findViewById<android.widget.Button>(com.weatherapp.libre.R.id.btnFilter)
+        val btnClear = view.findViewById<android.widget.Button>(com.weatherapp.libre.R.id.btnClear)
+        val layoutEntries = view.findViewById<LinearLayout>(com.weatherapp.libre.R.id.layoutAlertLogEntries)
+
+        // Palette wiring
+        btnSort.setTextColor(palette.textPrimary)
+        btnFilter.setTextColor(palette.textPrimary)
+        btnClear.setTextColor(palette.textPrimary)
+        
+        btnSort.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        btnFilter.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        btnClear.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+
+        var sortMode = "newest"
+        var filterMode = "show_all"
+        var entries = com.weatherapp.libre.alerts.AlertLogRepository.getAllEntries(activity)
+
+        fun renderEntries() {
+            layoutEntries.removeAllViews()
+            
+            var displayList = entries.toList()
+            if (filterMode == "hide_tests") {
+                displayList = displayList.filter { !it.isTest }
+            }
+            
+            displayList = when (sortMode) {
+                "severity" -> {
+                    val severityRank = mapOf("extreme" to 4, "severe" to 3, "moderate" to 2, "minor" to 1)
+                    displayList.sortedByDescending { severityRank[it.severity.lowercase()] ?: 0 }
+                }
+                "oldest" -> {
+                    displayList.sortedBy { it.timestampUtc }
+                }
+                else -> {
+                    displayList.sortedByDescending { it.timestampUtc }
+                }
+            }
+
+            val density = activity.resources.displayMetrics.density
+            val formatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d • h:mm a", java.util.Locale.getDefault())
+            val zoneId = java.time.ZoneId.systemDefault()
+
+            for (entry in displayList) {
+                val card = com.google.android.material.card.MaterialCardView(activity).apply {
+                    radius = 8 * density
+                    strokeWidth = 0
+                    setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+                    val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    lp.setMargins(0, 0, 0, (12 * density).toInt())
+                    layoutParams = lp
+                }
+
+                val rowCol = LinearLayout(activity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+                }
+                
+                val row1 = LinearLayout(activity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                val locTv = TextView(activity).apply {
+                    text = entry.locationName
+                    setTextColor(palette.textPrimary)
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14f)
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                    layoutParams = lp
+                }
+                row1.addView(locTv)
+                
+                if (entry.isTest) {
+                    val testBadge = TextView(activity).apply {
+                        text = activity.getString(com.weatherapp.libre.R.string.alert_log_test_badge)
+                        setTextColor(Color.WHITE)
+                        setBackgroundColor(palette.tempHigh)
+                        setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 10f)
+                        setPadding((4 * density).toInt(), (2 * density).toInt(), (4 * density).toInt(), (2 * density).toInt())
+                        val bg = android.graphics.drawable.GradientDrawable()
+                        bg.setColor(palette.tempHigh)
+                        bg.cornerRadius = 4 * density
+                        background = bg
+                    }
+                    row1.addView(testBadge)
+                }
+
+                val eventTv = TextView(activity).apply {
+                    text = entry.alertEvent
+                    setTextColor(palette.textPrimary)
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 13f)
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.setMargins(0, (4 * density).toInt(), 0, 0)
+                    layoutParams = lp
+                }
+
+                val row3 = LinearLayout(activity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.setMargins(0, (4 * density).toInt(), 0, 0)
+                    layoutParams = lp
+                }
+                val timeStr = java.time.Instant.ofEpochMilli(entry.timestampUtc).atZone(zoneId).format(formatter)
+                val timeTv = TextView(activity).apply {
+                    text = timeStr
+                    setTextColor(palette.textSecondary)
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12f)
+                    val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                    layoutParams = lp
+                }
+                val sevTv = TextView(activity).apply {
+                    text = entry.severity
+                    setTextColor(palette.textSecondary)
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12f)
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                }
+                row3.addView(timeTv)
+                row3.addView(sevTv)
+
+                rowCol.addView(row1)
+                rowCol.addView(eventTv)
+                rowCol.addView(row3)
+                card.addView(rowCol)
+                layoutEntries.addView(card)
+            }
+        }
+
+        btnSort.setOnClickListener { view ->
+            val popup = android.widget.PopupMenu(activity, view)
+            popup.menu.add(0, 1, 0, activity.getString(com.weatherapp.libre.R.string.alert_log_sort_newest))
+            popup.menu.add(0, 2, 0, activity.getString(com.weatherapp.libre.R.string.alert_log_sort_oldest))
+            popup.menu.add(0, 3, 0, activity.getString(com.weatherapp.libre.R.string.alert_log_sort_severity))
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    1 -> {
+                        sortMode = "newest"
+                        btnSort.text = activity.getString(com.weatherapp.libre.R.string.alert_log_sort_newest)
+                    }
+                    2 -> {
+                        sortMode = "oldest"
+                        btnSort.text = activity.getString(com.weatherapp.libre.R.string.alert_log_sort_oldest)
+                    }
+                    3 -> {
+                        sortMode = "severity"
+                        btnSort.text = activity.getString(com.weatherapp.libre.R.string.alert_log_sort_severity)
+                    }
+                }
+                renderEntries()
+                true
+            }
+            popup.show()
+        }
+
+        btnFilter.setOnClickListener { view ->
+            val popup = android.widget.PopupMenu(activity, view)
+            popup.menu.add(0, 1, 0, activity.getString(com.weatherapp.libre.R.string.alert_log_filter_show_all))
+            popup.menu.add(0, 2, 0, activity.getString(com.weatherapp.libre.R.string.alert_log_filter_hide_tests))
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    1 -> {
+                        filterMode = "show_all"
+                        btnFilter.text = activity.getString(com.weatherapp.libre.R.string.alert_log_filter_show_all)
+                    }
+                    2 -> {
+                        filterMode = "hide_tests"
+                        btnFilter.text = activity.getString(com.weatherapp.libre.R.string.alert_log_filter_hide_tests)
+                    }
+                }
+                renderEntries()
+                true
+            }
+            popup.show()
+        }
+
+        btnClear.setOnClickListener {
+            android.app.AlertDialog.Builder(activity)
+                .setTitle(activity.getString(com.weatherapp.libre.R.string.alert_log_clear))
+                .setMessage(activity.getString(com.weatherapp.libre.R.string.alert_log_clear_confirm))
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    com.weatherapp.libre.alerts.AlertLogRepository.clearAll(activity)
+                    entries = emptyList()
+                    Toast.makeText(activity, activity.getString(com.weatherapp.libre.R.string.alert_log_cleared), Toast.LENGTH_SHORT).show()
+                    renderEntries()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+
+        renderEntries()
         trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()

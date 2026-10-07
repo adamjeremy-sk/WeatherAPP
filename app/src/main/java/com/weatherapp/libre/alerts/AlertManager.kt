@@ -87,6 +87,22 @@ class AlertManager(
             AlertNotificationHelper.postNotification(context, alert, location, timezoneStr)
         }
 
+        val alertEvent = info?.event ?: info?.headline ?: "Weather Alert"
+        val severity = info?.severity ?: "Unknown"
+        val timestamp = alert.sent.toEpochMilli()
+
+        AlertLogRepository.saveEntry(
+            context,
+            AlertLogEntry(
+                id = System.currentTimeMillis(),
+                timestampUtc = timestamp,
+                locationName = location.displayName,
+                alertEvent = alertEvent,
+                severity = severity,
+                isTest = alert.isTestFixture
+            )
+        )
+
         return true
     }
 

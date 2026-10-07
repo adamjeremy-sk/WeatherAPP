@@ -1,4 +1,10 @@
 ---------------
+Changelog 0.4.8VC15 - 2026/10/07
+---------------
+* Added alert log history
+
+
+---------------
 Changelog 0.4.7VC14 - 2026/10/06
 ---------------
 * Added "Feels like" temperature

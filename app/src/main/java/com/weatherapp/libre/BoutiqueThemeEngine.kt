@@ -19,8 +19,7 @@ data class ColorPalette(
     val alertExtreme: Int = Color.parseColor("#DC2626"),
     val alertSevere: Int = Color.parseColor("#EA580C"),
     val alertModerate: Int = Color.parseColor("#92400E"),
-    val alertMinor: Int = Color.parseColor("#0369A1"),
-    val dogEarShade: Int = Color.parseColor("#0F172A")
+    val alertMinor: Int = Color.parseColor("#0369A1")
 ) {
     val background: Int get() = backgroundLight
     val brandPrimary: Int get() = primary
@@ -51,8 +50,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#DC2626"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1"),
-        dogEarShade = Color.parseColor("#0F172A")
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val DARK_PALETTE = ColorPalette(
@@ -72,8 +70,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#38BDF8"),
-        dogEarShade = Color.parseColor("#0F172A")
+        alertMinor = Color.parseColor("#38BDF8")
     )
 
     val CREMA_PALETTE = ColorPalette(
@@ -93,8 +90,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#B91C1C"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1"),
-        dogEarShade = Color.parseColor("#1C120C")
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val CHARCOAL_PALETTE = ColorPalette(
@@ -114,8 +110,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#64B5F6"),
-        dogEarShade = Color.parseColor("#121212")
+        alertMinor = Color.parseColor("#64B5F6")
     )
 
     val COBALT_PALETTE = ColorPalette(
@@ -135,8 +130,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#38BDF8"),
-        dogEarShade = Color.parseColor("#0A1128")
+        alertMinor = Color.parseColor("#38BDF8")
     )
 
     val JADE_PALETTE = ColorPalette(
@@ -156,8 +150,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF7675"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#2DD4BF"),
-        dogEarShade = Color.parseColor("#0B1D17")
+        alertMinor = Color.parseColor("#2DD4BF")
     )
 
     val AURORA_PALETTE = ColorPalette(
@@ -177,8 +170,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF75C3"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#818CF8"),
-        dogEarShade = Color.parseColor("#0D0E15")
+        alertMinor = Color.parseColor("#818CF8")
     )
 
     val TERRACOTTA_PALETTE = ColorPalette(
@@ -198,8 +190,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#B91C1C"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1"),
-        dogEarShade = Color.parseColor("#1F110B")
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val FROST_PALETTE = ColorPalette(
@@ -219,8 +210,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#B91C1C"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#034078"),
-        dogEarShade = Color.parseColor("#031B2E")
+        alertMinor = Color.parseColor("#034078")
     )
 
     val FIRE_ENGINE_PALETTE = ColorPalette(
@@ -240,8 +230,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#DC2626"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1"),
-        dogEarShade = Color.parseColor("#1A1A1A")
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     val ORANGE_GROVE_PALETTE = ColorPalette(
@@ -261,8 +250,7 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#B91C1C"),
         alertSevere = Color.parseColor("#C2410C"),
         alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1"),
-        dogEarShade = Color.parseColor("#0F240A")
+        alertMinor = Color.parseColor("#0369A1")
     )
 
     fun getPalette(isDarkMode: Boolean): ColorPalette {
