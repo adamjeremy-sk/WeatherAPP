@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The official user manual for WeatherAPP Libre, covering location management, forecasting models, astronomy tools, and advanced navigation.">
+  <title>User Manual - WeatherAPP Libre</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .app-logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 112px;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .toc li, .more-info li { margin: 8px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 {
+      color: #174f7d;
+      margin-top: 1.5rem;
+    }
+    .highlight {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background: var(--note);
+    }
+    .highlight ul { margin-bottom: 0; }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { color: #111; background: #fff; padding: 24px 0; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="header-copy">
+        <h1>User Manual</h1>
+        <p>A comprehensive guide to navigating WeatherAPP Libre, managing locations, utilizing advanced astronomical tools, and customizing your experience.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Contents
+        </h2>
+        <ol>
+          <li><a href="#getting-started">Getting Started &amp; Locations</a></li>
+          <li><a href="#navigation">The Main Menu &amp; Navigation</a></li>
+          <li><a href="#forecasts">Weather Forecasts &amp; Models</a></li>
+          <li><a href="#astronomy">Natural Light &amp; Astronomy</a></li>
+          <li><a href="#alerts">Weather Alerts</a></li>
+          <li><a href="#settings">Settings &amp; Customization</a></li>
+          <li><a href="#pro-tips">Pro-Tips &amp; Hidden Gestures</a></li>
+        </ol>
+      </section>
+
+      <section class="more-info">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Project Resources
+        </h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="licenses.html">Licenses &amp; Sources</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="getting-started" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          1. Getting Started &amp; Locations
+        </h2>
+        <p>WeatherAPP Libre is built around a strict privacy-first philosophy. <strong>The app does not request or use your device's GPS location.</strong> Instead, you manually select and manage the locations you care about.</p>
+        
+        <h3>Adding Your First Location</h3>
+        <p>Upon opening the app, tap the location search bar at the top of the screen. Type the name of any city, town, or region. Select your desired location from the search results to load the current weather and astronomical data.</p>
+
+        <h3>Managing Location Tabs</h3>
+        <p>You can track multiple locations simultaneously using the location tabs situated just below the main menu.</p>
+        <ul>
+          <li><strong>Configuring Tab Count &amp; Behavior:</strong> Navigate to <strong>Drawer &gt; System &gt; Location Tabs</strong> to choose between 1 and 4 active tabs. Here you can also toggle whether tabs remain "sticky" at the top of the screen while scrolling, or scroll away with the weather data.</li>
+          <li><strong>Assigning Locations:</strong> Tap an empty tab (or use the main search bar) to assign a city to that slot.</li>
+          <li><strong>Switching Locations:</strong> Tap any active tab to instantly switch the app's data to that city.</li>
+          <li><strong>Long-Press to Search:</strong> Long-press any location tab to instantly open the location search drawer without needing to tap the top search bar.</li>
+        </ul>
+      </section>
+
+      <section id="navigation" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          2. The Main Menu &amp; Navigation
+        </h2>
+        <p>The primary navigation hub is the drop-down menu button located next to the date header. This menu controls which data view is currently active.</p>
+
+        <h3>Standard Menu Items</h3>
+        <ul>
+          <li><strong>Current Weather:</strong> The main dashboard showing current conditions, hero metrics, and daily summaries.</li>
+          <li><strong>Hourly Forecast:</strong> A detailed 36-hour breakdown of temperature, precipitation, and wind.</li>
+          <li><strong>7-Day Forecast:</strong> The daily high/low and condition overview.</li>
+          <li><strong>Natural Light:</strong> Solar phases, golden hour, and blue hour tracking.</li>
+          <li><strong>True Dark Sky:</strong> Astronomical darkness windows and moon interference.</li>
+          <li><strong>Night Visibility:</strong> Ambient light potential based on moon and cloud cover.</li>
+          <li><strong>Solunar Activity:</strong> Major and minor wildlife activity periods.</li>
+        </ul>
+
+        <h3>Menu Organization (Customization)</h3>
+        <p>You have complete control over how this menu looks and behaves. Navigate to <strong>Settings &gt; Behaviour &gt; Organize Menu</strong>.</p>
+        <ul>
+          <li><strong>Reorder:</strong> Drag the handle on the left of any item to move it up or down.</li>
+          <li><strong>Hide Items:</strong> Toggle the switch on the right to hide an item from the drop-down menu (e.g., if you never use Solunar Activity).</li>
+          <li><strong>Set Default Page:</strong> <strong>Long-press</strong> any row to set it as the default page that loads when you first open the app.</li>
+          <li><strong>Separators:</strong> Use the stepper at the top to add visual dividers between groups of tools.</li>
+        </ul>
+
+        <h3>7-Day Forecast Placement</h3>
+        <p>Inside the <strong>Organize Menu</strong> screen, you will find a toggle for the 7-Day Forecast. You can choose to display it inline (below the Current and Hourly pages) or as a dedicated page inside the drop-down menu.</p>
+      </section>
+
+      <section id="forecasts" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+          3. Weather Forecasts &amp; Models
+        </h2>
+        <p>WeatherAPP Libre allows you to choose your preferred meteorological model, giving you transparency into where your data is coming from.</p>
+
+        <h3>Changing the Forecast Model</h3>
+        <p>Open the main navigation drawer (swipe from the left edge or tap the menu icon) and select your preferred model:</p>
+        <ul>
+          <li><strong>GEM:</strong> Environment and Climate Change Canada (Best for North America/Canada).</li>
+          <li><strong>GFS / GEFS:</strong> NOAA (USA) - Standard and Ensemble models.</li>
+          <li><strong>ECMWF:</strong> European Centre for Medium-Range Weather Forecasts (Highly accurate globally).</li>
+          <li><strong>CMA-GFS:</strong> China Meteorological Administration.</li>
+        </ul>
+        <p><strong>Automatic Model Switching:</strong> To ensure the highest local accuracy, the app features an automatic model switching capability. <strong>Currently, this is exclusively available for locations in China</strong>, where the app will automatically switch to the CMA-GFS model (note: this does not include Chinese weather alerts). No other locations currently support automatic model switching. This smart-routing feature is fully toggleable on or off in your settings, and we are actively working to expand this system to automatically route to the most accurate national forecasting infrastructure for other countries and continents.</p>
+        <p>When you switch models manually, the app will automatically refresh the data for your current location.</p>
+
+        <h3>Interacting with Forecasts</h3>
+        <p>Tap any day in the <strong>7-Day Forecast</strong> list to expand it and view detailed daily metrics and hourly breakdowns for that specific date.</p>
+
+        <h3>Force Refreshing Data</h3>
+        <p>Weather data is cached locally to save bandwidth and load instantly. If you want to force a fresh pull from the server, simply <strong>swipe down</strong> from the top of the main weather screen.</p>
+      </section>
+
+      <section id="astronomy" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          4. Natural Light &amp; Astronomy
+        </h2>
+        <p>The app features a suite of advanced astronomical calculators that run entirely on your device.</p>
+
+        <h3>Natural Light (Golden &amp; Blue Hour)</h3>
+        <p>This page breaks the day into specific solar phases based on the sun's azimuth and elevation. The currently active phase is highlighted with a gold border.</p>
+        <p><strong>Setting Solar Alarms:</strong> Long-press any Natural Light segment (e.g., Golden Hour) to set a customizable alarm for that phase. The default lead time is 10 minutes, which can be adjusted in <strong>Drawer &gt; System &gt; Notifications &gt; Solar Phase Alarm Lead Time</strong>.</p>
+        
+        <h3>True Dark Sky Window</h3>
+        <p>Designed for astrophotographers, this tool calculates periods of "Astronomical Darkness" (when the sun is below -18&deg;) and cross-references it with the Moon Interference Index. It tells you exactly when the sky will be darkest for deep-sky observation.</p>
+
+        <h3>Night Visibility Forecast</h3>
+        <p>This tool estimates the ambient light potential for the night. It factors in lunar illumination, moon altitude, and twilight. Crucially, it also integrates with your cached weather data to account for <strong>cloud cover attenuation</strong>, giving you a realistic idea of how bright the night will actually be.</p>
+
+        <h3>Solunar Activity</h3>
+        <p>Based on traditional solunar theory, this page calculates Major and Minor activity periods based on lunar transits (when the moon is directly overhead or underfoot) and moonrise/moonset times. Highly useful for fishing and wildlife observation.</p>
+      </section>
+
+      <section id="alerts" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          5. Weather Alerts
+        </h2>
+        <p>WeatherAPP Libre integrates directly with official government alert feeds. <strong>Please note that official weather alerts are currently only supported for locations within Canada</strong> via the Environment and Climate Change Canada (ECCC) CAP-CP feed.</p>
+        <ul>
+          <li><strong>Zero Synthetic Alerts:</strong> The app only displays official, government-issued warnings. It does not generate fake alerts based on forecast models.</li>
+          <li><strong>Alerting Behavior:</strong> For supported regions (currently Canada only), the app will automatically monitor and alert you for <em>any</em> active location tab that has a city assigned. You cannot block alerts for individual cities; however, you can dismiss an alert from the banner once it has appeared.</li>
+          <li><strong>Testing Alerts:</strong> You can trigger a test ECCC weather alert from the settings menu to ensure your notification permissions and sounds are configured correctly.</li>
+        </ul>
+      </section>
+
+      <section id="settings" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          6. Settings &amp; Customization
+        </h2>
+        <p>Access the settings drawer to deeply customize the app's behavior and appearance.</p>
+
+        <h3>Themes and Palettes</h3>
+        <p>Choose from 11 handcrafted themes, including light, dark, and specialized "Boutique" palettes (like Fire Engine, Terracotta, and Aurora) that dynamically change the color of every card, icon, and chart in the app.</p>
+
+        <h3>Behaviour Settings</h3>
+        <ul>
+          <li><strong>Organize Menu:</strong> Customize the drop-down menu layout, visibility, and default launch page (Detailed in Section 2).</li>
+          <li><strong>Units:</strong> Toggle between Metric (&deg;C, km/h) and US Customary (&deg;F, mph).</li>
+          <li><strong>Volume Key Date Cycling:</strong> Enable this to use your phone's physical volume buttons to rapidly scroll forward and backward through dates while on the Natural Light page.</li>
+        </ul>
+
+        <h3>Cache Management</h3>
+        <p>Under <strong>Settings &gt; Cache</strong>, you can adjust the Time-To-Live (TTL) for weather data. A shorter TTL means more frequent server requests; a longer TTL saves battery and data but requires manual pull-to-refresh for new updates.</p>
+      </section>
+
+      <section id="pro-tips" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          7. Pro-Tips &amp; Hidden Gestures
+        </h2>
+        <p>Master these gestures to navigate WeatherAPP Libre like a professional:</p>
+        <ul>
+          <li><strong>Long-Press Location Tab:</strong> Opens the location search drawer instantly.</li>
+          <li><strong>Long-Press Menu Item (in Settings):</strong> Sets that page as your default launch screen.</li>
+          <li><strong>Long-Press Natural Light Phase:</strong> Instantly sets a solar alarm for that specific time of day.</li>
+          <li><strong>Pull-Down to Refresh:</strong> Swiping down on the main screen forces a cache bypass and fetches fresh data.</li>
+          <li><strong>Volume Keys (When Enabled):</strong> Scrub through future and past dates on the Natural Light page without touching the screen.</li>
+          <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • Official User Manual
+  </footer>
+
+</body>
+</html>
