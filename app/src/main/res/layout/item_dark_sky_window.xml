@@ -41,7 +41,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="Dark Sky Icon"
-                android:src="@drawable/ic_moon"
+                android:src="@drawable/ic_moon_new"
                 app:tint="@color/brand_primary" />
 
             <LinearLayout

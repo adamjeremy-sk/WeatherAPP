@@ -29,6 +29,7 @@ import java.util.Locale
 enum class InlineSubTab {
     CURRENT,
     HOURLY,
+    SEVEN_DAY,
     NATURAL_LIGHT,
     DARK_SKY,
     NIGHT_VISIBILITY,
@@ -137,6 +138,7 @@ class AstronomyDisplayManager(
 
         val weatherVis = if (subTab == InlineSubTab.CURRENT) View.VISIBLE else View.GONE
         val hourlyVis = if (subTab == InlineSubTab.HOURLY) View.VISIBLE else View.GONE
+        val sevenDayVis = if (subTab == InlineSubTab.SEVEN_DAY) View.VISIBLE else View.GONE
         val naturalLightVis = if (subTab == InlineSubTab.NATURAL_LIGHT) View.VISIBLE else View.GONE
         val darkSkyVis = if (subTab == InlineSubTab.DARK_SKY) View.VISIBLE else View.GONE
         val nightVisVis = if (subTab == InlineSubTab.NIGHT_VISIBILITY) View.VISIBLE else View.GONE
@@ -145,6 +147,7 @@ class AstronomyDisplayManager(
         activity.findViewById<View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
         activity.findViewById<View>(R.id.layoutHeroSection)?.visibility = weatherVis
         activity.findViewById<View>(R.id.layoutInlineHourlyContainer)?.visibility = hourlyVis
+        activity.findViewById<View>(R.id.layoutInlineSevenDayContainer)?.visibility = sevenDayVis
         activity.findViewById<View>(R.id.layoutInlineGoldenHourContainer)?.visibility = naturalLightVis
         activity.findViewById<View>(R.id.layoutInlineDarkSkyContainer)?.visibility = darkSkyVis
         activity.findViewById<View>(R.id.layoutInlineNightVisibilityContainer)?.visibility = nightVisVis
@@ -153,13 +156,17 @@ class AstronomyDisplayManager(
         val btnMenu = activity.findViewById<MaterialButton>(R.id.btnInlineMenu)
         when (subTab) {
             InlineSubTab.CURRENT -> {
-                btnMenu?.text = "Current Weather ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_current_weather)
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.HOURLY -> {
                 btnMenu?.text = "Hourly Forecast ▾"
                 btnMenu?.setIconResource(R.drawable.ic_weather)
                 hourlyDisplayManager?.rebuildHourlyList()
+            }
+            InlineSubTab.SEVEN_DAY -> {
+                btnMenu?.text = activity.getString(R.string.subtab_seven_day)
+                btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.NATURAL_LIGHT -> {
                 btnMenu?.text = "Natural Light ▾"
@@ -182,6 +189,76 @@ class AstronomyDisplayManager(
                 updateSolunarDisplay(location)
             }
         }
+        updateSevenDayForecastVisibility(subTab)
+    }
+
+    fun applyInitialLaunchState(isFreshLaunch: Boolean = false) {
+        val subTab = if (isFreshLaunch) {
+            locationPreferences.getDefaultLaunchSubTab()
+        } else {
+            activeInlineSubTab
+        }
+        activeInlineSubTab = subTab
+
+        val btnMenu = activity.findViewById<MaterialButton>(R.id.btnInlineMenu)
+
+        when (subTab) {
+            InlineSubTab.CURRENT -> {
+                btnMenu?.text = activity.getString(R.string.subtab_current_weather)
+                btnMenu?.setIconResource(R.drawable.ic_weather)
+            }
+            InlineSubTab.HOURLY -> {
+                btnMenu?.text = "Hourly Forecast ▾"
+                btnMenu?.setIconResource(R.drawable.ic_weather)
+            }
+            InlineSubTab.SEVEN_DAY -> {
+                btnMenu?.text = activity.getString(R.string.subtab_seven_day)
+                btnMenu?.setIconResource(R.drawable.ic_weather)
+            }
+            InlineSubTab.NATURAL_LIGHT -> {
+                btnMenu?.text = "Natural Light ▾"
+                btnMenu?.setIconResource(R.drawable.ic_golden_hour)
+            }
+            InlineSubTab.DARK_SKY -> {
+                btnMenu?.text = "True Dark Sky ▾"
+                btnMenu?.setIconResource(R.drawable.ic_moon_new)
+            }
+            InlineSubTab.NIGHT_VISIBILITY -> {
+                btnMenu?.text = "Night Visibility ▾"
+                btnMenu?.setIconResource(R.drawable.ic_visibility)
+            }
+            InlineSubTab.SOLUNAR -> {
+                btnMenu?.text = "Solunar Activity ▾"
+                btnMenu?.setIconResource(R.drawable.ic_moon_full)
+            }
+        }
+
+        updateSevenDayForecastVisibility(subTab)
+
+        val weatherVis = if (subTab == InlineSubTab.CURRENT) View.VISIBLE else View.GONE
+        val hourlyVis = if (subTab == InlineSubTab.HOURLY) View.VISIBLE else View.GONE
+        val sevenDayVis = if (subTab == InlineSubTab.SEVEN_DAY) View.VISIBLE else View.GONE
+        val naturalLightVis = if (subTab == InlineSubTab.NATURAL_LIGHT) View.VISIBLE else View.GONE
+        val darkSkyVis = if (subTab == InlineSubTab.DARK_SKY) View.VISIBLE else View.GONE
+        val nightVisVis = if (subTab == InlineSubTab.NIGHT_VISIBILITY) View.VISIBLE else View.GONE
+        val solunarVis = if (subTab == InlineSubTab.SOLUNAR) View.VISIBLE else View.GONE
+
+        activity.findViewById<View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
+        activity.findViewById<View>(R.id.layoutHeroSection)?.visibility = weatherVis
+        activity.findViewById<View>(R.id.layoutInlineHourlyContainer)?.visibility = hourlyVis
+        activity.findViewById<View>(R.id.layoutInlineSevenDayContainer)?.visibility = sevenDayVis
+        activity.findViewById<View>(R.id.layoutInlineGoldenHourContainer)?.visibility = naturalLightVis
+        activity.findViewById<View>(R.id.layoutInlineDarkSkyContainer)?.visibility = darkSkyVis
+        activity.findViewById<View>(R.id.layoutInlineNightVisibilityContainer)?.visibility = nightVisVis
+        activity.findViewById<View>(R.id.layoutInlineSolunarContainer)?.visibility = solunarVis
+    }
+
+    fun updateSevenDayForecastVisibility(subTab: InlineSubTab = activeInlineSubTab) {
+        val isInlineMode = !locationPreferences.getSevenDayAsMenuItem()
+        val isVisible = isInlineMode && (subTab == InlineSubTab.CURRENT || subTab == InlineSubTab.HOURLY)
+        val vis = if (isVisible) View.VISIBLE else View.GONE
+        activity.findViewById<View>(R.id.tvForecastHeaderTitle)?.visibility = vis
+        activity.findViewById<RecyclerView>(R.id.rvForecast)?.visibility = vis
     }
 
     fun updateDarkSkyDisplay(location: LocationItem = currentLocationItem) {

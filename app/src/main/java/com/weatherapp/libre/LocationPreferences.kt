@@ -76,6 +76,12 @@ class LocationPreferences(context: Context) {
         context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
 
     companion object {
+        val DEFAULT_MENU_ORDER = listOf(
+            "CURRENT", "HOURLY", "SEVEN_DAY", "SEPARATOR", 
+            "NATURAL_LIGHT", "NIGHT_VISIBILITY", "DARK_SKY", 
+            "SEPARATOR", "SOLUNAR"
+        )
+
         const val ALERT_CONSENT_UNSET = -1
         const val ALERT_CONSENT_OPT_OUT = 0
         const val ALERT_CONSENT_OPT_IN = 1
@@ -262,11 +268,87 @@ class LocationPreferences(context: Context) {
     }
 
     fun getSavedInlineSubTab(): Int {
-        return prefs.getInt("app_inline_sub_tab_index", 0).coerceIn(0, 5)
+        return prefs.getInt("app_inline_sub_tab_index", 0).coerceIn(0, 6)
     }
 
     fun saveInlineSubTab(index: Int) {
-        prefs.edit().putInt("app_inline_sub_tab_index", index.coerceIn(0, 5)).apply()
+        prefs.edit().putInt("app_inline_sub_tab_index", index.coerceIn(0, 6)).apply()
+    }
+
+    fun getSevenDayAsMenuItem(): Boolean {
+        return prefs.getBoolean("app_seven_day_as_menu_item", false)
+    }
+
+    fun saveSevenDayAsMenuItem(enabled: Boolean) {
+        prefs.edit().putBoolean("app_seven_day_as_menu_item", enabled).apply()
+    }
+
+    fun getMenuOrder(): List<String> {
+        val str = prefs.getString("app_menu_order_json", null)
+        if (str == null) return DEFAULT_MENU_ORDER
+
+        val list = try {
+            str.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        } catch (e: Exception) {
+            return DEFAULT_MENU_ORDER
+        }
+
+        val containsAllTabs = InlineSubTab.values().all { list.contains(it.name) }
+
+        if (!containsAllTabs) {
+            saveMenuOrder(DEFAULT_MENU_ORDER)
+            return DEFAULT_MENU_ORDER
+        }
+
+        return list
+    }
+
+    fun saveMenuOrder(order: List<String>) {
+        val str = order.joinToString(",")
+        prefs.edit().putString("app_menu_order_json", str).apply()
+    }
+
+    fun getMenuEnabledFlags(): Map<InlineSubTab, Boolean> {
+        val defaultFlags = InlineSubTab.values().associateWith { true }
+        val str = prefs.getString("app_menu_enabled_json", null) ?: return defaultFlags
+        return try {
+            val map = defaultFlags.toMutableMap()
+            val pairs = str.split(",")
+            for (pair in pairs) {
+                val parts = pair.split(":")
+                if (parts.size == 2) {
+                    val tabName = parts[0].trim()
+                    val enabled = parts[1].trim().toBoolean()
+                    try {
+                        val tab = InlineSubTab.valueOf(tabName)
+                        map[tab] = enabled
+                    } catch (e: Exception) {
+                        // Ignore
+                    }
+                }
+            }
+            map
+        } catch (e: Exception) {
+            defaultFlags
+        }
+    }
+
+    fun saveMenuEnabledFlags(flags: Map<InlineSubTab, Boolean>) {
+        val str = flags.entries.joinToString(",") { "${it.key.name}:${it.value}" }
+        prefs.edit().putString("app_menu_enabled_json", str).apply()
+    }
+
+    fun getDefaultLaunchSubTab(): InlineSubTab {
+        val name = prefs.getString("app_default_launch_sub_tab", InlineSubTab.CURRENT.name)
+        return try {
+            if (name != null) InlineSubTab.valueOf(name) else InlineSubTab.CURRENT
+        } catch (e: Exception) {
+            InlineSubTab.CURRENT
+        }
+    }
+
+    fun saveDefaultLaunchSubTab(subTab: InlineSubTab) {
+        prefs.edit().putString("app_default_launch_sub_tab", subTab.name).apply()
     }
 
     fun getTabLocation(tabIndex: Int): LocationItem {

@@ -102,6 +102,8 @@ class MainActivity : AppCompatActivity() {
         easterEggManager = EasterEggManager(this, binding)
 
         setupUI()
+        val isFreshLaunch = (savedInstanceState == null)
+        astronomyManager.applyInitialLaunchState(isFreshLaunch)
         setupDrawerNavigation()
 
         val backCallback = object : OnBackPressedCallback(true) {
@@ -280,15 +282,19 @@ class MainActivity : AppCompatActivity() {
 
         // Adapters
         val unitSystem = locationPreferences.getUnitSystem()
-                val forecastAdapter = DayForecastAdapter(unitSystem)
+        val forecastAdapter = DayForecastAdapter(unitSystem)
         val metricGridAdapter = MetricGridAdapter()
         binding.rvForecast.layoutManager = LinearLayoutManager(this)
         binding.rvForecast.adapter = forecastAdapter
+        findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvSevenDayMenu)?.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = forecastAdapter
+        }
         weatherDisplayManager.forecastAdapter = forecastAdapter
         weatherDisplayManager.metricGridAdapter = metricGridAdapter
         themeManager.forecastAdapter = forecastAdapter
         themeManager.metricGridAdapter = metricGridAdapter
-        
+
         val solarAdapter = SolarPhaseAdapter { item -> astronomyManager.promptSetSolarAlarm(item) }
         findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.layoutManager = LinearLayoutManager(this)
         findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvInlineSolarPhases)?.adapter = solarAdapter
@@ -312,21 +318,53 @@ class MainActivity : AppCompatActivity() {
 
     private fun showInlineMenu(anchorView: View) {
         val popup = androidx.appcompat.widget.PopupMenu(this, anchorView)
-        popup.menu.add(0, 0, 0, "Current Weather")
-        popup.menu.add(0, 1, 1, "Hourly Forecast")
-        popup.menu.add(0, 2, 2, "Natural Light")
-        popup.menu.add(0, 3, 3, "True Dark Sky")
-        popup.menu.add(0, 4, 4, "Night Visibility")
-        popup.menu.add(0, 5, 5, "Solunar Activity")
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                0 -> astronomyManager.switchInlineSubTab(InlineSubTab.CURRENT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                1 -> astronomyManager.switchInlineSubTab(InlineSubTab.HOURLY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                2 -> astronomyManager.switchInlineSubTab(InlineSubTab.NATURAL_LIGHT, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                3 -> astronomyManager.switchInlineSubTab(InlineSubTab.DARK_SKY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                4 -> astronomyManager.switchInlineSubTab(InlineSubTab.NIGHT_VISIBILITY, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
-                5 -> astronomyManager.switchInlineSubTab(InlineSubTab.SOLUNAR, weatherDisplayManager.currentLocation, weatherDisplayManager.locationTimezone)
+        popup.menu.setGroupDividerEnabled(true)
+
+        val showSevenDayInMenu = locationPreferences.getSevenDayAsMenuItem()
+        val order = locationPreferences.getMenuOrder()
+        val enabledFlags = locationPreferences.getMenuEnabledFlags()
+
+        var currentGroupId = 0
+        var orderIndex = 0
+
+        for (itemKey in order) {
+            if (itemKey == "SEPARATOR") {
+                currentGroupId++
+                continue
             }
+
+            val subTab = try {
+                InlineSubTab.valueOf(itemKey)
+            } catch (e: Exception) {
+                continue
+            }
+
+            if (subTab == InlineSubTab.SEVEN_DAY && !showSevenDayInMenu) {
+                continue
+            }
+
+            if (enabledFlags[subTab] == true) {
+                val label = when (subTab) {
+                    InlineSubTab.CURRENT -> getString(R.string.subtab_current_weather).replace(" ▾", "")
+                    InlineSubTab.HOURLY -> "Hourly Forecast"
+                    InlineSubTab.SEVEN_DAY -> getString(R.string.title_seven_day_forecast)
+                    InlineSubTab.NATURAL_LIGHT -> "Natural Light"
+                    InlineSubTab.DARK_SKY -> "True Dark Sky"
+                    InlineSubTab.NIGHT_VISIBILITY -> "Night Visibility"
+                    InlineSubTab.SOLUNAR -> "Solunar Activity"
+                }
+                popup.menu.add(currentGroupId, subTab.ordinal, orderIndex, label)
+                orderIndex++
+            }
+        }
+
+        popup.setOnMenuItemClickListener { item ->
+            val selectedSubTab = InlineSubTab.values().getOrNull(item.itemId) ?: InlineSubTab.CURRENT
+            astronomyManager.switchInlineSubTab(
+                selectedSubTab,
+                weatherDisplayManager.currentLocation,
+                weatherDisplayManager.locationTimezone
+            )
             true
         }
         popup.show()

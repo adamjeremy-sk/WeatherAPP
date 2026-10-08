@@ -29,6 +29,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
 import android.view.KeyEvent
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertTestHarness
 import com.weatherapp.libre.alerts.AlertNotificationHelper
@@ -40,6 +43,7 @@ import com.weatherapp.libre.databinding.DialogBehaviourScreenBinding
 import com.weatherapp.libre.databinding.DialogCacheSettingsBinding
 import com.weatherapp.libre.databinding.DialogInfoScreenBinding
 import com.weatherapp.libre.databinding.DialogLicensesSettingsBinding
+import com.weatherapp.libre.databinding.DialogMenuOrganizationScreenBinding
 import com.weatherapp.libre.databinding.DialogModelsSettingsBinding
 import com.weatherapp.libre.databinding.DialogPrivacySettingsBinding
 import com.weatherapp.libre.databinding.DialogSystemScreenBinding
@@ -204,7 +208,7 @@ class SettingsDialogManager(
             val sevenDaysMs = 7 * 24 * 60 * 60 * 1000L
             val isCacheValid = !forceRefresh && cachedHtml != null && (System.currentTimeMillis() - cachedTime) < sevenDaysMs
 
-            if (isCacheValid && cachedHtml != null) {
+            if (isCacheValid) {
                 progressBar.visibility = View.GONE
                 swipeRefresh.isRefreshing = false
                 webView.loadDataWithBaseURL(url, cachedHtml, "text/html", "UTF-8", null)
@@ -1280,6 +1284,205 @@ class SettingsDialogManager(
 
             Toast.makeText(activity.applicationContext, "Units updated", Toast.LENGTH_SHORT).show()
         }
+
+        // Menu Organization Card
+        dialogBinding.cardOrganizeMenu.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardOrganizeMenu.strokeColor = palette.dividerColor
+        dialogBinding.tvOrganizeMenuTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvOrganizeMenuDesc.setTextColor(palette.textSecondary)
+
+        dialogBinding.cardOrganizeMenu.setOnClickListener {
+            showMenuOrganizationScreen()
+        }
+
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    private fun checkActiveTabValidity() {
+        if (activity is MainActivity) {
+            val activeTab = activity.astronomyManager.activeInlineSubTab
+            val showSevenDay = locationPreferences.getSevenDayAsMenuItem()
+            val enabledFlags = locationPreferences.getMenuEnabledFlags()
+            val isTabEnabled = enabledFlags[activeTab] ?: true
+            val isSevenDayInvalid = (activeTab == InlineSubTab.SEVEN_DAY && !showSevenDay)
+
+            if (!isTabEnabled || isSevenDayInvalid) {
+                val defaultTab = locationPreferences.getDefaultLaunchSubTab()
+                activity.astronomyManager.switchInlineSubTab(
+                    defaultTab,
+                    activity.weatherDisplayManager.currentLocation,
+                    activity.weatherDisplayManager.locationTimezone
+                )
+            }
+        }
+    }
+
+    fun showMenuOrganizationScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = DialogMenuOrganizationScreenBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        if (!isFireEngine) {
+            dialogBinding.cardHeader.strokeColor = palette.dividerColor
+        }
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.tvHeaderDesc.setTextColor(palette.textSecondary)
+
+        // Palette theming for cards
+        dialogBinding.cardSevenDayPlacement.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardSevenDayPlacement.strokeColor = palette.dividerColor
+        dialogBinding.tvSevenDayPlacementTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvSevenDayPlacementDesc.setTextColor(palette.textSecondary)
+
+        dialogBinding.cardSeparatorStepper.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardSeparatorStepper.strokeColor = palette.dividerColor
+        dialogBinding.tvNumSeparatorsTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvSeparatorCount.setTextColor(palette.textPrimary)
+        dialogBinding.btnMinusSeparators.setColorFilter(palette.brandPrimary)
+        dialogBinding.btnPlusSeparators.setColorFilter(palette.brandPrimary)
+
+        // Saved state
+        val orgItems = locationPreferences.getMenuOrder().toMutableList()
+        val showSevenDay = locationPreferences.getSevenDayAsMenuItem()
+
+        val enabledFlags = locationPreferences.getMenuEnabledFlags().toMutableMap()
+        var defaultLaunchSubTab = locationPreferences.getDefaultLaunchSubTab()
+
+        // Adapter - create first so it can be updated
+        lateinit var adapter: MenuOrganizationAdapter
+
+        // 7-Day Placement Toggle Card
+        dialogBinding.switchSevenDayPlacement.isChecked = showSevenDay
+        dialogBinding.tvSevenDayPlacementDesc.text = activity.getString(
+            if (showSevenDay) R.string.desc_seven_day_placement_menu else R.string.desc_seven_day_placement_inline
+        )
+
+        dialogBinding.switchSevenDayPlacement.setOnCheckedChangeListener { _, isChecked: Boolean ->
+            locationPreferences.saveSevenDayAsMenuItem(isChecked)
+            dialogBinding.tvSevenDayPlacementDesc.text = activity.getString(
+                if (isChecked) R.string.desc_seven_day_placement_menu else R.string.desc_seven_day_placement_inline
+            )
+            val flags = locationPreferences.getMenuEnabledFlags().toMutableMap()
+            flags[InlineSubTab.SEVEN_DAY] = isChecked
+            locationPreferences.saveMenuEnabledFlags(flags)
+
+            adapter.updateSevenDayPlacement(isChecked)
+            checkActiveTabValidity()
+            if (activity is MainActivity) {
+                activity.astronomyManager.updateSevenDayForecastVisibility()
+            }
+        }
+
+        // Stepper
+        val initialSepCount = orgItems.count { it == "SEPARATOR" }
+        dialogBinding.tvSeparatorCount.text = initialSepCount.toString()
+
+        adapter = MenuOrganizationAdapter(
+            context = activity,
+            items = orgItems,
+            enabledFlags = enabledFlags,
+            defaultSubTab = defaultLaunchSubTab,
+            palette = palette,
+            showSevenDayInMenu = showSevenDay,
+            onItemReordered = {
+                locationPreferences.saveMenuEnabledFlags(enabledFlags)
+                locationPreferences.saveMenuOrder(orgItems)
+            },
+            onDefaultChanged = { newDefault ->
+                defaultLaunchSubTab = newDefault
+                locationPreferences.saveDefaultLaunchSubTab(newDefault)
+                locationPreferences.saveMenuEnabledFlags(enabledFlags)
+            },
+            onToggleDisabledActiveTab = {
+                checkActiveTabValidity()
+            }
+        )
+
+        dialogBinding.btnMinusSeparators.setOnClickListener {
+            val currentOrder = locationPreferences.getMenuOrder().toMutableList()
+            val count = currentOrder.count { it == "SEPARATOR" }
+            if (count > 0) {
+                currentOrder.removeAt(currentOrder.lastIndexOf("SEPARATOR"))
+                locationPreferences.saveMenuOrder(currentOrder)
+                adapter.updateItems(locationPreferences.getMenuOrder())
+                dialogBinding.tvSeparatorCount.text = locationPreferences.getMenuOrder().count { it == "SEPARATOR" }.toString()
+            }
+        }
+
+        dialogBinding.btnPlusSeparators.setOnClickListener {
+            val currentOrder = locationPreferences.getMenuOrder().toMutableList()
+            val count = currentOrder.count { it == "SEPARATOR" }
+            if (count < 6) {
+                currentOrder.add("SEPARATOR")
+                locationPreferences.saveMenuOrder(currentOrder)
+                adapter.updateItems(locationPreferences.getMenuOrder())
+                dialogBinding.tvSeparatorCount.text = locationPreferences.getMenuOrder().count { it == "SEPARATOR" }.toString()
+            }
+        }
+
+        dialogBinding.rvMenuOrgItems.layoutManager = LinearLayoutManager(activity)
+        dialogBinding.rvMenuOrgItems.adapter = adapter
+        dialogBinding.rvMenuOrgItems.isNestedScrollingEnabled = false
+        dialogBinding.rvMenuOrgItems.setHasFixedSize(false)
+
+        // Reset to Default button
+        dialogBinding.btnResetDefaults.setOnClickListener {
+            locationPreferences.saveMenuOrder(LocationPreferences.DEFAULT_MENU_ORDER)
+            locationPreferences.saveMenuEnabledFlags(InlineSubTab.values().associateWith { true })
+            locationPreferences.saveDefaultLaunchSubTab(InlineSubTab.CURRENT)
+            locationPreferences.saveSevenDayAsMenuItem(false)
+
+            checkActiveTabValidity()
+            if (activity is MainActivity) {
+                activity.astronomyManager.updateSevenDayForecastVisibility()
+            }
+
+            Toast.makeText(activity.applicationContext, "Reset to default settings", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+            showMenuOrganizationScreen()
+        }
+
+        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPos = viewHolder.adapterPosition
+                val toPos = target.adapterPosition
+                if (fromPos != RecyclerView.NO_POSITION && toPos != RecyclerView.NO_POSITION) {
+                    adapter.moveItem(fromPos, toPos)
+                }
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+        })
+
+        touchHelper.attachToRecyclerView(dialogBinding.rvMenuOrgItems)
 
         trackDialog(dialog)
         dialog.show()

@@ -3,6 +3,7 @@ package com.weatherapp.libre
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.weatherapp.libre.databinding.ItemNightVisibilityPeriodBinding
 import java.time.ZoneId
@@ -72,26 +73,40 @@ class NightVisibilityPeriodAdapter : RecyclerView.Adapter<NightVisibilityPeriodA
                 binding.tvPeriodDateHeader.visibility = View.GONE
             }
 
+            val now = java.time.Instant.now()
+            val isCurrentPeriod = now.isAfter(item.startUtc) && now.isBefore(item.endUtc)
+            val context = binding.root.context
+            val goldColor = ContextCompat.getColor(context, R.color.golden_hour_primary)
+
             val p = palette
             if (p != null) {
-                binding.root.setCardBackgroundColor(p.surfaceCard)
-                binding.root.strokeColor = p.dividerColor
+                binding.root.setCardBackgroundColor(if (isCurrentPeriod) p.surfaceCardSecondary else p.surfaceCard)
+                binding.root.strokeColor = if (isCurrentPeriod) goldColor else p.dividerColor
 
-                binding.tvPeriodTimeRange.setTextColor(p.textSecondary)
-                binding.tvPeriodTwilight.setTextColor(p.brandPrimary)
+                binding.tvPeriodTimeRange.setTextColor(if (isCurrentPeriod) goldColor else p.textSecondary)
+                binding.tvPeriodTwilight.setTextColor(if (isCurrentPeriod) goldColor else p.brandPrimary)
                 binding.tvPeriodCloudCover.setTextColor(p.textSecondary)
                 binding.tvPeriodDateHeader.setTextColor(p.brandPrimary)
                 binding.ivPeriodIcon.setColorFilter(p.brandPrimary)
 
-                val categoryColor = when (item.category) {
-                    "Bright Night" -> p.goldenHourPrimary
-                    "Moderate Light" -> p.brandPrimary
-                    "Low Light" -> p.textPrimary
-                    "Minimal Light" -> p.textSecondary
-                    else -> p.textSecondary
+                val categoryColor = if (isCurrentPeriod) {
+                    goldColor
+                } else {
+                    when (item.category) {
+                        "Bright Night" -> p.goldenHourPrimary
+                        "Moderate Light" -> p.brandPrimary
+                        "Low Light" -> p.textPrimary
+                        "Minimal Light" -> p.textSecondary
+                        else -> p.textSecondary
+                    }
                 }
                 binding.tvPeriodCategory.setTextColor(categoryColor)
+            } else {
+                binding.root.strokeColor = if (isCurrentPeriod) goldColor else ContextCompat.getColor(context, R.color.divider_color)
             }
+
+            val strokeWidthDp = if (isCurrentPeriod) 2.5f else 1.0f
+            binding.root.strokeWidth = (strokeWidthDp * binding.root.resources.displayMetrics.density).toInt()
         }
     }
 }

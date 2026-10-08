@@ -811,4 +811,7 @@
     <!-- Container 6: Inline Solunar Activity View -->
     <include layout="@layout/section_inline_solunar" />
 
+    <!-- Container 7: Inline 7-Day Forecast View -->
+    <include layout="@layout/section_inline_seven_day" />
+
 </merge>
