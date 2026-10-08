@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="WeatherAPP Libre - Page Template">
+  <title>WeatherAPP Libre: Page Title</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .app-logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 112px;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .toc li, .more-info li { margin: 8px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 {
+      color: #174f7d;
+      margin-top: 1.5rem;
+    }
+    .highlight {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background: var(--note);
+    }
+    .highlight ul { margin-bottom: 0; }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { color: #111; background: #fff; padding: 24px 0; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
+      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="header-copy">
+        <h1>Page Title</h1>
+        <p>A brief description of this page's purpose and the content it contains.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Contents
+        </h2>
+        <ol>
+          <li><a href="#section-1">First Section Title</a></li>
+          <li><a href="#section-2">Second Section Title</a></li>
+        </ol>
+      </section>
+
+      <section class="more-info">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Project Resources
+        </h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="licenses.html">Licenses &amp; Sources</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="section-1" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          1. First Section Title
+        </h2>
+        <p>Placeholder text for the first section of your new page. Use this space to introduce the topic or provide an overview of the content that will be displayed here.</p>
+        
+        <div class="highlight">
+          <p style="margin-top: 0;"><strong>Key Takeaway:</strong></p>
+          <p style="margin-bottom: 0;">You can use the highlight block to draw attention to important notes, quotes, or summaries within your content.</p>
+        </div>
+      </section>
+
+      <section id="section-2" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          2. Second Section Title
+        </h2>
+        <p>Add more detailed information, lists, or media in this section. The card layout ensures your content remains organized and easy to read across different screen sizes.</p>
+        <ul>
+          <li>First point of interest</li>
+          <li>Second point of interest</li>
+          <li>Third point of interest</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • [Page Name]
+  </footer>
+
+</body>
+</html>

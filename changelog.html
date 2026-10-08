@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Version history and release notes for WeatherAPP Libre, detailing added features, changes, and fixes across every release.">
+  <title>WeatherAPP Libre: Changelog</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --success: #18794e;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .app-logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 112px;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .toc li, .more-info li { margin: 8px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 {
+      color: #174f7d;
+      margin-top: 1.5rem;
+    }
+    .highlight {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background: var(--note);
+    }
+    .highlight ul { margin-bottom: 0; }
+
+    /* Changelog Utilities */
+    .badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 3px 11px;
+      border-radius: 999px;
+      background: rgba(24, 121, 78, .12);
+      color: var(--success);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+    .release-date {
+      margin: -4px 0 14px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .change-list { list-style: none; margin: 0; padding: 0; }
+    .change-list li {
+      position: relative;
+      padding-left: 1.7rem;
+      margin: 7px 0;
+    }
+    .change-list li::before {
+      position: absolute;
+      left: 2px;
+      font-weight: 900;
+    }
+    .change-list.added li::before { content: "+"; color: var(--primary); }
+    .change-list.changed li::before { content: "\2022"; color: var(--muted); }
+    .change-list.fixed li::before { content: "\2713"; color: var(--success); }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { color: #111; background: #fff; padding: 24px 0; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
+      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <div class="header-copy">
+        <h1>Changelog</h1>
+        <p>Version history and release notes for WeatherAPP Libre, detailing added features, changes, and fixes across every release.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Contents
+        </h2>
+        <ol>
+          <li><a href="#about">About This Changelog</a></li>
+          <li><a href="#vc17">0.5.1VC17 (Latest)</a></li>
+          <li><a href="#vc16">0.5.0VC16</a></li>
+          <li><a href="#vc15">0.4.8VC15</a></li>
+          <li><a href="#vc14">0.4.7VC14</a></li>
+          <li><a href="#vc13">0.4.6VC13</a></li>
+          <li><a href="#vc12">0.4.5VC12</a></li>
+        </ol>
+      </section>
+
+      <section class="more-info">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Project Resources
+        </h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="licenses.html">Licenses &amp; Sources</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="roadmap.html">Production Roadmap</a></li>
+          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="about" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          About This Changelog
+        </h2>
+        <p>Every public release of WeatherAPP Libre is listed below, newest first. Each entry is grouped by the type of change:</p>
+        <ul class="change-list added">
+          <li>Added — new features and capabilities.</li>
+        </ul>
+        <ul class="change-list changed">
+          <li>Changed — adjustments to existing behaviour or layout.</li>
+        </ul>
+        <ul class="change-list fixed">
+          <li>Fixed — corrections to defects, alignment, and stability issues.</li>
+        </ul>
+        <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
+      </section>
+
+      <section id="vc17" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.5.1VC17
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 8, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Option to move the 7-day forecast into the drop-down menu.</li>
+          <li>Toggle to choose whether the 7-day forecast appears in the menu or inline below Current Weather and Hourly Forecast.</li>
+          <li>Menu Organization screen for reordering drop-down menu pages by dragging.</li>
+          <li>Ability to set the default page shown on launch.</li>
+          <li>Ability to enable or disable individual pages in the drop-down menu.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Current Weather title now displays correctly on launch.</li>
+          <li>Fixed when the 7-day forecast is displayed.</li>
+          <li>Corrected the True Dark Sky window icons.</li>
+          <li>Night Visibility Forecast now highlights the current stage of the night.</li>
+        </ul>
+      </section>
+
+      <section id="vc16" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M29 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.5.0VC16
+        </h2>
+        <p class="release-date">Released October 7, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>True Dark Sky, Night Visibility, and Solunar Activity forecasts.</li>
+        </ul>
+      </section>
+
+      <section id="vc15" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.4.8VC15
+        </h2>
+        <p class="release-date">Released October 7, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Alert log history.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Cleaned and hardened the compilation test suite.</li>
+        </ul>
+      </section>
+
+      <section id="vc14" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.4.7VC14
+        </h2>
+        <p class="release-date">Released October 6, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>"Feels like" temperature.</li>
+          <li>Long-press on a location tab to open the location chooser.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Initial startup no longer requests a location full-screen.</li>
+          <li>Menu layout refreshed.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Text alignment in main page cells.</li>
+          <li>Back button now returns to the main weather view.</li>
+          <li>Repeated notification permission prompts on every update.</li>
+          <li>Alignment in the 7-day forecast.</li>
+        </ul>
+      </section>
+
+      <section id="vc13" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.4.6VC13
+        </h2>
+        <p class="release-date">Released October 3, 2026</p>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Audited the legacy CAP notification system.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Fixed in-app CAP notifications.</li>
+          <li>System CAP notifications are now preserved.</li>
+          <li>Fixed the About, Privacy Policy, Roadmap, and Support links.</li>
+        </ul>
+      </section>
+
+      <section id="vc12" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.4.5VC12
+        </h2>
+        <p class="release-date">Released October 1, 2026</p>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Natural light cell highlighting now shows all current states.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Fixed natural light time bands.</li>
+          <li>Fixed opt-in notifications and weather alerts.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • Changelog &amp; Release Notes
+  </footer>
+
+</body>
+</html>
