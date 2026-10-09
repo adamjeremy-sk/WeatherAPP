@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -48,7 +48,7 @@
                     android:id="@+id/tvSolarEventsTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Solar Events"
+                    android:text="@string/title_solar_events"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -81,12 +81,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Past Events" />
+            android:text="@string/tab_past_events" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upcoming Events" />
+            android:text="@string/tab_upcoming_events" />
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="No astronomical events found."
+            android:text="@string/empty_solar_events"
             android:textColor="@color/text_secondary"
             android:textSize="15sp"
             android:visibility="gone" />

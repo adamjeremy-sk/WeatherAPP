@@ -11,7 +11,7 @@
         android:id="@+id/ivNavHeaderIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:contentDescription="Settings Header"
+        android:contentDescription="@string/cd_settings_header"
         android:src="@drawable/ic_menu"
         app:tint="@color/brand_primary" />
 
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Settings"
+        android:text="@string/title_settings"
         android:textColor="@color/text_primary"
         android:textSize="22sp"
         android:textStyle="bold" />

@@ -160,7 +160,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Moon Phase"
+                        android:text="@string/label_moon_phase"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -185,7 +185,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Daylight"
+                        android:text="@string/label_total_daylight"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -219,7 +219,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sunrise &amp; Sunset"
+                        android:text="@string/label_sunrise_sunset"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -244,7 +244,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wind Speed"
+                        android:text="@string/label_wind_speed"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -278,7 +278,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sun Position"
+                        android:text="@string/label_sun_position"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -303,7 +303,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Moon Position"
+                        android:text="@string/label_moon_position"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 

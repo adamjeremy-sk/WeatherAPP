@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Retry" />
+                    android:text="@string/btn_retry" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDismissError"
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Dismiss" />
+                    android:text="@string/btn_dismiss" />
 
             </LinearLayout>
 

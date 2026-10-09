@@ -40,7 +40,7 @@
                 android:id="@+id/ivPeriodIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:contentDescription="Visibility Icon"
+                android:contentDescription="@string/cd_visibility_icon"
                 android:src="@drawable/ic_visibility"
                 app:tint="@color/brand_primary" />
 

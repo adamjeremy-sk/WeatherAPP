@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">WeatherAPP</string>
+    <string name="app_website_base">https://www.weatherapplibre.ca</string>
+    <string name="support_email">support@weatherapplibre.ca</string>
     <string name="menu_item_share_title">Share This Project</string>
     <string name="share_chooser_title">Share WeatherAPP Libre</string>
     <string name="share_message_body">I\'m beta testing WeatherAPP Libre, a private ad-free weather and natural-light planner with official Environment Canada alerts. Join the beta: %s</string>
@@ -104,4 +106,254 @@
     <string name="empty_solunar">Solunar activity data unavailable for the selected date.</string>
     <string name="notice_cloud_data_cached">Includes cached weather cloud cover data.</string>
     <string name="notice_cloud_data_unavailable">Cloud cover data unavailable - showing clear sky estimate.</string>
+
+    <!-- App Update Strings -->
+    <string name="toast_checking_updates">Checking for WeatherAPP updates…</string>
+    <string name="title_update_notification">Update Notification</string>
+    <string name="msg_update_available">A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version is v%1$s and the latest version is v%2$s.</string>
+    <string name="btn_update_now">Update Now</string>
+    <string name="btn_not_now">Not Now</string>
+    <string name="title_app_up_to_date">WeatherAPP is Up to Date</string>
+    <string name="msg_app_up_to_date">You are running the latest version of WeatherAPP (v%1$s).\n\nNo new updates are available at this time.</string>
+    <string name="title_check_play_store">Check Play Store for Updates</string>
+    <string name="msg_check_play_store">Would you like to open the Google Play Store page to check for WeatherAPP updates?</string>
+    <string name="btn_open_play_store">Open Play Store</string>
+    <string name="title_milestone_500_launches">🎉 500 App Launches!</string>
+    <string name="msg_milestone_500_launches">Thank you for using WeatherAPP! You have opened WeatherAPP 500 times.\n\nAs a 100% free, ad-free application, if you enjoy using WeatherAPP, please consider leaving a review or rating on the Google Play Store!</string>
+    <string name="btn_leave_review">Leave a Review</string>
+    <string name="btn_maybe_later">Maybe Later</string>
+    <string name="btn_donate_kofi">Donate (Ko-fi)</string>
+    <string name="toast_could_not_open_browser">Could not open browser</string>
+
+    <!-- Astronomy / Solar Strings -->
+    <string name="subtab_hourly_dropdown">Hourly Forecast ▾</string>
+    <string name="subtab_natural_light_dropdown">Natural Light ▾</string>
+    <string name="subtab_dark_sky_dropdown">True Dark Sky ▾</string>
+    <string name="subtab_night_vis_dropdown">Night Visibility ▾</string>
+    <string name="subtab_solunar_dropdown">Solunar Activity ▾</string>
+    <string name="toast_continuous_event_alarm_error">Cannot set alarm for continuous event</string>
+    <string name="title_set_solar_alarm">Set Solar Alarm</string>
+    <string name="msg_set_solar_alarm">Set a system alarm for %1$d minutes before %2$s (%3$s)?\n\nAlarm time: %4$s</string>
+    <string name="btn_set_alarm">Set Alarm</string>
+    <string name="toast_alarm_set">Alarm set for %1$s</string>
+
+    <!-- Easter Egg Strings -->
+    <string name="toast_snowfall_activated">❄️ Snowfall Effect Activated!</string>
+    <string name="toast_heat_shimmer_activated">🔥 Extreme Heat Mirage Shimmer Activated!</string>
+
+    <!-- Location Dialog Strings -->
+    <string name="toast_default_location_set">Default startup location set to %1$s</string>
+    <string name="error_searching_location">Error searching location.</string>
+
+    <!-- Main Activity Strings -->
+    <string name="toast_could_not_open_link">Could not open link</string>
+
+    <!-- Settings Dialog Strings -->
+    <string name="toast_sticky_tabs_pinned">Location tabs pinned as sticky</string>
+    <string name="toast_sticky_tabs_scroll">Location tabs set to scroll with page</string>
+    <string name="option_1_tab_title">1 Location Tab</string>
+    <string name="option_1_tab_desc">Displays a single location tab on the main page.</string>
+    <string name="option_2_tabs_title">2 Location Tabs (Default)</string>
+    <string name="option_2_tabs_desc">Pins two location tabs side-by-side.</string>
+    <string name="option_3_tabs_title">3 Location Tabs</string>
+    <string name="option_3_tabs_desc">Pins three location tabs for multi-city switching.</string>
+    <string name="option_4_tabs_title">4 Location Tabs</string>
+    <string name="option_4_tabs_desc">Pins four location tabs for multi-city monitoring.</string>
+    <string name="toast_tab_count_updated">Tab count updated to %1$d</string>
+    <string name="toast_model_set">Model set to %1$s</string>
+    <string name="btn_send_test_alert">Send Test Weather Alert</string>
+    <string name="toast_test_alert_injected">Injected &amp; Dispatched: %1$s</string>
+    <string name="toast_test_alert_failed">Failed to inject %1$s</string>
+    <string name="toast_cache_ttl_set">Cache TTL set to %1$s</string>
+    <string name="toast_default_location_updated">Default startup location updated</string>
+    <string name="label_cycling_speed">Cycling Speed: %1$s</string>
+    <string name="toast_units_updated">Units updated</string>
+    <string name="toast_reset_default_settings">Reset to default settings</string>
+
+    <!-- Solunar Strings -->
+    <string name="solunar_moonrise_moonset">Moonrise: %1$s • Moonset: %2$s</string>
+    <string name="solunar_transit_nadir">Transit: %1$s • Nadir: %2$s</string>
+    <string name="solunar_major_periods">Major: %1$s</string>
+    <string name="solunar_minor_periods">Minor: %1$s</string>
+
+    <!-- Weather Display Strings -->
+    <string name="label_local_time">Local Time</string>
+    <string name="toast_failed_load_weather">Failed to load weather data</string>
+    <string name="title_current_moon_phase">Current Moon Phase</string>
+    <string name="btn_close">Close</string>
+
+    <!-- Layout Strings -->
+    <string name="title_golden_hour">Golden Hour</string>
+    <string name="tip_volume_key_date_cycle">Tip: Use Volume Up / Down buttons to cycle days (hold to rapid cycle)</string>
+    <string name="title_local_community_events">Local Community Events</string>
+    <string name="tab_past_events">Past Events</string>
+    <string name="tab_upcoming_events">Upcoming Events</string>
+    <string name="empty_local_events">No local events found for this location.</string>
+
+    <string name="accreditation_open_meteo">Weather data provided by Open-Meteo.com</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_dismiss">Dismiss</string>
+    <string name="title_donate">Donate</string>
+    <string name="title_rate_review">Rate &amp; Review</string>
+    <string name="title_user_manual">User Manual</string>
+    <string name="snippet_user_manual">Read application documentation.</string>
+
+    <string name="title_radar">Weather Radar</string>
+    <string name="title_solar_events">Solar Events</string>
+    <string name="empty_solar_events">No astronomical events found.</string>
+
+    <string name="title_about_weatherapp">About WeatherAPP</string>
+    <string name="subtitle_about_weatherapp">Privacy-First Multi-Model Weather &amp; Solar Intelligence</string>
+    <string name="about_section1_title">Application Scope &amp; Meteorological Foundation</string>
+    <string name="about_section1_desc">WeatherAPP is a high-precision, privacy-first weather and astronomical platform designed for meteorology enthusiasts, outdoor planners, and night-sky observers. By integrating global numerical weather models (Environment Canada GEM, NOAA GFS, ECMWF, and CMA-GFS), WeatherAPP delivers multi-model forecast comparisons alongside real-time severe weather alert monitoring.</string>
+    <string name="about_section2_title">Zero-GPS Privacy &amp; Persistent Caching</string>
+    <string name="about_section2_desc">Unlike conventional weather applications that track your device movements in the background, WeatherAPP requires zero GPS permissions. All location calculations and weather data requests are anchored to explicit city selections. Forecast data is cached locally on your device with configurable Time-To-Live (TTL) durations to minimize API network usage and ensure offline availability.</string>
+    <string name="about_section3_title">Solar Intelligence &amp; Generative AI Analysis</string>
+    <string name="about_section3_desc">Beyond standard temperature and precipitation metrics, WeatherAPP delivers detailed solar lighting phases (Golden Hour, Blue Hour, Civil/Nautical/Astronomical Twilight), True Dark Sky window calculations, night visibility estimates, and Solunar activity periods. Weather summaries and atmospheric trends are optionally enriched using on-device or cloud generative AI models.</string>
+    <string name="about_section4_title">100% Ad-Free, User-Supported &amp; Privacy Guarantee</string>
+    <string name="about_section4_desc">WeatherAPP is proudly 100% ad-free. We firmly believe that weather forecasts and severe safety warnings should never be monetized through invasive banner ads, user tracking, or data brokering. WeatherAPP is sustained through voluntary user contributions and open-source community support.</string>
+    <string name="about_section5_title">AI Transparency &amp; Development Notice</string>
+    <string name="about_section5_desc">In the interest of full transparency with our users, Generative AI tools were utilized during the development, architecture design, and code optimization of WeatherAPP. All core meteorological algorithms, astronomical calculations, and alert processing pipelines have been thoroughly validated for accuracy.</string>
+
+    <string name="title_notifications">Notifications</string>
+    <string name="desc_notifications">Manage severe weather alerts and Golden Hour solar phase alarm lead times.</string>
+    <string name="title_solar_alarm_lead">Solar Phase Alarm Lead Time</string>
+    <string name="desc_solar_alarm_lead">Minutes before Golden Hour, Sunrise, Sunset, or Blue Hour to trigger long-press alarms.</string>
+    <string name="title_test_notification_system">Test Notification System</string>
+    <string name="desc_test_notification_system">Send a simulated Environment Canada (ECCC) weather warning notification for your active city.</string>
+
+    <string name="desc_behaviour">Configure application units and gesture control behaviour.</string>
+    <string name="label_units">Units</string>
+    <string name="label_unit_metric_full">Metric (°C, km/h, km)</string>
+    <string name="label_unit_metric">Metric</string>
+    <string name="title_volume_key_date_cycling">Volume Key Date Cycling</string>
+    <string name="desc_volume_key_date_cycling">Use hardware volume keys to rapidly cycle dates in Golden Hour.</string>
+
+    <string name="title_cache_settings">Data Cache Settings</string>
+    <string name="desc_cache_settings">Configure in-memory forecast caching and API query optimization.</string>
+    <string name="title_enable_cache_ttl">Enable Forecast Data Cache (TTL)</string>
+    <string name="desc_enable_cache_ttl">Reuses recent forecast data when switching back to previously viewed cities.</string>
+    <string name="title_cache_ttl_duration">Cache TTL Duration (Time-To-Live)</string>
+    <string name="title_why_ttl_caching">Why TTL Caching is Used</string>
+    <string name="desc_why_ttl_caching">Time-To-Live (TTL) caching temporarily preserves weather responses in memory. When you switch between city tabs, cached data loads instantly without sending redundant network queries to weather servers.</string>
+    <string name="title_api_rate_limiting_warning">⚠️ API Rate Limiting &amp; 503 Warning</string>
+    <string name="desc_api_rate_limiting_warning">Disabling the cache or setting a very short TTL duration causes fresh network requests on every city switch. Frequent rapid switching may trigger HTTP 503 rate-limit errors from weather providers.</string>
+
+    <string name="desc_info_screen">Application information, open source licenses, and roadmap.</string>
+    <string name="title_about">About</string>
+    <string name="desc_about">View application version, build information, and documentation.</string>
+    <string name="title_licenses_sources">Licenses &amp; Sources</string>
+    <string name="desc_licenses_sources">Attribution for open source software, libraries, and weather APIs.</string>
+    <string name="title_privacy_policy">Privacy Policy</string>
+    <string name="desc_privacy_policy">Read our privacy policy and data collection transparency.</string>
+    <string name="title_weatherapp_roadmap">WeatherAPP Roadmap</string>
+    <string name="desc_weatherapp_roadmap">Explore planned features and future developments.</string>
+    <string name="title_changelog">Changelog</string>
+    <string name="desc_changelog">View release notes and version history.</string>
+    <string name="desc_user_manual">Read detailed application user manual and documentation.</string>
+
+    <string name="title_licenses_data_sources">Licenses &amp; Data Sources</string>
+    <string name="desc_licenses_data_sources">Data providers, open-source libraries, and APIs utilized by this application:</string>
+    <string name="source_eccc_title">Environment Canada (MSC / ECCC)</string>
+    <string name="source_eccc_desc">Provides GEM (Global Environmental Multiscale) numerical weather forecast models, MSC CAP-CP severe weather warning feeds, and Canadian radar overlays under the Open Government Licence - Canada.</string>
+    <string name="source_open_meteo_title">Open-Meteo Weather &amp; Geocoding API</string>
+    <string name="source_open_meteo_desc">Open-source weather API providing high-resolution model integration, Air Quality Index (AQI), and geocoding services under the Attribution 4.0 International (CC BY 4.0) license.</string>
+    <string name="source_noaa_title">NOAA / National Weather Service</string>
+    <string name="source_noaa_desc">Provides GFS and GEFS global forecast models, as well as NOAA astronomical solar elevation algorithms in the public domain.</string>
+    <string name="source_ai_title">Generative AI Models (Qwen, Gemini &amp; Mistral)</string>
+    <string name="source_ai_desc">Generative AI analysis provided by Alibaba Cloud Qwen 2.5 72B, Google Gemini 1.5 Flash, and Mistral NeMo for natural language forecast synthesis.</string>
+    <string name="source_android_libraries_title">Android Open Source Libraries</string>
+    <string name="source_android_libraries_desc">Built using Android Jetpack, Google Material Design 3, Kotlin Coroutines, Square OkHttp, and AndroidX libraries licensed under the Apache 2.0 License.</string>
+
+    <string name="title_models">Models</string>
+    <string name="desc_models">Choose default forecast model for weather calculations.</string>
+    <string name="header_western_models">Western Models</string>
+    <string name="header_chinese_models">Chinese Models</string>
+    <string name="header_automatic_model_switching">Automatic Model Switching</string>
+    <string name="title_auto_switch_china">Auto-Switch for Chinese Cities</string>
+    <string name="desc_auto_switch_china">Automatically use CMA-GFS when viewing cities in China, and restore your default model for international cities.</string>
+
+    <string name="title_recent_locations">Recent Locations</string>
+    <string name="desc_recent_locations">Switch to a recent city or search a new location.</string>
+    <string name="btn_search_new_city">Search New City…</string>
+
+    <string name="title_choose_location">Choose Location</string>
+    <string name="desc_choose_location">Search for any city worldwide</string>
+    <string name="hint_search_city">Search city or town…</string>
+    <string name="empty_location_search">No locations found. Try another search term.</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="desc_system_screen">Configure system options, storage cache, and forecast sources.</string>
+    <string name="desc_system_behaviour">Unit system measurements and hardware volume key navigation.</string>
+    <string name="title_data_cache">Data Cache</string>
+    <string name="desc_data_cache">Configure in-memory forecast caching and API query optimization.</string>
+    <string name="title_default_location">Default Location</string>
+    <string name="desc_default_location">Select default city loaded on application startup.</string>
+    <string name="desc_location_tabs">Manage tab count, location order, and sticky header behavior.</string>
+    <string name="desc_notifications_card">Manage severe weather warning alerts and notification preferences.</string>
+    <string name="desc_models_card">Select global numerical weather prediction models and providers.</string>
+
+    <string name="desc_tabs_settings">Choose how many location window tabs are pinned above your weather forecast on the main page.</string>
+    <string name="title_sticky_location_tabs">Sticky Location Tabs (Default)</string>
+    <string name="desc_sticky_location_tabs">Keep location tabs fixed at the top of the main screen while scrolling through forecast details.</string>
+    <string name="title_number_of_location_tabs">Number of Location Tabs</string>
+
+    <string name="desc_theme_settings">Select your preferred application appearance.</string>
+    <string name="title_system_default_theme">System Default Theme</string>
+    <string name="desc_system_default_theme">Automatically follow your phone\'s system dark and light theme settings.</string>
+    <string name="header_standard_themes">Standard Themes</string>
+    <string name="header_boutique_themes">Boutique Themes</string>
+
+    <string name="label_moon_phase">Moon Phase</string>
+    <string name="label_total_daylight">Total Daylight</string>
+    <string name="label_sunrise_sunset">Sunrise &amp; Sunset</string>
+    <string name="label_wind_speed">Wind Speed</string>
+    <string name="label_sun_position">Sun Position</string>
+    <string name="label_moon_position">Moon Position</string>
+
+    <string name="label_feels_like">Feels Like</string>
+    <string name="label_humidity">Humidity</string>
+    <string name="label_dew_point">Dew Point</string>
+    <string name="label_precipitation">Precipitation</string>
+    <string name="label_cloud_cover">Cloud Cover</string>
+    <string name="label_visibility">Visibility</string>
+    <string name="label_uv_index">UV Index</string>
+    <string name="badge_default_location">DEFAULT</string>
+
+    <string name="source_eccc_protocol">Source: Environment and Climate Change Canada (ECCC / CAP-CP Protocol)</string>
+    <string name="label_sunlight_duration">Sunlight duration</string>
+    <string name="label_moon_phase_cycle">Moon Phase &amp; Cycle</string>
+
+    <string name="label_daily_high">Daily High</string>
+    <string name="label_daily_low">Daily Low</string>
+    <string name="label_high">High</string>
+    <string name="label_low">Low</string>
+    <string name="label_air_quality">Air Quality</string>
+    <string name="label_sunrise">Sunrise</string>
+    <string name="label_sunset">Sunset</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_back">Back</string>
+    <string name="cd_prev_day">Previous Day</string>
+    <string name="cd_next_day">Next Day</string>
+    <string name="cd_calendar">Calendar</string>
+    <string name="cd_open_settings">Open Settings</string>
+    <string name="cd_location_pin">Location Pin</string>
+    <string name="cd_arrow_right">Arrow Right</string>
+    <string name="cd_minus">Minus</string>
+    <string name="cd_plus">Plus</string>
+    <string name="cd_drag_handle">Drag Handle</string>
+    <string name="cd_dark_sky_icon">Dark Sky Icon</string>
+    <string name="cd_visibility_icon">Visibility Icon</string>
+    <string name="cd_active_check">Active Location Checkmark</string>
+    <string name="cd_settings_header">Settings Header</string>
+    <string name="cd_daily_high_icon">Daily High Icon</string>
+    <string name="cd_daily_low_icon">Daily Low Icon</string>
+    <string name="cd_dismiss_shimmer">Dismiss Shimmer Effect</string>
+    <string name="cd_dismiss_snow">Dismiss Snow Effect</string>
+    <string name="cd_sunrise_icon">Sunrise Icon</string>
+    <string name="cd_sunset_icon">Sunset Icon</string>
+    <string name="cd_daylight_icon">Daylight Icon</string>
+    <string name="cd_moon_icon">Moon Icon</string>
+    <string name="cd_location_icon">Location Icon</string>
 </resources>

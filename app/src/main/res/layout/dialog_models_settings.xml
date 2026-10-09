@@ -30,7 +30,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Models"
+                android:text="@string/title_models"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Choose default forecast model for weather calculations."
+                android:text="@string/desc_models"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Western Models"
+                android:text="@string/header_western_models"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="Chinese Models"
+                android:text="@string/header_chinese_models"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Automatic Model Switching"
+                android:text="@string/header_automatic_model_switching"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -144,7 +144,7 @@
                             android:id="@+id/tvAutoChinaTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Auto-Switch for Chinese Cities"
+                            android:text="@string/title_auto_switch_china"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -154,7 +154,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Automatically use CMA-GFS when viewing cities in China, and restore your default model when leaving."
+                            android:text="@string/desc_auto_switch_china"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 

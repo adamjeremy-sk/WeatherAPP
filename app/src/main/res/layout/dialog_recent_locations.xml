@@ -13,7 +13,7 @@
         android:id="@+id/tvRecentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recent Locations"
+        android:text="@string/title_recent_locations"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Switch to a recent city or search a new location."
+        android:text="@string/desc_recent_locations"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -54,7 +54,7 @@
         style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search New City..."
+        android:text="@string/btn_search_new_city"
         app:icon="@drawable/ic_location_pin" />
 
 </LinearLayout>

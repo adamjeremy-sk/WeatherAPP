@@ -150,7 +150,7 @@
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
                                 android:layout_marginEnd="6dp"
-                                android:contentDescription="Daily High Icon"
+                                android:contentDescription="@string/cd_daily_high_icon"
                                 android:src="@drawable/ic_temp_high"
                                 app:tint="@color/temp_high" />
 
@@ -158,7 +158,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="Daily High"
+                                android:text="@string/label_daily_high"
                                 android:textColor="@color/temp_high"
                                 android:textSize="14sp" />
 
@@ -168,7 +168,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="4dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                android:contentDescription="Dismiss Shimmer Effect"
+                                android:contentDescription="@string/cd_dismiss_shimmer"
                                 android:src="@android:drawable/ic_menu_close_clear_cancel"
                                 android:visibility="gone"
                                 app:tint="@color/temp_high" />
@@ -213,7 +213,7 @@
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
                                 android:layout_marginEnd="6dp"
-                                android:contentDescription="Daily Low Icon"
+                                android:contentDescription="@string/cd_daily_low_icon"
                                 android:src="@drawable/ic_temp_low"
                                 app:tint="@color/temp_low" />
 
@@ -221,7 +221,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="Daily Low"
+                                android:text="@string/label_daily_low"
                                 android:textColor="@color/temp_low"
                                 android:textSize="14sp" />
 
@@ -231,7 +231,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="4dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                android:contentDescription="Dismiss Snow Effect"
+                                android:contentDescription="@string/cd_dismiss_snow"
                                 android:src="@android:drawable/ic_menu_close_clear_cancel"
                                 android:visibility="gone"
                                 app:tint="@color/temp_low" />
@@ -289,7 +289,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="Wind Speed"
+                                android:text="@string/label_wind_speed"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -353,7 +353,7 @@
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
                                 android:maxLines="1"
-                                android:text="Air Quality"
+                                android:text="@string/label_air_quality"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -424,7 +424,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="UV Index"
+                                android:text="@string/label_uv_index"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -475,7 +475,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="Visibility"
+                                android:text="@string/label_visibility"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -526,7 +526,7 @@
                                 android:id="@+id/ivSunriseIcon"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:contentDescription="Sunrise Icon"
+                                android:contentDescription="@string/cd_sunrise_icon"
                                 android:src="@drawable/ic_sunrise"
                                 app:tint="@color/brand_primary" />
 
@@ -535,7 +535,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="Sunrise"
+                                android:text="@string/label_sunrise"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -586,7 +586,7 @@
                                 android:id="@+id/ivSunsetIcon"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:contentDescription="Sunset Icon"
+                                android:contentDescription="@string/cd_sunset_icon"
                                 android:src="@drawable/ic_sunset"
                                 app:tint="@color/brand_primary" />
 
@@ -595,7 +595,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="Sunset"
+                                android:text="@string/label_sunset"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -654,7 +654,7 @@
                                 android:id="@+id/ivDaylightIcon"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:contentDescription="Daylight Icon"
+                                android:contentDescription="@string/cd_daylight_icon"
                                 android:src="@drawable/ic_daylight"
                                 app:tint="@color/brand_primary" />
 
@@ -663,7 +663,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:gravity="center"
-                                android:text="Total Daylight"
+                                android:text="@string/label_total_daylight"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
 
@@ -685,7 +685,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:gravity="center"
-                            android:text="Sunlight duration"
+                            android:text="@string/label_sunlight_duration"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
@@ -719,7 +719,7 @@
                                     android:id="@+id/ivMoonIcon"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    android:contentDescription="Moon Icon"
+                                    android:contentDescription="@string/cd_moon_icon"
                                     android:src="@drawable/ic_moon"
                                     app:tint="@color/brand_primary" />
 
@@ -728,7 +728,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="6dp"
                                     android:gravity="center"
-                                    android:text="Moon Phase &amp; Cycle"
+                                    android:text="@string/label_moon_phase_cycle"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="12sp" />
 

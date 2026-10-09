@@ -24,7 +24,7 @@
             android:id="@+id/ivDragHandle"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="Drag Handle"
+            android:contentDescription="@string/cd_drag_handle"
             android:src="@drawable/ic_drag_indicator"
             app:tint="@color/brand_primary" />
 

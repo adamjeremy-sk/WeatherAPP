@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Select your preferred application appearance."
+                android:text="@string/desc_theme_settings"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -99,7 +99,7 @@
                             android:id="@+id/tvSystemDefaultTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="System Default Theme"
+                            android:text="@string/title_system_default_theme"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -109,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Automatically follow your phone's system dark and light theme settings."
+                            android:text="@string/desc_system_default_theme"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -137,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Standard Themes"
+                    android:text="@string/header_standard_themes"
                     android:textColor="@color/brand_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Boutique Themes"
+                    android:text="@string/header_boutique_themes"
                     android:textColor="@color/brand_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />

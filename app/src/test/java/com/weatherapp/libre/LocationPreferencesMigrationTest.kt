@@ -186,4 +186,20 @@ class LocationPreferencesMigrationTest {
         assertFalse(fakePrefs.contains("app_weather_alerts_enabled"))
         assertFalse(fakePrefs.contains("app_alert_consent_version"))
     }
+
+    @Test
+    fun testAlertConsentStatePreservedAcrossVersionUpdate() {
+        val fakePrefs = InMemorySharedPreferences()
+        fakePrefs.map["app_last_run_version_code"] = 1
+        fakePrefs.map["app_alert_consent_state"] = LocationPreferences.ALERT_CONSENT_OPT_IN
+
+        val prefs = createLocationPreferences(fakePrefs)
+        assertEquals(LocationPreferences.ALERT_CONSENT_OPT_IN, prefs.getAlertConsentState())
+
+        val repo = WeatherRepository()
+
+        prefs.checkAndPerformVersionMigration(currentVersionCode = 2, repository = repo)
+
+        assertEquals(LocationPreferences.ALERT_CONSENT_OPT_IN, prefs.getAlertConsentState())
+    }
 }

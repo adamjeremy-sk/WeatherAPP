@@ -30,7 +30,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Location Tabs"
+                android:text="@string/title_seven_day_placement"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Choose how many location window tabs are pinned above your weather forecast on the main screen."
+                android:text="@string/desc_tabs_settings"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -98,7 +98,7 @@
                             android:id="@+id/tvStickyTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sticky Location Tabs (Default)"
+                            android:text="@string/title_sticky_location_tabs"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -108,7 +108,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Keep location tabs fixed at the top of the main screen while scrolling through forecast details."
+                            android:text="@string/desc_sticky_location_tabs"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Number of Location Tabs"
+                android:text="@string/title_number_of_location_tabs"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />

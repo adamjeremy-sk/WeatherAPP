@@ -53,6 +53,7 @@ class ThemeManager(
             binding.tvInfoTitle,
             binding.tvDonateTitle,
             binding.tvRateTitle,
+            binding.tvUserManualTitle,
             binding.tvShareTitle
         )
         val drawerSnippets = listOf(
@@ -61,6 +62,7 @@ class ThemeManager(
             binding.tvInfoSnippet,
             binding.tvDonateSnippet,
             binding.tvRateSnippet,
+            binding.tvUserManualSnippet,
             binding.tvShareSnippet
         )
 

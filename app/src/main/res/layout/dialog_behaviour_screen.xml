@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Configure application units and gesture control behaviour."
+                android:text="@string/desc_behaviour"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -122,7 +122,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:contentDescription="Arrow Right"
+                        android:contentDescription="@string/cd_arrow_right"
                         android:src="@drawable/ic_arrow_right"
                         app:tint="@color/text_secondary" />
 
@@ -160,7 +160,7 @@
                             android:id="@+id/tvUnitsTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Units"
+                            android:text="@string/label_units"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -170,7 +170,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Metric (°C, km/h, km)"
+                            android:text="@string/label_unit_metric_full"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -181,7 +181,7 @@
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Metric"
+                        android:text="@string/label_unit_metric"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -223,7 +223,7 @@
                                 android:id="@+id/tvVolumeScrollTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Volume Key Date Cycling"
+                                android:text="@string/title_volume_key_date_cycling"
                                 android:textColor="@color/text_primary"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -233,7 +233,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Use hardware volume keys to rapidly cycle dates in Golden Hour."
+                                android:text="@string/desc_volume_key_date_cycling"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="13sp" />
 

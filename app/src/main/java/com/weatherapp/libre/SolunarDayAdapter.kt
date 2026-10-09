@@ -56,13 +56,14 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
             binding.tvSolunarPhase.text = "${item.phaseName} • $illumPct% ill."
             binding.tvSolunarRatingLabel.text = "${item.rating} • ${item.ratingLabel}"
 
-            val riseStr = item.moonrise?.atZone(zoneId)?.format(timeFmt) ?: "No Rise"
-            val setStr = item.moonset?.atZone(zoneId)?.format(timeFmt) ?: "No Set"
-            binding.tvSolunarMoonRiseSet.text = "Moonrise: $riseStr • Moonset: $setStr"
+            val context = binding.root.context
+            val riseStr = item.moonrise?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_no_rise)
+            val setStr = item.moonset?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_no_set)
+            binding.tvSolunarMoonRiseSet.text = context.getString(R.string.solunar_moonrise_moonset, riseStr, setStr)
 
-            val transitStr = item.transit?.atZone(zoneId)?.format(timeFmt) ?: "——"
-            val nadirStr = item.nadir?.atZone(zoneId)?.format(timeFmt) ?: "——"
-            binding.tvSolunarTransitNadir.text = "Transit: $transitStr • Nadir: $nadirStr"
+            val transitStr = item.transit?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_unavailable)
+            val nadirStr = item.nadir?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_unavailable)
+            binding.tvSolunarTransitNadir.text = context.getString(R.string.solunar_transit_nadir, transitStr, nadirStr)
 
             // Format Major Periods
             val majorListStr = if (item.majorPeriods.isNotEmpty()) {
@@ -72,7 +73,7 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
                     "$s – $e (${p.centerEvent})"
                 }
             } else "None"
-            binding.tvSolunarMajorPeriods.text = "Major: $majorListStr"
+            binding.tvSolunarMajorPeriods.text = context.getString(R.string.solunar_major_periods, majorListStr)
 
             // Format Minor Periods
             val minorListStr = if (item.minorPeriods.isNotEmpty()) {
@@ -82,7 +83,7 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
                     "$s – $e (${p.centerEvent})"
                 }
             } else "None"
-            binding.tvSolunarMinorPeriods.text = "Minor: $minorListStr"
+            binding.tvSolunarMinorPeriods.text = context.getString(R.string.solunar_minor_periods, minorListStr)
 
             val p = palette
             if (p != null) {

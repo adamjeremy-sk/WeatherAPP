@@ -163,7 +163,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Feels Like"
+                        android:text="@string/label_feels_like"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -189,7 +189,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wind Speed"
+                        android:text="@string/label_wind_speed"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -225,7 +225,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Humidity"
+                        android:text="@string/label_humidity"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -251,7 +251,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dew Point"
+                        android:text="@string/label_dew_point"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -287,7 +287,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Precipitation"
+                        android:text="@string/label_precipitation"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -313,7 +313,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cloud Cover"
+                        android:text="@string/label_cloud_cover"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -349,7 +349,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Visibility"
+                        android:text="@string/label_visibility"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
@@ -375,7 +375,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="UV Index"
+                        android:text="@string/label_uv_index"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 

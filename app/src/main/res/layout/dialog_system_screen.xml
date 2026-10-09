@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Configure system options, storage cache, and forecast sources."
+                android:text="@string/desc_system_screen"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -111,7 +111,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Unit system measurements and hardware volume key navigation."
+                            android:text="@string/desc_system_behaviour"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -151,7 +151,7 @@
                             android:id="@+id/tvDataCacheTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Data Cache"
+                            android:text="@string/title_data_cache"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -161,7 +161,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Configure in-memory forecast caching and API query optimization."
+                            android:text="@string/desc_data_cache"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -201,7 +201,7 @@
                             android:id="@+id/tvDefaultLocationTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Default Location"
+                            android:text="@string/title_default_location"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -211,7 +211,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Select default city loaded on application startup."
+                            android:text="@string/desc_default_location"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -251,7 +251,7 @@
                             android:id="@+id/tvLocationTabsTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Location Tabs"
+                            android:text="@string/title_seven_day_placement"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -261,7 +261,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Manage tab count, location order, and sticky header behavior."
+                            android:text="@string/desc_location_tabs"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -301,7 +301,7 @@
                             android:id="@+id/tvNotificationsTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Notifications"
+                            android:text="@string/title_notifications"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -311,7 +311,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Manage severe weather warning alerts and notification preferences."
+                            android:text="@string/desc_notifications_card"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -361,7 +361,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Select global numerical weather prediction models and providers."
+                            android:text="@string/desc_models_card"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 

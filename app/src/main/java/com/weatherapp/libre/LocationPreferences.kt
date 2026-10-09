@@ -720,11 +720,10 @@ class LocationPreferences(context: Context) {
             if (k.startsWith("disk_cache_") ||
                 k.startsWith("web_page_") ||
                 k.startsWith("app_active_alert_") ||
-                k.startsWith("app_alert_") ||
+                (k.startsWith("app_alert_") && k != KEY_ALERT_CONSENT_STATE) ||
                 k.startsWith("app_alert_dismissed_") ||
                 k.startsWith("log_") ||
                 k.startsWith("temp_") ||
-                k == KEY_ALERT_CONSENT_STATE ||
                 k == "pending_reopen_theme_settings" ||
                 k == "last_fetch_timestamp" ||
                 k == "last_weather_refresh_time"

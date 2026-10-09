@@ -160,7 +160,7 @@ class AstronomyDisplayManager(
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.HOURLY -> {
-                btnMenu?.text = "Hourly Forecast ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_hourly_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_weather)
                 hourlyDisplayManager?.rebuildHourlyList()
             }
@@ -169,22 +169,22 @@ class AstronomyDisplayManager(
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.NATURAL_LIGHT -> {
-                btnMenu?.text = "Natural Light ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_natural_light_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_golden_hour)
                 updateInlineGoldenHourDisplay(location)
             }
             InlineSubTab.DARK_SKY -> {
-                btnMenu?.text = "True Dark Sky ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_dark_sky_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_new)
                 updateDarkSkyDisplay(location)
             }
             InlineSubTab.NIGHT_VISIBILITY -> {
-                btnMenu?.text = "Night Visibility ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_night_vis_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_visibility)
                 updateNightVisDisplay(location, currentHourlyCloudCoverMap)
             }
             InlineSubTab.SOLUNAR -> {
-                btnMenu?.text = "Solunar Activity ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_solunar_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_full)
                 updateSolunarDisplay(location)
             }
@@ -208,7 +208,7 @@ class AstronomyDisplayManager(
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.HOURLY -> {
-                btnMenu?.text = "Hourly Forecast ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_hourly_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.SEVEN_DAY -> {
@@ -216,19 +216,19 @@ class AstronomyDisplayManager(
                 btnMenu?.setIconResource(R.drawable.ic_weather)
             }
             InlineSubTab.NATURAL_LIGHT -> {
-                btnMenu?.text = "Natural Light ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_natural_light_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_golden_hour)
             }
             InlineSubTab.DARK_SKY -> {
-                btnMenu?.text = "True Dark Sky ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_dark_sky_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_new)
             }
             InlineSubTab.NIGHT_VISIBILITY -> {
-                btnMenu?.text = "Night Visibility ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_night_vis_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_visibility)
             }
             InlineSubTab.SOLUNAR -> {
-                btnMenu?.text = "Solunar Activity ▾"
+                btnMenu?.text = activity.getString(R.string.subtab_solunar_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_full)
             }
         }
@@ -380,7 +380,7 @@ class AstronomyDisplayManager(
         val startInstant = item.startInstant
 
         if (startInstant == null) {
-            Toast.makeText(activity.applicationContext, "Cannot set alarm for continuous event", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_continuous_event_alarm_error), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -394,9 +394,9 @@ class AstronomyDisplayManager(
         val phaseFormatted = phaseZdt.format(formatter)
 
         MaterialAlertDialogBuilder(activity)
-            .setTitle("Set Solar Alarm")
-            .setMessage("Set a system alarm for $leadMins minutes before ${item.name} ($phaseFormatted)?\n\nAlarm time: $alarmFormatted")
-            .setPositiveButton("Set Alarm") { dialog, _ ->
+            .setTitle(activity.getString(R.string.title_set_solar_alarm))
+            .setMessage(activity.getString(R.string.msg_set_solar_alarm, leadMins, item.name, phaseFormatted, alarmFormatted))
+            .setPositiveButton(activity.getString(R.string.btn_set_alarm)) { dialog, _ ->
                 try {
                     val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
                         putExtra(AlarmClock.EXTRA_HOUR, alarmZdt.hour)
@@ -406,11 +406,11 @@ class AstronomyDisplayManager(
                     }
                     activity.startActivity(intent)
                 } catch (e: Exception) {
-                    Toast.makeText(activity.applicationContext, "Alarm set for $alarmFormatted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_alarm_set, alarmFormatted), Toast.LENGTH_SHORT).show()
                 }
                 dialog.dismiss()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

@@ -30,7 +30,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Licenses &amp; Data Sources"
+                android:text="@string/title_licenses_data_sources"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="Data providers, open-source libraries, and APIs utilized by this application:"
+                android:text="@string/desc_licenses_data_sources"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -89,7 +89,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Environment Canada (MSC / ECCC)"
+                        android:text="@string/source_eccc_title"
                         android:textColor="@color/brand_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -98,7 +98,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Provides GEM (Global Environmental Multiscale) numerical weather forecast models, MSC GeoMet data feeds, and official CAP-CP Common Alerting Protocol severe weather advisories."
+                        android:text="@string/source_eccc_desc"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -127,7 +127,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Open-Meteo Weather &amp; Geocoding API"
+                        android:text="@string/source_open_meteo_title"
                         android:textColor="@color/brand_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Open-source weather API providing high-resolution model integration, Air Quality Index (US AQI) data, and city geocoding search under the Creative Commons Attribution 4.0 International (CC BY 4.0) License."
+                        android:text="@string/source_open_meteo_desc"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -165,7 +165,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="NOAA / National Weather Service"
+                        android:text="@string/source_noaa_title"
                         android:textColor="@color/brand_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -174,7 +174,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Provides GFS and GEFS global forecast models, as well as NOAA astronomical solar elevation, golden hour, and twilight calculation formulas."
+                        android:text="@string/source_noaa_desc"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -203,7 +203,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Generative AI Models (Qwen, Gemini &amp; Mistral)"
+                        android:text="@string/source_ai_title"
                         android:textColor="@color/brand_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -212,7 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Generative AI analysis provided by Alibaba Cloud Qwen 2.5 72B, Google Gemini 1.5 Flash, and Mistral AI 7B open-weights models."
+                        android:text="@string/source_ai_desc"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -241,7 +241,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Android Open Source Libraries"
+                        android:text="@string/source_android_libraries_title"
                         android:textColor="@color/brand_primary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -250,7 +250,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Built using Android Jetpack, Google Material Design 3, Kotlin Coroutines, Square OkHttp, and Google Gson under the Apache License 2.0."
+                        android:text="@string/source_android_libraries_desc"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 

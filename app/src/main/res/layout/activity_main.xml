@@ -53,7 +53,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Open Settings"
+                        android:contentDescription="@string/cd_open_settings"
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_menu"
@@ -82,7 +82,7 @@
                             android:id="@+id/ivPin"
                             android:layout_width="26dp"
                             android:layout_height="26dp"
-                            android:contentDescription="Location Pin"
+                            android:contentDescription="@string/cd_location_pin"
                             android:src="@drawable/ic_location_pin"
                             app:tint="@color/brand_primary" />
 
@@ -120,7 +120,7 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:paddingVertical="1dp"
-                                android:text="Weather data provided by Open-Meteo.com"
+                                android:text="@string/accreditation_open_meteo"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
 
@@ -343,7 +343,7 @@
                             android:layout_marginHorizontal="20dp"
                             android:layout_marginTop="24dp"
                             android:layout_marginBottom="8dp"
-                            android:text="7-Day Forecast"
+                            android:text="@string/title_seven_day_forecast"
                             android:textColor="@color/text_primary"
                             android:textSize="17sp"
                             android:textStyle="bold" />
@@ -411,7 +411,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Retry" />
+                    android:text="@string/btn_retry" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDismissError"
@@ -419,7 +419,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Dismiss" />
+                    android:text="@string/btn_dismiss" />
 
             </LinearLayout>
 
@@ -582,7 +582,7 @@
                     android:id="@+id/tvDonateTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Donate"
+                    android:text="@string/title_donate"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -614,7 +614,7 @@
                     android:id="@+id/tvRateTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rate &amp; Review"
+                    android:text="@string/title_rate_review"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -630,7 +630,39 @@
 
             </LinearLayout>
 
-            <!-- Divider 3: Between Rate & Review and Share This Project -->
+            <!-- Row: User Manual -->
+            <LinearLayout
+                android:id="@+id/rowUserManual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="14dp">
+
+                <TextView
+                    android:id="@+id/tvUserManualTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_user_manual"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvUserManualSnippet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/snippet_user_manual"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <!-- Divider 3: Between User Manual and Share This Project -->
             <View
                 android:id="@+id/drawerDivider3"
                 android:layout_width="match_parent"

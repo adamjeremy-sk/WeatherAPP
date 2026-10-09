@@ -435,6 +435,10 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             openUrl("https://play.google.com/store/apps/details?id=$packageName")
         }
+        binding.rowUserManual.setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            openUrl(UrlConfig.URL_USER_MANUAL)
+        }
         binding.rowShare.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             settingsDialogManager.shareProject()
@@ -447,7 +451,7 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(applicationContext, "Could not open link", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, getString(R.string.toast_could_not_open_link), Toast.LENGTH_SHORT).show()
         }
     }
 

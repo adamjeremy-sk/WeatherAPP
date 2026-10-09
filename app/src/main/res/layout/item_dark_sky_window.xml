@@ -40,7 +40,7 @@
                 android:id="@+id/ivWindowIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:contentDescription="Dark Sky Icon"
+                android:contentDescription="@string/cd_dark_sky_icon"
                 android:src="@drawable/ic_moon_new"
                 app:tint="@color/brand_primary" />
 

@@ -25,7 +25,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginEnd="12dp"
-            android:contentDescription="Location Icon"
+            android:contentDescription="@string/cd_location_icon"
             android:src="@drawable/ic_location_pin"
             app:tint="@color/text_secondary" />
 
@@ -57,7 +57,7 @@
                     android:background="@color/surface_card"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="DEFAULT"
+                    android:text="@string/badge_default"
                     android:textColor="@color/brand_primary"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -81,7 +81,7 @@
             android:id="@+id/ivActiveCheck"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="Active Location Checkmark"
+            android:contentDescription="@string/cd_active_check"
             android:src="@drawable/ic_location_pin"
             android:visibility="gone"
             app:tint="@color/brand_primary"

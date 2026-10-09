@@ -304,7 +304,7 @@ class SettingsDialogManager(
             if (activity is MainActivity) {
                 activity.updateStickyTabsPosition()
             }
-            val msg = if (checked) "Location tabs pinned as sticky" else "Location tabs set to scroll with page"
+            val msg = if (checked) activity.getString(R.string.toast_sticky_tabs_pinned) else activity.getString(R.string.toast_sticky_tabs_scroll)
             Toast.makeText(activity.applicationContext, msg, Toast.LENGTH_SHORT).show()
         }
 
@@ -313,10 +313,10 @@ class SettingsDialogManager(
 
         val density = activity.resources.displayMetrics.density
         val tabOptions = listOf(
-            1 to ("1 Location Tab" to "Displays a single location tab on the main page."),
-            2 to ("2 Location Tabs (Default)" to "Pins two location tabs side-by-side."),
-            3 to ("3 Location Tabs" to "Pins three location tabs for multi-city switching."),
-            4 to ("4 Location Tabs" to "Pins four location tabs for multi-city monitoring.")
+            1 to (activity.getString(R.string.option_1_tab_title) to activity.getString(R.string.option_1_tab_desc)),
+            2 to (activity.getString(R.string.option_2_tabs_title) to activity.getString(R.string.option_2_tabs_desc)),
+            3 to (activity.getString(R.string.option_3_tabs_title) to activity.getString(R.string.option_3_tabs_desc)),
+            4 to (activity.getString(R.string.option_4_tabs_title) to activity.getString(R.string.option_4_tabs_desc))
         )
 
         for ((count, info) in tabOptions) {
@@ -382,7 +382,7 @@ class SettingsDialogManager(
                 if (activity is MainActivity) {
                     activity.setupLocationTabs()
                 }
-                Toast.makeText(activity.applicationContext, "Tab count updated to $count", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_tab_count_updated, count), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showLocationTabsSettingsScreen()
             }
@@ -501,7 +501,7 @@ class SettingsDialogManager(
             card.setOnClickListener {
                 locationPreferences.saveForecastModel(model)
                 weatherDisplayManager.loadWeather(forceRefresh = true)
-                Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.displayName), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showModelsSettingsScreen(weatherDisplayManager)
             }
@@ -573,7 +573,7 @@ class SettingsDialogManager(
             card.setOnClickListener {
                 locationPreferences.saveForecastModel(model)
                 weatherDisplayManager.loadWeather(forceRefresh = true)
-                Toast.makeText(activity.applicationContext, "Model set to ${model.displayName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.displayName), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showModelsSettingsScreen(weatherDisplayManager)
             }
@@ -648,7 +648,7 @@ class SettingsDialogManager(
         dialogBinding.cardTestAlert.alpha = 1.0f
         dialogBinding.cardTestAlert.isEnabled = true
         dialogBinding.btnSendTestAlert.isEnabled = true
-        dialogBinding.btnSendTestAlert.text = "Send Test Weather Alert"
+        dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
         dialogBinding.btnSendTestAlert.setOnClickListener { v ->
             val popup = PopupMenu(activity, v)
             val fixtures = AlertTestHarness.TestFixture.values()
@@ -679,9 +679,9 @@ class SettingsDialogManager(
                     if (activity is MainActivity) {
                         activity.alertBannerManager.updateAlertBanner(currentLoc)
                     }
-                    Toast.makeText(activity.applicationContext, "Injected & Dispatched: ${selectedFixture.displayName}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(activity.applicationContext, "Failed to inject ${selectedFixture.displayName}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
                 }
                 true
             }
@@ -867,7 +867,7 @@ class SettingsDialogManager(
 
             card.setOnClickListener {
                 locationPreferences.saveCacheTtlMinutes(mins)
-                Toast.makeText(activity.applicationContext, "Cache TTL set to ${info.first}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_cache_ttl_set, info.first), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showCacheSettingsScreen()
             }
@@ -1114,28 +1114,36 @@ class SettingsDialogManager(
     }
 
     fun showLicensesSettingsScreen() {
-        showWebViewSettingsPage("Licenses & Sources", "https://www.weatherapplibre.ca/licenses.html")
+        showWebViewSettingsPage("Licenses & Sources", UrlConfig.URL_LICENSES)
     }
 
     fun showPrivacySettingsScreen() {
-        showWebViewSettingsPage("Privacy Policy", "https://www.weatherapplibre.ca/privacypolicy.html")
+        showWebViewSettingsPage("Privacy Policy", UrlConfig.URL_PRIVACY)
     }
 
     fun showAboutSettingsScreen() {
-        showWebViewSettingsPage(activity.getString(R.string.about_page_title, BuildConfig.VERSION_NAME), "https://www.weatherapplibre.ca/about.html")
+        showWebViewSettingsPage(activity.getString(R.string.about_page_title, BuildConfig.VERSION_NAME), UrlConfig.URL_ABOUT)
     }
 
     fun showDonateSettingsScreen() {
-        showWebViewSettingsPage("Donate", "https://ko-fi.com/adamjeremy")
+        showWebViewSettingsPage("Donate", UrlConfig.URL_KOFI)
     }
 
     fun showRoadmapSettingsScreen() {
-        showWebViewSettingsPage("WeatherAPP Roadmap", "https://www.weatherapplibre.ca/roadmap.html")
+        showWebViewSettingsPage("WeatherAPP Roadmap", UrlConfig.URL_ROADMAP)
+    }
+
+    fun showChangelogSettingsScreen() {
+        showWebViewSettingsPage("Changelog", UrlConfig.URL_CHANGELOG)
+    }
+
+    fun showUserManualSettingsScreen() {
+        showWebViewSettingsPage("User Manual", UrlConfig.URL_USER_MANUAL)
     }
 
     fun showDefaultLocationSettingsScreen(locationDialogManager: LocationDialogManager) {
         locationDialogManager.showRecentLocationsDialog(isSettingDefaultLocation = true) {
-            Toast.makeText(activity.applicationContext, "Default startup location updated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_default_location_updated), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -1247,12 +1255,12 @@ class SettingsDialogManager(
 
         val currentSpeedIndex = locationPreferences.getVolumeScrollSpeedIndex()
         dialogBinding.seekBarVolumeSpeed.progress = currentSpeedIndex
-        dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(currentSpeedIndex)}"
+        dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(currentSpeedIndex))
         dialogBinding.tvVolumeSpeedLabel.setTextColor(palette.textPrimary)
 
         dialogBinding.seekBarVolumeSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                dialogBinding.tvVolumeSpeedLabel.text = "Cycling Speed: ${locationPreferences.getVolumeScrollSpeedLabel(progress)}"
+                dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(progress))
                 if (fromUser) {
                     locationPreferences.saveVolumeScrollSpeedIndex(progress)
                 }
@@ -1282,7 +1290,7 @@ class SettingsDialogManager(
                 activity.weatherDisplayManager.loadWeather(forceRefresh = true)
             }
 
-            Toast.makeText(activity.applicationContext, "Units updated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_units_updated), Toast.LENGTH_SHORT).show()
         }
 
         // Menu Organization Card
@@ -1458,7 +1466,7 @@ class SettingsDialogManager(
                 activity.astronomyManager.updateSevenDayForecastVisibility()
             }
 
-            Toast.makeText(activity.applicationContext, "Reset to default settings", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_reset_default_settings), Toast.LENGTH_SHORT).show()
             dialog.dismiss()
             showMenuOrganizationScreen()
         }
@@ -1524,7 +1532,9 @@ class SettingsDialogManager(
             dialogBinding.cardAbout to (dialogBinding.tvAboutTitle to dialogBinding.tvAboutDesc),
             dialogBinding.cardLicenses to (dialogBinding.tvLicensesTitle to dialogBinding.tvLicensesDesc),
             dialogBinding.cardPrivacy to (dialogBinding.tvPrivacyTitle to dialogBinding.tvPrivacyDesc),
-            dialogBinding.cardRoadmap to (dialogBinding.tvRoadmapTitle to dialogBinding.tvRoadmapDesc)
+            dialogBinding.cardRoadmap to (dialogBinding.tvRoadmapTitle to dialogBinding.tvRoadmapDesc),
+            dialogBinding.cardChangelog to (dialogBinding.tvChangelogTitle to dialogBinding.tvChangelogDesc),
+            dialogBinding.cardUserManual to (dialogBinding.tvUserManualTitle to dialogBinding.tvUserManualDesc)
         )
 
         for ((card, textPair) in cards) {
@@ -1538,6 +1548,8 @@ class SettingsDialogManager(
         dialogBinding.cardLicenses.setOnClickListener { showLicensesSettingsScreen() }
         dialogBinding.cardPrivacy.setOnClickListener { showPrivacySettingsScreen() }
         dialogBinding.cardRoadmap.setOnClickListener { showRoadmapSettingsScreen() }
+        dialogBinding.cardChangelog.setOnClickListener { showChangelogSettingsScreen() }
+        dialogBinding.cardUserManual.setOnClickListener { showUserManualSettingsScreen() }
 
         trackDialog(dialog)
         dialog.show()
@@ -1554,6 +1566,6 @@ class SettingsDialogManager(
     }
 
     companion object {
-        const val BETA_SUPPORT_URL = "https://www.weatherapplibre.ca/support.html"
+        const val BETA_SUPPORT_URL = UrlConfig.URL_SUPPORT
     }
 }

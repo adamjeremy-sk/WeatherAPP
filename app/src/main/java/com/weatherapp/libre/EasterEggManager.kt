@@ -49,7 +49,7 @@ class EasterEggManager(
         stopShimmerEffect()
         binding.snowflakeOverlay.startSnowing()
         binding.root.findViewById<android.view.View>(R.id.btnDismissLowEffect)?.visibility = View.VISIBLE
-        Toast.makeText(activity.applicationContext, "❄️ Snowfall Effect Activated!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_snowfall_activated), Toast.LENGTH_SHORT).show()
     }
 
     fun stopSnowEffect() {
@@ -61,7 +61,7 @@ class EasterEggManager(
         stopSnowEffect()
         binding.heatShimmerOverlay.startHeatShimmer()
         binding.root.findViewById<android.view.View>(R.id.btnDismissHighEffect)?.visibility = View.VISIBLE
-        Toast.makeText(activity.applicationContext, "🔥 Extreme Heat Mirage Shimmer Activated!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_heat_shimmer_activated), Toast.LENGTH_SHORT).show()
     }
 
     fun stopShimmerEffect() {

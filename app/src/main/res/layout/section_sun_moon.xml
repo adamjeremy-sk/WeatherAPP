@@ -30,7 +30,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="Sunrise Icon"
+                    android:contentDescription="@string/cd_sunrise_icon"
                     android:src="@drawable/ic_sunrise"
                     app:tint="@color/brand_primary" />
 
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:gravity="center"
-                    android:text="Sunrise"
+                    android:text="@string/label_sunrise"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -88,7 +88,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="Sunset Icon"
+                    android:contentDescription="@string/cd_sunset_icon"
                     android:src="@drawable/ic_sunset"
                     app:tint="@color/brand_primary" />
 
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:gravity="center"
-                    android:text="Sunset"
+                    android:text="@string/label_sunset"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -155,7 +155,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="Daylight Icon"
+                    android:contentDescription="@string/cd_daylight_icon"
                     android:src="@drawable/ic_daylight"
                     app:tint="@color/brand_primary" />
 
@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:gravity="center"
-                    android:text="Total Daylight"
+                    android:text="@string/label_total_daylight"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="Sunlight duration"
+                android:text="@string/label_sunlight_duration"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -218,7 +218,7 @@
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:contentDescription="Moon Icon"
+                        android:contentDescription="@string/cd_moon_icon"
                         android:src="@drawable/ic_moon"
                         app:tint="@color/brand_primary" />
 
@@ -227,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:gravity="center"
-                        android:text="Moon Phase &amp; Cycle"
+                        android:text="@string/label_moon_phase_cycle"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 

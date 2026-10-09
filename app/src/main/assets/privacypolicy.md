@@ -82,4 +82,4 @@ We reserve the right to amend this Privacy Policy at any time. Any material revi
 
 For questions, support, or feature requests regarding this Privacy Policy, please contact us at:
 
-**Email:** longdongsilver69421@gmail.com
+**Email:** support@weatherapplibre.ca

@@ -14,7 +14,7 @@
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="16dp"
-        android:contentDescription="Location Pin"
+        android:contentDescription="@string/cd_location_pin"
         android:src="@drawable/ic_location_pin" />
 
     <LinearLayout

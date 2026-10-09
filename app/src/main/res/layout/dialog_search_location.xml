@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Location"
+        android:text="@string/title_choose_location"
         android:textColor="@color/text_primary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Search for any city worldwide"
+        android:text="@string/desc_choose_location"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
@@ -36,7 +36,7 @@
             android:id="@+id/etSearchLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search city or town..."
+            android:hint="@string/hint_search_city"
             android:imeOptions="actionSearch"
             android:inputType="textCapWords"
             android:maxLines="1" />
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="24dp"
         android:gravity="center"
-        android:text="No locations found. Try another search term."
+        android:text="@string/empty_location_search"
         android:textColor="@color/text_tertiary"
         android:visibility="gone" />
 
@@ -75,6 +75,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:text="Cancel" />
+        android:text="@string/btn_cancel" />
 
 </LinearLayout>

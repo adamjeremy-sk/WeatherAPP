@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -48,7 +48,7 @@
                     android:id="@+id/tvGoldenHourTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Golden Hour"
+                    android:text="@string/title_golden_hour"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -99,7 +99,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Previous Day"
+                    android:contentDescription="@string/cd_prev_day"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_arrow_left"
@@ -131,7 +131,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:layout_marginStart="8dp"
-                        android:contentDescription="Calendar"
+                        android:contentDescription="@string/cd_calendar"
                         android:src="@drawable/ic_calendar"
                         app:tint="@color/brand_primary" />
 
@@ -142,7 +142,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Next Day"
+                    android:contentDescription="@string/cd_next_day"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_arrow_right"
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
-                android:text="Tip: Use Volume Up / Down buttons to cycle days (hold to rapid cycle)"
+                android:text="@string/tip_volume_key_date_cycle"
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp" />
 

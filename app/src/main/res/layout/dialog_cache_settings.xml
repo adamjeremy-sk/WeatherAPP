@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/cd_back"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back"
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Data Cache Settings"
+                android:text="@string/title_cache_settings"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Configure in-memory forecast caching and API query optimization."
+                android:text="@string/desc_cache_settings"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp" />
 
@@ -141,7 +141,7 @@
                             android:id="@+id/tvCacheSwitchTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Enable Forecast Data Cache (TTL)"
+                            android:text="@string/title_enable_cache_ttl"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -151,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Reuses recent forecast data when switching back to previously viewed cities."
+                            android:text="@string/desc_enable_cache_ttl"
                             android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
 
@@ -174,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="Cache TTL Duration (Time-To-Live)"
+                android:text="@string/title_cache_ttl_duration"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -214,7 +214,7 @@
                         android:id="@+id/tvTtlReasoningHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Why TTL Caching is Used"
+                        android:text="@string/title_why_ttl_caching"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -224,7 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Time-To-Live (TTL) caching temporarily preserves weather responses in memory. When you change locations and return to a recently viewed city within the TTL window, the app loads data instantly from memory. Key benefits include zero loading delay, reduced battery consumption, and minimized mobile data usage."
+                        android:text="@string/desc_why_ttl_caching"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -253,7 +253,7 @@
                         android:id="@+id/tvRateLimitingHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⚠️ API Rate Limiting &amp; 503 Warning"
+                        android:text="@string/title_api_rate_limiting_warning"
                         android:textColor="@color/temp_high"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -263,7 +263,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Disabling the cache or setting a very short TTL duration causes fresh network requests on every city switch. Querying weather servers too frequently can lead to HTTP 503 Service Unavailable errors, API rate limiting, or temporary IP throttling by weather data providers."
+                        android:text="@string/desc_api_rate_limiting_warning"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 

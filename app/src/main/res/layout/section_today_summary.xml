@@ -118,7 +118,7 @@
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:gravity="center"
-                                                    android:text="Daily High"
+                                                    android:text="@string/label_daily_high"
                                                     android:textColor="@color/temp_high"
                                                     android:textSize="12sp" />
 
@@ -128,7 +128,7 @@
                                                     android:layout_height="20dp"
                                                     android:layout_marginStart="4dp"
                                                     android:background="?attr/selectableItemBackgroundBorderless"
-                                                    android:contentDescription="Dismiss Shimmer Effect"
+                                                    android:contentDescription="@string/cd_dismiss_shimmer"
                                                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                                                     android:visibility="gone"
                                                     app:tint="@color/temp_high" />
@@ -171,7 +171,7 @@
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:gravity="center"
-                                                    android:text="Daily Low"
+                                                    android:text="@string/label_daily_low"
                                                     android:textColor="@color/temp_low"
                                                     android:textSize="12sp" />
 
@@ -181,7 +181,7 @@
                                                     android:layout_height="20dp"
                                                     android:layout_marginStart="4dp"
                                                     android:background="?attr/selectableItemBackgroundBorderless"
-                                                    android:contentDescription="Dismiss Snow Effect"
+                                                    android:contentDescription="@string/cd_dismiss_snow"
                                                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                                                     android:visibility="gone"
                                                     app:tint="@color/temp_low" />

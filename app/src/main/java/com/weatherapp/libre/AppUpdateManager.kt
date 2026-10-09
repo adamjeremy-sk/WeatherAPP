@@ -16,7 +16,7 @@ class AppUpdateManager(
 
     fun checkPlayStoreUpdate(silent: Boolean = true) {
         if (!silent) {
-            Toast.makeText(activity.applicationContext, "Checking for WeatherAPP updates...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, R.string.toast_checking_updates, Toast.LENGTH_SHORT).show()
         }
 
         try {
@@ -53,13 +53,13 @@ class AppUpdateManager(
         }
 
         MaterialAlertDialogBuilder(activity)
-            .setTitle("Update Notification")
-            .setMessage("A new version of WeatherAPP is available on the Google Play Store.\n\nYour current version: v$currentVersion\n\nWould you like to open the Play Store and update WeatherAPP?")
-            .setPositiveButton("Update Now") { dialog, _ ->
+            .setTitle(activity.getString(R.string.title_update_notification))
+            .setMessage(activity.getString(R.string.msg_update_available, currentVersion, "0.4.2"))
+            .setPositiveButton(activity.getString(R.string.btn_update_now)) { dialog, _ ->
                 openPlayStorePage()
                 dialog.dismiss()
             }
-            .setNegativeButton("Not Now") { dialog, _ ->
+            .setNegativeButton(activity.getString(R.string.btn_not_now)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -75,9 +75,9 @@ class AppUpdateManager(
         }
 
         MaterialAlertDialogBuilder(activity)
-            .setTitle("WeatherAPP is Up to Date")
-            .setMessage("You are running the latest version of WeatherAPP (v$currentVersion).\n\nNo new updates are available at this time.")
-            .setPositiveButton("OK") { dialog, _ ->
+            .setTitle(activity.getString(R.string.title_app_up_to_date))
+            .setMessage(activity.getString(R.string.msg_app_up_to_date, currentVersion))
+            .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -87,13 +87,13 @@ class AppUpdateManager(
         if (activity.isFinishing || activity.isDestroyed) return
 
         MaterialAlertDialogBuilder(activity)
-            .setTitle("Check Play Store for Updates")
-            .setMessage("Would you like to open the Google Play Store page to check for WeatherAPP updates?")
-            .setPositiveButton("Open Play Store") { dialog, _ ->
+            .setTitle(activity.getString(R.string.title_check_play_store))
+            .setMessage(activity.getString(R.string.msg_check_play_store))
+            .setPositiveButton(activity.getString(R.string.btn_open_play_store)) { dialog, _ ->
                 openPlayStorePage()
                 dialog.dismiss()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -104,24 +104,24 @@ class AppUpdateManager(
 
         locationPreferences.resetAppLaunchCount()
         MaterialAlertDialogBuilder(activity)
-            .setTitle("🎉 500 App Launches!")
-            .setMessage("Thank you for using WeatherAPP! You have opened WeatherAPP 500 times.\n\nAs a 100% free and ad-free community app, your review or donation keeps WeatherAPP growing for everyone.")
-            .setPositiveButton("Leave a Review") { dialog, _ ->
+            .setTitle(activity.getString(R.string.title_milestone_500_launches))
+            .setMessage(activity.getString(R.string.msg_milestone_500_launches))
+            .setPositiveButton(activity.getString(R.string.btn_leave_review)) { dialog, _ ->
                 openPlayStorePage()
                 dialog.dismiss()
             }
-            .setNeutralButton("Donate (Ko-fi)") { dialog, _ ->
+            .setNeutralButton(activity.getString(R.string.btn_donate_kofi)) { dialog, _ ->
                 openDonateUrl()
                 dialog.dismiss()
             }
-            .setNegativeButton("Maybe Later") { dialog, _ ->
+            .setNegativeButton(activity.getString(R.string.btn_maybe_later)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
 
     fun openPlayStorePage() {
-        val packageName = "com.weatherapp.libre"
+        val packageName = activity.packageName
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")).apply {
                 setPackage("com.android.vending")
@@ -138,12 +138,12 @@ class AppUpdateManager(
 
     private fun openDonateUrl() {
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://ko-fi.com/adamhainstock")).apply {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(UrlConfig.URL_KOFI)).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             activity.startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(activity.applicationContext, "Could not open browser", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_could_not_open_browser), Toast.LENGTH_SHORT).show()
         }
     }
 }

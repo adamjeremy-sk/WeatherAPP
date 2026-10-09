@@ -20,7 +20,7 @@
             android:id="@+id/tvDarkSkyTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="True Dark Sky Window"
+            android:text="@string/title_dark_sky"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />

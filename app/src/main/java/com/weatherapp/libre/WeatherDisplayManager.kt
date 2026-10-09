@@ -53,7 +53,8 @@ class WeatherDisplayManager(
                     val is24Hour = DateFormat.is24HourFormat(activity)
                     val baseDateStr = day.formattedDate.uppercase(Locale.getDefault())
                     val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour, nowInstant)
-                    binding.tvSelectedDateHeader.text = "$baseDateStr • $currentTime • Local Time"
+                    val localTimeLabel = activity.getString(R.string.label_local_time)
+                    binding.tvSelectedDateHeader.text = "$baseDateStr • $currentTime • $localTimeLabel"
                     astronomyManager.updateInlineGoldenHourDisplay(currentLocation, nowInstant)
                 }
             }
@@ -100,7 +101,6 @@ class WeatherDisplayManager(
         binding.layoutError.visibility = View.GONE
 
         lifecycleScope.launch {
-            val modelKey = activeModel.openMeteoKey
             binding.tvAttribution.text = activeModel.sourceAttribution
 
             val result = repository.getWeatherForecast(
@@ -166,7 +166,7 @@ class WeatherDisplayManager(
                 },
                 onFailure = {
                     binding.layoutError.visibility = View.VISIBLE
-                    Toast.makeText(activity.applicationContext, "Failed to load weather data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_failed_load_weather), Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -340,9 +340,9 @@ class WeatherDisplayManager(
         ) + upcomingLines).joinToString("\n")
 
         val dialog = MaterialAlertDialogBuilder(activity)
-            .setTitle("Current Moon Phase")
+            .setTitle(activity.getString(R.string.title_current_moon_phase))
             .setMessage(message)
-            .setPositiveButton("Close", null)
+            .setPositiveButton(activity.getString(R.string.btn_close), null)
             .create()
 
         dialog.setOnShowListener {
@@ -366,14 +366,14 @@ class WeatherDisplayManager(
         for (i in 0 until count) {
             val tStr = times[i]
             val cPct = covers[i]
-            if (tStr != null && cPct != null) {
+            if (cPct != null) {
                 try {
                     val inst = java.time.LocalDateTime.parse(tStr).atZone(zoneId).toInstant()
                     map[inst] = cPct / 100.0
-                } catch (e: Exception) {}
+                } catch (_: Exception) {}
             }
         }
-        return if (map.isNotEmpty()) map else null
+        return map.ifEmpty { null }
     }
 
     companion object {

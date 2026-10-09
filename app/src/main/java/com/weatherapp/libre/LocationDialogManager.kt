@@ -1,6 +1,5 @@
 package com.weatherapp.libre
 
-import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -12,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogRecentLocationsBinding
 import com.weatherapp.libre.databinding.DialogSearchLocationBinding
@@ -46,7 +44,7 @@ class LocationDialogManager(
             if (isSettingDefaultLocation) {
                 locationPreferences.saveStartupMode(LocationPreferences.STARTUP_FIXED_DEFAULT)
                 locationPreferences.saveFixedDefaultLocation(selected)
-                Toast.makeText(activity.applicationContext, "Default startup location set to ${selected.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_default_location_set, selected.name), Toast.LENGTH_SHORT).show()
             } else {
                 locationPreferences.saveLastUsedLocation(selected)
                 onLocationSelected(selected)
@@ -92,7 +90,7 @@ class LocationDialogManager(
                     onFailure = {
                         searchAdapter.submitList(emptyList())
                         dialogBinding.tvEmptySearch.visibility = View.VISIBLE
-                        dialogBinding.tvEmptySearch.text = "Error searching location."
+                        dialogBinding.tvEmptySearch.text = activity.getString(R.string.error_searching_location)
                     }
                 )
             }
@@ -158,7 +156,7 @@ class LocationDialogManager(
                     if (isSettingDefaultLocation) {
                         locationPreferences.saveStartupMode(LocationPreferences.STARTUP_FIXED_DEFAULT)
                         locationPreferences.saveFixedDefaultLocation(loc)
-                        Toast.makeText(activity.applicationContext, "Default startup location set to ${loc.name}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_default_location_set, loc.name), Toast.LENGTH_SHORT).show()
                     } else {
                         locationPreferences.saveLastUsedLocation(loc)
                         onLocationSelected(loc)

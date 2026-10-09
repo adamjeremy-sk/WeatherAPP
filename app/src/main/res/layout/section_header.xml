@@ -23,7 +23,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Open Settings"
+                        android:contentDescription="@string/cd_open_settings"
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_menu"
@@ -52,7 +52,7 @@
                             android:id="@+id/ivPin"
                             android:layout_width="26dp"
                             android:layout_height="26dp"
-                            android:contentDescription="Location Pin"
+                            android:contentDescription="@string/cd_location_pin"
                             android:src="@drawable/ic_location_pin"
                             app:tint="@color/brand_primary" />
 
@@ -89,7 +89,7 @@
                                 android:background="?attr/selectableItemBackground"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:text="Weather data provided by Open-Meteo.com"
+                                android:text="@string/accreditation_open_meteo"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
 
