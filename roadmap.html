@@ -321,7 +321,7 @@
       
       <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
         <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 3, and 4 are substantially complete. Phase 5 Lunar Utility Pages are fully implemented alongside a comprehensive Menu Organization system. A complete localization infrastructure has been established with all UI strings externalized. DEX code optimization and R8 obfuscation are now enabled for release builds. An in-app User Manual has been added. The test suite has been hardened to 78 passing tests. Focus shifts to Diagnostic Logging, home-screen widgets, and final release gates.</p>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases 1, 3, and 4 are substantially complete, with Lunar Utility Pages, Menu Organization, and full UI string externalization implemented. R8 obfuscation and an in-app User Manual are live, backed by 78 passing tests. The roadmap now expands to include on-device Meteor Shower tracking and NOAA-integrated Aurora forecasting. Active focus remains on Diagnostic Logging, widgets, and final release gates.</p>
       </section>
       
       <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
@@ -449,9 +449,11 @@
           <li><s>Publish a comprehensive privacy policy detailing data transmission (latitude/longitude to Open-Meteo, IP metadata, geocoding terms).</s></li>
           <li><s>Ensure the Google Play Data Safety declaration accurately reflects the absence of advertising, analytics, and GPS tracking SDKs.</s></li>
           <li><s>Standardize website navigation, typography, and layout across Home, About, Licenses, and Roadmap pages.</s></li>
-          <li><s>Implement a one-tap "Delete local app data" control within the application settings.</s></li>
           <li><s>Enable R8 code shrinking, obfuscation, and resource optimization for release builds to meet Play Console DEX optimization requirements.</s></li>
           <li><s>Externalize all hardcoded UI strings to <code>strings.xml</code> to establish a comprehensive localization infrastructure.</s></li>
+        </ul>
+        <ul class="pending-list">
+          <li>Implement a one-tap "Delete local app data" control within the application settings.</li>
         </ul>
       </section>
 
@@ -460,7 +462,7 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
           5. Phase 5: Advanced Features &amp; Expansion
         </h2>
-        <p>With the core architecture stabilized, development shifts to high-value utility features and intelligent data routing.</p>
+        <p>With the core architecture stabilized, development shifts to high-value utility features, intelligent data routing, and advanced astronomical tracking.</p>
 
         <h3>5.1 Diagnostic Logging Dashboard</h3>
         <ul class="pending-list">
@@ -474,6 +476,20 @@
           <li><s><strong>True Dark Sky Window:</strong> Calculate periods of astronomical darkness overlapping with low lunar interference.</s></li>
           <li><s><strong>Night Visibility Forecast:</strong> Estimate ambient light potential based on moon phase, altitude, twilight, and cloud cover.</s></li>
           <li><s><strong>Solunar Activity Forecast:</strong> Display traditional major/minor solunar periods based on lunar transit and nadir.</s></li>
+        </ul>
+
+        <h3>5.3 Meteor Shower Tracking (On-Device)</h3>
+        <ul class="pending-list">
+          <li>Hardcode a lightweight database of major annual meteor showers (orbital parameters, peak dates, radiant coordinates).</li>
+          <li>Use existing topocentric algorithms to calculate radiant Altitude/Azimuth for the user's specific location.</li>
+          <li>Cross-reference radiant altitude with True Dark Sky and Night Visibility data to generate an on-device "Meteor Viewing Score".</li>
+        </ul>
+
+        <h3>5.4 Aurora &amp; Space Weather Forecast</h3>
+        <ul class="pending-list">
+          <li>Integrate the NOAA Space Weather Prediction Center (SWPC) API to fetch real-time Kp index and solar wind data.</li>
+          <li>Calculate the user's geomagnetic latitude on-device to determine auroral oval reach.</li>
+          <li>Overlay geomagnetic storm data with existing cloud-cover cache to provide a localized "Clear Sky Aurora Probability".</li>
         </ul>
       </section>
 
