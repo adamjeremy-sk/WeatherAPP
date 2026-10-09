@@ -1,5 +1,12 @@
 ---------------
-Changelog 0.5.VC17 - 2026/10/08
+Changelog 0.5.2VC18 - 2026/10/08
+---------------
+* Localization files created
+* DEX code optimization
+* User manual added
+
+---------------
+Changelog 0.5.0VC17 - 2026/10/08
 ---------------
 * Fixed current weather/weather title on launch
 * Fixed 7-day forecast when it displays

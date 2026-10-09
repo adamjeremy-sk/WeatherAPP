@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.annotation.Keep
 import java.util.Locale
 
+@Keep
 enum class ForecastModel(
     val idKey: String,
     val displayName: String,
@@ -46,7 +48,7 @@ enum class ForecastModel(
     GEFS(
         "GEFS",
         "GEFS Ensemble (NOAA)",
-        "gfs_seamless_ensemble",
+        "gfs_seamless",
         "https://ensemble-api.open-meteo.com/v1/ensemble",
         "Source: NOAA GEFS Model",
         "NOAA Global Ensemble Forecast System (30 member ensemble)",

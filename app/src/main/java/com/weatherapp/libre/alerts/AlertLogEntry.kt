@@ -1,5 +1,8 @@
 package com.weatherapp.libre.alerts
 
+import androidx.annotation.Keep
+
+@Keep
 data class AlertLogEntry(
     val id: Long,
     val timestampUtc: Long,

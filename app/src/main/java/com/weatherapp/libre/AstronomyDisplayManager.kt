@@ -25,7 +25,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.annotation.Keep
 
+@Keep
 enum class InlineSubTab {
     CURRENT,
     HOURLY,

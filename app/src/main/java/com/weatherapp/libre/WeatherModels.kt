@@ -1,14 +1,17 @@
 package com.weatherapp.libre
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import java.time.Instant
 import java.time.LocalDate
 
+@Keep
 enum class UnitSystem {
     METRIC,
     US_CUSTOMARY
 }
 
+@Keep
 data class LocationItem(
     val id: Long = 0L,
     val name: String,
@@ -36,10 +39,12 @@ data class LocationItem(
         }
 }
 
+@Keep
 data class GeocodingResponse(
     val results: List<GeocodingResult>?
 )
 
+@Keep
 data class GeocodingResult(
     val id: Long,
     val name: String,
@@ -50,25 +55,36 @@ data class GeocodingResult(
     val elevation: Double? = 0.0
 )
 
+@Keep
 data class AirQualityResponse(
     val current: AirQualityCurrent?
 )
 
+@Keep
 data class AirQualityCurrent(
     @SerializedName("us_aqi")
     val usAqi: Int?
 )
 
+@Keep
 data class WeatherResponse(
+    @SerializedName("latitude")
     val latitude: Double,
+    @SerializedName("longitude")
     val longitude: Double,
+    @SerializedName("elevation")
     val elevation: Double? = 0.0,
+    @SerializedName("timezone")
     val timezone: String?,
+    @SerializedName("current")
     val current: CurrentData?,
+    @SerializedName("daily")
     val daily: DailyData?,
+    @SerializedName("hourly")
     var hourly: HourlyData? = null
 )
 
+@Keep
 data class CurrentData(
     @SerializedName("temperature_2m")
     var temperature: Double?,
@@ -95,7 +111,9 @@ data class CurrentData(
     var airQualityIndex: Int? = null
 )
 
+@Keep
 data class DailyData(
+    @SerializedName("time")
     var time: List<String>?,
     @SerializedName("weather_code")
     var weatherCode: List<Int>?,
@@ -103,7 +121,9 @@ data class DailyData(
     var temperatureMax: List<Double>?,
     @SerializedName("temperature_2m_min")
     var temperatureMin: List<Double>?,
+    @SerializedName("sunrise")
     var sunrise: List<String>?,
+    @SerializedName("sunset")
     var sunset: List<String>?,
     @SerializedName("uv_index_max")
     var uvIndexMax: List<Double>?,
@@ -113,7 +133,9 @@ data class DailyData(
     var windGustsMax: List<Double?>? = null
 )
 
+@Keep
 data class HourlyData(
+    @SerializedName("time")
     var time: List<String>? = null,
     @SerializedName("temperature_2m")
     var temperature2m: List<Double?>? = null,

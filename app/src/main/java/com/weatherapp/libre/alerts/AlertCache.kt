@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.CapAlert
+import androidx.annotation.Keep
 import java.time.Instant
 import java.util.Locale
 
@@ -12,6 +13,7 @@ object AlertCache {
     private const val PREFS_NAME = "alert_cache_prefs"
     private const val KEY_ACTIVE_ALERTS_CACHE = "app_active_alerts_cache_v3"
 
+    @Keep
     data class CachedAlert(
         val identifier: String,
         val event: String,
