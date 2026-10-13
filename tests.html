@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A comprehensive inventory of the automated unit tests guaranteeing mathematical rigor, physical accuracy, and numerical stability across the WeatherAPP Libre astronomical engines.">
+  <title>Automated Test Suite - WeatherAPP Libre</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    
+    /* Logo Link */
+    .logo-link {
+      flex: 0 0 112px;
+      display: block;
+      line-height: 0;
+      transition: transform 200ms ease;
+    }
+    .logo-link:hover {
+      transform: scale(1.04);
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .toc li, .more-info li { margin: 8px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    .more-info .current-page {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Section Summaries */
+    .section-summary {
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      transition: background 0.2s ease, transform 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toggle-btn:hover {
+      background: var(--dark);
+    }
+    .toggle-btn:active {
+      transform: scale(0.98);
+    }
+    .toggle-btn::before {
+      content: "＋";
+      font-size: 1.1rem;
+      line-height: 1;
+      font-weight: 800;
+    }
+    .toggle-btn[data-expanded="true"]::before {
+      content: "－";
+    }
+
+    /* Test List Styling */
+    .test-group h3 {
+      color: #174f7d;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+      font-size: 1.15rem;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    .test-group h3:first-of-type {
+      margin-top: 1.5rem;
+    }
+    dl {
+      margin: 0;
+      padding: 0;
+    }
+    .test-item {
+      margin-bottom: 1.25rem;
+    }
+    .test-item dt {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+      word-break: break-word;
+      cursor: pointer;
+    }
+    .test-item dt:hover {
+      color: var(--primary);
+    }
+    .test-item dd {
+      display: none; /* Hidden by default */
+      margin: 0.5rem 0 0 0;
+      padding-left: 1rem;
+      border-left: 3px solid var(--primary);
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+    .test-item dd.expanded {
+      display: block;
+    }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .logo-link, .toggle-btn { transition: none; }
+    }
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .logo-link {
+        flex-basis: 82px;
+      }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+      .test-item dd { padding-left: 0.75rem; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { color: #111; background: #fff; padding: 24px 0; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+      .toggle-btn { display: none; }
+      .test-item dd { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo-link" aria-label="WeatherAPP Libre Home">
+        <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
+      <div class="header-copy">
+        <h1>Automated Test Suite</h1>
+        <p>A comprehensive inventory of the automated unit tests guaranteeing mathematical rigor, physical accuracy, and numerical stability across the WeatherAPP Libre astronomical engines.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Test Categories
+        </h2>
+        <ol>
+          <li><a href="#general">General &amp; Managers</a></li>
+          <li><a href="#ui">Navigation &amp; UI</a></li>
+          <li><a href="#alerts">Weather Alerts</a></li>
+          <li><a href="#lunar">Lunar Astronomy Engine</a></li>
+          <li><a href="#solar">Solar Astronomy Engine</a></li>
+        </ol>
+      </section>
+
+      <section class="more-info">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Project Resources
+        </h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="licenses.html">Licenses &amp; Sources</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="roadmap.html">Production Roadmap</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="tests.html" class="current-page">Automated Tests</a></li>
+          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="overview" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          Suite Overview
+        </h2>
+        <p>Following a comprehensive 17-module almanac-grade remediation, the WeatherAPP Libre astronomical engine is guarded by an exhaustive suite of deterministic unit tests. These tests verify official Espenak/Meeus Delta T polynomials, topocentric parallax, atmospheric refraction frames, horizon dip geometry, and polar edge cases across millennia.</p>
+        <p>Every test listed below executes automatically on every code commit, ensuring that the physics and mathematics governing your sunrise, sunset, and moon phase calculations remain strictly accurate and completely free of regressions. Click the <strong>Expand All Tests</strong> button in any section below to reveal the technical details of each specific validation.</p>
+      </section>
+
+      <section id="general" class="card test-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          1. General &amp; Manager Integration
+        </h2>
+        <p class="section-summary">This section validates the high-level orchestration of astronomical data across the application's core managers. These tests ensure that complex, multi-day calculations for dark sky windows, night visibility, and solunar activity are mathematically deterministic and globally robust. By simulating diverse environments—from the equator to the Arctic Circle during midnight sun—these tests prevent edge-case crashes that could occur at extreme latitudes. The integration of mock cloud cover data ensures that the Night Visibility manager accurately attenuates ambient light based on real-world weather conditions. Furthermore, these tests guarantee that the 7-day solunar forecasts and dark sky summaries generate complete, gap-free datasets for the user interface. Without this layer of orchestration testing, individual calculation engines might pass in isolation but fail when chained together for weekly planning. Ultimately, this suite acts as the final quality gate before astronomical data is handed off to the UI layer. It ensures that photographers, anglers, and stargazers receive reliable, actionable planning data regardless of their geographic location.</p>
+        
+        <button class="toggle-btn" data-expanded="false" aria-expanded="false">Expand All Tests</button>
+
+        <h3>AstronomicalManagersTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testDarkSkyManager_returnsValidWindows</dt>
+            <dd>Calculates astronomical dark sky windows for Ottawa on the spring equinox and verifies that all window intervals have valid UTC start/end ordering, positive durations, interference indices within [0, 100], and valid quality labels.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testDarkSkyManager_sevenNightsCalculation</dt>
+            <dd>Computes dark sky window summaries for a 7-consecutive-night range starting on the spring equinox and asserts that summaries and window lists are generated for every night.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testDarkSkyManager_highLatitudeSummerNoDarkness</dt>
+            <dd>Tests dark sky window calculation in Tromsø, Norway during summer solstice (midnight sun) and verifies that no dark sky windows are returned and an appropriate explanatory note is present.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNightVisibilityManager_returnsValidPeriods</dt>
+            <dd>Computes natural night visibility periods for Ottawa on the equinox and asserts that returned periods have valid UTC time bounds, valid light category classifications, and non-null twilight statuses.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNightVisibilityManager_handlesCloudCoverData</dt>
+            <dd>Supplies a 48-hour mock cloud cover map (75% cloudiness) to NightVisibilityManager and asserts that cloud cover availability is flagged and cloud cover status strings are attached to each period.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNightVisibilityManager_cloudCoverAttenuatesAmbientLight</dt>
+            <dd>Compares visibility period calculations under 0% clear sky versus 100% heavy cloud cover to verify that cloud attenuation logic executes deterministically without error.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSolunarManager_returnsValidForecast</dt>
+            <dd>Calculates a solunar activity forecast for Ottawa on the equinox and asserts that the phase name, 0–1 illumination fraction, 0–100 activity rating, 2-hour major periods (transit/nadir), and 1-hour minor periods (moonrise/moonset) are correctly generated.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSolunarManager_sevenDaysCalculation</dt>
+            <dd>Computes 7-day solunar forecasts and verifies valid ratings, phase names, and activity periods for every day.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSolunarManager_multipleGlobalLocations</dt>
+            <dd>Tests solunar forecast calculations across 6 global test locations (Equatorial, Southern Hemisphere, Arctic, Antarctic, International Date Line, and Fractional Timezones) to ensure global coverage without exceptions.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testCalculations_deterministicForIdenticalInputs</dt>
+            <dd>Evaluates solunar, dark sky, and night visibility calculations twice with identical inputs and asserts exact equality of ratings, phases, and window counts to guarantee mathematical determinism.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="ui" class="card test-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          2. Navigation &amp; UI Tests
+        </h2>
+        <p class="section-summary">The user interface of a weather application must be both highly responsive and deeply customizable, which requires rigorous state-management testing. This section covers the complex logic behind menu organization, tab resolution, back-navigation interception, and preference migrations. When users customize their drop-down menus or set default launch pages, these tests verify that SharedPreferences round-trips are exact and that Activity recreation restores the correct state. The DayForecastAdapter and HourlyMapper tests are critical for ensuring that raw API streams are correctly sliced into 36-hour windows, properly handling Daylight Saving Time transitions and null data gaps. Additionally, the FeelsLikeHero and UnitUtils tests enforce strict precision parity between Metric and US Customary formatting, preventing visual discrepancies in temperature and wind gust displays. First-launch seeding tests guarantee that new users are immediately greeted with valid, pre-configured locations rather than an empty screen. By locking down these UI predicates and formatting utilities, this suite ensures a frictionless, polished experience across all Android form factors. It transforms raw meteorological data into a beautifully formatted, highly interactive dashboard.</p>
+        
+        <button class="toggle-btn" data-expanded="false" aria-expanded="false">Expand All Tests</button>
+
+        <h3>BackNavigationTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testShouldInterceptBack_matrix</dt>
+            <dd>Evaluates MainActivity.shouldInterceptBack across a truth-table matrix of menu depth, navigation drawer state, and sub-tab selection to ensure correct back-button interception semantics.</dd>
+          </div>
+        </dl>
+
+        <h3>DayForecastAdapterTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testJoinTwoLines_standardSunPosition</dt>
+            <dd>Tests DayForecastAdapter.joinTwoLines with standard sunrise/sunset strings and verifies that lines are joined by a single newline character without bullet artifacts.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testJoinTwoLines_standardMoonPosition</dt>
+            <dd>Tests joining standard moonrise and moonset strings and asserts exact two-line formatting.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testJoinTwoLines_noRiseInput</dt>
+            <dd>Asserts proper two-line formatting when sunrise/moonrise is absent ("No Rise").</dd>
+          </div>
+          <div class="test-item">
+            <dt>testJoinTwoLines_noSetInput</dt>
+            <dd>Asserts proper two-line formatting when sunset/moonset is absent ("No Set").</dd>
+          </div>
+        </dl>
+
+        <h3>FeelsLikeHeroTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testFeelsLikeFormattingMetricPrecisionParity</dt>
+            <dd>Compares UnitUtils.formatTempPrecise against direct string formatting in Celsius to verify 0.1°C precision parity for apparent temperature display.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFeelsLikeFormattingUsCustomaryPrecisionParity</dt>
+            <dd>Compares UnitUtils.formatTempPrecise against direct Fahrenheit conversion to verify 0.1°F precision parity.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFeelsLikeVisibilityPredicate_nullValue_yieldsGone</dt>
+            <dd>Asserts that WeatherDisplayManager.shouldShowFeelsLike returns false (GONE) when apparent temperature is null.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFeelsLikeVisibilityPredicate_notToday_yieldsGone</dt>
+            <dd>Asserts that shouldShowFeelsLike returns false when viewing forecast days other than today.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFeelsLikeVisibilityPredicate_todayAndPresentValue_yieldsVisible</dt>
+            <dd>Asserts that shouldShowFeelsLike returns true (VISIBLE) when viewing today's forecast with a valid apparent temperature.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFeelsLikeVisibilityPredicate_todayAndValueEqualsActualTemp_yieldsVisible</dt>
+            <dd>Asserts that shouldShowFeelsLike returns true even when apparent temperature equals actual temperature.</dd>
+          </div>
+        </dl>
+
+        <h3>FirstLaunchSeedingTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testDefaultLocationConstants</dt>
+            <dd>Verifies the pre-configured geographic coordinates, elevation, and administrative metadata for default seed locations (Edmonton, Montreal, Halifax).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFirstLaunchSeedingOrderAndCompletion</dt>
+            <dd>Simulates first-launch preference initialization using an in-memory SharedPreferences implementation, verifying tab location seeding and first-launch flag transition.</dd>
+          </div>
+        </dl>
+
+        <h3>HourlyMapperTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testWindowSlicingTo36Hours</dt>
+            <dd>Slices a 50-hour raw forecast stream starting at 14:00 UTC and asserts that exactly 36 hourly rows starting at current hour are produced with day dividers and no truncation footer.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testDstContinuitySpringForward</dt>
+            <dd>Tests hourly forecast list building across a Daylight Saving Time spring-forward transition, asserting 36 continuous hours spaced exactly 3600 seconds apart.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNullHandling</dt>
+            <dd>Passes raw hourly data containing null temperature and precipitation values and asserts graceful mapping to null model fields.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTruncationAndHorizonFooter</dt>
+            <dd>Passes a truncated 10-hour dataset and verifies that a HorizonFooter item is appended to inform the user that data ends.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testContinuousListWithStaticDividers</dt>
+            <dd>Slices a 60-hour dataset and asserts that 36 hour rows and appropriate DayDivider items are rendered in chronological sequence.</dd>
+          </div>
+        </dl>
+
+        <h3>LocationPreferencesMigrationTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testMigrationWithLegacyWeatherAlertsTrue</dt>
+            <dd>Verifies that legacy app_weather_alerts_enabled = true preferences migrate to ALERT_CONSENT_OPT_IN and clean up legacy keys.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMigrationWithLegacyWeatherAlertsFalse</dt>
+            <dd>Verifies that legacy app_weather_alerts_enabled = false preferences migrate to ALERT_CONSENT_OPT_OUT.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMigrationWithLegacyAlertConsentVersionOnly</dt>
+            <dd>Tests migration when only a legacy consent version integer is present, defaulting to opt-in.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMigrationWithNoLegacyKeysRemainsUnset</dt>
+            <dd>Verifies that fresh installs with no legacy keys remain in the ALERT_CONSENT_UNSET state.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMigrationIsIdempotent</dt>
+            <dd>Executes migration twice in succession and asserts that preference state remains unchanged without error.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testAlertConsentStatePreservedAcrossVersionUpdate</dt>
+            <dd>Simulates an app version update and asserts that user alert consent preferences are strictly preserved.</dd>
+          </div>
+        </dl>
+
+        <h3>MenuOrganizationTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testMenuOrderPreferenceRoundTrip</dt>
+            <dd>Saves a custom sub-tab order to SharedPreferences and verifies exact round-trip retrieval.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSeparatorCountRoundTripAndClamping</dt>
+            <dd>Asserts that default menu order configuration contains exactly two separator items.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testEnabledFlagsPreferenceRoundTrip</dt>
+            <dd>Toggles sub-tab visibility flags in preferences and verifies accurate retrieval.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testDefaultLaunchSubTabPreferenceRoundTrip</dt>
+            <dd>Verifies saving and reading the default launch sub-tab preference.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testLaunchResolutionFreshVsRecreation</dt>
+            <dd>Tests tab resolution logic distinguishing fresh app launches (uses default launch tab) from Activity recreation (restores saved tab).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testActiveTabValidityEdgeCase</dt>
+            <dd>Tests active tab fallback logic when a previously selected tab is disabled or invalidated.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSevenDayInlineVisibilityPredicate</dt>
+            <dd>Verifies visibility predicate logic for 7-day forecast display in inline vs menu mode across different sub-tabs.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testBuildMenuListFromOrderAndFlags</dt>
+            <dd>Verifies menu item list construction filtering disabled items while maintaining separators.</dd>
+          </div>
+        </dl>
+
+        <h3>MetricCellTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testMetricCellModel</dt>
+            <dd>Instantiates a MetricCell model object for wind and asserts property values.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMetricCellModel_secondaryIsNull</dt>
+            <dd>Verifies construction of a MetricCell with a null secondary text field.</dd>
+          </div>
+        </dl>
+
+        <h3>MoonPhaseDialogMessageTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testMoonPhaseDialogMessageFormatting</dt>
+            <dd>Formats a multi-line moon phase detail dialog message and asserts line counts, absence of leading whitespace, and bullet formatting on upcoming phase lines.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarLightingEngineTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testSolarLightingEngineCalculation</dt>
+            <dd>Calls SolarLightingEngine.calculateSolarLightingPhases for Ottawa on the current date and asserts non-null sunrise/sunset events with valid azimuths.</dd>
+          </div>
+        </dl>
+
+        <h3>TabLongPressTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testShouldReloadAfterTabEdit_equalIndexes_returnsTrue</dt>
+            <dd>Asserts that shouldReloadAfterTabEdit returns true when the edited tab index equals the currently active tab index.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testShouldReloadAfterTabEdit_differingIndexes_returnsFalse</dt>
+            <dd>Asserts that shouldReloadAfterTabEdit returns false when the edited tab index differs from the active tab index.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testShouldReloadAfterTabEdit_boundaryIndexes_zeroAndCountMinusOne</dt>
+            <dd>Tests boundary tab indices (0 and max) for tab edit reload predicate logic.</dd>
+          </div>
+        </dl>
+
+        <h3>UnitUtilsTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testShouldShowGusts_nullFalse</dt>
+            <dd>Asserts that shouldShowGusts returns false when gust speed is null.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testShouldShowGusts_equalToWindPlusThreeFalse</dt>
+            <dd>Asserts that gusts equal to wind speed + 3.0 km/h do not trigger gust display.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testShouldShowGusts_oneTenthAboveThresholdTrue</dt>
+            <dd>Asserts that gusts 3.1 km/h above wind speed trigger gust display.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testShouldShowGusts_belowWindFalse</dt>
+            <dd>Asserts that gusts lower than sustained wind speed return false.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFormatWindGusts_nullAndSuppressedCases</dt>
+            <dd>Asserts that suppressed or null gust inputs return null formatted strings.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFormatWindGusts_presentCases</dt>
+            <dd>Verifies wind gust string formatting in Metric (km/h) and US Customary (mph) unit systems.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="alerts" class="card test-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          3. Weather Alerts System
+        </h2>
+        <p class="section-summary">Delivering official, life-saving weather alerts requires absolute fidelity to government data standards and strict adherence to user privacy. This test suite validates the entire Environment and Climate Change Canada (ECCC) CAP-CP pipeline, from raw XML parsing to geographic polygon matching. The CapXmlParser tests ensure that multi-language alerts are correctly extracted, while the AlertMatcher tests verify complex ray-casting point-in-polygon geometry to accurately determine if a user's specific coordinate falls within a warning zone. Crucially, the AlertConsent tests enforce the application's privacy-first mandate, ensuring that alerts are never processed or displayed until the user has explicitly opted in via a transparent consent prompt. The caching and notification intent tests guarantee that expired alerts are pruned, duplicate notifications are suppressed, and tapping an alert correctly routes the user to the affected location tab. Unlike many weather apps that generate synthetic, model-derived warnings, this suite strictly enforces a zero-tolerance policy for fake alerts. This rigorous validation ensures that the background WorkManager reliably polls for updates without draining the device battery. Ultimately, when a tornado or severe thunderstorm warning reaches a user's device, it is guaranteed to be an authentic, geographically precise, and officially sanctioned government directive.</p>
+        
+        <button class="toggle-btn" data-expanded="false" aria-expanded="false">Expand All Tests</button>
+
+        <h3>AlertCacheTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testTabLocationCacheKeysAreDistinct</dt>
+            <dd>Generates cache keys for different Canadian locations sharing default ID 0L and asserts distinct key strings based on name, region, and coordinates.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testCacheRoundTrip</dt>
+            <dd>Serializes a CachedAlert object to JSON and back, asserting full field fidelity.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testExpiredPrunedOnRead</dt>
+            <dd>Passes an expired alert through the cache read filter and asserts that expired entries are pruned.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPerLocationKeying</dt>
+            <dd>Asserts that cached alerts stored under one location key do not surface for a different location key.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testReplaceNotAppend</dt>
+            <dd>Verifies that updating alert cache for a location replaces existing entries rather than appending.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTestFixturePreservedOnWorkerWrite</dt>
+            <dd>Verifies that active test fixture alerts are preserved when background worker updates real alert caches.</dd>
+          </div>
+        </dl>
+
+        <h3>AlertConsentTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testDefaultUnsetConsentStateShowsPrompt</dt>
+            <dd>Asserts that ALERT_CONSENT_UNSET state triggers the alert consent UI prompt.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testOptInConsentStateHidesPromptAndEnablesAlerts</dt>
+            <dd>Asserts that ALERT_CONSENT_OPT_IN hides the prompt and enables alert processing.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testOptOutConsentStateHidesPromptAndDisablesAlerts</dt>
+            <dd>Asserts that ALERT_CONSENT_OPT_OUT hides the prompt and disables alert processing.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testLegacyKeysIgnoredByNewReaders</dt>
+            <dd>Asserts that legacy SharedPreferences keys are distinct from new consent keys.</dd>
+          </div>
+        </dl>
+
+        <h3>AlertMatcherTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testCircleRadiusMatchingTrue</dt>
+            <dd>Tests CAP alert matching using a geographic circle radius and asserts positive match for Ottawa and negative match for Vancouver.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPointInPolygonMatchingTrueAndFalse</dt>
+            <dd>Tests CAP alert matching using ray-casting point-in-polygon geometry for a bounding box around Ottawa.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPublicCanadaScopeMatching</dt>
+            <dd>Tests matching for nationwide public alerts with no area restrictions.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testGeocodeMatching</dt>
+            <dd>Tests CAP alert matching using Canadian Location Codes (CLC) geocode values.</dd>
+          </div>
+        </dl>
+
+        <h3>CapXmlParserTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testParseTornadoWarningEnglishLocale</dt>
+            <dd>Parses a multi-language CAP XML alert for an English locale target and asserts extraction of English headline, severity, urgency, and circle geometry.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testParseTornadoWarningFrenchLocale</dt>
+            <dd>Parses the same CAP XML alert for a French locale target (fr-CA) and asserts extraction of French headline and event description.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testParseUpdateAndExtractReferences</dt>
+            <dd>Parses a CAP update message and extracts referenced original alert identifiers.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testParseInvalidXmlReturnsNull</dt>
+            <dd>Passes malformed XML to CapXmlParser and verifies graceful null return.</dd>
+          </div>
+        </dl>
+
+        <h3>NotificationIntentTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testRequestCodeDerivation</dt>
+            <dd>Asserts unique, deterministic notification request code generation derived from alert ID and location key.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTabResolutionMatchingKeyAndFallback</dt>
+            <dd>Tests notification tap intent location resolution matching tab keys and defaulting to tab 0 for unknown locations.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="lunar" class="card test-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          4. Lunar Astronomy Engine
+        </h2>
+        <p class="section-summary">Calculating the precise position and phase of the Moon requires solving complex orbital mechanics that have been refined over centuries of astronomical observation. This engine is built upon the foundational algorithms published in Jean Meeus's seminal work, Astronomical Algorithms, and validated against NASA's Espenak/Meeus Delta T polynomials. The tests in this section verify the conversion between Terrestrial Time and Universal Time, ensuring that the gradual slowing of Earth's rotation is accurately accounted for across millennia. The AtmosphericRefraction tests enforce the physical boundaries of the Bennett formula, preventing asymptotic divergence when celestial bodies dip below the horizon. Topocentric conversion tests, utilizing atan2 for numerical stability, guarantee that parallax and horizon dip are correctly applied for observers at extreme elevations or the North Pole. The MoonPhaseCalculator tests validate the Meeus Chapter 49 planetary perturbation corrections, ensuring that quarter-phase timings are accurate to the minute. By enforcing strict semantic boundaries between exact astronomical events and continuous phase categories, this suite prevents UI mislabeling. Ultimately, these tests transform abstract trigonometric series into the highly accurate moonrise, moonset, and illumination data that drives the app's astrophotography tools.</p>
+        
+        <button class="toggle-btn" data-expanded="false" aria-expanded="false">Expand All Tests</button>
+
+        <h3>AstroTimeTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testPre1970RoundTrip</dt>
+            <dd>Tests Julian Date conversion round-trip for Apollo 11 landing (1969) and negative fractional epoch seconds, asserting nanosecond precision within 200 µs Double precision limit.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testEpochBoundary</dt>
+            <dd>Tests round-trip conversion for Unix Epoch (1970-01-01T00:00:00Z).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testModernRoundTrip</dt>
+            <dd>Tests round-trip conversion for a modern date (2026).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTtUtcInversionConsistency</dt>
+            <dd>Verifies 3-step iterative inversion consistency between jdUtcToJdeTT and jdeTTToJdUtc within 10⁻⁹ JD (~86 µs).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testJulianCenturiesTT</dt>
+            <dd>Asserts exact values for julianCenturiesTT at epoch J2000.0 (0.0) and J2000.0 + 1 century (1.0).</dd>
+          </div>
+        </dl>
+
+        <h3>AstronomyMathTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testNormalizeDegrees</dt>
+            <dd>Asserts degree normalization into [0, 360) for negative angles, large positive angles, exact multiples, and idempotence.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTrigPrecisionWithLargeAngle</dt>
+            <dd>Compares trigonometric sine outputs of large un-normalized angles vs normalized angles to verify floating-point precision.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testGmstDegreesBoundsAndDayRate</dt>
+            <dd>Sweeps GMST calculation across two centuries verifying bounds in [0, 360) and daily earth rotation rate (~0.985647°/day).</dd>
+          </div>
+        </dl>
+
+        <h3>AtmosphericRefractionTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testEarlyReturnForAltitudesBelowCutoff</dt>
+            <dd>Asserts that calculateRefractionDegrees returns exactly 0.0° for true altitudes below -1.0° to prevent Bennett formula asymptotic divergence.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testHorizonSanity</dt>
+            <dd>Verifies horizon refraction at 0.0° true altitude is within physical bounds [0.40°, 0.55°].</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNearCutoffSanity</dt>
+            <dd>Verifies refraction at -0.9° true altitude is within [0.55°, 0.75°].</dd>
+          </div>
+          <div class="test-item">
+            <dt>testMonotonicDecreaseAndZenithZero</dt>
+            <dd>Asserts monotonic decrease of refraction from horizon to zenith (90°), where refraction is exactly 0.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPressureScaling</dt>
+            <dd>Verifies that higher atmospheric pressure yields higher refraction.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTemperatureScaling</dt>
+            <dd>Verifies that lower temperature (denser air) yields higher refraction.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testUpperBound</dt>
+            <dd>Sweeps altitudes from -1.0° to 90.0° verifying refraction never exceeds 1.0°.</dd>
+          </div>
+        </dl>
+
+        <h3>DeltaTTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testContinuityAtBranchBoundaries</dt>
+            <dd>Evaluates NASA GSFC Espenak/Meeus ΔT piecewise polynomials across 14 century branch boundaries, asserting continuity within 0.5 seconds.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testKnownValues</dt>
+            <dd>Validates ΔT estimates against historical values for years 1900, 2000, 2020, 2050, and 2200.</dd>
+          </div>
+        </dl>
+
+        <h3>LunarCalculatorTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testCyclePercentageSemantics</dt>
+            <dd>Constructs MoonPhaseInfo at First Quarter (90°) and Last Quarter (270°) and asserts cyclePercentage values of 25% and 75% respectively.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testIlluminationRounding</dt>
+            <dd>Tests illumination percentage formatting, verifying 0.996 rounds to 100% and 0.994 rounds to 99%.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testApiCleanupPhaseAtNoObserver</dt>
+            <dd>Verifies LunarCalculator.phaseAt(instant) call without an observer parameter.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPhaseCategorySemantics</dt>
+            <dd>Tests 8-state LunarPhaseCategory enum mapping across all 45° phase angle boundaries.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testEventTypeSemantics</dt>
+            <dd>Verifies that major moon phase events return strictly one of the 4 primary quarter types (NEW_MOON, FIRST_QUARTER, FULL_MOON, LAST_QUARTER).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTypeSafetyGeocentricDistanceKm</dt>
+            <dd>Asserts that MoonPhaseInfo.geocentricDistanceKm returns a non-null Double greater than 300,000 km.</dd>
+          </div>
+        </dl>
+
+        <h3>LunarPositionTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testRaDecExposure</dt>
+            <dd>Computes geocentric lunar state and asserts valid bounds for rightAscensionDegrees [0, 360) and declinationDegrees [-90, 90].</dd>
+          </div>
+          <div class="test-item">
+            <dt>testSemidiameterSanity</dt>
+            <dd>Verifies exact geometric lunar semidiameter calculation (~ 0.259°).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNormalizationSanityFutureDate</dt>
+            <dd>Computes lunar position for year 2500 and asserts distance in [350000, 420000] km and normalized longitude.</dd>
+          </div>
+        </dl>
+
+        <h3>MoonPhaseCalculatorTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testQuarterPhaseWCorrection</dt>
+            <dd>Computes Meeus Chapter 49 quarter phase dates including "W" planetary perturbation corrections and asserts accuracy against J2000 table values.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPrecedingNewMoonRobustness</dt>
+            <dd>Evaluates candidate search for preceding new moon 1 second after vs 1 second before a new moon, asserting correct age calculation.</dd>
+          </div>
+        </dl>
+
+        <h3>MoonRiseSetCalculatorTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testPre1970Robustness</dt>
+            <dd>Calls findRiseSetEventsInInterval for July 1969 and asserts non-empty events with non-negative nanoseconds.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPerformanceSanity</dt>
+            <dd>Benchmarks moonEventsForLocalDate execution time, asserting completion in under 500 ms.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testRefractionSanity</dt>
+            <dd>Verifies that apparent altitude at moonrise equals negative semidiameter within 0.01°.</dd>
+          </div>
+        </dl>
+
+        <h3>ObserverTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testValidConstruction</dt>
+            <dd>Asserts successful creation of an Observer with valid latitude and longitude.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testInvalidLatitude</dt>
+            <dd>Asserts IllegalArgumentException when latitude is 91.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testInvalidLongitude</dt>
+            <dd>Asserts IllegalArgumentException when longitude is 181.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testBoundaryValues</dt>
+            <dd>Asserts successful creation at coordinate boundaries (± 90° lat, ± 180° lon).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testHorizonDipExplicit</dt>
+            <dd>Verifies that explicit horizonDipDegrees takes precedence over elevation-calculated dip.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testHorizonDipCalculated</dt>
+            <dd>Verifies geometric horizon dip calculation for 100m elevation (~ 0.293°).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testBelowSeaLevel</dt>
+            <dd>Asserts horizon dip is 0.0° for observer elevations at or below sea level.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarPositionTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testNormalizationSanityFutureDate</dt>
+            <dd>Computes solar position for year 2500 and asserts longitude in [0, 360), distance in [0.98, 1.02] AU, and latitude 0.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testTimescaleMigrationCurrentEpoch</dt>
+            <dd>Verifies solar position calculation for current epoch using julianCenturiesTT.</dd>
+          </div>
+        </dl>
+
+        <h3>TopocentricConverterTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testHorizonDipIntegration</dt>
+            <dd>Verifies that topocentricHorizontalState incorporates observer horizon dip into horizonThresholdDegrees.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testAtan2StabilityNorthPole</dt>
+            <dd>Tests topocentric coordinate conversion at North Pole (90°N) asserting non-NaN declination and right ascension via atan2.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="solar" class="card test-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          5. Solar Astronomy Engine
+        </h2>
+        <p class="section-summary">The solar engine is responsible for mapping the Sun's apparent journey across the sky, a task complicated by atmospheric refraction, axial tilt, and the observer's specific horizon geometry. This test suite rigorously validates the Brent-Dekker root-finding algorithm used to pinpoint the exact second the Sun's upper limb crosses the horizon. The SolarRiseSetSolver tests specifically enforce the use of apparent, refracted altitude rather than true geometric altitude, correcting a common physics error that would otherwise cause sunrise and sunset times to be off by several minutes. The SolarLightingEngine tests verify the dynamic generation of chronological timelines, ensuring that high-latitude edge cases like the Midnight Sun gracefully collapse into continuous states without generating UI placeholders. Regression tests, such as the full 365-day sweep for Saskatoon, Tromsø, and Wellington, prove the mathematical mirror symmetry between morning and evening twilight phases. The SolarPositionEngine tests validate the Meeus Chapter 25 solar longitude calculations and the exact geometric horizon dip formula for high-altitude observers. By strictly bounding the Bennett refraction formula and utilizing atan2 for topocentric stability, this suite ensures absolute physical rigor. This engine provides the foundational sunlight data that powers the app's Golden Hour, Blue Hour, and True Dark Sky planning features.</p>
+        
+        <button class="toggle-btn" data-expanded="false" aria-expanded="false">Expand All Tests</button>
+
+        <h3>SolarEveningRegressionTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testParisOracle</dt>
+            <dd>Computes solar lighting for Paris on Oct 3, 2026, validating sunrise hour (07:00–08:30 local), sunset hour (19:00 local), and daylight duration.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testFullYearSweepMirrorResidualsAndChainContinuity</dt>
+            <dd>Executes a full 365-day year sweep for Saskatoon, Tromsø, and Wellington, testing mirror symmetry between morning/evening twilights and verifying core twilight chain continuity.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarIntervalContainmentTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testSaskatoonOverlapHighlights</dt>
+            <dd>Tests overlapping active phase states (e.g. Civil Twilight + Golden Hour during morning overlap) and validates 180-second active event window boundaries.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarLightingEngineTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testDynamicTimelineMidLatitude</dt>
+            <dd>Calls calculateChronologicalSolarPhases for a mid-latitude equinox, asserting exactly 15 phases spanning midnight to midnight (00:00 to 24:00).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testPolarEdgeCaseNoAstroTwilight</dt>
+            <dd>Calls calculateChronologicalSolarPhases for Iceland in summer solstice (no astronomical twilight) and asserts no "——" placeholder strings and full 24-hour day coverage.</dd>
+          </div>
+          <div class="test-item">
+            <dt>test2359BugFix</dt>
+            <dd>Asserts that the final phase of the day does NOT contain the hardcoded literal string "23:59" in its time range text.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarObserverTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testValidConstruction</dt>
+            <dd>Asserts successful creation of a solar Observer.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testInvalidLatitude</dt>
+            <dd>Asserts IllegalArgumentException when latitude is 91.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testInvalidLongitude</dt>
+            <dd>Asserts IllegalArgumentException when longitude is 181.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testHorizonDipCalculation</dt>
+            <dd>Verifies exact geometric horizon dip (arccos(R / (R + h))) for 1000m elevation (~ 1.015°).</dd>
+          </div>
+          <div class="test-item">
+            <dt>testBelowSeaLevel</dt>
+            <dd>Asserts horizon dip is 0.0° for negative elevations.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarPhaseMetadataTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testPhaseMetadata</dt>
+            <dd>Solves solar lighting for equinox and asserts exact lower and upper altitude bounds on all morning and evening phase objects against LightingDefinitions.DEFAULT.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNamingSymmetry</dt>
+            <dd>Asserts that morningCivilTwilight, morningNauticalTwilight, and morningAstronomicalTwilight start strictly before their corresponding evening dusk counterparts.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarPositionEngineTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testRefractionEarlyReturn</dt>
+            <dd>Asserts that calculateRefraction returns 0.0° when solar true altitude is below -1.0°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testRefractionHorizonSanity</dt>
+            <dd>Verifies Bennett refraction near 0.0° true altitude is approximately 0.48°.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testAtan2StabilityNorthPole</dt>
+            <dd>Evaluates computeTopocentric at North Pole (90°N) asserting non-NaN output using atan2.</dd>
+          </div>
+        </dl>
+
+        <h3>SolarRiseSetSolverTest.kt</h3>
+        <dl>
+          <div class="test-item">
+            <dt>testApparentAltitudeShiftMidLatitude</dt>
+            <dd>Calculates sunrise for mid-latitude and verifies sunrise occurs between 04:00 and 08:00 local time using apparent altitude crossings.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testHorizonDipEffect</dt>
+            <dd>Compares 0m vs 1000m elevation observers and verifies that 1000m sunrise occurs strictly earlier due to horizon dip.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testNegativeEpochRobustness</dt>
+            <dd>Calls solve() for July 1969 and asserts valid solar lighting results without negative nanoseconds.</dd>
+          </div>
+          <div class="test-item">
+            <dt>testArcticEdgeCaseMidnightSun</dt>
+            <dd>Calls solve() for Tromsø during summer solstice, verifying graceful handling of continuous daylight without crashing.</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • Automated Test Suite Inventory
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleButtons = document.querySelectorAll('.toggle-btn');
+      
+      toggleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const section = btn.closest('.test-group');
+          const dds = section.querySelectorAll('.test-item dd');
+          const isExpanded = btn.getAttribute('data-expanded') === 'true';
+          
+          dds.forEach(dd => {
+            if (isExpanded) {
+              dd.classList.remove('expanded');
+            } else {
+              dd.classList.add('expanded');
+            }
+          });
+          
+          if (isExpanded) {
+            btn.textContent = 'Expand All Tests';
+            btn.setAttribute('data-expanded', 'false');
+            btn.setAttribute('aria-expanded', 'false');
+          } else {
+            btn.textContent = 'Collapse All Tests';
+            btn.setAttribute('data-expanded', 'true');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // Optional: Clicking the test name (dt) toggles its own description (dd)
+      const dts = document.querySelectorAll('.test-item dt');
+      dts.forEach(dt => {
+        dt.addEventListener('click', () => {
+          const dd = dt.nextElementSibling;
+          if (dd && dd.tagName === 'DD') {
+            dd.classList.toggle('expanded');
+          }
+        });
+      });
+    });
+  </script>
+
+<!-- Default Statcounter code for WeatherAPP Libre
+https://www.weatherapplibre.ca -->
+<script type="text/javascript">
+var sc_project=13358478; 
+var sc_invisible=0; 
+var sc_security="2de86961"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
+Statcounter" href="https://statcounter.com/" target="_blank"><img
+class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>

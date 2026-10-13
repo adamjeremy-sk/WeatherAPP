@@ -3,11 +3,12 @@ package com.weatherapp.libre.lunar
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import kotlin.math.roundToInt
 
 data class FormattedLunarPhase(
     val phaseNameWithEmoji: String,
     val illuminationText: String,
-    val cyclePercentage: Int
+    val cyclePercentage: Int,
 )
 
 object LunarCalculator {
@@ -15,8 +16,8 @@ object LunarCalculator {
     /**
      * Calculates MoonPhaseInfo for a given Instant UTC.
      */
-    fun phaseAt(instant: Instant, observer: Observer? = null): MoonPhaseInfo {
-        return MoonPhaseCalculator.phaseAt(instant, observer)
+    fun phaseAt(instant: Instant): MoonPhaseInfo {
+        return MoonPhaseCalculator.phaseAt(instant)
     }
 
     /**
@@ -36,16 +37,12 @@ object LunarCalculator {
         return TopocentricConverter.topocentricHorizontalState(instantUtc, observer)
     }
 
-    fun lunarHorizonThresholdDegrees(instantUtc: Instant): Double {
-        return 0.0 // no longer used publicly
-    }
-
     /**
      * Formats MoonPhaseInfo into user-friendly phase name with emoji and illumination percentage text.
      */
     fun formatPhaseDisplay(moonInfo: MoonPhaseInfo): FormattedLunarPhase {
         val (phaseName, emoji) = when {
-            moonInfo.phaseAngleDegrees < 22.5 || moonInfo.phaseAngleDegrees >= 337.5 -> Pair("New Moon", "🌑")
+            (moonInfo.phaseAngleDegrees < 22.5) || (moonInfo.phaseAngleDegrees >= 337.5) -> Pair("New Moon", "🌑")
             moonInfo.phaseAngleDegrees < 67.5 -> Pair("Waxing Crescent", "🌒")
             moonInfo.phaseAngleDegrees < 112.5 -> Pair("First Quarter", "🌓")
             moonInfo.phaseAngleDegrees < 157.5 -> Pair("Waxing Gibbous", "🌔")
@@ -54,11 +51,12 @@ object LunarCalculator {
             moonInfo.phaseAngleDegrees < 292.5 -> Pair("Last Quarter", "🌗")
             else -> Pair("Waning Crescent", "🌘")
         }
-        val pct = (moonInfo.illuminationFraction * 100).toInt().coerceIn(0, 100)
+        val pct = (moonInfo.illuminationFraction * 100).roundToInt().coerceIn(0, 100)
+        val cyclePct = (moonInfo.phaseAngleDegrees / 360.0 * 100).roundToInt().coerceIn(0, 100)
         return FormattedLunarPhase(
             phaseNameWithEmoji = "$phaseName $emoji",
             illuminationText = "$pct% illuminated",
-            cyclePercentage = pct
+            cyclePercentage = cyclePct,
         )
     }
 

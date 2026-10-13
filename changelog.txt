@@ -1,6 +1,18 @@
 ---------------
-Changelog 0.6.0VC19 - 
+Changelog 0.6.1VC20 
 ---------------
+
+
+---------------
+Changelog 0.6.0VC19 
+---------------
+* Open-sourced the complete application under the GNU GPLv3 license, ensuring long-term transparency and privacy.
+* Overhauled the solar and lunar calculation engines (17-module remediation) for almanac-grade astronomical accuracy.
+* Integrated official Espenak/Meeus Delta T polynomials and Meeus Chapter 49 quarter-phase corrections.
+* Corrected atmospheric refraction physics and integrated exact geometric horizon dip for high-altitude sunrise/sunset times.
+* Upgraded topocentric math and eradicated negative-epoch bugs, ensuring flawless calculations at the poles and for dates prior to 1970.
+* Rebuilt the solar timeline engine to dynamically handle polar latitudes (Midnight Sun and Polar Night) without UI placeholders.
+* Added a comprehensive automated test suite of 137 tests to guarantee mathematical rigor and long-term numerical stability.
 * minSdk changed; 32 -> 33
 * Rename the mislabeled System screen cell and the Location Tabs settings header from "7-Day Forecast Placement" to "Location Tabs" (new title_location_tabs string); the genuine 7-day placement control remains exclusively in Behaviour > Menu Organization.
 * Remove the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.

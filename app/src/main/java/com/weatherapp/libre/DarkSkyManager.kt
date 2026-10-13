@@ -62,7 +62,7 @@ class DarkSkyManager {
 
         // Astronomical darkness interval: evening astro twilight end today to morning astro twilight start tomorrow
         val astroNightStart = lightingToday.eveningAstronomicalTwilight?.endInstantUtc
-        val astroNightEnd = lightingTomorrow.astronomicalTwilight?.startInstantUtc
+        val astroNightEnd = lightingTomorrow.morningAstronomicalTwilight?.startInstantUtc
 
         if (astroNightStart == null || astroNightEnd == null || !astroNightStart.isBefore(astroNightEnd)) {
             return DarkSkyDaySummary(
@@ -105,7 +105,7 @@ class DarkSkyManager {
                 val sampleInstant = wStart.plusSeconds((s * stepSecs).toLong())
                 val lunarState = LunarCalculator.topocentricHorizontalState(sampleInstant, lunarObserver)
                 val moonAlt = lunarState.altitudeDegrees
-                val illum = LunarCalculator.phaseAt(sampleInstant, lunarObserver).illuminationFraction
+                val illum = LunarCalculator.phaseAt(sampleInstant).illuminationFraction
 
                 if (moonAlt > 0.0) {
                     allMoonBelow = false
@@ -119,7 +119,7 @@ class DarkSkyManager {
 
             val midInstant = wStart.plusSeconds(Duration.between(wStart, wEnd).seconds / 2)
             val midLunarState = LunarCalculator.topocentricHorizontalState(midInstant, lunarObserver)
-            val midIllum = LunarCalculator.phaseAt(midInstant, lunarObserver).illuminationFraction
+            val midIllum = LunarCalculator.phaseAt(midInstant).illuminationFraction
             val illumPct = (midIllum * 100).roundToInt()
 
             val moonStatus = if (midLunarState.altitudeDegrees <= 0.0) {

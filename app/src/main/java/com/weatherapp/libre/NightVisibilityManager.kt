@@ -72,9 +72,9 @@ class NightVisibilityManager {
         lightingToday.eveningNauticalTwilight?.endInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
         lightingToday.eveningAstronomicalTwilight?.endInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
 
-        lightingTomorrow.astronomicalTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
-        lightingTomorrow.nauticalTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
-        lightingTomorrow.civilTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
+        lightingTomorrow.morningAstronomicalTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
+        lightingTomorrow.morningNauticalTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
+        lightingTomorrow.morningCivilTwilight?.startInstantUtc?.let { if (it.isAfter(nightStart) && it.isBefore(nightEnd)) events.add(it) }
 
         val moonEventsToday = LunarCalculator.moonEventsForLocalDate(date, zoneId, lunarObserver)
         val moonEventsTomorrow = LunarCalculator.moonEventsForLocalDate(nextDate, zoneId, lunarObserver)
@@ -107,7 +107,7 @@ class NightVisibilityManager {
 
             val lunarState = LunarCalculator.topocentricHorizontalState(midInstant, lunarObserver)
             val moonAlt = lunarState.altitudeDegrees
-            val moonIllum = LunarCalculator.phaseAt(midInstant, lunarObserver).illuminationFraction
+            val moonIllum = LunarCalculator.phaseAt(midInstant).illuminationFraction
 
             // Ambient Light Model
             val moonAltitudeFactor = (moonAlt / 30.0).coerceIn(0.0, 1.0)

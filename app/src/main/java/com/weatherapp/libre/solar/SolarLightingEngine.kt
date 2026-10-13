@@ -86,9 +86,9 @@ object SolarLightingEngine {
         val ebStart = lighting.eveningBlueHour?.startInstantUtc
         val ebEnd = lighting.eveningBlueHour?.endInstantUtc
 
-        val civilStart = lighting.civilTwilight?.startInstantUtc
-        val nautStart = lighting.nauticalTwilight?.startInstantUtc
-        val astroStart = lighting.astronomicalTwilight?.startInstantUtc
+        val civilStart = lighting.morningCivilTwilight?.startInstantUtc
+        val nautStart = lighting.morningNauticalTwilight?.startInstantUtc
+        val astroStart = lighting.morningAstronomicalTwilight?.startInstantUtc
 
         val ecEnd = lighting.eveningCivilTwilight?.endInstantUtc
         val enEnd = lighting.eveningNauticalTwilight?.endInstantUtc
@@ -97,23 +97,251 @@ object SolarLightingEngine {
         val dayStartInstant = date.atStartOfDay(zoneId).toInstant()
         val dayEndInstant = date.plusDays(1).atStartOfDay(zoneId).toInstant()
 
-        val rawPhases = listOf(
-            SolarPhaseDetail(1, "Night", "🌌", "Midnight – ${fmt(astroStart)}", dur(dayStartInstant, astroStart), "Sun elevation < -18° • Complete astronomical darkness", false, dayStartInstant, astroStart),
-            SolarPhaseDetail(2, "Astronomical Twilight", "🌌", "${fmt(astroStart)} – ${fmt(nautStart)}", dur(astroStart, nautStart), "Sun elevation -18° to -12° • Sky begins subtle morning glow", false, astroStart, nautStart),
-            SolarPhaseDetail(3, "Nautical Twilight", "⛵", "${fmt(nautStart)} – ${fmt(civilStart)}", dur(nautStart, civilStart), "Sun elevation -12° to -6° • Horizon clearly visible at sea", false, nautStart, civilStart),
-            SolarPhaseDetail(4, "Blue Hour", "🟦", "${fmt(mbStart)} – ${fmt(mbEnd)}", dur(mbStart, mbEnd), "Sun elevation -6° to -4° • Deep electric blue sky for photography", false, mbStart, mbEnd),
-            SolarPhaseDetail(5, "Civil Twilight", "🌅", "${fmt(civilStart)} – ${fmt(srInstant)}", dur(civilStart, srInstant), "Sun elevation -6° to -0.83° • Natural outdoor light, no lamps needed", false, civilStart, srInstant),
-            SolarPhaseDetail(6, "Sunrise", "☀️", fmt(srInstant), "Event", "Sun upper limb crosses eastern horizon (elevation -0.83°)", false, srInstant, srInstant),
-            SolarPhaseDetail(7, "Golden Hour", "🟧", "${fmt(mgStart)} – ${fmt(mgEnd)}", dur(mgStart, mgEnd), "Sun elevation -4° to +6° • Warm golden hues, soft long shadows", false, mgStart, mgEnd),
-            SolarPhaseDetail(8, "Daytime", "☀️", "${fmt(srInstant)} – ${fmt(ssInstant)}", dur(srInstant, ssInstant), "Sun elevation > -0.83° • Daylight from end of morning civil twilight to start of evening civil twilight", false, srInstant, ssInstant),
-            SolarPhaseDetail(9, "Golden Hour", "🟧", "${fmt(egStart)} – ${fmt(egEnd)}", dur(egStart, egEnd), "Sun elevation +6° to -4° • Warm magical evening photography light", false, egStart, egEnd),
-            SolarPhaseDetail(10, "Sunset", "🌇", fmt(ssInstant), "Event", "Sun upper limb disappears below western horizon (elevation -0.83°)", false, ssInstant, ssInstant),
-            SolarPhaseDetail(11, "Civil Twilight", "🌆", "${fmt(ssInstant)} – ${fmt(ecEnd)}", dur(ssInstant, ecEnd), "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on", false, ssInstant, ecEnd),
-            SolarPhaseDetail(12, "Blue Hour", "🟦", "${fmt(ebStart)} – ${fmt(ebEnd)}", dur(ebStart, ebEnd), "Sun elevation -4° to -6° • Deep cobalt evening sky", false, ebStart, ebEnd),
-            SolarPhaseDetail(13, "Nautical Twilight", "⛵", "${fmt(ecEnd)} – ${fmt(enEnd)}", dur(ecEnd, enEnd), "Sun elevation -6° to -12° • Stars appear, marine navigation horizon", false, ecEnd, enEnd),
-            SolarPhaseDetail(14, "Astronomical Twilight", "🌌", "${fmt(enEnd)} – ${fmt(eaEnd)}", dur(enEnd, eaEnd), "Sun elevation -12° to -18° • Faint stars and galaxies visible", false, enEnd, eaEnd),
-            SolarPhaseDetail(15, "Night", "🌌", "${fmt(eaEnd)} – 23:59", dur(eaEnd, dayEndInstant), "Sun elevation < -18° • Complete night sky darkness", false, eaEnd, dayEndInstant)
-        )
+        val firstMorningEvent = astroStart ?: nautStart ?: civilStart ?: srInstant
+        val lastEveningEvent = eaEnd ?: enEnd ?: ecEnd ?: ssInstant
+
+        val rawPhases = mutableListOf<SolarPhaseDetail>()
+        var stepIndex = 1
+
+        if (firstMorningEvent != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Night",
+                    iconEmoji = "🌌",
+                    timeRangeText = "Midnight – ${fmt(firstMorningEvent)}",
+                    durationText = dur(dayStartInstant, firstMorningEvent),
+                    elevationDescription = "Sun elevation < -18° • Complete astronomical darkness",
+                    isCurrentActivePhase = false,
+                    startInstant = dayStartInstant,
+                    endInstant = firstMorningEvent
+                )
+            )
+        }
+
+        if (astroStart != null && nautStart != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Astronomical Twilight",
+                    iconEmoji = "🌌",
+                    timeRangeText = "${fmt(astroStart)} – ${fmt(nautStart)}",
+                    durationText = dur(astroStart, nautStart),
+                    elevationDescription = "Sun elevation -18° to -12° • Sky begins subtle morning glow",
+                    isCurrentActivePhase = false,
+                    startInstant = astroStart,
+                    endInstant = nautStart
+                )
+            )
+        }
+
+        if (nautStart != null && civilStart != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Nautical Twilight",
+                    iconEmoji = "⛵",
+                    timeRangeText = "${fmt(nautStart)} – ${fmt(civilStart)}",
+                    durationText = dur(nautStart, civilStart),
+                    elevationDescription = "Sun elevation -12° to -6° • Horizon clearly visible at sea",
+                    isCurrentActivePhase = false,
+                    startInstant = nautStart,
+                    endInstant = civilStart
+                )
+            )
+        }
+
+        if (mbStart != null && mbEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Blue Hour",
+                    iconEmoji = "🟦",
+                    timeRangeText = "${fmt(mbStart)} – ${fmt(mbEnd)}",
+                    durationText = dur(mbStart, mbEnd),
+                    elevationDescription = "Sun elevation -6° to -4° • Deep electric blue sky for photography",
+                    isCurrentActivePhase = false,
+                    startInstant = mbStart,
+                    endInstant = mbEnd
+                )
+            )
+        }
+
+        if (civilStart != null && srInstant != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Civil Twilight",
+                    iconEmoji = "🌅",
+                    timeRangeText = "${fmt(civilStart)} – ${fmt(srInstant)}",
+                    durationText = dur(civilStart, srInstant),
+                    elevationDescription = "Sun elevation -6° to -0.83° • Natural outdoor light, no lamps needed",
+                    isCurrentActivePhase = false,
+                    startInstant = civilStart,
+                    endInstant = srInstant
+                )
+            )
+        }
+
+        if (srInstant != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Sunrise",
+                    iconEmoji = "☀️",
+                    timeRangeText = fmt(srInstant),
+                    durationText = "Event",
+                    elevationDescription = "Sun upper limb crosses eastern horizon (elevation -0.83°)",
+                    isCurrentActivePhase = false,
+                    startInstant = srInstant,
+                    endInstant = srInstant
+                )
+            )
+        }
+
+        if (mgStart != null && mgEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Golden Hour",
+                    iconEmoji = "🟧",
+                    timeRangeText = "${fmt(mgStart)} – ${fmt(mgEnd)}",
+                    durationText = dur(mgStart, mgEnd),
+                    elevationDescription = "Sun elevation -4° to +6° • Warm golden hues, soft long shadows",
+                    isCurrentActivePhase = false,
+                    startInstant = mgStart,
+                    endInstant = mgEnd
+                )
+            )
+        }
+
+        if (srInstant != null && ssInstant != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Daytime",
+                    iconEmoji = "☀️",
+                    timeRangeText = "${fmt(srInstant)} – ${fmt(ssInstant)}",
+                    durationText = dur(srInstant, ssInstant),
+                    elevationDescription = "Sun elevation > -0.83° • Daylight from end of morning civil twilight to start of evening civil twilight",
+                    isCurrentActivePhase = false,
+                    startInstant = srInstant,
+                    endInstant = ssInstant
+                )
+            )
+        }
+
+        if (egStart != null && egEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Golden Hour",
+                    iconEmoji = "🟧",
+                    timeRangeText = "${fmt(egStart)} – ${fmt(egEnd)}",
+                    durationText = dur(egStart, egEnd),
+                    elevationDescription = "Sun elevation +6° to -4° • Warm magical evening photography light",
+                    isCurrentActivePhase = false,
+                    startInstant = egStart,
+                    endInstant = egEnd
+                )
+            )
+        }
+
+        if (ssInstant != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Sunset",
+                    iconEmoji = "🌇",
+                    timeRangeText = fmt(ssInstant),
+                    durationText = "Event",
+                    elevationDescription = "Sun upper limb disappears below western horizon (elevation -0.83°)",
+                    isCurrentActivePhase = false,
+                    startInstant = ssInstant,
+                    endInstant = ssInstant
+                )
+            )
+        }
+
+        if (ssInstant != null && ecEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Civil Twilight",
+                    iconEmoji = "🌆",
+                    timeRangeText = "${fmt(ssInstant)} – ${fmt(ecEnd)}",
+                    durationText = dur(ssInstant, ecEnd),
+                    elevationDescription = "Sun elevation -0.83° to -6° • Dusk light, city lamps turn on",
+                    isCurrentActivePhase = false,
+                    startInstant = ssInstant,
+                    endInstant = ecEnd
+                )
+            )
+        }
+
+        if (ebStart != null && ebEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Blue Hour",
+                    iconEmoji = "🟦",
+                    timeRangeText = "${fmt(ebStart)} – ${fmt(ebEnd)}",
+                    durationText = dur(ebStart, ebEnd),
+                    elevationDescription = "Sun elevation -4° to -6° • Deep cobalt evening sky",
+                    isCurrentActivePhase = false,
+                    startInstant = ebStart,
+                    endInstant = ebEnd
+                )
+            )
+        }
+
+        if (ecEnd != null && enEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Nautical Twilight",
+                    iconEmoji = "⛵",
+                    timeRangeText = "${fmt(ecEnd)} – ${fmt(enEnd)}",
+                    durationText = dur(ecEnd, enEnd),
+                    elevationDescription = "Sun elevation -6° to -12° • Stars appear, marine navigation horizon",
+                    isCurrentActivePhase = false,
+                    startInstant = ecEnd,
+                    endInstant = enEnd
+                )
+            )
+        }
+
+        if (enEnd != null && eaEnd != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Astronomical Twilight",
+                    iconEmoji = "🌌",
+                    timeRangeText = "${fmt(enEnd)} – ${fmt(eaEnd)}",
+                    durationText = dur(enEnd, eaEnd),
+                    elevationDescription = "Sun elevation -12° to -18° • Faint stars and galaxies visible",
+                    isCurrentActivePhase = false,
+                    startInstant = enEnd,
+                    endInstant = eaEnd
+                )
+            )
+        }
+
+        if (lastEveningEvent != null) {
+            rawPhases.add(
+                SolarPhaseDetail(
+                    stepIndex = stepIndex++,
+                    name = "Night",
+                    iconEmoji = "🌌",
+                    timeRangeText = "${fmt(lastEveningEvent)} – ${fmt(dayEndInstant)}",
+                    durationText = dur(lastEveningEvent, dayEndInstant),
+                    elevationDescription = "Sun elevation < -18° • Complete night sky darkness",
+                    isCurrentActivePhase = false,
+                    startInstant = lastEveningEvent,
+                    endInstant = dayEndInstant
+                )
+            )
+        }
 
         if (!isToday) {
             return rawPhases

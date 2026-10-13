@@ -4,10 +4,10 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.roundToLong
 
 object MoonRiseSetCalculator {
-
-
 
     /**
      * Finds all Moonrise and Moonset events for a given local date and observer.
@@ -15,7 +15,7 @@ object MoonRiseSetCalculator {
     fun moonEventsForLocalDate(
         localDate: LocalDate,
         zoneId: ZoneId,
-        observer: Observer
+        observer: Observer,
     ): List<MoonEvent> {
         val localStartInstant = localDate.atStartOfDay(zoneId).toInstant()
         val localEndInstant = localDate.plusDays(1).atStartOfDay(zoneId).toInstant()
@@ -32,6 +32,15 @@ object MoonRiseSetCalculator {
         return filtered.sortedBy { it.instantUtc }
     }
 
+    /**
+     * Standard rise/set is defined as the moment the apparent upper
+     * limb crosses the horizon (apparent altitude = 0). Since
+     * Apparent Upper Limb = Apparent Center + Semidiameter, we want
+     * Apparent Center = -Semidiameter. Because the caller compares
+     * this target against the refracted apparentAltitudeDegrees, this
+     * correctly accounts for atmospheric refraction without double-
+     * counting it.
+     */
     private fun computeTargetAltitude(lunar: LunarPosition.LunarCoordinates): Double {
         return -lunar.semidiameterDeg
     }
@@ -43,17 +52,16 @@ object MoonRiseSetCalculator {
         val topo = TopocentricConverter.computeTopocentric(lunar, observer, jdUtc, jdeTT)
         val targetAlt = computeTargetAltitude(lunar)
         val fVal = topo.apparentAltitudeDegrees - targetAlt
-        android.util.Log.d("MoonRiseSetCalc", "getApparentAltitudeAt: $instant  appAlt=${topo.apparentAltitudeDegrees}  targetAlt=$targetAlt  fVal=$fVal")
         return Pair(fVal, topo)
     }
 
-    private fun findRiseSetEventsInInterval(
+    fun findRiseSetEventsInInterval(
         startInstant: Instant,
         endInstant: Instant,
-        observer: Observer
+        observer: Observer,
     ): List<MoonEvent> {
         val stepSeconds = 120L
-        val totalSecs = endInstant.epochSecond - startInstant.epochSecond
+        val totalSecs = endInstant.epochSecond - searchStartSecs(startInstant)
 
         val samples = mutableListOf<Triple<Instant, Double, TopocentricConverter.TopocentricPosition>>()
 
@@ -67,7 +75,7 @@ object MoonRiseSetCalculator {
 
         val foundEvents = mutableListOf<MoonEvent>()
 
-        for (i in 0 until samples.size - 1) {
+        for (i in 0 until (samples.size - 1)) {
             val (t1, f1, _) = samples[i]
             val (t2, f2, _) = samples[i + 1]
 
@@ -75,8 +83,6 @@ object MoonRiseSetCalculator {
                 val eventType = if (f1 < f2) MoonEventType.MOONRISE else MoonEventType.MOONSET
                 val rootInstant = solveRootBrent(t1, t2, f1, f2, observer)
                 val (_, topoRoot) = getApparentAltitudeAt(rootInstant, observer)
-                
-                android.util.Log.d("MoonRiseSetCalc", "Found event: $eventType at $rootInstant, iter bracket: $t1 to $t2")
 
                 foundEvents.add(
                     MoonEvent(
@@ -84,7 +90,6 @@ object MoonRiseSetCalculator {
                         instantUtc = rootInstant,
                         azimuthDegrees = topoRoot.azimuthDegrees,
                         altitudeDegrees = topoRoot.apparentAltitudeDegrees,
-                        observer = observer
                     )
                 )
             }
@@ -100,13 +105,15 @@ object MoonRiseSetCalculator {
         return deduplicated
     }
 
+    private fun searchStartSecs(startInstant: Instant): Long = startInstant.epochSecond
+
     private fun solveRootBrent(
         t1: Instant,
         t2: Instant,
         f1In: Double,
         f2In: Double,
         observer: Observer,
-        toleranceSeconds: Double = 0.5
+        toleranceSeconds: Double = 0.5,
     ): Instant {
         var a = t1.epochSecond.toDouble() + t1.nano / 1e9
         var b = t2.epochSecond.toDouble() + t2.nano / 1e9
@@ -149,7 +156,9 @@ object MoonRiseSetCalculator {
                 mflag = false
             }
 
-            val instS = Instant.ofEpochSecond(s.toLong(), ((s - s.toLong()) * 1e9).toLong())
+            val secs = floor(s).toLong()
+            val nanos = ((s - secs) * 1e9).roundToLong()
+            val instS = Instant.ofEpochSecond(secs, nanos)
             val fs = getApparentAltitudeAt(instS, observer).first
 
             d = c
@@ -170,8 +179,8 @@ object MoonRiseSetCalculator {
             }
         }
 
-        val sec = b.toLong()
-        val nsec = ((b - sec) * 1e9).toLong()
-        return Instant.ofEpochSecond(sec, nsec)
+        val secs = floor(b).toLong()
+        val nanos = ((b - secs) * 1e9).roundToLong()
+        return Instant.ofEpochSecond(secs, nanos)
     }
 }

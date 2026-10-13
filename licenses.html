@@ -47,14 +47,25 @@
       align-items: center;
       gap: 24px;
     }
-    .app-logo {
-      width: 112px;
-      height: 112px;
+    
+    /* Logo Link */
+    .logo-link {
       flex: 0 0 112px;
+      display: block;
+      line-height: 0;
+      transition: transform 200ms ease;
+    }
+    .logo-link:hover {
+      transform: scale(1.04);
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       border-radius: 24px;
       filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
     }
+    
     .header-copy { min-width: 0; }
     h1 {
       margin: 0 0 12px;
@@ -212,6 +223,10 @@
     }
 
     /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .logo-link { transition: none; }
+    }
     @media (max-width: 880px) {
       .layout {
         grid-template-columns: 1fr;
@@ -228,10 +243,12 @@
     @media (max-width: 540px) {
       header { padding: 34px 20px; }
       .header-inner { align-items: flex-start; gap: 16px; }
+      .logo-link {
+        flex-basis: 82px;
+      }
       .app-logo {
         width: 82px;
         height: 82px;
-        flex-basis: 82px;
         border-radius: 18px;
       }
       .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
@@ -255,7 +272,9 @@
 
   <header>
     <div class="header-inner">
-      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <a href="index.html" class="logo-link" aria-label="WeatherAPP Libre Home">
+        <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
       <div class="header-copy">
         <h1>Licenses &amp; Sources</h1>
         <p>Attributions, data sources, and open-source licenses used in WeatherAPP Libre.</p>
@@ -294,6 +313,7 @@
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="tests.html">Automated Tests (137)</a></li>
           <li><a href="https://github.com/adamjeremy-sk/WeatherAPP" target="_blank" rel="noopener noreferrer">Source Code (GitHub)</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
@@ -311,7 +331,12 @@
         <ul>
           <li><strong>Repository:</strong> <a href="https://github.com/adamjeremy-sk/WeatherAPP" target="_blank" rel="noopener noreferrer">github.com/adamjeremy-sk/WeatherAPP</a></li>
           <li><strong>License:</strong> GNU General Public License v3.0</li>
+          <li><strong>Copyright:</strong> &copy; 2024-2026 Adam Hainstock and WeatherAPP Libre contributors.</li>
         </ul>
+        <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+        <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+        <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="https://www.gnu.org/licenses/" target="_blank" rel="noopener noreferrer">https://www.gnu.org/licenses/</a>.</p>
+        
         <div class="highlight">
           <strong>Trademark Notice:</strong> The "WeatherAPP Libre" name, the application logo, and the associated trade dress are proprietary identifiers of Adam Hainstock. The GPLv3 licence granted with the source code conveys no right, title, or interest in or to these Marks. Derivative works and forks must not use the WeatherAPP Libre name or logo in a way that suggests endorsement or affiliation.
         </div>
@@ -360,6 +385,7 @@
         <p>To ensure user privacy and offline capability, WeatherAPP Libre does not use external astronomy APIs or third-party ephemeris libraries. All solar and lunar calculations are performed natively on-device.</p>
         <ul>
           <li><strong>Algorithms:</strong> Based on the mathematical formulas published in <em>Astronomical Algorithms</em> by Jean Meeus.</li>
+          <li><strong>Delta T Polynomials:</strong> Uses the official polynomial expressions for Delta T ($\Delta$T) published by Fred Espenak and Jean Meeus (NASA GSFC) in the <em>Five Millennium Canon of Solar Eclipses</em>.</li>
           <li><strong>Implementation:</strong> Custom native Kotlin/JVM implementation using iterative topocentric root-finding for precise rise/set times and azimuths.</li>
           <li><strong>Time Scales:</strong> Calculations account for Terrestrial Time (TT), Delta T ($\Delta$T), and atmospheric refraction.</li>
         </ul>
@@ -418,5 +444,21 @@
     WeatherAPP Libre • Private, Ad-Free Weather &amp; Astronomy
   </footer>
 
+<!-- Default Statcounter code for WeatherAPP Libre
+https://www.weatherapplibre.ca -->
+<script type="text/javascript">
+var sc_project=13358478; 
+var sc_invisible=0; 
+var sc_security="2de86961"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
+Statcounter" href="https://statcounter.com/" target="_blank"><img
+class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
 </body>
 </html>

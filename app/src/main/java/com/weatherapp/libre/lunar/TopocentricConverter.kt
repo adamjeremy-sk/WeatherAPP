@@ -21,7 +21,17 @@ object TopocentricConverter {
         val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
         val lunar = LunarPosition.compute(jdeTT)
         val topo = computeTopocentric(lunar, observer, jdUtc, jdeTT)
-        val h0 = -lunar.semidiameterDeg
+
+        // Standard rise/set occurs when the apparent upper limb touches
+        // the visible horizon (altitude = 0). Since
+        // Apparent Upper Limb = Apparent Center + Semidiameter, and the
+        // visible horizon is at -horizonDip, we want:
+        // Apparent Center + Semidiameter = -horizonDip
+        // Apparent Center = -(Semidiameter + horizonDip).
+        // Because altitudeDegrees stores the refracted apparent center,
+        // comparing it against this h0 correctly accounts for both
+        // refraction and horizon dip without double-counting.
+        val h0 = -lunar.semidiameterDeg - observer.effectiveHorizonDipDegrees
 
         return LunarTopocentricHorizontalState(
             instantUtc = instantUtc,
@@ -45,7 +55,6 @@ object TopocentricConverter {
         jdeTT: Double
     ): TopocentricPosition {
         val latRad = AstronomyMath.degToRad(observer.latitudeDegrees)
-        val lonRad = AstronomyMath.degToRad(observer.longitudeDegrees)
         val elevKm = observer.effectiveElevationMeters / 1000.0
 
         val a = 6378.137 // Earth equatorial radius km
@@ -77,9 +86,9 @@ object TopocentricConverter {
         val topocentricRaDeg = AstronomyMath.normalizeDegrees(lunar.raDeg + AstronomyMath.radToDeg(deltaRaRad))
         val topocentricHRad = HRad - deltaRaRad
 
-        val tanTopocentricDec = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad) /
-                (cos(decRad) - rhoCosPhiDash * sinPi * cos(HRad))
-        val topocentricDecRad = atan(tanTopocentricDec)
+        val decNumerator = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad)
+        val decDenominator = cos(decRad) - rhoCosPhiDash * sinPi * cos(HRad)
+        val topocentricDecRad = atan2(decNumerator, decDenominator)
         val topocentricDecDeg = AstronomyMath.radToDeg(topocentricDecRad)
 
         val sinAlt = sin(latRad) * sin(topocentricDecRad) + cos(latRad) * cos(topocentricDecRad) * cos(topocentricHRad)

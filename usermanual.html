@@ -46,14 +46,25 @@
       align-items: center;
       gap: 24px;
     }
-    .app-logo {
-      width: 112px;
-      height: 112px;
+    
+    /* Logo Link */
+    .logo-link {
       flex: 0 0 112px;
+      display: block;
+      line-height: 0;
+      transition: transform 200ms ease;
+    }
+    .logo-link:hover {
+      transform: scale(1.04);
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       border-radius: 24px;
       filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
     }
+    
     .header-copy { min-width: 0; }
     h1 {
       margin: 0 0 12px;
@@ -170,6 +181,10 @@
     }
 
     /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .logo-link { transition: none; }
+    }
     @media (max-width: 880px) {
       .layout {
         grid-template-columns: 1fr;
@@ -183,6 +198,9 @@
     @media (max-width: 540px) {
       header { padding: 34px 20px; }
       .header-inner { align-items: flex-start; gap: 16px; }
+      .logo-link {
+        flex-basis: 82px;
+      }
       .app-logo {
         width: 82px;
         height: 82px;
@@ -206,7 +224,9 @@
 
   <header>
     <div class="header-inner">
-      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <a href="index.html" class="logo-link" aria-label="WeatherAPP Libre Home">
+        <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
       <div class="header-copy">
         <h1>User Manual</h1>
         <p>A comprehensive guide to navigating WeatherAPP Libre, managing locations, utilizing advanced astronomical tools, and customizing your experience.</p>
@@ -243,6 +263,7 @@
           <li><a href="licenses.html">Licenses &amp; Sources</a></li>
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="tests.html">Automated Tests (137)</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
@@ -345,6 +366,9 @@
 
         <h3>Solunar Activity</h3>
         <p>Based on traditional solunar theory, this page calculates Major and Minor activity periods based on lunar transits (when the moon is directly overhead or underfoot) and moonrise/moonset times. Highly useful for fishing and wildlife observation.</p>
+
+        <h3>Moon Phase &amp; Cycle</h3>
+        <p>View the current lunar illumination, phase category, and synodic cycle progress. <strong>Tap the Moon Phase &amp; Cycle button</strong> to instantly pop up a detailed calendar view showing the exact dates and times of the next month's major moon phases (New Moon, First Quarter, Full Moon, and Last Quarter).</p>
       </section>
 
       <section id="alerts" class="card">
@@ -394,6 +418,7 @@
           <li><strong>Pull-Down to Refresh:</strong> Swiping down on the main screen forces a cache bypass and fetches fresh data.</li>
           <li><strong>Volume Keys (When Enabled):</strong> Scrub through future and past dates on the Natural Light page without touching the screen.</li>
           <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details.</li>
+          <li><strong>Tap Moon Phase &amp; Cycle:</strong> Instantly opens a popup displaying the next month of upcoming lunar phases and events.</li>
         </ul>
       </section>
     </main>
@@ -403,5 +428,21 @@
     WeatherAPP Libre • Official User Manual
   </footer>
 
+<!-- Default Statcounter code for WeatherAPP Libre
+https://www.weatherapplibre.ca -->
+<script type="text/javascript">
+var sc_project=13358478; 
+var sc_invisible=0; 
+var sc_security="2de86961"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
+Statcounter" href="https://statcounter.com/" target="_blank"><img
+class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
 </body>
 </html>

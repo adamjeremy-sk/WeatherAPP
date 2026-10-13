@@ -155,13 +155,17 @@ class DayForecastAdapter(
                     elevationMeters = loc.elevationMeters
                 )
                 val targetInstant = item.date.atStartOfDay(zoneId).toInstant()
-                val phaseInfo = LunarCalculator.phaseAt(targetInstant, observer)
+                val phaseInfo = LunarCalculator.phaseAt(targetInstant)
 
-                val phaseNameText = when (phaseInfo.phaseName) {
-                    MoonPhaseName.NEW_MOON -> "New Moon 🌑"
-                    MoonPhaseName.FIRST_QUARTER -> "First Quarter 🌓"
-                    MoonPhaseName.FULL_MOON -> "Full Moon 🌕"
-                    MoonPhaseName.LAST_QUARTER -> "Last Quarter 🌗"
+                val phaseNameText = when (phaseInfo.phaseCategory) {
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.NEW -> "New Moon 🌑"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.WAXING_CRESCENT -> "Waxing Crescent 🌒"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.FIRST_QUARTER -> "First Quarter 🌓"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.WAXING_GIBBOUS -> "Waxing Gibbous 🌔"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.FULL -> "Full Moon 🌕"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.WANING_GIBBOUS -> "Waning Gibbous 🌖"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.LAST_QUARTER -> "Last Quarter 🌗"
+                    com.weatherapp.libre.lunar.LunarPhaseCategory.WANING_CRESCENT -> "Waning Crescent 🌘"
                 }
 
                 binding.tvExpandedMoonPhase.text = "$phaseNameText (${(phaseInfo.illuminationFraction * 100).toInt()}%)"

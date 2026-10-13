@@ -5,7 +5,7 @@ import kotlin.math.*
 
 object MoonPhaseCalculator {
 
-    fun phaseAt(instant: Instant, observer: Observer? = null): MoonPhaseInfo {
+    fun phaseAt(instant: Instant): MoonPhaseInfo {
         val jdUtc = AstroTime.instantToJdUtc(instant)
         val jdeTT = AstroTime.jdUtcToJdeTT(jdUtc)
 
@@ -28,24 +28,28 @@ object MoonPhaseCalculator {
                 (instant.nano - prevNewMoonInstant.nano).toDouble() / 1e9
         val ageDays = (ageSeconds / 86400.0).coerceAtLeast(0.0)
 
-        val phaseName = determinePhaseName(elongationDeg)
+        val phaseCategory = determinePhaseCategory(elongationDeg)
 
         return MoonPhaseInfo(
             instantUtc = instant,
             phaseAngleDegrees = elongationDeg,
             illuminationFraction = k.coerceIn(0.0, 1.0),
             ageDays = ageDays,
-            phaseName = phaseName,
+            phaseCategory = phaseCategory,
             geocentricDistanceKm = moon.distanceKm
         )
     }
 
-    private fun determinePhaseName(elongationDeg: Double): MoonPhaseName {
+    private fun determinePhaseCategory(elongationDeg: Double): LunarPhaseCategory {
         return when {
-            elongationDeg < 45.0 || elongationDeg >= 315.0 -> MoonPhaseName.NEW_MOON
-            elongationDeg < 135.0 -> MoonPhaseName.FIRST_QUARTER
-            elongationDeg < 225.0 -> MoonPhaseName.FULL_MOON
-            else -> MoonPhaseName.LAST_QUARTER
+            elongationDeg < 22.5 || elongationDeg >= 337.5 -> LunarPhaseCategory.NEW
+            elongationDeg < 67.5 -> LunarPhaseCategory.WAXING_CRESCENT
+            elongationDeg < 112.5 -> LunarPhaseCategory.FIRST_QUARTER
+            elongationDeg < 157.5 -> LunarPhaseCategory.WAXING_GIBBOUS
+            elongationDeg < 202.5 -> LunarPhaseCategory.FULL
+            elongationDeg < 247.5 -> LunarPhaseCategory.WANING_GIBBOUS
+            elongationDeg < 292.5 -> LunarPhaseCategory.LAST_QUARTER
+            else -> LunarPhaseCategory.WANING_CRESCENT
         }
     }
 
@@ -110,6 +114,8 @@ object MoonPhaseCalculator {
             }
             1, 3 -> { // Quarters
                 val sign = if (phaseIndex == 1) +1.0 else -1.0
+                val W = 0.00306 - 0.00038 * E * cos(M) + 0.00026 * cos(Mdash) -
+                        0.00002 * cos(Mdash - M) + 0.00002 * cos(Mdash + M)
                 corr = -0.38662 * sin(Mdash) +
                         0.16524 * E * sin(M) +
                         0.01602 * sin(2.0 * Mdash) +
@@ -118,7 +124,7 @@ object MoonPhaseCalculator {
                         0.00481 * E * sin(Mdash + M) +
                         0.00192 * E * E * sin(2.0 * M) -
                         0.00111 * sin(Mdash - 2.0 * F) +
-                        sign * 0.00306
+                        sign * W
             }
         }
 
@@ -163,15 +169,11 @@ object MoonPhaseCalculator {
     private fun findPrecedingNewMoonInstant(instant: Instant): Instant {
         val jdUtc = AstroTime.instantToJdUtc(instant)
         val kEstimate = floor((jdUtc - 2451550.09766) / 29.53058867)
-        var bestJde = computeMeeusPhaseJde(kEstimate)
-        var bestInstant = AstroTime.jdeTTToInstant(bestJde)
+        val candidates = listOf(kEstimate - 1.0, kEstimate, kEstimate + 1.0)
+            .map { AstroTime.jdeTTToInstant(computeMeeusPhaseJde(it)) }
+            .filter { !it.isAfter(instant) }
 
-        if (bestInstant.isAfter(instant)) {
-            bestJde = computeMeeusPhaseJde(kEstimate - 1.0)
-            bestInstant = AstroTime.jdeTTToInstant(bestJde)
-        }
-
-        return bestInstant
+        return candidates.maxBy { it.epochSecond }
     }
 
     fun phaseEventsBetween(startUtc: Instant, endUtc: Instant): List<MoonPhaseEvent> {
@@ -193,8 +195,14 @@ object MoonPhaseCalculator {
                 val eventInstant = AstroTime.jdeTTToInstant(jdeTT)
 
                 if (!eventInstant.isBefore(startUtc) && eventInstant.isBefore(endUtc)) {
-                    val phaseInfo = phaseAt(eventInstant)
-                    results.add(MoonPhaseEvent(phaseInfo.phaseName, eventInstant))
+                    val eventType = when (phaseQuarter) {
+                        0 -> MoonPhaseName.NEW_MOON
+                        1 -> MoonPhaseName.FIRST_QUARTER
+                        2 -> MoonPhaseName.FULL_MOON
+                        3 -> MoonPhaseName.LAST_QUARTER
+                        else -> MoonPhaseName.NEW_MOON
+                    }
+                    results.add(MoonPhaseEvent(eventType, eventInstant))
                 }
             }
             k += 1.0

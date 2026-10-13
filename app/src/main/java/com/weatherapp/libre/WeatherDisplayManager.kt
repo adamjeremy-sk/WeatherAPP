@@ -277,7 +277,7 @@ class WeatherDisplayManager(
         val targetInstant = if (isToday) Instant.now() else day.date.atStartOfDay(zoneId).toInstant()
         val lunarObserver = LunarObserver(currentLocation.latitude, currentLocation.longitude)
 
-        val moonInfo = LunarCalculator.phaseAt(targetInstant, lunarObserver)
+        val moonInfo = LunarCalculator.phaseAt(targetInstant)
         val formattedPhase = LunarCalculator.formatPhaseDisplay(moonInfo)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.text = formattedPhase.phaseNameWithEmoji
@@ -293,7 +293,7 @@ class WeatherDisplayManager(
 
         val palette = ColorPalette.forMode(locationPreferences.getThemeMode(), activity)
 
-        val currMoonInfo = LunarCalculator.phaseAt(targetInstant, observer)
+        val currMoonInfo = LunarCalculator.phaseAt(targetInstant)
         val formatted = LunarCalculator.formatPhaseDisplay(currMoonInfo)
 
         val startUtc = Instant.now()
@@ -331,7 +331,7 @@ class WeatherDisplayManager(
             "Phase: ${formatted.phaseNameWithEmoji}",
             "Illumination: ${formatted.illuminationText}",
             "Moon Age: ${String.format(Locale.US, "%.1f", currMoonInfo.ageDays)} days",
-            "Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm ?: 384400.0)} km",
+            "Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm)} km",
             "",
             "Moonrise: $riseStr",
             "Moonset: $setStr",

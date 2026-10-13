@@ -44,7 +44,7 @@ class SolunarManager {
         lunarObserver: LunarObserver
     ): SolunarDaySummary {
         val noonInstant = date.atTime(12, 0).atZone(zoneId).toInstant()
-        val phaseInfo = LunarCalculator.phaseAt(noonInstant, lunarObserver)
+        val phaseInfo = LunarCalculator.phaseAt(noonInstant)
         val formattedPhase = LunarCalculator.formatPhaseDisplay(phaseInfo)
 
         // Moonrise / Moonset for date

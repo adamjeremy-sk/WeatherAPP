@@ -16,6 +16,13 @@ object AstronomyMath {
     /**
      * Greenwich Mean Sidereal Time (GMST) in degrees for a given JD in UTC.
      * Meeus Ch. 12 Eq. 12.4
+     *
+     * T is computed in UT centuries from JD in UTC, approximating UT1 (|UT1 - UTC| < 0.9 s),
+     * yielding a GMST error below ~0.004 degrees; DUT1 correction deliberately not
+     * implemented to preserve offline operation.
+     *
+     * @param jdUtc Julian Date in UTC.
+     * @return Greenwich Mean Sidereal Time in degrees in [0, 360).
      */
     fun gmstDegrees(jdUtc: Double): Double {
         val d = jdUtc - 2451545.0
@@ -34,16 +41,21 @@ object AstronomyMath {
     /**
      * Nutation and obliquity of the ecliptic.
      * Meeus Ch. 22
+     *
+     * T is computed in TT centuries via [AstroTime.julianCenturiesTT] per Meeus Ch. 22.
+     *
+     * @param jdeTT Julian Ephemeris Day in TT.
+     * @return [ObliquityAndNutation] instance containing obliquity and nutation components.
      */
     fun nutationAndObliquity(jdeTT: Double): ObliquityAndNutation {
-        val T = AstroTime.julianCenturies(jdeTT)
+        val T = AstroTime.julianCenturiesTT(jdeTT)
 
         val eps0Seconds = 84381.448 - 46.8150 * T - 0.00059 * T * T + 0.001813 * T * T * T
         val eps0Deg = eps0Seconds / 3600.0
 
-        val omegaRad = degToRad(125.04452 - 1934.136261 * T + 0.0020708 * T * T + T * T * T / 450000.0)
-        val LRad     = degToRad(280.4665 + 36000.7698 * T)
-        val LdashRad = degToRad(218.3165 + 481267.8813 * T)
+        val omegaRad = degToRad(normalizeDegrees(125.04452 - 1934.136261 * T + 0.0020708 * T * T + T * T * T / 450000.0))
+        val LRad     = degToRad(normalizeDegrees(280.4665 + 36000.7698 * T))
+        val LdashRad = degToRad(normalizeDegrees(218.3165 + 481267.8813 * T))
 
         val deltaPsiSec = -17.20 * sin(omegaRad) - 1.32 * sin(2.0 * LRad) - 0.23 * sin(2.0 * LdashRad) + 0.21 * sin(2.0 * omegaRad)
         val deltaEpsSec = 9.20 * cos(omegaRad) + 0.57 * cos(2.0 * LRad) + 0.10 * cos(2.0 * LdashRad) - 0.09 * cos(2.0 * omegaRad)

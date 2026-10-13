@@ -6,12 +6,23 @@ enum class MoonPhaseName {
     NEW_MOON,
     FIRST_QUARTER,
     FULL_MOON,
-    LAST_QUARTER
+    LAST_QUARTER,
+}
+
+enum class LunarPhaseCategory {
+    NEW,
+    WAXING_CRESCENT,
+    FIRST_QUARTER,
+    WAXING_GIBBOUS,
+    FULL,
+    WANING_GIBBOUS,
+    LAST_QUARTER,
+    WANING_CRESCENT,
 }
 
 enum class MoonEventType {
     MOONRISE,
-    MOONSET
+    MOONSET,
 }
 
 data class MoonPhaseInfo(
@@ -19,13 +30,13 @@ data class MoonPhaseInfo(
     val phaseAngleDegrees: Double,
     val illuminationFraction: Double,
     val ageDays: Double,
-    val phaseName: MoonPhaseName,
-    val geocentricDistanceKm: Double? = null
+    val phaseCategory: LunarPhaseCategory,
+    val geocentricDistanceKm: Double,
 )
 
 data class MoonPhaseEvent(
     val type: MoonPhaseName,
-    val instantUtc: Instant
+    val instantUtc: Instant,
 )
 
 data class MoonEvent(
@@ -33,7 +44,6 @@ data class MoonEvent(
     val instantUtc: Instant,
     val azimuthDegrees: Double,
     val altitudeDegrees: Double,
-    val observer: Observer
 )
 
 data class LunarGeocentricState(
@@ -42,7 +52,9 @@ data class LunarGeocentricState(
     val apparentGeocentricLatitudeDegrees: Double,
     val distanceKm: Double,
     val horizontalParallaxDegrees: Double,
-    val apparentSemidiameterDegrees: Double
+    val apparentSemidiameterDegrees: Double,
+    val rightAscensionDegrees: Double,
+    val declinationDegrees: Double,
 )
 
 data class LunarTopocentricHorizontalState(
@@ -51,5 +63,5 @@ data class LunarTopocentricHorizontalState(
     val azimuthDegrees: Double,
     val topocentricRightAscensionDegrees: Double,
     val topocentricDeclinationDegrees: Double,
-    val horizonThresholdDegrees: Double
+    val horizonThresholdDegrees: Double,
 )

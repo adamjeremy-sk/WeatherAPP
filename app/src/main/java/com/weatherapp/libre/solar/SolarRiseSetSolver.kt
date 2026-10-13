@@ -4,6 +4,8 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.roundToLong
 
 object SolarRiseSetSolver {
 
@@ -40,31 +42,35 @@ object SolarRiseSetSolver {
 
         val solarNoon = findSolarNoon(localStartInstant, localEndInstant, observer)
 
+        val crossingCache = mutableMapOf<Double, List<CrossingEvent>>()
+        fun getCrossings(target: Double): List<CrossingEvent> =
+            crossingCache.getOrPut(target) { findAllCrossings(samples, target, observer) }
+
         val sunriseSunsetTargetAlt = definitions.sunriseSunsetAltitudeDegrees
 
         val sunriseEvent = findSingleCrossingForDate(
-            samples, localStartInstant, localEndInstant, sunriseSunsetTargetAlt, isRisingTarget = true, observer = observer
+            ::getCrossings, localStartInstant, localEndInstant, sunriseSunsetTargetAlt, isRisingTarget = true
         )
         val sunsetEvent = findSingleCrossingForDate(
-            samples, localStartInstant, localEndInstant, sunriseSunsetTargetAlt, isRisingTarget = false, observer = observer
+            ::getCrossings, localStartInstant, localEndInstant, sunriseSunsetTargetAlt, isRisingTarget = false
         )
 
         // Morning & Evening Twilights
-        val civilPhase = buildTwilightPhase(samples, localStartInstant, localEndInstant, definitions.civilTwilightDegrees, sunriseSunsetTargetAlt, observer)
-        val nauticalPhase = buildTwilightPhase(samples, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees, observer)
-        val astronomicalPhase = buildTwilightPhase(samples, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees, observer)
+        val civilPhase = buildTwilightPhase(::getCrossings, localStartInstant, localEndInstant, definitions.civilTwilightDegrees, sunriseSunsetTargetAlt)
+        val nauticalPhase = buildTwilightPhase(::getCrossings, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees)
+        val astronomicalPhase = buildTwilightPhase(::getCrossings, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees)
 
-        val eveningCivil = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.civilTwilightDegrees, sunriseSunsetTargetAlt, observer)
-        val eveningNautical = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees, observer)
-        val eveningAstronomical = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees, observer)
+        val eveningCivil = buildEveningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.civilTwilightDegrees, sunriseSunsetTargetAlt)
+        val eveningNautical = buildEveningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.nauticalTwilightDegrees, definitions.civilTwilightDegrees)
+        val eveningAstronomical = buildEveningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.astronomicalTwilightDegrees, definitions.nauticalTwilightDegrees)
 
         // Golden Hour
-        val morningGolden = buildMorningPhase(samples, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees, observer)
-        val eveningGolden = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees, observer)
+        val morningGolden = buildMorningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees)
+        val eveningGolden = buildEveningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.goldenHourLowerBoundDegrees, definitions.goldenHourUpperBoundDegrees)
 
         // Blue Hour
-        val morningBlue = buildMorningPhase(samples, localStartInstant, localEndInstant, definitions.blueHourLowerBoundDegrees, definitions.blueHourUpperBoundDegrees, observer)
-        val eveningBlue = buildEveningPhase(samples, localStartInstant, localEndInstant, definitions.blueHourLowerBoundDegrees, definitions.blueHourUpperBoundDegrees, observer)
+        val morningBlue = buildMorningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.blueHourLowerBoundDegrees, definitions.blueHourUpperBoundDegrees)
+        val eveningBlue = buildEveningPhase(::getCrossings, localStartInstant, localEndInstant, definitions.blueHourLowerBoundDegrees, definitions.blueHourUpperBoundDegrees)
 
         return SolarLightingResult(
             solarNoon = solarNoon,
@@ -74,9 +80,9 @@ object SolarRiseSetSolver {
             eveningGoldenHour = eveningGolden,
             morningBlueHour = morningBlue,
             eveningBlueHour = eveningBlue,
-            civilTwilight = civilPhase,
-            nauticalTwilight = nauticalPhase,
-            astronomicalTwilight = astronomicalPhase,
+            morningCivilTwilight = civilPhase,
+            morningNauticalTwilight = nauticalPhase,
+            morningAstronomicalTwilight = astronomicalPhase,
             eveningCivilTwilight = eveningCivil,
             eveningNauticalTwilight = eveningNautical,
             eveningAstronomicalTwilight = eveningAstronomical
@@ -137,14 +143,13 @@ object SolarRiseSetSolver {
     }
 
     private fun findSingleCrossingForDate(
-        samples: List<SolarPositionEngine.TopocentricSolarPosition>,
+        getCrossings: (Double) -> List<CrossingEvent>,
         localStartInstant: Instant,
         localEndInstant: Instant,
         targetAltitude: Double,
-        isRisingTarget: Boolean,
-        observer: Observer
+        isRisingTarget: Boolean
     ): SolarEvent? {
-        val allCrossings = findAllCrossings(samples, targetAltitude, observer)
+        val allCrossings = getCrossings(targetAltitude)
         val matches = allCrossings.filter {
             it.isRising == isRisingTarget &&
                     !it.instantUtc.isBefore(localStartInstant) &&
@@ -163,16 +168,15 @@ object SolarRiseSetSolver {
     }
 
     private fun buildMorningPhase(
-        samples: List<SolarPositionEngine.TopocentricSolarPosition>,
+        getCrossings: (Double) -> List<CrossingEvent>,
         localStartInstant: Instant,
         localEndInstant: Instant,
         lowerTarget: Double,
-        upperTarget: Double,
-        observer: Observer
+        upperTarget: Double
     ): SolarPhase? {
-        val lowerRising = findAllCrossings(samples, lowerTarget, observer)
+        val lowerRising = getCrossings(lowerTarget)
             .filter { it.isRising && !it.instantUtc.isBefore(localStartInstant) && it.instantUtc.isBefore(localEndInstant) }
-        val upperRising = findAllCrossings(samples, upperTarget, observer)
+        val upperRising = getCrossings(upperTarget)
             .filter { it.isRising && !it.instantUtc.isBefore(localStartInstant) && it.instantUtc.isBefore(localEndInstant) }
 
         val start = lowerRising.firstOrNull() ?: return null
@@ -182,21 +186,22 @@ object SolarRiseSetSolver {
             startInstantUtc = start.instantUtc,
             endInstantUtc = end.instantUtc,
             startAzimuthDegrees = start.azimuthDegrees,
-            endAzimuthDegrees = end.azimuthDegrees
+            endAzimuthDegrees = end.azimuthDegrees,
+            lowerAltitudeDegrees = lowerTarget,
+            upperAltitudeDegrees = upperTarget
         )
     }
 
     private fun buildEveningPhase(
-        samples: List<SolarPositionEngine.TopocentricSolarPosition>,
+        getCrossings: (Double) -> List<CrossingEvent>,
         localStartInstant: Instant,
         localEndInstant: Instant,
         lowerTarget: Double,
-        upperTarget: Double,
-        observer: Observer
+        upperTarget: Double
     ): SolarPhase? {
-        val upperFalling = findAllCrossings(samples, upperTarget, observer)
+        val upperFalling = getCrossings(upperTarget)
             .filter { !it.isRising && !it.instantUtc.isBefore(localStartInstant) && it.instantUtc.isBefore(localEndInstant) }
-        val lowerFalling = findAllCrossings(samples, lowerTarget, observer)
+        val lowerFalling = getCrossings(lowerTarget)
             .filter { !it.isRising && !it.instantUtc.isBefore(localStartInstant) && it.instantUtc.isBefore(localEndInstant) }
 
         val start = upperFalling.firstOrNull() ?: return null
@@ -206,19 +211,20 @@ object SolarRiseSetSolver {
             startInstantUtc = start.instantUtc,
             endInstantUtc = end.instantUtc,
             startAzimuthDegrees = start.azimuthDegrees,
-            endAzimuthDegrees = end.azimuthDegrees
+            endAzimuthDegrees = end.azimuthDegrees,
+            lowerAltitudeDegrees = lowerTarget,
+            upperAltitudeDegrees = upperTarget
         )
     }
 
     private fun buildTwilightPhase(
-        samples: List<SolarPositionEngine.TopocentricSolarPosition>,
+        getCrossings: (Double) -> List<CrossingEvent>,
         localStartInstant: Instant,
         localEndInstant: Instant,
         lowerTarget: Double,
-        upperTarget: Double,
-        observer: Observer
+        upperTarget: Double
     ): SolarPhase? {
-        return buildMorningPhase(samples, localStartInstant, localEndInstant, lowerTarget, upperTarget, observer)
+        return buildMorningPhase(getCrossings, localStartInstant, localEndInstant, lowerTarget, upperTarget)
     }
 
     private fun findAllCrossings(
@@ -227,17 +233,18 @@ object SolarRiseSetSolver {
         observer: Observer
     ): List<CrossingEvent> {
         val events = mutableListOf<CrossingEvent>()
+        val adjustedTarget = targetAltitude - observer.horizonDipDegrees
 
         for (i in 0 until samples.size - 1) {
             val s1 = samples[i]
             val s2 = samples[i + 1]
 
-            val f1 = s1.trueAltitudeDegrees - targetAltitude
-            val f2 = s2.trueAltitudeDegrees - targetAltitude
+            val f1 = s1.apparentAltitudeDegrees - adjustedTarget
+            val f2 = s2.apparentAltitudeDegrees - adjustedTarget
 
             if (f1 * f2 <= 0.0) {
                 val isRising = f1 < f2
-                val rootInstant = solveRootBrent(s1.instantUtc, s2.instantUtc, f1, f2, targetAltitude, observer)
+                val rootInstant = solveRootBrent(s1.instantUtc, s2.instantUtc, f1, f2, adjustedTarget, observer)
                 val pos = SolarPositionEngine.computeTopocentric(rootInstant, observer)
 
                 events.add(
@@ -251,7 +258,7 @@ object SolarRiseSetSolver {
             }
         }
 
-        return events.distinctBy { it.instantUtc.epochSecond / 10 }.sortedBy { it.instantUtc }
+        return events.distinctBy { Pair(it.isRising, it.instantUtc.epochSecond / 10) }.sortedBy { it.instantUtc }
     }
 
     private fun solveRootBrent(
@@ -304,9 +311,11 @@ object SolarRiseSetSolver {
                 mflag = false
             }
 
-            val instS = Instant.ofEpochSecond(s.toLong(), ((s - s.toLong()) * 1e9).toLong())
+            val secs = floor(s).toLong()
+            val nanos = ((s - secs) * 1e9).roundToLong()
+            val instS = Instant.ofEpochSecond(secs, nanos)
             val posS = SolarPositionEngine.computeTopocentric(instS, observer)
-            val fs = posS.trueAltitudeDegrees - targetAltitude
+            val fs = posS.apparentAltitudeDegrees - targetAltitude
 
             d = c
             c = b
@@ -326,8 +335,8 @@ object SolarRiseSetSolver {
             }
         }
 
-        val sec = b.toLong()
-        val nsec = ((b - sec) * 1e9).toLong()
-        return Instant.ofEpochSecond(sec, nsec)
+        val secs = floor(b).toLong()
+        val nanos = ((b - secs) * 1e9).roundToLong()
+        return Instant.ofEpochSecond(secs, nanos)
     }
 }

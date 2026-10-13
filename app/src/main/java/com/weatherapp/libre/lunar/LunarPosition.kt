@@ -28,7 +28,9 @@ object LunarPosition {
             apparentGeocentricLatitudeDegrees = coords.latitudeDeg,
             distanceKm = coords.distanceKm,
             horizontalParallaxDegrees = coords.horizontalParallaxDeg,
-            apparentSemidiameterDegrees = coords.semidiameterDeg
+            apparentSemidiameterDegrees = coords.semidiameterDeg,
+            rightAscensionDegrees = coords.raDeg,
+            declinationDegrees = coords.decDeg
         )
     }
 
@@ -39,14 +41,14 @@ object LunarPosition {
         val T = AstroTime.julianCenturies(jdeTT)
 
         val Ldash = AstronomyMath.normalizeDegrees(218.3164477 + 481267.8812342 * T - 0.0015786 * T * T + T * T * T / 538841.0 - T * T * T * T / 65194000.0)
-        val D = AstronomyMath.degToRad(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T + T * T * T / 545868.0 - T * T * T * T / 113065000.0)
-        val M = AstronomyMath.degToRad(357.5291092 + 35999.0502909 * T - 0.0001536 * T * T + T * T * T / 24490000.0)
-        val Mdash = AstronomyMath.degToRad(134.9633964 + 477198.8675055 * T + 0.0087414 * T * T + T * T * T / 69699.0 - T * T * T * T / 14712000.0)
-        val F = AstronomyMath.degToRad(93.2720950 + 483202.0175233 * T - 0.0036539 * T * T - T * T * T / 3526000.0 + T * T * T * T / 863310000.0)
+        val D = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T + T * T * T / 545868.0 - T * T * T * T / 113065000.0))
+        val M = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(357.5291092 + 35999.0502909 * T - 0.0001536 * T * T + T * T * T / 24490000.0))
+        val Mdash = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(134.9633964 + 477198.8675055 * T + 0.0087414 * T * T + T * T * T / 69699.0 - T * T * T * T / 14712000.0))
+        val F = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(93.2720950 + 483202.0175233 * T - 0.0036539 * T * T - T * T * T / 3526000.0 + T * T * T * T / 863310000.0))
 
-        val A1 = AstronomyMath.degToRad(119.75 + 131.849 * T)
-        val A2 = AstronomyMath.degToRad(53.09 + 479264.290 * T)
-        val A3 = AstronomyMath.degToRad(313.45 + 481266.484 * T)
+        val A1 = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(119.75 + 131.849 * T))
+        val A2 = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(53.09 + 479264.290 * T))
+        val A3 = AstronomyMath.degToRad(AstronomyMath.normalizeDegrees(313.45 + 481266.484 * T))
         val E = 1.0 - 0.002516 * T - 0.0000074 * T * T
 
         var sumL = 0.0
@@ -154,7 +156,7 @@ object LunarPosition {
         val sinParallax = 6378.14 / distanceKm
         val parallaxDeg = AstronomyMath.radToDeg(asin(sinParallax.coerceIn(-1.0, 1.0)))
 
-        val semidiameterDeg = 0.27245 * parallaxDeg
+        val semidiameterDeg = AstronomyMath.radToDeg(asin((1737.4 / distanceKm).coerceIn(-1.0, 1.0)))
 
         val eq = AstronomyMath.eclipticToEquatorial(lambdaDeg, betaDeg, nut.trueObliquityDeg)
 

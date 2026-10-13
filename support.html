@@ -46,14 +46,25 @@
       align-items: center;
       gap: 24px;
     }
-    .app-logo {
-      width: 112px;
-      height: 112px;
+    
+    /* Logo Link */
+    .logo-link {
       flex: 0 0 112px;
+      display: block;
+      line-height: 0;
+      transition: transform 200ms ease;
+    }
+    .logo-link:hover {
+      transform: scale(1.04);
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       border-radius: 24px;
       filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
     }
+    
     .header-copy { min-width: 0; }
     h1 {
       margin: 0 0 12px;
@@ -224,6 +235,10 @@
     }
 
     /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .logo-link, button, input, select, textarea { transition: none; }
+    }
     @media (max-width: 880px) {
       .layout {
         grid-template-columns: 1fr;
@@ -237,6 +252,9 @@
     @media (max-width: 540px) {
       header { padding: 34px 20px; }
       .header-inner { align-items: flex-start; gap: 16px; }
+      .logo-link {
+        flex-basis: 82px;
+      }
       .app-logo {
         width: 82px;
         height: 82px;
@@ -261,7 +279,9 @@
   <header>
     <div class="header-inner">
       <!-- Recommended logo.png size: 512 x 512 pixels, square, transparent PNG. -->
-      <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      <a href="index.html" class="logo-link" aria-label="WeatherAPP Libre Home">
+        <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
       <div class="header-copy">
         <h1>WeatherAPP Support</h1>
         <p>Beta Program Applications, Bug Reports, Feature Requests, Privacy Questions, and General Support.</p>
@@ -295,6 +315,7 @@
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="tests.html">Automated Tests (137)</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
@@ -413,5 +434,21 @@ ${message}`
     }
   </script>
 
+<!-- Default Statcounter code for WeatherAPP Libre
+https://www.weatherapplibre.ca -->
+<script type="text/javascript">
+var sc_project=13358478; 
+var sc_invisible=0; 
+var sc_security="2de86961"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
+Statcounter" href="https://statcounter.com/" target="_blank"><img
+class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
 </body>
 </html>

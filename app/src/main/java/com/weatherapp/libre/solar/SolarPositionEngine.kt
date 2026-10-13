@@ -87,9 +87,9 @@ object SolarPositionEngine {
         )
         val topocentricHRad = HRad - deltaRaRad
 
-        val sinTopocentricDec = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad) /
-                (cos(decRad) - rhoCosPhiDash * sinPi * cos(HRad))
-        val topocentricDecRad = asin(sinTopocentricDec.coerceIn(-1.0, 1.0))
+        val decNumerator = (sin(decRad) - rhoSinPhiDash * sinPi) * cos(deltaRaRad)
+        val decDenominator = cos(decRad) - rhoCosPhiDash * sinPi * cos(HRad)
+        val topocentricDecRad = atan2(decNumerator, decDenominator)
 
         // Topocentric Horizontal Coordinates (Altitude, Azimuth)
         val sinAlt = sin(latRad) * sin(topocentricDecRad) + cos(latRad) * cos(topocentricDecRad) * cos(topocentricHRad)
@@ -117,10 +117,10 @@ object SolarPositionEngine {
      * Bennett's refraction formula with pressure and temperature corrections.
      */
     private fun calculateRefraction(trueAltDeg: Double, pressureHpa: Double, tempCelsius: Double): Double {
-        val alt = trueAltDeg.coerceAtLeast(-5.0)
-        val tanArg = alt + (10.3 / (alt + 5.11))
+        if (trueAltDeg < -1.0) return 0.0
+        val tanArg = trueAltDeg + (10.3 / (trueAltDeg + 5.11))
         val R_arcmin = 1.02 / tan(AstronomyMath.degToRad(tanArg))
         val ptFactor = (pressureHpa / 1010.0) * (283.0 / (273.15 + tempCelsius))
-        return (R_arcmin * ptFactor / 60.0).coerceIn(0.0, 1.5)
+        return (R_arcmin * ptFactor).coerceIn(0.0, 60.0) / 60.0
     }
 }
