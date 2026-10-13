@@ -1,0 +1,31 @@
+WeatherAPP Libre
+Copyright (C) 2026 Adam Hainstock <support@weatherapplibre.ca>
+
+This product includes free software licensed under the GNU General
+Public License version 3 (see LICENSE).
+
+TRADEMARK NOTICE
+
+The "WeatherAPP Libre" name, the WeatherAPP Libre wordmarks, the
+application logo, and the associated trade dress (collectively, the
+"Marks") are proprietary identifiers of Adam Hainstock. The GPLv3
+licence granted with this software conveys no right, title, or
+interest in or to the Marks, whether by implication, estoppel, or
+otherwise.
+
+If you modify and redistribute this software you must:
+
+1. Remove or replace the Marks from the user-facing application name,
+   launcher label, logo, and About/Licenses screens; and
+2. Not use the Marks in any way that suggests your distribution is
+   endorsed by, affiliated with, or is the original WeatherAPP Libre.
+
+Third-party data and library attribution obligations are unchanged
+and are enumerated in the application's Licenses & Sources
+documentation, including Open-Meteo (CC BY 4.0) and Environment and
+Climate Change Canada (Open Government Licence - Canada).
+
+Extension manifests, themes, and forecast-provider configurations
+distributed through the catalog at weatherapplibre.ca are governed by
+the catalog terms of service published at that domain, not by this
+NOTICE.

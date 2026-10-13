@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.weatherapp.libre.databinding.ItemLocationSearchBinding
 
 class LocationSearchAdapter(
+    private val palette: ColorPalette,
     private val onItemClick: (LocationItem) -> Unit
 ) : RecyclerView.Adapter<LocationSearchAdapter.ViewHolder>() {
 
@@ -39,6 +40,9 @@ class LocationSearchAdapter(
         fun bind(item: LocationItem) {
             binding.tvLocationName.text = item.name
             binding.tvLocationSubtext.text = item.regionAndCountryText
+
+            binding.tvLocationName.setTextColor(palette.textPrimary)
+            binding.tvLocationSubtext.setTextColor(palette.textSecondary)
 
             binding.root.setOnClickListener {
                 onItemClick(item)

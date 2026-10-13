@@ -272,6 +272,7 @@
             Contents
           </h2>
           <ol>
+            <li><a href="#app-source">Application Source Code &amp; License</a></li>
             <li><a href="#weather-data">Weather &amp; Air Quality Data</a></li>
             <li><a href="#alerts">Weather Alerts</a></li>
             <li><a href="#astronomy">Astronomy &amp; Algorithms</a></li>
@@ -293,6 +294,7 @@
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="https://github.com/adamjeremy-sk/WeatherAPP" target="_blank" rel="noopener noreferrer">Source Code (GitHub)</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
@@ -300,14 +302,29 @@
     </aside>
 
     <main>
+      <section id="app-source" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          1. Application Source Code &amp; License
+        </h2>
+        <p>WeatherAPP Libre is free and open-source software. The complete source code is published under the <strong>GNU General Public License version 3 (GPLv3)</strong>.</p>
+        <ul>
+          <li><strong>Repository:</strong> <a href="https://github.com/adamjeremy-sk/WeatherAPP" target="_blank" rel="noopener noreferrer">github.com/adamjeremy-sk/WeatherAPP</a></li>
+          <li><strong>License:</strong> GNU General Public License v3.0</li>
+        </ul>
+        <div class="highlight">
+          <strong>Trademark Notice:</strong> The "WeatherAPP Libre" name, the application logo, and the associated trade dress are proprietary identifiers of Adam Hainstock. The GPLv3 licence granted with the source code conveys no right, title, or interest in or to these Marks. Derivative works and forks must not use the WeatherAPP Libre name or logo in a way that suggests endorsement or affiliation.
+        </div>
+      </section>
+
       <section id="weather-data" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
-          1. Weather &amp; Air Quality Data
+          2. Weather &amp; Air Quality Data
         </h2>
         <p>WeatherAPP Libre fetches meteorological and air quality data via the <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo API</a>. Open-Meteo is an open-source, free-to-use weather API that requires no API keys and does not track users.</p>
         
-        <h3>1.1 Meteorological Models</h3>
+        <h3>2.1 Meteorological Models</h3>
         <p>The application routes requests to specific global models based on user selection. The underlying data is provided by national meteorological agencies under their respective open-data policies:</p>
         <ul>
           <li><strong>GEM (Global Environmental Multiscale Model)</strong> — Environment and Climate Change Canada (ECCC).</li>
@@ -317,14 +334,14 @@
           <li><strong>CMA-GFS (GRAPES)</strong> — China Meteorological Administration (CMA).</li>
         </ul>
 
-        <h3>1.2 Air Quality &amp; UV Data</h3>
+        <h3>2.2 Air Quality &amp; UV Data</h3>
         <p>Air Quality Index (AQI) and UV Index data are sourced via Open-Meteo's Air Quality API, which aggregates data from the Copernicus Atmosphere Monitoring Service (CAMS) and NOAA.</p>
       </section>
 
       <section id="alerts" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          2. Weather Alerts
+          3. Weather Alerts
         </h2>
         <p>Severe weather alerts are sourced directly from <strong>Environment and Climate Change Canada (ECCC)</strong> using the Common Alerting Protocol (CAP-CP).</p>
         <ul>
@@ -338,7 +355,7 @@
       <section id="astronomy" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          3. Astronomy &amp; Algorithms
+          4. Astronomy &amp; Algorithms
         </h2>
         <p>To ensure user privacy and offline capability, WeatherAPP Libre does not use external astronomy APIs or third-party ephemeris libraries. All solar and lunar calculations are performed natively on-device.</p>
         <ul>
@@ -351,7 +368,7 @@
       <section id="geocoding" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-          4. Geocoding &amp; Location
+          5. Geocoding &amp; Location
         </h2>
         <p>Location search and geocoding (converting city names to coordinates) is handled via the Open-Meteo Geocoding API.</p>
         <ul>
@@ -363,7 +380,7 @@
       <section id="libraries" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          5. Open Source Libraries
+          6. Open Source Libraries
         </h2>
         <p>WeatherAPP Libre is built using the Android SDK and several open-source libraries, primarily licensed under the Apache License 2.0.</p>
         <ul>
@@ -379,14 +396,14 @@
       <section id="design-assets" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
-          6. Typography &amp; Iconography
+          7. Typography &amp; Iconography
         </h2>
-        <h3>6.1 Typography</h3>
+        <h3>7.1 Typography</h3>
         <ul>
           <li><strong>Inter</strong> — Designed by Rasmus Andersson. Licensed under the <a href="https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL" target="_blank" rel="noopener noreferrer">SIL Open Font License 1.1</a>.</li>
         </ul>
         
-        <h3>6.2 Iconography</h3>
+        <h3>7.2 Iconography</h3>
         <ul>
           <li><strong>Feather Icons</strong> — Used for UI navigation and system icons. Licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a>.</li>
           <li><strong>Custom Weather Vector Icons</strong> — A custom 28-state vector icon set designed specifically for WeatherAPP Libre to replace standard emojis, ensuring consistent theme reactivity and visual identity across all devices.</li>

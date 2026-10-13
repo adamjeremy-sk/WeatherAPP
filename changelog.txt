@@ -1,7 +1,11 @@
 ---------------
-Changelog 0.5.3VC19 - 
+Changelog 0.6.0VC19 - 
 ---------------
 * minSdk changed; 32 -> 33
+* Rename the mislabeled System screen cell and the Location Tabs settings header from "7-Day Forecast Placement" to "Location Tabs" (new title_location_tabs string); the genuine 7-day placement control remains exclusively in Behaviour > Menu Organization.
+* Remove the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.
+* 7-day forecast now displays wind direction alongside wind speed via the shared UnitUtils.formatWindSpeed formatter ("X km/h D" / "X mph D" in both unit systems), backed by wind_direction_10m_dominant.
+* Location search dialog text (header title and description, input text, hint, box stroke, start/end icons, empty state, and result-row primary/secondary lines) now bound programmatically to BoutiqueThemeEngine palette tokens, restoring legibility across all dark themes.
 
 ---------------
 Changelog 0.5.2VC18 - 2026/10/08

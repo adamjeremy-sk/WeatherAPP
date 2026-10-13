@@ -8,6 +8,7 @@
     android:padding="20dp">
 
     <TextView
+        android:id="@+id/tvChooseLocationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_choose_location"
@@ -16,6 +17,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tvChooseLocationDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

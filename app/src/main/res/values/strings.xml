@@ -289,6 +289,7 @@
     <string name="desc_data_cache">Configure in-memory forecast caching and API query optimization.</string>
     <string name="title_default_location">Default Location</string>
     <string name="desc_default_location">Select default city loaded on application startup.</string>
+    <string name="title_location_tabs">Location Tabs</string>
     <string name="desc_location_tabs">Manage tab count, location order, and sticky header behavior.</string>
     <string name="desc_notifications_card">Manage severe weather warning alerts and notification preferences.</string>
     <string name="desc_models_card">Select global numerical weather prediction models and providers.</string>

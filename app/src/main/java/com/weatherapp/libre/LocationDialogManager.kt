@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -40,7 +41,22 @@ class LocationDialogManager(
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         dialogBinding.root.setBackgroundColor(palette.surfaceCard)
 
-        val searchAdapter = LocationSearchAdapter { selected ->
+        dialogBinding.tvChooseLocationTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvChooseLocationDesc.setTextColor(palette.textSecondary)
+
+        dialogBinding.etSearchLocation.setTextColor(palette.textPrimary)
+        dialogBinding.etSearchLocation.setHintTextColor(palette.textSecondary)
+
+        dialogBinding.tilSearch.setHintTextColor(ColorStateList.valueOf(palette.textSecondary))
+        dialogBinding.tilSearch.defaultHintTextColor = ColorStateList.valueOf(palette.textSecondary)
+        dialogBinding.tilSearch.setBoxStrokeColorStateList(ColorStateList.valueOf(palette.dividerColor))
+        dialogBinding.tilSearch.setStartIconTintList(ColorStateList.valueOf(palette.textSecondary))
+        dialogBinding.tilSearch.setEndIconTintList(ColorStateList.valueOf(palette.textSecondary))
+
+        dialogBinding.tvEmptySearch.setTextColor(palette.textSecondary)
+        dialogBinding.btnCloseDialog.setTextColor(palette.brandPrimary)
+
+        val searchAdapter = LocationSearchAdapter(palette) { selected ->
             if (isSettingDefaultLocation) {
                 locationPreferences.saveStartupMode(LocationPreferences.STARTUP_FIXED_DEFAULT)
                 locationPreferences.saveFixedDefaultLocation(selected)

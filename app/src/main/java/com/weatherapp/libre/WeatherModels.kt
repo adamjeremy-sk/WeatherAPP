@@ -130,7 +130,9 @@ data class DailyData(
     @SerializedName("wind_speed_10m_max")
     var windSpeedMax: List<Double>?,
     @SerializedName("wind_gusts_10m_max")
-    var windGustsMax: List<Double?>? = null
+    var windGustsMax: List<Double?>? = null,
+    @SerializedName("wind_direction_10m_dominant")
+    var windDirectionDominant: List<Double?>? = null
 )
 
 @Keep
@@ -226,6 +228,7 @@ data class DayForecast(
     val tempMin: Double,
     val windSpeedMaxKmH: Double,
     val windGustsMaxKmH: Double? = null,
+    val windDirectionDominant: Double? = null,
     val uvIndexMax: Double,
     val humidityPct: Int,
     val visibilityMeters: Double,

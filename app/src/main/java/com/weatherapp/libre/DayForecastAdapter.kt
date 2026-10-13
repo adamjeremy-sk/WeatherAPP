@@ -128,7 +128,7 @@ class DayForecastAdapter(
             val ssStr = formatInst(solar?.sunset)
             binding.tvExpandedSunriseSunset.text = "$srStr / $ssStr"
 
-            val windVal = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem)
+            val windVal = UnitUtils.formatWindSpeed(item.windSpeedMaxKmH, unitSystem, item.windDirectionDominant)
             val windLine = context.getString(R.string.wind_line_format, windVal)
             val gustVal = UnitUtils.formatWindGusts(item.windSpeedMaxKmH, item.windGustsMaxKmH, unitSystem)
             if (gustVal != null) {

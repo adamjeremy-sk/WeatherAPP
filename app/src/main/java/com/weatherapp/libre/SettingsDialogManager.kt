@@ -1182,7 +1182,6 @@ class SettingsDialogManager(
         val cards = listOf(
             dialogBinding.cardBehaviour to (dialogBinding.tvBehaviourTitle to dialogBinding.tvBehaviourDesc),
             dialogBinding.cardDataCache to (dialogBinding.tvDataCacheTitle to dialogBinding.tvDataCacheDesc),
-            dialogBinding.cardDefaultLocation to (dialogBinding.tvDefaultLocationTitle to dialogBinding.tvDefaultLocationDesc),
             dialogBinding.cardLocationTabs to (dialogBinding.tvLocationTabsTitle to dialogBinding.tvLocationTabsDesc),
             dialogBinding.cardNotifications to (dialogBinding.tvNotificationsTitle to dialogBinding.tvNotificationsDesc),
             dialogBinding.cardWeatherModels to (dialogBinding.tvWeatherModelsTitle to dialogBinding.tvWeatherModelsDesc)
@@ -1197,7 +1196,6 @@ class SettingsDialogManager(
 
         dialogBinding.cardBehaviour.setOnClickListener { showBehaviourSettingsScreen() }
         dialogBinding.cardDataCache.setOnClickListener { showCacheSettingsScreen() }
-        dialogBinding.cardDefaultLocation.setOnClickListener { showDefaultLocationSettingsScreen(locationDialogManager) }
         dialogBinding.cardLocationTabs.setOnClickListener { showLocationTabsSettingsScreen() }
         dialogBinding.cardNotifications.setOnClickListener { showWeatherAlertsSettingsScreen() }
         dialogBinding.cardWeatherModels.setOnClickListener { showModelsSettingsScreen(weatherDisplayManager) }

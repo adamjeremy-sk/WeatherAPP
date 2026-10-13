@@ -154,6 +154,7 @@ class WeatherRepository {
                     val mergedUv = MutableList<Double>(maxCount) { i -> d.uvIndexMax?.getOrNull(i) ?: exD.uvIndexMax?.getOrNull(i) ?: 0.0 }
                     val mergedWind = MutableList<Double>(maxCount) { i -> d.windSpeedMax?.getOrNull(i) ?: exD.windSpeedMax?.getOrNull(i) ?: 0.0 }
                     val mergedGusts = MutableList<Double?>(maxCount) { i -> d.windGustsMax?.getOrNull(i) ?: exD.windGustsMax?.getOrNull(i) }
+                    val mergedWindDirs = MutableList<Double?>(maxCount) { i -> d.windDirectionDominant?.getOrNull(i) ?: exD.windDirectionDominant?.getOrNull(i) }
                     val mergedSunrise = MutableList<String>(maxCount) { i -> d.sunrise?.getOrNull(i) ?: exD.sunrise?.getOrNull(i) ?: "" }
                     val mergedSunset = MutableList<String>(maxCount) { i -> d.sunset?.getOrNull(i) ?: exD.sunset?.getOrNull(i) ?: "" }
 
@@ -164,6 +165,7 @@ class WeatherRepository {
                     d.uvIndexMax = mergedUv
                     d.windSpeedMax = mergedWind
                     d.windGustsMax = mergedGusts
+                    d.windDirectionDominant = mergedWindDirs
                     d.sunrise = mergedSunrise
                     d.sunset = mergedSunset
                 }
@@ -198,7 +200,7 @@ class WeatherRepository {
                     "latitude=$latitude" +
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
-                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max" +
+                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
                     "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
                     "&models=$modelApiString" +
@@ -233,7 +235,7 @@ class WeatherRepository {
                     "latitude=$latitude" +
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
-                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max" +
+                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
                     "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
                     "&timeformat=iso8601" +
@@ -375,6 +377,7 @@ class WeatherRepository {
         val uvMax = daily.uvIndexMax?.getOrNull(0) ?: current?.uvIndex ?: 0.0
         val windMax = daily.windSpeedMax?.getOrNull(0) ?: current?.windSpeed ?: 0.0
         val windGustsMax = daily.windGustsMax?.getOrNull(0) ?: current?.windGusts
+        val windDirDominant = daily.windDirectionDominant?.getOrNull(0) ?: current?.windDirection
 
         val humidity = current?.relativeHumidity?.toInt() ?: 60
         val visibility = current?.visibilityMeters ?: 10000.0
@@ -397,6 +400,7 @@ class WeatherRepository {
             tempMin = minTemp,
             windSpeedMaxKmH = windMax,
             windGustsMaxKmH = windGustsMax,
+            windDirectionDominant = windDirDominant,
             uvIndexMax = uvMax,
             humidityPct = humidity,
             visibilityMeters = visibility,
@@ -423,6 +427,7 @@ class WeatherRepository {
         val uvMaxList = daily.uvIndexMax ?: emptyList()
         val windMaxList = daily.windSpeedMax ?: emptyList()
         val windGustsList = daily.windGustsMax ?: emptyList()
+        val windDirsList = daily.windDirectionDominant ?: emptyList()
 
         val current = response.current
 
@@ -463,6 +468,7 @@ class WeatherRepository {
             val uvMax = uvMaxList.getOrNull(i) ?: current?.uvIndex ?: 0.0
             val windMax = windMaxList.getOrNull(i) ?: current?.windSpeed ?: 0.0
             val windGustsMax = windGustsList.getOrNull(i) ?: current?.windGusts
+            val windDirDominant = windDirsList.getOrNull(i) ?: current?.windDirection
 
             val humidity = current?.relativeHumidity?.toInt() ?: 60
             val visibility = current?.visibilityMeters ?: 10000.0
@@ -488,6 +494,7 @@ class WeatherRepository {
                     tempMin = minTemp,
                     windSpeedMaxKmH = windMax,
                     windGustsMaxKmH = windGustsMax,
+                    windDirectionDominant = windDirDominant,
                     uvIndexMax = uvMax,
                     humidityPct = humidity,
                     visibilityMeters = visibility,
