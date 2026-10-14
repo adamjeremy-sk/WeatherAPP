@@ -1,4 +1,4 @@
-Changelog 0.6.1VC22 - 2026/10/14
+Changelog 0.6.1VC21 - 2026/10/14
 ---------------
 * Lunar Calendar UI Overhaul: Replaced bottom sheets with a compact, inline week-by-week layout (Sunday–Saturday) featuring inline cell expansion for exhaustive lunar details.
 * Performance Optimization: Implemented a 30ms debounce delay combined with user-configurable volume scroll speeds to prevent CPU lag during rapid date cycling.

@@ -263,7 +263,7 @@
           <li><a href="licenses.html">Licenses &amp; Sources</a></li>
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="changelog.html">Changelog</a></li>
-          <li><a href="tests.html">Automated Test Suite</a></li>
+          <li><a href="almanac.html">Lunar Almanac</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
@@ -307,6 +307,7 @@
           <li><strong>True Dark Sky:</strong> Astronomical darkness windows and moon interference.</li>
           <li><strong>Night Visibility:</strong> Ambient light potential based on moon and cloud cover.</li>
           <li><strong>Solunar Activity:</strong> Major and minor wildlife activity periods.</li>
+          <li><strong>Lunar Calendar:</strong> Week-by-week lunar phase tracking, eclipses, and atmospheric phenomena.</li>
         </ul>
 
         <h3>Menu Organization (Customization)</h3>
@@ -369,6 +370,23 @@
 
         <h3>Moon Phase &amp; Cycle</h3>
         <p>View the current lunar illumination, phase category, and synodic cycle progress. <strong>Tap the Moon Phase &amp; Cycle button</strong> to instantly pop up a detailed calendar view showing the exact dates and times of the next month's major moon phases (New Moon, First Quarter, Full Moon, and Last Quarter).</p>
+
+        <h3>Lunar Calendar</h3>
+        <p>The Lunar Calendar provides a comprehensive, week-by-week view of lunar phases, rise/set times, and geometric data. Designed for astronomers and photographers, it features a compact inline layout (Sunday through Saturday) with expandable cells for exhaustive daily details.</p>
+        <ul>
+          <li><strong>Special Events Filter &amp; Caching:</strong> Generate a 3-year forward-looking cache to instantly filter and view rare events like Total Lunar Eclipses (Blood Moons), Supermoons, Micromoons, and Syzygies. Special event days are distinctly highlighted and badged.</li>
+          <li><strong>Navigation:</strong> Use the on-screen chevrons, tap the date header to open a date picker, or use your device's hardware volume keys (when enabled in settings) to rapidly cycle through weeks with a built-in performance debounce.</li>
+          <li><strong>Calendar Integration:</strong> Long-press any day in the Lunar Calendar to instantly create a reminder in your device's native calendar app for major lunar events.</li>
+        </ul>
+
+        <h3>Lunar Atmospheric Phenomena</h3>
+        <p>WeatherAPP Libre features unique probability heuristics that estimate the likelihood of rare optical events caused by the interaction of moonlight with atmospheric conditions. These probabilities are displayed in the main <strong>Moon Phase &amp; Cycle</strong> popup and within the expanded <strong>7-Day Forecast</strong> cells.</p>
+        <ul>
+          <li><strong>Lunar Moonbow:</strong> Estimates the chance of a lunar rainbow based on high illumination, low moon altitude, and specific cloud/precipitation alignments.</li>
+          <li><strong>Lunar Halo &amp; Corona:</strong> Calculates the probability of ice crystal or water droplet diffraction rings based on moon brightness and high-altitude/thin cloud cover.</li>
+          <li><strong>Parselene (Mock Moon):</strong> Estimates the likelihood of lunar sundogs based on specific cirrus cloud conditions.</li>
+        </ul>
+        <p><em>Note: If atmospheric conditions are unfavorable, the app will explicitly state that these phenomena are "Unlikely" so you always know the heuristics are actively running.</em></p>
       </section>
 
       <section id="alerts" class="card">
@@ -398,7 +416,7 @@
         <ul>
           <li><strong>Organize Menu:</strong> Customize the drop-down menu layout, visibility, and default launch page (Detailed in Section 2).</li>
           <li><strong>Units:</strong> Toggle between Metric (&deg;C, km/h) and US Customary (&deg;F, mph).</li>
-          <li><strong>Volume Key Date Cycling:</strong> Enable this to use your phone's physical volume buttons to rapidly scroll forward and backward through dates while on the Natural Light page.</li>
+          <li><strong>Volume Key Date Cycling:</strong> Enable this to use your phone's physical volume buttons to rapidly scroll forward and backward through dates while on the Natural Light or Lunar Calendar pages.</li>
         </ul>
 
         <h3>Cache Management</h3>
@@ -415,10 +433,11 @@
           <li><strong>Long-Press Location Tab:</strong> Opens the location search drawer instantly.</li>
           <li><strong>Long-Press Menu Item (in Settings):</strong> Sets that page as your default launch screen.</li>
           <li><strong>Long-Press Natural Light Phase:</strong> Instantly sets a solar alarm for that specific time of day.</li>
+          <li><strong>Long-Press Lunar Calendar Day:</strong> Instantly creates a native calendar reminder for a major moon phase or eclipse.</li>
           <li><strong>Pull-Down to Refresh:</strong> Swiping down on the main screen forces a cache bypass and fetches fresh data.</li>
-          <li><strong>Volume Keys (When Enabled):</strong> Scrub through future and past dates on the Natural Light page without touching the screen.</li>
-          <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details.</li>
-          <li><strong>Tap Moon Phase &amp; Cycle:</strong> Instantly opens a popup displaying the next month of upcoming lunar phases and events.</li>
+          <li><strong>Volume Keys (When Enabled):</strong> Scrub through future and past dates on the Natural Light page, or cycle through weeks on the Lunar Calendar, without touching the screen.</li>
+          <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details and lunar atmospheric probabilities.</li>
+          <li><strong>Tap Moon Phase &amp; Cycle:</strong> Instantly opens a popup displaying the next month of upcoming lunar phases, events, and atmospheric heuristics.</li>
         </ul>
       </section>
     </main>

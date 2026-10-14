@@ -279,7 +279,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc20">0.6.0VC20 (Latest)</a></li>
+          <li><a href="#VC21">0.6.1VC21 (Latest)</a></li>
+          <li><a href="#vc20">0.6.0VC20</a></li>
           <li><a href="#vc18">0.5.2VC18</a></li>
           <li><a href="#vc17">0.5.1VC17</a></li>
           <li><a href="#vc16">0.5.0VC16</a></li>
@@ -301,7 +302,7 @@
           <li><a href="licenses.html">Licenses &amp; Sources</a></li>
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="roadmap.html">Production Roadmap</a></li>
-          <li><a href="tests.html">Automated Test Suite</a></li>
+          <li><a href="almanac.html">Lunar Almanac</a></li>
           <li><a href="support.html">Beta Signup &amp; Support</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
@@ -327,11 +328,40 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="VC21" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.6.1VC21
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 14, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Lunar Calendar UI Overhaul: Replaced bottom sheets with a compact, inline week-by-week layout (Sunday–Saturday) featuring inline cell expansion for exhaustive lunar details.</li>
+          <li>Long-Term Caching: Added a 3-year forward-looking lunar event cache generator with a progress bar and warning dialog, enabling instant loading of the "Special Lunar Events" filter.</li>
+          <li>Atmospheric Phenomena Heuristics: Integrated probability calculations for Lunar Moonbows, Halos, Coronas, and Parselenes, now displayed in the main Moon Phase popup and 7-day forecast expanded views (including explicit "Unlikely" messaging when conditions are unfavorable).</li>
+          <li>Enhanced Event Badging: Added dedicated badges for Penumbral, Partial, and Total eclipses, as well as Micromoons and Syzygy.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Performance Optimization: Implemented a 30ms debounce delay combined with user-configurable volume scroll speeds to prevent CPU lag during rapid date cycling.</li>
+          <li>Vector Icon Correction: Swapped and corrected the path data for <code>ic_moon_new.xml</code> and <code>ic_moon_full.xml</code> to accurately represent their respective lunar phases.</li>
+          <li>Theming &amp; Navigation Fixes: Replaced the native <code>DatePickerDialog</code> with <code>MaterialDatePicker</code> to ensure instant, dynamic theme color updates without requiring an app restart. Removed redundant calendar navigation buttons.</li>
+          <li>Settings Cleanup: Resolved the duplicate "Speed 1" entry in the Volume Key Date Cycling settings, enforcing a strict 1–7 sequence with improved, localized descriptions.</li>
+          <li>Date Formatting: Ensured the year is explicitly displayed in the Special Events view to prevent ambiguity across the 3-year forecast range.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Highlighting Parity: Fixed the "Today" cell highlighting in the Lunar Calendar to use solid, opaque colors, perfectly matching the visual rendering of the 7-day and hourly forecasts.</li>
+          <li>Fixed Syzygy badge contrast for universal theme visibility.</li>
+          <li>Mathematical Verification: Audited and confirmed the Blood Moon (Total Lunar Eclipse) calculation logic strictly adheres to Jean Meeus Chapter 55 standards (<code>umbralMagnitude &gt;= 1.0</code>).</li>
+        </ul>
+      </section>
+
       <section id="vc20" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.0VC20
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 13, 2026</p>
         <h3>Added</h3>

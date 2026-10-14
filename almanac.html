@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A comprehensive guide to lunar phases, eclipses, atmospheric phenomena, and astronomical planning tools in WeatherAPP Libre.">
+  <title>Lunar Almanac - WeatherAPP Libre</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #fff;
+      --primary: #1167b1;
+      --dark: #0d3b66;
+      --text: #172033;
+      --muted: #5d6b7c;
+      --border: #d8e2ee;
+      --note: #eef4fb;
+      --shadow: 0 10px 28px rgba(23, 50, 79, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+    a { color: var(--primary); }
+
+    /* Header */
+    header {
+      padding: 46px 24px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--dark), var(--primary) 68%, #288bc4);
+    }
+    .header-inner, .layout, footer {
+      width: min(1200px, calc(100% - 32px));
+      margin: auto;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    
+    /* Logo Link */
+    .logo-link {
+      flex: 0 0 112px;
+      display: block;
+      line-height: 0;
+      transition: transform 200ms ease;
+    }
+    .logo-link:hover {
+      transform: scale(1.04);
+    }
+    .app-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .22));
+    }
+    
+    .header-copy { min-width: 0; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 1.08;
+    }
+    header p {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #e9f5fd;
+      font-size: 1.08rem;
+    }
+
+    /* Layout & Sidebar */
+    .layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      padding: 30px 0 54px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .toc, .more-info {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .toc h2, .more-info h2 {
+      margin: 0 0 12px;
+      color: var(--dark);
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .toc li, .more-info li { margin: 8px 0; }
+    .toc a, .more-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc a:hover, .more-info a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .toc a:focus-visible, .more-info a:focus-visible {
+      outline: 3px solid rgba(17, 103, 177, .28);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .more-info ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    .more-info .current-page {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Main Content */
+    main {
+      grid-column: 2;
+      min-width: 0;
+    }
+    .card {
+      scroll-margin-top: 18px;
+      margin-bottom: 20px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card h2 {
+      margin-top: 0;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Section Summaries */
+    .section-summary {
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    /* Almanac List Styling */
+    .almanac-group h3 {
+      color: #174f7d;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+      font-size: 1.15rem;
+    }
+    .almanac-group h3:first-of-type {
+      margin-top: 1.5rem;
+    }
+    dl {
+      margin: 0;
+      padding: 0;
+    }
+    .term-item {
+      margin-bottom: 1.75rem;
+    }
+    .term-item dt {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+    .term-item dd {
+      margin: 0;
+      padding-left: 1rem;
+      border-left: 3px solid var(--primary);
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    /* Utilities */
+    .icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    footer {
+      padding-bottom: 44px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Media Queries */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .logo-link { transition: none; }
+    }
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 18px;
+      }
+      .sidebar, main { grid-column: 1; }
+      .sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 540px) {
+      header { padding: 34px 20px; }
+      .header-inner { align-items: flex-start; gap: 16px; }
+      .logo-link {
+        flex-basis: 82px;
+      }
+      .app-logo {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+      }
+      .layout, .header-inner, footer { width: min(100% - 24px, 1200px); }
+      .card, .toc, .more-info { padding: 20px; border-radius: 14px; }
+      .term-item dd { padding-left: 0.75rem; }
+    }
+    @media print {
+      body { background: #fff; }
+      header { color: #111; background: #fff; padding: 24px 0; }
+      header p { color: #444; }
+      .app-logo { filter: none; }
+      .sidebar { display: none; }
+      .layout { display: block; width: 100%; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo-link" aria-label="WeatherAPP Libre Home">
+        <img class="app-logo" src="logo.png" alt="WeatherAPP Libre logo" width="512" height="512">
+      </a>
+      <div class="header-copy">
+        <h1>Lunar Almanac</h1>
+        <p>Your comprehensive guide to understanding lunar phases, rare celestial events, atmospheric optical phenomena, and how to use WeatherAPP Libre's advanced astronomical planning tools.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="Page sidebar">
+      <section class="toc">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          Almanac Categories
+        </h2>
+        <ol>
+          <li><a href="#phases">Lunar Phases &amp; The Synodic Cycle</a></li>
+          <li><a href="#eclipses">Lunar Eclipses</a></li>
+          <li><a href="#special">Special Lunar Events</a></li>
+          <li><a href="#atmospheric">Atmospheric Optical Phenomena</a></li>
+          <li><a href="#planning">Observation &amp; Planning Tools</a></li>
+        </ol>
+      </section>
+
+      <section class="more-info">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Project Resources
+        </h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About WeatherAPP</a></li>
+          <li><a href="licenses.html">Licenses &amp; Sources</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="roadmap.html">Production Roadmap</a></li>
+          <li><a href="changelog.html">Changelog</a></li>
+          <li><a href="almanac.html" class="current-page">Lunar Almanac</a></li>
+          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main>
+      <section id="overview" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          Welcome to the Lunar Almanac
+        </h2>
+        <p>Whether you are an astrophotographer planning a deep-sky shoot, an angler tracking solunar periods, or simply a stargazer looking for the next Blood Moon, this guide will help you understand the metrics and badges displayed in WeatherAPP Libre's Lunar Calendar and astronomical tools.</p>
+      </section>
+
+      <section id="phases" class="card almanac-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          1. Lunar Phases &amp; The Synodic Cycle
+        </h2>
+        <p class="section-summary">The Moon's appearance changes continuously as it orbits the Earth, driven by the changing angles of illumination from the Sun. This cycle, known as the synodic month, dictates the fundamental rhythm of the lunar calendar and is the baseline for all other lunar phenomena.</p>
+        
+        <dl>
+          <div class="term-item">
+            <dt>Synodic Month</dt>
+            <dd>The time it takes for the Moon to complete one full cycle of phases (e.g., from New Moon to New Moon). This period averages approximately <strong>29.53 days</strong>. Because it is not a whole number of days, the phases shift slightly each month relative to our calendar.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Illumination Fraction</dt>
+            <dd>The percentage of the Moon's visible disk that is currently lit by the Sun. A New Moon is 0% illuminated, while a Full Moon is 100% illuminated. WeatherAPP Libre calculates this using exact geometric angles rather than simple approximations.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Moon Age</dt>
+            <dd>The number of days that have passed since the last exact New Moon. A Moon Age of ~0 days indicates a New Moon, ~7.4 days indicates First Quarter, ~14.8 days indicates Full Moon, and ~22.1 days indicates Last Quarter.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Waxing vs. Waning</dt>
+            <dd><strong>Waxing</strong> means the illuminated portion is growing (moving from New to Full). <strong>Waning</strong> means the illuminated portion is shrinking (moving from Full back to New). In the Northern Hemisphere, a waxing moon is illuminated on the right, while a waning moon is illuminated on the left.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Apparent Diameter</dt>
+            <dd>The visual size of the Moon in the sky, measured in arcminutes ('). Because the Moon's orbit is elliptical, its distance from Earth varies, causing its apparent diameter to range from about 29.3' (at apogee) to 34.1' (at perigee).</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="eclipses" class="card almanac-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20"></path></svg>
+          2. Lunar Eclipses
+        </h2>
+        <p class="section-summary">A lunar eclipse occurs when the Earth passes directly between the Sun and the Moon, casting its shadow onto the lunar surface. Because the Earth's shadow has two distinct parts—the outer penumbra and the inner umbra—eclipses are classified by how deeply the Moon penetrates these shadow cones.</p>
+        
+        <dl>
+          <div class="term-item">
+            <dt>Penumbral Lunar Eclipse</dt>
+            <dd>Occurs when the Moon passes only through the Earth's outer, faint shadow (the penumbra). The dimming is very subtle and often difficult to notice with the naked eye unless the eclipse is deep.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Partial Lunar Eclipse</dt>
+            <dd>Occurs when a portion of the Moon enters the Earth's dark inner shadow (the umbra), while the rest remains in the penumbra or fully illuminated. A distinct, dark "bite" appears to be taken out of the lunar disk.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Total Lunar Eclipse (Blood Moon)</dt>
+            <dd>Occurs when the entire Moon passes into the Earth's umbra. Instead of going completely dark, the Moon often turns a striking coppery-red or orange. This happens because Earth's atmosphere bends (refracts) sunlight around the planet, filtering out blue light and projecting red light onto the Moon.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Umbral Magnitude</dt>
+            <dd>A metric indicating how deeply the Moon penetrates the umbra. A magnitude of 0.0 means it just touches the umbra; 0.5 means half the Moon's diameter is inside; and 1.0 or greater indicates a Total Eclipse.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Contact Times (P1, U1, U2, U3, U4, P4)</dt>
+            <dd>The exact timestamps defining the stages of an eclipse. <strong>P1/P4</strong> mark entry/exit of the penumbra. <strong>U1/U4</strong> mark entry/exit of the umbra (partial phases). <strong>U2/U3</strong> mark the beginning and end of totality.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="special" class="card almanac-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          3. Special Lunar Events
+        </h2>
+        <p class="section-summary">Beyond standard phases, the Moon's elliptical orbit, its relationship to the seasons, and calendar definitions create notable visual events. WeatherAPP Libre highlights these events with distinct badges in the Lunar Calendar.</p>
+        
+        <dl>
+          <div class="term-item">
+            <dt>Supermoon</dt>
+            <dd>A Full Moon that coincides with <strong>perigee</strong>—the point in the Moon's orbit where it is closest to Earth (typically under 360,000 km). A Supermoon appears up to 14% larger and 30% brighter than a standard Full Moon.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Micromoon</dt>
+            <dd>The opposite of a Supermoon. A Full Moon that coincides with <strong>apogee</strong>—the farthest point in the Moon's orbit (typically over 404,000 km). It appears noticeably smaller and dimmer than average.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Blue Moon</dt>
+            <dd>Traditionally defined as the second Full Moon to occur within a single calendar month. Because the synodic month is ~29.5 days, this rare alignment happens roughly once every 2.5 years.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Harvest Moon</dt>
+            <dd>The Full Moon that occurs closest to the Autumnal Equinox. Historically significant for agriculture, it is unique because it rises at nearly the same time for several consecutive nights, providing extended evening light.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Syzygy</dt>
+            <dd>An astronomical term describing a straight-line configuration of three celestial bodies. In the context of the Moon, syzygy occurs during every exact New Moon and Full Moon, when the Sun, Earth, and Moon are aligned, resulting in higher-than-average "spring" tides.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="atmospheric" class="card almanac-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path></svg>
+          4. Atmospheric Optical Phenomena
+        </h2>
+        <p class="section-summary">Occasionally, moonlight interacts with ice crystals or water droplets in Earth's atmosphere, creating rare and stunning optical illusions. WeatherAPP Libre uses heuristic probability models (combining lunar illumination, altitude, and cloud microphysics) to forecast the likelihood of these events.</p>
+        
+        <dl>
+          <div class="term-item">
+            <dt>Lunar Moonbow</dt>
+            <dd>A rainbow created by moonlight rather than sunlight. Requires a nearly Full Moon (high illumination), a low moon altitude (under 42°), and falling rain or mist in the opposite direction of the Moon. Because moonlight is faint, moonbows often appear white to the naked eye but reveal color in long-exposure photographs.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Lunar Halo</dt>
+            <dd>A massive, glowing ring with a 22° radius surrounding the Moon. It is caused by moonlight refracting through millions of hexagonal ice crystals suspended in high-altitude cirrus clouds. Often a precursor to an approaching warm front and precipitation.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Lunar Corona</dt>
+            <dd>Not to be confused with a halo, a corona is a tight, multi-colored ring (or rings) immediately hugging the Moon. It is caused by the diffraction of moonlight through uniform water droplets in thin, mid-level clouds like altocumulus.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Parselene (Mock Moon)</dt>
+            <dd>The lunar equivalent of a "sun dog." These are bright, distinct spots of light that appear on the left and right of the Moon, sitting on the same horizontal plane. They are caused by moonlight refracting through flat, plate-like ice crystals in the atmosphere.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="planning" class="card almanac-group">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          5. Observation &amp; Planning Tools
+        </h2>
+        <p class="section-summary">WeatherAPP Libre features dedicated calculation engines designed to help astronomers, photographers, and outdoor enthusiasts plan their activities around the lunar cycle and local weather conditions.</p>
+        
+        <dl>
+          <div class="term-item">
+            <dt>True Dark Sky Window</dt>
+            <dd>Calculates the exact periods of "Astronomical Darkness" (when the Sun is more than 18° below the horizon) and cross-references this with the Moon's interference. This tells deep-sky astrophotographers exactly when the sky will be darkest and free of lunar washout.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Night Visibility Forecast</dt>
+            <dd>Estimates the ambient light potential for the night. It factors in lunar illumination, moon altitude, twilight phases, and crucially, integrates with local weather forecasts to account for <strong>cloud cover attenuation</strong>, providing a realistic "Viewing Score" for the night.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Solunar Activity</dt>
+            <dd>Based on traditional solunar theory, this tool calculates Major and Minor activity periods for wildlife. Major periods occur when the Moon is transiting (directly overhead) or at its nadir (directly underfoot). Minor periods align with moonrise and moonset. Highly utilized by anglers and hunters.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Transit Altitude &amp; Azimuth</dt>
+            <dd>The <strong>Transit</strong> is the moment the Moon reaches its highest point in the sky for the night. The <strong>Altitude</strong> tells you how high it will be (crucial for avoiding tree lines or buildings), and the <strong>Azimuth</strong> tells you the exact compass direction it will be facing at that peak.</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    WeatherAPP Libre • Lunar Almanac &amp; Astronomical Guide
+  </footer>
+
+<!-- Default Statcounter code for WeatherAPP Libre
+https://www.weatherapplibre.ca -->
+<script type="text/javascript">
+var sc_project=13358478; 
+var sc_invisible=0; 
+var sc_security="2de86961"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
+Statcounter" href="https://statcounter.com/" target="_blank"><img
+class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+</body>
+</html>
