@@ -1387,6 +1387,10 @@ class SettingsDialogManager(
         showWebViewSettingsPage(activity.getString(R.string.title_user_manual), UrlConfig.URL_USER_MANUAL)
     }
 
+    fun showLunarAlmanacSettingsScreen() {
+        showWebViewSettingsPage(activity.getString(R.string.title_lunar_almanac), UrlConfig.URL_LUNAR_ALMANAC)
+    }
+
     fun showDefaultLocationSettingsScreen(locationDialogManager: LocationDialogManager) {
         locationDialogManager.showRecentLocationsDialog(isSettingDefaultLocation = true) {
             Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_default_location_updated), Toast.LENGTH_SHORT).show()
@@ -1766,27 +1770,36 @@ class SettingsDialogManager(
         dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
         dialogBinding.tvHeaderDesc.setTextColor(palette.textSecondary)
 
-        val cards = listOf(
-            dialogBinding.cardAbout to (dialogBinding.tvAboutTitle to dialogBinding.tvAboutDesc),
-            dialogBinding.cardLicenses to (dialogBinding.tvLicensesTitle to dialogBinding.tvLicensesDesc),
-            dialogBinding.cardPrivacy to (dialogBinding.tvPrivacyTitle to dialogBinding.tvPrivacyDesc),
-            dialogBinding.cardRoadmap to (dialogBinding.tvRoadmapTitle to dialogBinding.tvRoadmapDesc),
-            dialogBinding.cardChangelog to (dialogBinding.tvChangelogTitle to dialogBinding.tvChangelogDesc),
-            dialogBinding.cardUserManual to (dialogBinding.tvUserManualTitle to dialogBinding.tvUserManualDesc)
+        val rawCards = listOf(
+            Triple(dialogBinding.cardAbout, dialogBinding.tvAboutTitle, dialogBinding.tvAboutDesc),
+            Triple(dialogBinding.cardLicenses, dialogBinding.tvLicensesTitle, dialogBinding.tvLicensesDesc),
+            Triple(dialogBinding.cardLunarAlmanac, dialogBinding.tvLunarAlmanacTitle, dialogBinding.tvLunarAlmanacDesc),
+            Triple(dialogBinding.cardPrivacy, dialogBinding.tvPrivacyTitle, dialogBinding.tvPrivacyDesc),
+            Triple(dialogBinding.cardRoadmap, dialogBinding.tvRoadmapTitle, dialogBinding.tvRoadmapDesc),
+            Triple(dialogBinding.cardUserManual, dialogBinding.tvUserManualTitle, dialogBinding.tvUserManualDesc)
         )
 
-        for ((card, textPair) in cards) {
+        val container = dialogBinding.cardAbout.parent as? LinearLayout
+        val sortedCards = rawCards.sortedBy { it.second.text.toString() }
+        if (container != null) {
+            for (item in sortedCards) {
+                container.removeView(item.first)
+                container.addView(item.first)
+            }
+        }
+
+        for ((card, titleTv, descTv) in sortedCards) {
             card.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
             card.strokeColor = palette.dividerColor
-            textPair.first.setTextColor(palette.textPrimary)
-            textPair.second.setTextColor(palette.textSecondary)
+            titleTv.setTextColor(palette.textPrimary)
+            descTv.setTextColor(palette.textSecondary)
         }
 
         dialogBinding.cardAbout.setOnClickListener { showAboutSettingsScreen() }
         dialogBinding.cardLicenses.setOnClickListener { showLicensesSettingsScreen() }
+        dialogBinding.cardLunarAlmanac.setOnClickListener { showLunarAlmanacSettingsScreen() }
         dialogBinding.cardPrivacy.setOnClickListener { showPrivacySettingsScreen() }
         dialogBinding.cardRoadmap.setOnClickListener { showRoadmapSettingsScreen() }
-        dialogBinding.cardChangelog.setOnClickListener { showChangelogSettingsScreen() }
         dialogBinding.cardUserManual.setOnClickListener { showUserManualSettingsScreen() }
 
         trackDialog(dialog)

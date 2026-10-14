@@ -436,10 +436,6 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             openUrl("https://play.google.com/store/apps/details?id=$packageName")
         }
-        binding.rowUserManual.setOnClickListener {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            openUrl(UrlConfig.URL_USER_MANUAL)
-        }
         binding.rowShare.setOnClickListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             settingsDialogManager.shareProject()

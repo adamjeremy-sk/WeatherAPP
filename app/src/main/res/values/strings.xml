@@ -49,7 +49,7 @@
     <string name="drawer_title">Drawer</string>
     <string name="snippet_theme">Palettes, colours, and appearance.</string>
     <string name="snippet_settings">Behaviour, cache, locations, notifications, and models.</string>
-    <string name="snippet_info">About, licenses, privacy, and roadmap.</string>
+    <string name="snippet_info">About, Roadmap, User Manual, Lunar Almanac, and project resources.</string>
     <string name="snippet_donate">Support continued development.</string>
     <string name="snippet_rate">Rate and review on the Play Store.</string>
     <string name="snippet_share">Share WeatherAPP with others.</string>
@@ -246,8 +246,10 @@
     <string name="desc_licenses_sources">Attribution for open source software, libraries, and weather APIs.</string>
     <string name="title_privacy_policy">Privacy Policy</string>
     <string name="desc_privacy_policy">Read our privacy policy and data collection transparency.</string>
-    <string name="title_weatherapp_roadmap">WeatherAPP Roadmap</string>
+    <string name="title_weatherapp_roadmap">Production Roadmap</string>
     <string name="desc_weatherapp_roadmap">Explore planned features and future developments.</string>
+    <string name="title_lunar_almanac">Lunar Almanac</string>
+    <string name="desc_lunar_almanac">Explore lunar phases, astronomical events, and moonrise data.</string>
     <string name="title_changelog">Changelog</string>
     <string name="desc_changelog">View release notes and version history.</string>
     <string name="desc_user_manual">Read detailed application user manual and documentation.</string>
@@ -384,7 +386,7 @@
     <string name="btn_view_update">View Update</string>
     <string name="msg_running_latest_version">You are running the latest version.</string>
 
-    <string name="title_roadmap">WeatherAPP Roadmap</string>
+    <string name="title_roadmap">Production Roadmap</string>
 
     <string name="units_us_short">US (°F, mph, mi)</string>
     <string name="units_metric_short">Metric (°C, km/h, km)</string>

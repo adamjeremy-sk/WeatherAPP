@@ -48,7 +48,7 @@
     <string name="drawer_title">Tiroir</string>
     <string name="snippet_theme">Palettes, couleurs et apparence.</string>
     <string name="snippet_settings">Comportement, cache, lieux, notifications et modèles.</string>
-    <string name="snippet_info">À propos, licences, confidentialité et feuille de route.</string>
+    <string name="snippet_info">À propos, Feuille de route, Manuel de l\'utilisateur, Almanach lunaire et ressources du projet.</string>
     <string name="snippet_donate">Soutenir le développement continu.</string>
     <string name="snippet_rate">Noter et évaluer sur le Play Store.</string>
     <string name="snippet_share">Partager WeatherAPP avec d\'autres.</string>
@@ -209,8 +209,10 @@
     <string name="desc_licenses_sources">Attribution pour les logiciels open source, les bibliothèques et les API météo.</string>
     <string name="title_privacy_policy">Politique de confidentialité</string>
     <string name="desc_privacy_policy">Lire notre politique de confidentialité et la transparence de la collecte de données.</string>
-    <string name="title_weatherapp_roadmap">Feuille de route WeatherAPP</string>
+    <string name="title_weatherapp_roadmap">Feuille de route de production</string>
     <string name="desc_weatherapp_roadmap">Explorer les fonctionnalités prévues et les développements futurs.</string>
+    <string name="title_lunar_almanac">Almanach lunaire</string>
+    <string name="desc_lunar_almanac">Consulter les phases lunaires, les événements astronomiques et les données de lever de la lune.</string>
     <string name="title_changelog">Journal des modifications</string>
     <string name="desc_changelog">Afficher les notes de version et l\'historique des versions.</string>
     <string name="desc_user_manual">Lire le manuel d\'utilisation détaillé et la documentation de l\'application.</string>
@@ -329,7 +331,7 @@
     <string name="msg_update_available_libre">Une nouvelle version de WeatherAPP Libre est disponible.</string>
     <string name="btn_view_update">Voir la mise à jour</string>
     <string name="msg_running_latest_version">Vous utilisez la dernière version.</string>
-    <string name="title_roadmap">Feuille de route WeatherAPP</string>
+    <string name="title_roadmap">Feuille de route de production</string>
     <string name="units_us_short">US (°F, mph, mi)</string>
     <string name="units_metric_short">Métrique (°C, km/h, km)</string>
     <string name="units_us_long">Unités américaines (°F, mph, miles)</string>

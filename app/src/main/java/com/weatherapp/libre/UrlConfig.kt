@@ -9,6 +9,7 @@ object UrlConfig {
     const val URL_CHANGELOG = "$BASE_URL/changelog.html"
     const val URL_SUPPORT = "$BASE_URL/support.html"
     const val URL_USER_MANUAL = "$BASE_URL/usermanual.html"
+    const val URL_LUNAR_ALMANAC = "https://www.weatherapplibre.ca/almanac.html"
     const val URL_ROADMAP = "$BASE_URL/roadmap.html"
     const val URL_KOFI = "https://ko-fi.com/adamjeremy"
     const val SUPPORT_EMAIL = "support@weatherapplibre.ca"
