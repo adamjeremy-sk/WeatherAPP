@@ -15,6 +15,8 @@ object CacheInspector {
 
     fun inspectAll(context: Context): List<CacheEntry> {
         val entries = mutableListOf<CacheEntry>()
+        val fileSourceStr = context.getString(R.string.cache_source_file)
+        val prefsSourceStr = context.getString(R.string.cache_source_prefs)
 
         // 1. Files in context.cacheDir
         val cacheFiles = try { context.cacheDir?.listFiles() } catch (e: Exception) { null } ?: emptyArray()
@@ -24,14 +26,14 @@ object CacheInspector {
                 if (file.isFile && file.canRead() && size > 0) {
                     file.readText().take(60)
                 } else {
-                    "File size: $size bytes"
+                    context.getString(R.string.cache_file_size_bytes, size)
                 }
             } catch (e: Exception) {
-                "Binary file ($size bytes)"
+                context.getString(R.string.cache_binary_file_bytes, size)
             }
             entries.add(
                 CacheEntry(
-                    source = "File",
+                    source = fileSourceStr,
                     key = file.name,
                     snippet = snippet.take(60),
                     sizeBytes = size
@@ -47,7 +49,7 @@ object CacheInspector {
                 val valStr = value?.toString() ?: ""
                 entries.add(
                     CacheEntry(
-                        source = "Prefs",
+                        source = prefsSourceStr,
                         key = key,
                         snippet = valStr.take(60),
                         sizeBytes = valStr.length.toLong()
@@ -66,7 +68,7 @@ object CacheInspector {
                     val valStr = value?.toString() ?: ""
                     entries.add(
                         CacheEntry(
-                            source = "Prefs",
+                            source = prefsSourceStr,
                             key = key,
                             snippet = valStr.take(60),
                             sizeBytes = valStr.length.toLong()

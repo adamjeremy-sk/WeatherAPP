@@ -735,13 +735,32 @@ class SettingsDialogManager(
     fun showCacheSettingsScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        var isSubScreenActive = false
         val dialogBinding = DialogCacheSettingsBinding.inflate(activity.layoutInflater)
-        dialog.setContentView(dialogBinding.root)
+        val cacheSettingsView = dialogBinding.root
 
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+        val dialog = object : Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar) {
+            @Suppress("DEPRECATION")
+            override fun onBackPressed() {
+                if (isSubScreenActive) {
+                    isSubScreenActive = false
+                    setContentView(cacheSettingsView)
+                } else {
+                    super.onBackPressed()
+                }
+            }
+        }
+
+        dialog.window?.let { window ->
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+        }
+        dialog.setContentView(cacheSettingsView)
+
+        ViewCompat.setOnApplyWindowInsetsListener(cacheSettingsView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
@@ -778,8 +797,11 @@ class SettingsDialogManager(
         tvAlertLogTitle?.setTextColor(palette.textPrimary)
         tvAlertLogDesc?.setTextColor(palette.textSecondary)
         alertLogCard?.setOnClickListener {
-            dialog.dismiss()
-            showAlertLogScreen()
+            isSubScreenActive = true
+            val alertLogView = createAlertLogView(dialog) {
+                dialog.onBackPressed()
+            }
+            dialog.setContentView(alertLogView)
         }
 
         val cachedDataCard = dialogBinding.root.findViewById<com.google.android.material.card.MaterialCardView>(com.weatherapp.libre.R.id.cardCachedData)
@@ -791,8 +813,11 @@ class SettingsDialogManager(
         tvCachedDataTitle?.setTextColor(palette.textPrimary)
         tvCachedDataDesc?.setTextColor(palette.textSecondary)
         cachedDataCard?.setOnClickListener {
-            dialog.dismiss()
-            showCachedDataInspectorScreen()
+            isSubScreenActive = true
+            val inspectorView = createCachedDataInspectorView(dialog) {
+                dialog.onBackPressed()
+            }
+            dialog.setContentView(inspectorView)
         }
 
         dialogBinding.tvTtlHeader.setTextColor(palette.textPrimary)
@@ -815,11 +840,11 @@ class SettingsDialogManager(
 
         val density = activity.resources.displayMetrics.density
         val ttlOptions = listOf(
-            30 to ("30 Minutes" to "Refreshes weather data if older than 30 minutes."),
-            60 to ("60 Minutes (1 Hour)" to "Refreshes weather data if older than 1 hour."),
-            120 to ("120 Minutes (2 Hours - Default)" to "Standard cache TTL duration. Reuses weather data for up to 2 hours."),
-            240 to ("240 Minutes (4 Hours)" to "Extended cache TTL for reduced mobile data usage."),
-            360 to ("360 Minutes (6 Hours)" to "Maximum cache TTL duration for offline resilience.")
+            30 to (activity.getString(R.string.ttl_30_min_title) to activity.getString(R.string.ttl_30_min_desc)),
+            60 to (activity.getString(R.string.ttl_60_min_title) to activity.getString(R.string.ttl_60_min_desc)),
+            120 to (activity.getString(R.string.ttl_120_min_title) to activity.getString(R.string.ttl_120_min_desc)),
+            240 to (activity.getString(R.string.ttl_240_min_title) to activity.getString(R.string.ttl_240_min_desc)),
+            360 to (activity.getString(R.string.ttl_360_min_title) to activity.getString(R.string.ttl_360_min_desc))
         )
 
         for ((mins, info) in ttlOptions) {
@@ -900,26 +925,29 @@ class SettingsDialogManager(
         if (activity.isFinishing || activity.isDestroyed) return
 
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        dialog.window?.let { window ->
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+        }
+        val view = createCachedDataInspectorView(dialog) { dialog.dismiss() }
+        dialog.setContentView(view)
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    private fun createCachedDataInspectorView(dialog: Dialog, onBack: () -> Unit): View {
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val density = activity.resources.displayMetrics.density
-
-        val statusBarIdentifier = activity.resources.getIdentifier("status_bar_height", "dimen", "android")
-        val statusBarHeight = if (statusBarIdentifier > 0) {
-            activity.resources.getDimensionPixelSize(statusBarIdentifier)
-        } else {
-            (24 * density).toInt()
-        }
 
         val root = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(palette.backgroundLight)
-            setPadding(0, statusBarHeight, 0, 0)
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val topPadding = systemBars.top.coerceAtLeast(statusBarHeight)
-            root.setPadding(systemBars.left, topPadding, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
@@ -939,10 +967,10 @@ class SettingsDialogManager(
             setBackgroundResource(android.R.color.transparent)
             setColorFilter(palette.textPrimary)
         }
-        btnBack.setOnClickListener { dialog.dismiss() }
+        btnBack.setOnClickListener { onBack() }
 
         val tvTitle = TextView(activity).apply {
-            text = "Cached Data Inspector"
+            text = activity.getString(R.string.title_cached_data_inspector)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             typeface = android.graphics.Typeface.DEFAULT_BOLD
             setTextColor(palette.textPrimary)
@@ -972,7 +1000,7 @@ class SettingsDialogManager(
 
         if (entries.isEmpty()) {
             val tvEmpty = TextView(activity).apply {
-                text = "No cached files or weather data found."
+                text = activity.getString(R.string.msg_no_cached_files_found)
                 setTextColor(palette.textSecondary)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
             }
@@ -1022,7 +1050,7 @@ class SettingsDialogManager(
                 }
 
                 val sizeTv = TextView(activity).apply {
-                    text = "${entry.sizeBytes} B"
+                    text = activity.getString(R.string.cache_bytes_format, entry.sizeBytes)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
                     setTextColor(palette.textSecondary)
                 }
@@ -1052,7 +1080,7 @@ class SettingsDialogManager(
 
         // Clear All Cache Button at bottom
         val btnClearAll = com.google.android.material.button.MaterialButton(activity).apply {
-            text = "Clear All Cache"
+            text = activity.getString(R.string.btn_clear_all_cache)
             setBackgroundColor(palette.tempHigh)
             setTextColor(Color.WHITE)
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -1060,25 +1088,36 @@ class SettingsDialogManager(
             layoutParams = lp
             setOnClickListener {
                 CacheInspector.clearWeatherCache(activity, locationPreferences)
-                Toast.makeText(activity, "Cache cleared. Pull down to refresh.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(R.string.toast_cache_cleared), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
         }
         root.addView(btnClearAll)
 
-        dialog.setContentView(root)
-        trackDialog(dialog)
-        dialog.show()
+        return root
     }
 
     fun showAlertLogScreen() {
         if (activity.isFinishing || activity.isDestroyed) return
 
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
-        val view = activity.layoutInflater.inflate(com.weatherapp.libre.R.layout.dialog_alert_log, null)
+        dialog.window?.let { window ->
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+        }
+        val view = createAlertLogView(dialog) { dialog.dismiss() }
         dialog.setContentView(view)
+        trackDialog(dialog)
+        if (!activity.isFinishing && !activity.isDestroyed) {
+            dialog.show()
+        }
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+    private fun createAlertLogView(dialog: Dialog, onBack: () -> Unit): View {
+        val view = activity.layoutInflater.inflate(com.weatherapp.libre.R.layout.dialog_alert_log, null)
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -1103,7 +1142,7 @@ class SettingsDialogManager(
             cardHeader.strokeColor = palette.dividerColor
         }
 
-        btnBack.setOnClickListener { dialog.dismiss() }
+        btnBack.setOnClickListener { onBack() }
 
         val btnSort = view.findViewById<android.widget.Button>(com.weatherapp.libre.R.id.btnSort)
         val btnFilter = view.findViewById<android.widget.Button>(com.weatherapp.libre.R.id.btnFilter)
@@ -1297,18 +1336,15 @@ class SettingsDialogManager(
         }
 
         renderEntries()
-        trackDialog(dialog)
-        if (!activity.isFinishing && !activity.isDestroyed) {
-            dialog.show()
-        }
+        return view
     }
 
     fun showLicensesSettingsScreen() {
-        showWebViewSettingsPage("Licenses & Sources", UrlConfig.URL_LICENSES)
+        showWebViewSettingsPage(activity.getString(R.string.title_licenses_sources), UrlConfig.URL_LICENSES)
     }
 
     fun showPrivacySettingsScreen() {
-        showWebViewSettingsPage("Privacy Policy", UrlConfig.URL_PRIVACY)
+        showWebViewSettingsPage(activity.getString(R.string.title_privacy_policy), UrlConfig.URL_PRIVACY)
     }
 
     fun showAboutSettingsScreen() {
@@ -1316,19 +1352,19 @@ class SettingsDialogManager(
     }
 
     fun showDonateSettingsScreen() {
-        showWebViewSettingsPage("Donate", UrlConfig.URL_KOFI)
+        showWebViewSettingsPage(activity.getString(R.string.title_donate), UrlConfig.URL_KOFI)
     }
 
     fun showRoadmapSettingsScreen() {
-        showWebViewSettingsPage("WeatherAPP Roadmap", UrlConfig.URL_ROADMAP)
+        showWebViewSettingsPage(activity.getString(R.string.title_roadmap), UrlConfig.URL_ROADMAP)
     }
 
     fun showChangelogSettingsScreen() {
-        showWebViewSettingsPage("Changelog", UrlConfig.URL_CHANGELOG)
+        showWebViewSettingsPage(activity.getString(R.string.title_changelog), UrlConfig.URL_CHANGELOG)
     }
 
     fun showUserManualSettingsScreen() {
-        showWebViewSettingsPage("User Manual", UrlConfig.URL_USER_MANUAL)
+        showWebViewSettingsPage(activity.getString(R.string.title_user_manual), UrlConfig.URL_USER_MANUAL)
     }
 
     fun showDefaultLocationSettingsScreen(locationDialogManager: LocationDialogManager) {
@@ -1465,14 +1501,14 @@ class SettingsDialogManager(
         dialogBinding.tvUnitsTitle.setTextColor(palette.textPrimary)
 
         val isUsUnits = (locationPreferences.getUnitSystem() == UnitSystem.US_CUSTOMARY)
-        dialogBinding.btnUnitsChoice.text = if (isUsUnits) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
-        dialogBinding.tvUnitsDesc.text = if (isUsUnits) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
+        dialogBinding.btnUnitsChoice.text = if (isUsUnits) activity.getString(R.string.units_us_short) else activity.getString(R.string.units_metric_short)
+        dialogBinding.tvUnitsDesc.text = if (isUsUnits) activity.getString(R.string.units_us_long) else activity.getString(R.string.units_metric_long)
 
         dialogBinding.btnUnitsChoice.setOnClickListener {
             val newUnits = if (locationPreferences.getUnitSystem() == UnitSystem.METRIC) UnitSystem.US_CUSTOMARY else UnitSystem.METRIC
             locationPreferences.saveUnitSystem(newUnits)
-            dialogBinding.btnUnitsChoice.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US (°F, mph, mi)" else "Metric (°C, km/h, km)"
-            dialogBinding.tvUnitsDesc.text = if (newUnits == UnitSystem.US_CUSTOMARY) "US Customary (°F, mph, miles)" else "Metric (°C, km/h, km)"
+            dialogBinding.btnUnitsChoice.text = if (newUnits == UnitSystem.US_CUSTOMARY) activity.getString(R.string.units_us_short) else activity.getString(R.string.units_metric_short)
+            dialogBinding.tvUnitsDesc.text = if (newUnits == UnitSystem.US_CUSTOMARY) activity.getString(R.string.units_us_long) else activity.getString(R.string.units_metric_long)
 
             // Clear weather cache and reload weather for active tab immediately
             if (activity is MainActivity) {

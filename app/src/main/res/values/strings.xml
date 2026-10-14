@@ -357,4 +357,50 @@
     <string name="cd_daylight_icon">Daylight Icon</string>
     <string name="cd_moon_icon">Moon Icon</string>
     <string name="cd_location_icon">Location Icon</string>
+
+    <!-- Extracted Strings for Localization -->
+    <string name="title_cached_data_inspector">Cached Data Inspector</string>
+    <string name="msg_no_cached_files_found">No cached files or weather data found.</string>
+    <string name="btn_clear_all_cache">Clear All Cache</string>
+    <string name="toast_cache_cleared">Cache cleared. Pull down to refresh.</string>
+    <string name="cache_bytes_format">%1$d B</string>
+    <string name="cache_source_file">File</string>
+    <string name="cache_source_prefs">Prefs</string>
+    <string name="cache_file_size_bytes">File size: %1$d bytes</string>
+    <string name="cache_binary_file_bytes">Binary file (%1$d bytes)</string>
+
+    <string name="ttl_30_min_title">30 Minutes</string>
+    <string name="ttl_30_min_desc">Refreshes weather data if older than 30 minutes.</string>
+    <string name="ttl_60_min_title">60 Minutes (1 Hour)</string>
+    <string name="ttl_60_min_desc">Refreshes weather data if older than 1 hour.</string>
+    <string name="ttl_120_min_title">120 Minutes (2 Hours - Default)</string>
+    <string name="ttl_120_min_desc">Standard cache TTL duration. Reuses weather data for up to 2 hours.</string>
+    <string name="ttl_240_min_title">240 Minutes (4 Hours)</string>
+    <string name="ttl_240_min_desc">Extended cache TTL for reduced mobile data usage.</string>
+    <string name="ttl_360_min_title">360 Minutes (6 Hours)</string>
+    <string name="ttl_360_min_desc">Maximum cache TTL duration for offline resilience.</string>
+
+    <string name="msg_update_available_libre">A new version of WeatherAPP Libre is available.</string>
+    <string name="btn_view_update">View Update</string>
+    <string name="msg_running_latest_version">You are running the latest version.</string>
+
+    <string name="title_roadmap">WeatherAPP Roadmap</string>
+
+    <string name="units_us_short">US (°F, mph, mi)</string>
+    <string name="units_metric_short">Metric (°C, km/h, km)</string>
+    <string name="units_us_long">US Customary (°F, mph, miles)</string>
+    <string name="units_metric_long">Metric (°C, km/h, km)</string>
+
+    <string name="humidity_label_format">Humidity: %1$d%%</string>
+    <string name="moon_no_rise">Moon does not rise today</string>
+    <string name="moon_no_set">Moon does not set today</string>
+    <string name="moon_phase_label">Phase: %1$s</string>
+    <string name="moon_illumination_label">Illumination: %1$s</string>
+    <string name="moon_age_label">Moon Age: %1$s days</string>
+    <string name="moon_distance_label">Distance: %1$s km</string>
+    <string name="moonrise_label">Moonrise: %1$s</string>
+    <string name="moonset_label">Moonset: %1$s</string>
+    <string name="upcoming_moon_phases_label">Upcoming Moon Phases:</string>
+    <string name="title_data_information">Data Information</string>
+    <string name="msg_data_information">Cached: %1$s\nSource: %2$s</string>
 </resources>

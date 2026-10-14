@@ -24,7 +24,11 @@ class AppUpdateManager(
             val appUpdateInfoTask = playUpdateManager.appUpdateInfo
 
             appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                val remoteCode = appUpdateInfo.availableVersionCode()
+                val localCode = BuildConfig.VERSION_CODE
+                val isAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+
+                if (isAvailable && remoteCode > localCode) {
                     showUpdateAvailablePrompt(appUpdateInfo)
                 } else {
                     if (!silent) {
@@ -43,19 +47,36 @@ class AppUpdateManager(
         }
     }
 
-    private fun showUpdateAvailablePrompt(appUpdateInfo: AppUpdateInfo) {
-        if (activity.isFinishing || activity.isDestroyed) return
+    fun handleRemoteVersionCheck(remoteVersionTag: String?, silent: Boolean = true) {
+        val remoteCode = parseVersionCode(remoteVersionTag)
+        val localCode = BuildConfig.VERSION_CODE
 
-        val currentVersion = try {
-            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "0.4.2"
-        } catch (e: Exception) {
-            "0.4.2"
+        if (remoteCode > localCode) {
+            showUpdateAvailablePrompt(null)
+        } else {
+            if (!silent) {
+                showUpToDatePrompt()
+            }
         }
+    }
+
+    fun parseVersionCode(tag: String?): Int {
+        if (tag.isNullOrBlank()) return 0
+        val vcMatch = Regex("""VC(\d+)""", RegexOption.IGNORE_CASE).find(tag)
+        if (vcMatch != null) {
+            return vcMatch.groupValues[1].toIntOrNull() ?: 0
+        }
+        val digitsOnly = tag.replace(Regex("""[^\d]"""), "")
+        return digitsOnly.toIntOrNull() ?: 0
+    }
+
+    private fun showUpdateAvailablePrompt(appUpdateInfo: AppUpdateInfo?) {
+        if (activity.isFinishing || activity.isDestroyed) return
 
         MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_update_notification))
-            .setMessage(activity.getString(R.string.msg_update_available, currentVersion, "0.4.2"))
-            .setPositiveButton(activity.getString(R.string.btn_update_now)) { dialog, _ ->
+            .setMessage(activity.getString(R.string.msg_update_available_libre))
+            .setPositiveButton(activity.getString(R.string.btn_view_update)) { dialog, _ ->
                 openPlayStorePage()
                 dialog.dismiss()
             }
@@ -68,15 +89,9 @@ class AppUpdateManager(
     private fun showUpToDatePrompt() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        val currentVersion = try {
-            activity.packageManager.getPackageInfo(activity.packageName, 0).versionName ?: "0.4.2"
-        } catch (e: Exception) {
-            "0.4.2"
-        }
-
         MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_app_up_to_date))
-            .setMessage(activity.getString(R.string.msg_app_up_to_date, currentVersion))
+            .setMessage(activity.getString(R.string.msg_running_latest_version))
             .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ ->
                 dialog.dismiss()
             }

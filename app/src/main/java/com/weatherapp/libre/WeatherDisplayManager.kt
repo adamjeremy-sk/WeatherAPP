@@ -237,7 +237,7 @@ class WeatherDisplayManager(
         val aqiStr = if (aqi != null) "$aqi • ${UnitUtils.getAqiDescription(aqi)}" else "Good"
 
         val humidity = current?.relativeHumidity?.toInt() ?: day.humidityPct
-        val humidityStr = "Humidity: $humidity%"
+        val humidityStr = activity.getString(R.string.humidity_label_format, humidity)
 
         val uv = current?.uvIndex ?: day.uvIndexMax
         val uvStr = String.format(java.util.Locale.getDefault(), "%.1f • %s", uv, UnitUtils.getUvDescription(uv))
@@ -324,23 +324,23 @@ class WeatherDisplayManager(
         val riseStr = if (riseEvent != null) {
             val t = riseEvent.instantUtc.atZone(zoneId).format(formatter)
             "$t (${riseEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(riseEvent.azimuthDegrees)})"
-        } else "Moon does not rise today"
+        } else activity.getString(R.string.moon_no_rise)
 
         val setStr = if (setEvent != null) {
             val t = setEvent.instantUtc.atZone(zoneId).format(formatter)
             "$t (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
-        } else "Moon does not set today"
+        } else activity.getString(R.string.moon_no_set)
 
         val message = (listOf(
-            "Phase: ${formatted.phaseNameWithEmoji}",
-            "Illumination: ${formatted.illuminationText}",
-            "Moon Age: ${String.format(Locale.US, "%.1f", currMoonInfo.ageDays)} days",
-            "Distance: ${String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm)} km",
+            activity.getString(R.string.moon_phase_label, formatted.phaseNameWithEmoji),
+            activity.getString(R.string.moon_illumination_label, formatted.illuminationText),
+            activity.getString(R.string.moon_age_label, String.format(Locale.US, "%.1f", currMoonInfo.ageDays)),
+            activity.getString(R.string.moon_distance_label, String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm)),
             "",
-            "Moonrise: $riseStr",
-            "Moonset: $setStr",
+            activity.getString(R.string.moonrise_label, riseStr),
+            activity.getString(R.string.moonset_label, setStr),
             "",
-            "Upcoming Moon Phases:"
+            activity.getString(R.string.upcoming_moon_phases_label)
         ) + upcomingLines).joinToString("\n")
 
         val density = activity.resources.displayMetrics.density
@@ -415,8 +415,8 @@ class WeatherDisplayManager(
             val density = activity.resources.displayMetrics.density
 
             val dialog = MaterialAlertDialogBuilder(activity)
-                .setTitle("Data Information")
-                .setMessage("Cached: $formattedDateStr\nSource: $sourceModel")
+                .setTitle(activity.getString(R.string.title_data_information))
+                .setMessage(activity.getString(R.string.msg_data_information, formattedDateStr, sourceModel))
                 .setPositiveButton(android.R.string.ok, null)
                 .create()
 

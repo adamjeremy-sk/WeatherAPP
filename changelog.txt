@@ -1,4 +1,11 @@
 ---------------
+Changelog 0.6.1VC21 - 2026/10/
+---------------
+- Alert Log and Cached Data menus back works correctly
+- Some localization strings moved
+- Android insets for a menu fixed
+
+---------------
 Changelog 0.6.0VC20 - 2026/10/13
 ---------------
 * Open-sourced the complete application under the GNU GPLv3 license, ensuring long-term transparency and privacy.
