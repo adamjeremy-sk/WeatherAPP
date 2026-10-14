@@ -81,7 +81,11 @@ data class WeatherResponse(
     @SerializedName("daily")
     val daily: DailyData?,
     @SerializedName("hourly")
-    var hourly: HourlyData? = null
+    var hourly: HourlyData? = null,
+    @SerializedName("fetched_at_epoch_millis")
+    var fetchedAtEpochMillis: Long = 0L,
+    @SerializedName("source_model_name")
+    var sourceModelName: String = ""
 )
 
 @Keep

@@ -11,7 +11,8 @@ data class CapAlert(
     val scope: String = "Public",
     val references: String? = null,
     val infoList: List<CapInfo> = emptyList(),
-    val isTestFixture: Boolean = false
+    val isTestFixture: Boolean = false,
+    val isSyntheticTest: Boolean = false
 ) {
     fun getReferencedIdentifiers(): List<String> {
         if (references.isNullOrBlank()) return emptyList()

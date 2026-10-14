@@ -176,11 +176,62 @@ class AlertCacheTest {
         // Merge logic:
         val existingLocationAlerts = currentCache[key] ?: emptyList()
         val unexpiredTestFixtures = existingLocationAlerts.filter { alert ->
-            alert.isTestFixture && (alert.expiresUtcMs == null || alert.expiresUtcMs > nowMs)
+            (alert.isTestFixture || alert.isSyntheticTest) && (alert.expiresUtcMs == null || alert.expiresUtcMs > nowMs)
         }
         val finalAlerts = (workerRealAlerts + unexpiredTestFixtures).distinctBy { it.identifier }
 
         assertEquals(1, finalAlerts.size)
         assertEquals("fixture-123", finalAlerts.first().identifier)
+    }
+
+    @Test
+    fun testWorkerDoesNotPruneSyntheticAlerts() {
+        val nowMs = Instant.now().toEpochMilli()
+        val syntheticAlert = AlertCache.CachedAlert(
+            identifier = "synthetic-test-alert-123",
+            event = "Tornado Warning",
+            severity = "Extreme",
+            headline = "Synthetic Test Tornado Warning",
+            description = "Test description",
+            instruction = "Test instruction",
+            areaDesc = "Test Area",
+            sentUtcMs = nowMs,
+            expiresUtcMs = nowMs + 3600000L, // +1 hour in future
+            isTestFixture = false,
+            isSyntheticTest = true
+        )
+
+        val realAlert = AlertCache.CachedAlert(
+            identifier = "real-alert-456",
+            event = "Wind Warning",
+            severity = "Severe",
+            headline = "High winds expected",
+            description = null,
+            instruction = null,
+            areaDesc = "Test Area",
+            sentUtcMs = nowMs,
+            expiresUtcMs = nowMs + 3600000L,
+            isTestFixture = false,
+            isSyntheticTest = false
+        )
+
+        val key = "test area_49.0000,-97.0000"
+        val currentCache = mutableMapOf<String, List<AlertCache.CachedAlert>>()
+        currentCache[key] = listOf(syntheticAlert)
+
+        // Worker poll runs with new real alerts list from ECCC feed
+        val workerRealAlerts = listOf(realAlert)
+
+        // Diffing/merge logic from writeCacheForLocation
+        val existingLocationAlerts = currentCache[key] ?: emptyList()
+        val unexpiredSyntheticAlerts = existingLocationAlerts.filter { alert ->
+            (alert.isSyntheticTest || alert.isTestFixture) && (alert.expiresUtcMs == null || alert.expiresUtcMs > nowMs)
+        }
+        val finalAlerts = (workerRealAlerts + unexpiredSyntheticAlerts).distinctBy { it.identifier }
+
+        assertEquals(2, finalAlerts.size)
+        val identifiers = finalAlerts.map { it.identifier }
+        assertEquals(true, identifiers.contains("synthetic-test-alert-123"))
+        assertEquals(true, identifiers.contains("real-alert-456"))
     }
 }

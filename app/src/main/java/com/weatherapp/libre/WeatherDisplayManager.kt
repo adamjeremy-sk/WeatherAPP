@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import android.content.res.ColorStateList
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.Toast
@@ -31,6 +32,7 @@ class WeatherDisplayManager(
     var currentLocation: LocationItem = LocationItem(0L, "Ottawa", "Ontario", "Canada", 45.4215, -75.6972)
     var locationTimezone: String? = null
     var currentWeatherData: CurrentData? = null
+    var currentResponse: WeatherResponse? = null
     var selectedDayForecast: DayForecast? = null
     var dailyForecasts: List<DayForecast> = emptyList()
     var forecastAdapter: DayForecastAdapter? = null
@@ -76,6 +78,7 @@ class WeatherDisplayManager(
                 clockHandler.removeCallbacks(clockRunnable)
             }
         })
+        setupHeroCardClickListener()
     }
 
     fun updateLocationHeader() {
@@ -118,6 +121,7 @@ class WeatherDisplayManager(
 
             result.fold(
                 onSuccess = { response ->
+                    currentResponse = response
                     locationTimezone = response.timezone
                     currentWeatherData = response.current
 
@@ -339,6 +343,8 @@ class WeatherDisplayManager(
             "Upcoming Moon Phases:"
         ) + upcomingLines).joinToString("\n")
 
+        val density = activity.resources.displayMetrics.density
+
         val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_current_moon_phase))
             .setMessage(message)
@@ -346,7 +352,15 @@ class WeatherDisplayManager(
             .create()
 
         dialog.setOnShowListener {
-            dialog.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(palette.surfaceCard))
+            val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable(
+                com.google.android.material.shape.ShapeAppearanceModel.builder()
+                    .setAllCornerSizes(16 * density)
+                    .build()
+            ).apply {
+                fillColor = ColorStateList.valueOf(palette.surfaceCard)
+            }
+            dialog.window?.setBackgroundDrawable(shapeDrawable)
+
             dialog.findViewById<android.widget.TextView>(androidx.appcompat.R.id.alertTitle)?.setTextColor(palette.textPrimary)
             dialog.findViewById<android.widget.TextView>(android.R.id.message)?.setTextColor(palette.textPrimary)
             dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE)?.setTextColor(palette.brandPrimary)
@@ -374,6 +388,55 @@ class WeatherDisplayManager(
             }
         }
         return map.ifEmpty { null }
+    }
+
+    fun setupHeroCardClickListener() {
+        val heroView = binding.root.findViewById<View>(R.id.layoutHeroSection) ?: return
+        heroView.setOnClickListener {
+            val response = currentResponse
+            val fetchedAt = response?.fetchedAtEpochMillis ?: 0L
+            val activeModel = locationPreferences.getActiveModelForLocation(currentLocation)
+            val sourceModel = response?.sourceModelName?.ifEmpty { activeModel.idKey } ?: activeModel.idKey
+
+            val formattedDateStr = if (fetchedAt > 0L) {
+                val zoneId = try {
+                    if (!response?.timezone.isNullOrEmpty()) ZoneId.of(response.timezone)
+                    else ZoneId.systemDefault()
+                } catch (e: Exception) {
+                    ZoneId.systemDefault()
+                }
+                val formatter = DateTimeFormatter.ofPattern("MMM d, h:mm a", Locale.getDefault())
+                Instant.ofEpochMilli(fetchedAt).atZone(zoneId).format(formatter)
+            } else {
+                "Unknown"
+            }
+
+            val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+            val density = activity.resources.displayMetrics.density
+
+            val dialog = MaterialAlertDialogBuilder(activity)
+                .setTitle("Data Information")
+                .setMessage("Cached: $formattedDateStr\nSource: $sourceModel")
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+
+            dialog.setOnShowListener {
+                val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable(
+                    com.google.android.material.shape.ShapeAppearanceModel.builder()
+                        .setAllCornerSizes(16 * density)
+                        .build()
+                ).apply {
+                    fillColor = ColorStateList.valueOf(palette.surfaceCard)
+                }
+                dialog.window?.setBackgroundDrawable(shapeDrawable)
+
+                dialog.findViewById<android.widget.TextView>(androidx.appcompat.R.id.alertTitle)?.setTextColor(palette.textPrimary)
+                dialog.findViewById<android.widget.TextView>(android.R.id.message)?.setTextColor(palette.textSecondary)
+                dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE)?.setTextColor(palette.brandPrimary)
+            }
+
+            dialog.show()
+        }
     }
 
     companion object {

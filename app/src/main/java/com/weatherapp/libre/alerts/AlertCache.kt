@@ -24,7 +24,8 @@ object AlertCache {
         val areaDesc: String,
         val sentUtcMs: Long,
         val expiresUtcMs: Long?,
-        val isTestFixture: Boolean
+        val isTestFixture: Boolean,
+        val isSyntheticTest: Boolean = false
     ) {
         fun severityLevel(): Int {
             return when (severity.lowercase(Locale.getDefault())) {
@@ -60,14 +61,14 @@ object AlertCache {
         val key = cacheKey(location)
         val nowMs = Instant.now().toEpochMilli()
 
-        // Merge logic: Preserve unexpired test fixtures already cached for this location
+        // Merge logic: Preserve unexpired test fixtures / synthetic test alerts already cached for this location
         val existingLocationAlerts = currentCache[key] ?: emptyList()
-        val unexpiredTestFixtures = existingLocationAlerts.filter { alert ->
-            alert.isTestFixture && (alert.expiresUtcMs == null || alert.expiresUtcMs > nowMs)
+        val unexpiredSyntheticAlerts = existingLocationAlerts.filter { alert ->
+            (alert.isSyntheticTest || alert.isTestFixture) && (alert.expiresUtcMs == null || alert.expiresUtcMs > nowMs)
         }
 
-        // New real/test alerts replace real alerts, while unexpired test fixtures are retained
-        val finalAlerts = (alerts + unexpiredTestFixtures).distinctBy { it.identifier }
+        // New real/test alerts replace real alerts, while unexpired synthetic test alerts are retained
+        val finalAlerts = (alerts + unexpiredSyntheticAlerts).distinctBy { it.identifier }
 
         if (finalAlerts.isEmpty()) {
             currentCache.remove(key)
@@ -78,7 +79,7 @@ object AlertCache {
         prefs.edit().putString(KEY_ACTIVE_ALERTS_CACHE, Gson().toJson(currentCache)).apply()
     }
 
-    fun CapAlert.toCachedAlert(location: LocationItem): CachedAlert? {
+    fun CapAlert.toCachedAlert(location: LocationItem, isSyntheticTest: Boolean = this.isSyntheticTest || this.isTestFixture): CachedAlert? {
         val info = this.infoList.firstOrNull() ?: return null
         return CachedAlert(
             identifier = this.identifier,
@@ -90,7 +91,8 @@ object AlertCache {
             areaDesc = info.areaList.firstOrNull()?.areaDesc ?: location.displayName,
             sentUtcMs = this.sent.toEpochMilli(),
             expiresUtcMs = info.expires?.toEpochMilli(),
-            isTestFixture = this.isTestFixture
+            isTestFixture = this.isTestFixture,
+            isSyntheticTest = isSyntheticTest
         )
     }
 }

@@ -19,8 +19,10 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import java.util.Locale
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
@@ -780,6 +782,19 @@ class SettingsDialogManager(
             showAlertLogScreen()
         }
 
+        val cachedDataCard = dialogBinding.root.findViewById<com.google.android.material.card.MaterialCardView>(com.weatherapp.libre.R.id.cardCachedData)
+        val tvCachedDataTitle = dialogBinding.root.findViewById<TextView>(com.weatherapp.libre.R.id.tvCachedDataTitle)
+        val tvCachedDataDesc = dialogBinding.root.findViewById<TextView>(com.weatherapp.libre.R.id.tvCachedDataDesc)
+
+        cachedDataCard?.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        cachedDataCard?.strokeColor = palette.dividerColor
+        tvCachedDataTitle?.setTextColor(palette.textPrimary)
+        tvCachedDataDesc?.setTextColor(palette.textSecondary)
+        cachedDataCard?.setOnClickListener {
+            dialog.dismiss()
+            showCachedDataInspectorScreen()
+        }
+
         dialogBinding.tvTtlHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvTtlReasoningHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvTtlReasoningDesc.setTextColor(palette.textSecondary)
@@ -879,6 +894,181 @@ class SettingsDialogManager(
         if (!activity.isFinishing && !activity.isDestroyed) {
             dialog.show()
         }
+    }
+
+    fun showCachedDataInspectorScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val density = activity.resources.displayMetrics.density
+
+        val statusBarIdentifier = activity.resources.getIdentifier("status_bar_height", "dimen", "android")
+        val statusBarHeight = if (statusBarIdentifier > 0) {
+            activity.resources.getDimensionPixelSize(statusBarIdentifier)
+        } else {
+            (24 * density).toInt()
+        }
+
+        val root = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(palette.backgroundLight)
+            setPadding(0, statusBarHeight, 0, 0)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val topPadding = systemBars.top.coerceAtLeast(statusBarHeight)
+            root.setPadding(systemBars.left, topPadding, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        // Header Card
+        val cardHeader = MaterialCardView(activity).apply {
+            radius = 0f
+            strokeWidth = 0
+            setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        }
+        val headerRow = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+        }
+        val btnBack = ImageButton(activity).apply {
+            setImageResource(R.drawable.ic_back)
+            setBackgroundResource(android.R.color.transparent)
+            setColorFilter(palette.textPrimary)
+        }
+        btnBack.setOnClickListener { dialog.dismiss() }
+
+        val tvTitle = TextView(activity).apply {
+            text = "Cached Data Inspector"
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setTextColor(palette.textPrimary)
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+            lp.setMargins((16 * density).toInt(), 0, 0, 0)
+            layoutParams = lp
+        }
+
+        headerRow.addView(btnBack)
+        headerRow.addView(tvTitle)
+        cardHeader.addView(headerRow)
+        root.addView(cardHeader)
+
+        // Content ScrollView
+        val scrollView = ScrollView(activity).apply {
+            isFillViewport = true
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f)
+            layoutParams = lp
+        }
+
+        val entriesLayout = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding((16 * density).toInt(), (16 * density).toInt(), (16 * density).toInt(), (16 * density).toInt())
+        }
+
+        val entries = CacheInspector.inspectAll(activity)
+
+        if (entries.isEmpty()) {
+            val tvEmpty = TextView(activity).apply {
+                text = "No cached files or weather data found."
+                setTextColor(palette.textSecondary)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            }
+            entriesLayout.addView(tvEmpty)
+        } else {
+            for (entry in entries) {
+                val card = MaterialCardView(activity).apply {
+                    radius = 8 * density
+                    strokeWidth = (1 * density).toInt()
+                    strokeColor = palette.dividerColor
+                    setCardBackgroundColor(palette.surfaceCard)
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.setMargins(0, 0, 0, (12 * density).toInt())
+                    layoutParams = lp
+                }
+
+                val col = LinearLayout(activity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding((14 * density).toInt(), (12 * density).toInt(), (14 * density).toInt(), (12 * density).toInt())
+                }
+
+                val rowHeader = LinearLayout(activity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+
+                val sourceBadge = TextView(activity).apply {
+                    text = entry.source.uppercase(Locale.getDefault())
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    setTextColor(Color.WHITE)
+                    setPadding((6 * density).toInt(), (2 * density).toInt(), (6 * density).toInt(), (2 * density).toInt())
+                    val bg = android.graphics.drawable.GradientDrawable()
+                    bg.setColor(palette.brandPrimary)
+                    bg.cornerRadius = 4 * density
+                    background = bg
+                }
+
+                val keyTv = TextView(activity).apply {
+                    text = entry.key
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    setTextColor(palette.textPrimary)
+                    val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                    lp.setMargins((8 * density).toInt(), 0, 0, 0)
+                    layoutParams = lp
+                }
+
+                val sizeTv = TextView(activity).apply {
+                    text = "${entry.sizeBytes} B"
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    setTextColor(palette.textSecondary)
+                }
+
+                rowHeader.addView(sourceBadge)
+                rowHeader.addView(keyTv)
+                rowHeader.addView(sizeTv)
+
+                val snippetTv = TextView(activity).apply {
+                    text = entry.snippet
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    setTextColor(palette.textSecondary)
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.setMargins(0, (6 * density).toInt(), 0, 0)
+                    layoutParams = lp
+                }
+
+                col.addView(rowHeader)
+                col.addView(snippetTv)
+                card.addView(col)
+                entriesLayout.addView(card)
+            }
+        }
+
+        scrollView.addView(entriesLayout)
+        root.addView(scrollView)
+
+        // Clear All Cache Button at bottom
+        val btnClearAll = com.google.android.material.button.MaterialButton(activity).apply {
+            text = "Clear All Cache"
+            setBackgroundColor(palette.tempHigh)
+            setTextColor(Color.WHITE)
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.setMargins((16 * density).toInt(), (8 * density).toInt(), (16 * density).toInt(), (16 * density).toInt())
+            layoutParams = lp
+            setOnClickListener {
+                CacheInspector.clearWeatherCache(activity, locationPreferences)
+                Toast.makeText(activity, "Cache cleared. Pull down to refresh.", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+        }
+        root.addView(btnClearAll)
+
+        dialog.setContentView(root)
+        trackDialog(dialog)
+        dialog.show()
     }
 
     fun showAlertLogScreen() {
@@ -1183,6 +1373,7 @@ class SettingsDialogManager(
             dialogBinding.cardBehaviour to (dialogBinding.tvBehaviourTitle to dialogBinding.tvBehaviourDesc),
             dialogBinding.cardDataCache to (dialogBinding.tvDataCacheTitle to dialogBinding.tvDataCacheDesc),
             dialogBinding.cardLocationTabs to (dialogBinding.tvLocationTabsTitle to dialogBinding.tvLocationTabsDesc),
+            dialogBinding.cardOrganizeMenu to (dialogBinding.tvOrganizeMenuTitle to dialogBinding.tvOrganizeMenuDesc),
             dialogBinding.cardNotifications to (dialogBinding.tvNotificationsTitle to dialogBinding.tvNotificationsDesc),
             dialogBinding.cardWeatherModels to (dialogBinding.tvWeatherModelsTitle to dialogBinding.tvWeatherModelsDesc)
         )
@@ -1195,6 +1386,7 @@ class SettingsDialogManager(
         }
 
         dialogBinding.cardBehaviour.setOnClickListener { showBehaviourSettingsScreen() }
+        dialogBinding.cardOrganizeMenu.setOnClickListener { showMenuOrganizationScreen() }
         dialogBinding.cardDataCache.setOnClickListener { showCacheSettingsScreen() }
         dialogBinding.cardLocationTabs.setOnClickListener { showLocationTabsSettingsScreen() }
         dialogBinding.cardNotifications.setOnClickListener { showWeatherAlertsSettingsScreen() }
@@ -1289,16 +1481,6 @@ class SettingsDialogManager(
             }
 
             Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_units_updated), Toast.LENGTH_SHORT).show()
-        }
-
-        // Menu Organization Card
-        dialogBinding.cardOrganizeMenu.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
-        dialogBinding.cardOrganizeMenu.strokeColor = palette.dividerColor
-        dialogBinding.tvOrganizeMenuTitle.setTextColor(palette.textPrimary)
-        dialogBinding.tvOrganizeMenuDesc.setTextColor(palette.textSecondary)
-
-        dialogBinding.cardOrganizeMenu.setOnClickListener {
-            showMenuOrganizationScreen()
         }
 
         trackDialog(dialog)

@@ -52,23 +52,40 @@ object AlertTestHarness {
         Log.d(TAG, "Test Harness Matcher result for ${fixture.displayName}: matched=${matchResult.isMatched}, rule=${matchResult.rule}")
 
         if (matchResult.isMatched) {
-            // Process through AlertManager pipeline
+            val now = java.time.Instant.now()
+            val expirySeconds = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120L else 3600L
+            val futureExpiry = now.plusSeconds(expirySeconds)
+            val updatedInfoList = parsedAlert.infoList.map { info ->
+                info.copy(expires = futureExpiry)
+            }
+            val syntheticAlert = parsedAlert.copy(
+                isSyntheticTest = true,
+                infoList = updatedInfoList
+            )
+
+            // Process through AlertManager pipeline (updates in-memory state and saves to AlertLogRepository)
             alertManager.processCapAlert(
-                alert = parsedAlert,
+                alert = syntheticAlert,
                 location = location,
                 timezoneStr = timezoneStr,
                 isForegroundActiveLocation = true
             )
             
-            // Write directly to AlertCache with future expiry (2 mins for SHORT_EXPIRY_TEST, 1 hour for others)
+            // Write directly to AlertCache with future expiry (at least +1 hour in the future)
             with(AlertCache) {
-                val cached = parsedAlert.toCachedAlert(location)
+                val cached = syntheticAlert.toCachedAlert(location, isSyntheticTest = true)
                 if (cached != null) {
+                    val nowMs = System.currentTimeMillis()
                     val expiryOffsetMs = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120000L else 3600000L
-                    val futureCached = cached.copy(expiresUtcMs = System.currentTimeMillis() + expiryOffsetMs)
+                    val futureExpiresMs = maxOf(cached.expiresUtcMs ?: (nowMs + expiryOffsetMs), nowMs + expiryOffsetMs)
+                    val futureCached = cached.copy(
+                        expiresUtcMs = futureExpiresMs,
+                        isSyntheticTest = true
+                    )
                     AlertCache.writeCacheForLocation(context, location, listOf(futureCached))
                 }
             }
+            return syntheticAlert
         }
 
         return parsedAlert

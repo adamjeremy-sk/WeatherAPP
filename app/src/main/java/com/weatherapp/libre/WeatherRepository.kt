@@ -125,6 +125,9 @@ class WeatherRepository {
                 val extraResponse = extraDeferred.await().getOrNull()
                 val aqiResult = aqiDeferred.await().getOrNull()
 
+                weatherResponse.fetchedAtEpochMillis = now
+                weatherResponse.sourceModelName = model.idKey
+
                 if (weatherResponse.current != null && extraResponse?.current != null) {
                     val curr = weatherResponse.current
                     val extraCurr = extraResponse.current

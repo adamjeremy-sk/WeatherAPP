@@ -33,7 +33,7 @@ class AlertManager(
         // Clean expired alerts first
         cleanExpiredAlerts(location)
 
-        val targetMap = if (alert.isTestFixture) testAlertsByLocation else liveAlertsByLocation
+        val targetMap = if (alert.isTestFixture || alert.isSyntheticTest) testAlertsByLocation else liveAlertsByLocation
         val locationAlerts = targetMap.getOrPut(location.id) { mutableListOf() }
 
         // Rule 1: Expiry check
@@ -99,7 +99,7 @@ class AlertManager(
                 locationName = location.displayName,
                 alertEvent = alertEvent,
                 severity = severity,
-                isTest = alert.isTestFixture
+                isTest = alert.isTestFixture || alert.isSyntheticTest
             )
         )
 
