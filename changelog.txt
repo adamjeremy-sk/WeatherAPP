@@ -1,10 +1,5 @@
 ---------------
-Changelog 0.6.1VC21 
----------------
-
-
----------------
-Changelog 0.6.0VC20 
+Changelog 0.6.0VC20 - 2026/10/13
 ---------------
 * Open-sourced the complete application under the GNU GPLv3 license, ensuring long-term transparency and privacy.
 * Overhauled the solar and lunar calculation engines (17-module remediation) for almanac-grade astronomical accuracy.
