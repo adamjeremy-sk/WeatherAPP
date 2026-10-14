@@ -12,10 +12,18 @@ Changelog 0.6.0VC19
 * Corrected atmospheric refraction physics and integrated exact geometric horizon dip for high-altitude sunrise/sunset times.
 * Upgraded topocentric math and eradicated negative-epoch bugs, ensuring flawless calculations at the poles and for dates prior to 1970.
 * Rebuilt the solar timeline engine to dynamically handle polar latitudes (Midnight Sun and Polar Night) without UI placeholders.
-* Added a comprehensive automated test suite of 137 tests to guarantee mathematical rigor and long-term numerical stability.
+* Expanded the automated test suite to 140 tests to guarantee mathematical rigor and long-term numerical stability.
+* Added a "Cached Data" inspector in settings to view all locally stored weather files and clear the cache with one tap.
+* Tapping the main weather hero card now displays a popup showing the exact time the forecast was cached and the active model source.
+* Fixed the Alert Log to correctly retain and display test alerts and historical CAP entries without background pruning.
+* Added an in-app Diagnostic Logs screen and internal event logger for advanced troubleshooting and support.
+* Added a one-tap "Delete local app data" control in settings for a complete reset of app preferences.
+* Reorganized the System settings menu alphabetically and moved "Menu Organization" to the top level for easier access.
+* Unified all in-app popups and dialogs with 16dp rounded corners and full BoutiqueThemeEngine color integration.
+* Fixed full-screen dialog layouts to properly respect the system status bar area.
 * minSdk changed; 32 -> 33
-* Rename the mislabeled System screen cell and the Location Tabs settings header from "7-Day Forecast Placement" to "Location Tabs" (new title_location_tabs string); the genuine 7-day placement control remains exclusively in Behaviour > Menu Organization.
-* Remove the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.
+* Renamed the mislabeled System screen cell and settings header from "7-Day Forecast Placement" to "Location Tabs"; the genuine 7-day placement control remains exclusively in Menu Organization.
+* Removed the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.
 * 7-day forecast now displays wind direction alongside wind speed via the shared UnitUtils.formatWindSpeed formatter ("X km/h D" / "X mph D" in both unit systems), backed by wind_direction_10m_dominant.
 * Location search dialog text (header title and description, input text, hint, box stroke, start/end icons, empty state, and result-row primary/secondary lines) now bound programmatically to BoutiqueThemeEngine palette tokens, restoring legibility across all dark themes.
 
