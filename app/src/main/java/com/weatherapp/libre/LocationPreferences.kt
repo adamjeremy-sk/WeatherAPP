@@ -80,7 +80,7 @@ class LocationPreferences(context: Context) {
     companion object {
         val DEFAULT_MENU_ORDER = listOf(
             "CURRENT", "HOURLY", "SEVEN_DAY", "SEPARATOR", 
-            "NATURAL_LIGHT", "NIGHT_VISIBILITY", "DARK_SKY", 
+            "NATURAL_LIGHT", "LUNAR_CALENDAR", "NIGHT_VISIBILITY", "DARK_SKY", 
             "SEPARATOR", "SOLUNAR"
         )
 
@@ -298,8 +298,14 @@ class LocationPreferences(context: Context) {
         val containsAllTabs = InlineSubTab.values().all { list.contains(it.name) }
 
         if (!containsAllTabs) {
-            saveMenuOrder(DEFAULT_MENU_ORDER)
-            return DEFAULT_MENU_ORDER
+            val updatedList = list.toMutableList()
+            InlineSubTab.values().forEach { subTab ->
+                if (!updatedList.contains(subTab.name)) {
+                    updatedList.add(subTab.name)
+                }
+            }
+            saveMenuOrder(updatedList)
+            return updatedList
         }
 
         return list
@@ -676,6 +682,14 @@ class LocationPreferences(context: Context) {
         prefs.edit().putInt(KEY_THEME, mode).apply()
     }
 
+    fun getLunarReminderLeadTimeMinutes(): Int {
+        return prefs.getInt("lunar_reminder_lead_time_minutes", 1440)
+    }
+
+    fun saveLunarReminderLeadTimeMinutes(minutes: Int) {
+        prefs.edit().putInt("lunar_reminder_lead_time_minutes", minutes).apply()
+    }
+
     fun getUnitSystem(): UnitSystem = getSavedUnitSystem()
 
     fun getDefaultModel(): String = getSavedForecastModel().openMeteoKey
@@ -740,17 +754,18 @@ class LocationPreferences(context: Context) {
         editor.apply()
     }
 
-    fun getVolumeScrollSpeedLabel(index: Int): String {
-        return when (index) {
-            1 -> "Speed 1 - Slowest (250ms)"
-            2 -> "Speed 2 - Slow (200ms)"
-            3 -> "Speed 3 - Moderate (160ms)"
-            4 -> "Speed 4 - Normal (120ms)"
-            5 -> "Speed 5 - Fast (80ms)"
-            6 -> "Speed 6 - Faster (50ms)"
-            7 -> "Speed 7 - Ultra Fast (30ms)"
-            else -> "Speed 4 - Normal (120ms)"
+    fun getVolumeScrollSpeedLabel(context: Context, index: Int): String {
+        val resId = when (index) {
+            1 -> R.string.volume_speed_1
+            2 -> R.string.volume_speed_2
+            3 -> R.string.volume_speed_3
+            4 -> R.string.volume_speed_4
+            5 -> R.string.volume_speed_5
+            6 -> R.string.volume_speed_6
+            7 -> R.string.volume_speed_7
+            else -> R.string.volume_speed_4
         }
+        return context.getString(resId)
     }
 
 

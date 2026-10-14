@@ -193,9 +193,54 @@ class DayForecastAdapter(
                 }
 
                 binding.tvExpandedMoonAzimuth.text = joinTwoLines(riseLine, setLine)
+
+                // Bind Lunar Atmospheric Events in 7-Day Forecast Expanded View
+                if (item.isExpanded) {
+                    val dayDataList = com.weatherapp.libre.almanac.MoonAlmanacManager.getMoonAlmanac(
+                        startDate = item.date,
+                        daysForward = 1,
+                        location = loc,
+                        zoneId = zoneId
+                    )
+                    val dayData = dayDataList.firstOrNull()
+
+                    val atmosphericLines = mutableListOf<String>()
+                    if (dayData != null) {
+                        if (dayData.moonbowProbability > 0.6) {
+                            val pct = kotlin.math.round(dayData.moonbowProbability * 100).toInt()
+                            atmosphericLines.add(context.getString(R.string.lunar_moonbow_likely, pct))
+                        }
+                        if (dayData.haloProbability > 0.6) {
+                            val pct = kotlin.math.round(dayData.haloProbability * 100).toInt()
+                            atmosphericLines.add(context.getString(R.string.lunar_halo_possible, pct))
+                        }
+                        if (dayData.coronaProbability > 0.6) {
+                            val pct = kotlin.math.round(dayData.coronaProbability * 100).toInt()
+                            atmosphericLines.add(context.getString(R.string.lunar_corona_possible, pct))
+                        }
+                        if (dayData.parseleneProbability > 0.5) {
+                            val pct = kotlin.math.round(dayData.parseleneProbability * 100).toInt()
+                            atmosphericLines.add(context.getString(R.string.lunar_parselene_possible, pct))
+                        }
+
+                        if (atmosphericLines.isEmpty()) {
+                            atmosphericLines.add(context.getString(R.string.lunar_atmospheric_unlikely_single))
+                        }
+                    }
+
+                    if (atmosphericLines.isNotEmpty()) {
+                        binding.tvAtmosphericConditions.text = atmosphericLines.joinToString("\n")
+                        binding.tvAtmosphericConditions.visibility = View.VISIBLE
+                    } else {
+                        binding.tvAtmosphericConditions.visibility = View.GONE
+                    }
+                } else {
+                    binding.tvAtmosphericConditions.visibility = View.GONE
+                }
             } else {
                 binding.tvExpandedMoonPhase.text = "——"
                 binding.tvExpandedMoonAzimuth.text = context.getString(R.string.position_unavailable)
+                binding.tvAtmosphericConditions.visibility = View.GONE
             }
 
             ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)

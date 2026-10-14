@@ -15,21 +15,21 @@ object CacheInspector {
 
     fun inspectAll(context: Context): List<CacheEntry> {
         val entries = mutableListOf<CacheEntry>()
-        val fileSourceStr = context.getString(R.string.cache_source_file)
-        val prefsSourceStr = context.getString(R.string.cache_source_prefs)
+        val fileSourceStr = try { context.resources?.getString(R.string.cache_source_file) ?: "File Cache" } catch (e: Throwable) { "File Cache" }
+        val prefsSourceStr = try { context.resources?.getString(R.string.cache_source_prefs) ?: "SharedPreferences" } catch (e: Throwable) { "SharedPreferences" }
 
         // 1. Files in context.cacheDir
-        val cacheFiles = try { context.cacheDir?.listFiles() } catch (e: Exception) { null } ?: emptyArray()
+        val cacheFiles = try { context.cacheDir?.listFiles() } catch (e: Throwable) { null } ?: emptyArray()
         for (file in cacheFiles) {
             val size = file.length()
             val snippet = try {
                 if (file.isFile && file.canRead() && size > 0) {
                     file.readText().take(60)
                 } else {
-                    context.getString(R.string.cache_file_size_bytes, size)
+                    try { context.resources?.getString(R.string.cache_file_size_bytes, size) ?: "$size bytes" } catch (e: Throwable) { "$size bytes" }
                 }
-            } catch (e: Exception) {
-                context.getString(R.string.cache_binary_file_bytes, size)
+            } catch (e: Throwable) {
+                try { context.resources?.getString(R.string.cache_binary_file_bytes, size) ?: "Binary file ($size bytes)" } catch (e: Throwable) { "Binary file ($size bytes)" }
             }
             entries.add(
                 CacheEntry(
@@ -56,7 +56,7 @@ object CacheInspector {
                     )
                 )
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Ignore
         }
 
@@ -76,7 +76,7 @@ object CacheInspector {
                     )
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Ignore
         }
 
@@ -87,14 +87,14 @@ object CacheInspector {
         // 1. Clear cacheDir recursively
         try {
             context.cacheDir?.deleteRecursively()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Ignore failure
         }
 
         // 2. Clear alert_cache_prefs
         try {
             context.getSharedPreferences("alert_cache_prefs", Context.MODE_PRIVATE).edit().clear().apply()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Ignore failure
         }
 

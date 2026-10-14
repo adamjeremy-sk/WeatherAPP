@@ -638,6 +638,11 @@ class SettingsDialogManager(
         dialogBinding.tvSolarLeadTitle.setTextColor(palette.textPrimary)
         dialogBinding.tvSolarLeadDesc.setTextColor(palette.textSecondary)
 
+        dialogBinding.cardLunarLeadTime.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardLunarLeadTime.strokeColor = palette.dividerColor
+        dialogBinding.tvLunarLeadTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvLunarLeadDesc.setTextColor(palette.textSecondary)
+
         dialogBinding.cardTestAlert.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
         dialogBinding.cardTestAlert.strokeColor = palette.dividerColor
         dialogBinding.tvTestAlertTitle.setTextColor(palette.textPrimary)
@@ -645,6 +650,21 @@ class SettingsDialogManager(
 
         dialogBinding.etSolarLeadMins.setTextColor(palette.textPrimary)
         dialogBinding.etSolarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+
+        dialogBinding.etLunarLeadMins.setTextColor(palette.textPrimary)
+        dialogBinding.etLunarLeadMins.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+        dialogBinding.etLunarLeadMins.setText(locationPreferences.getLunarReminderLeadTimeMinutes().toString())
+
+        dialogBinding.etLunarLeadMins.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val mins = s?.toString()?.toIntOrNull()
+                if (mins != null && mins >= 0) {
+                    locationPreferences.saveLunarReminderLeadTimeMinutes(mins)
+                }
+            }
+        })
 
         // Test notification system harness
         dialogBinding.cardTestAlert.alpha = 1.0f
@@ -1479,16 +1499,18 @@ class SettingsDialogManager(
             dialogBinding.layoutVolumeSpeedContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
         }
 
-        val currentSpeedIndex = locationPreferences.getVolumeScrollSpeedIndex()
-        dialogBinding.seekBarVolumeSpeed.progress = currentSpeedIndex
-        dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(currentSpeedIndex))
+        val currentSpeedIndex = locationPreferences.getVolumeScrollSpeedIndex().coerceIn(1, 7)
+        dialogBinding.seekBarVolumeSpeed.max = 6
+        dialogBinding.seekBarVolumeSpeed.progress = currentSpeedIndex - 1
+        dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(activity, currentSpeedIndex))
         dialogBinding.tvVolumeSpeedLabel.setTextColor(palette.textPrimary)
 
         dialogBinding.seekBarVolumeSpeed.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
-                dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(progress))
+                val speedIndex = (progress + 1).coerceIn(1, 7)
+                dialogBinding.tvVolumeSpeedLabel.text = activity.getString(R.string.label_cycling_speed, locationPreferences.getVolumeScrollSpeedLabel(activity, speedIndex))
                 if (fromUser) {
-                    locationPreferences.saveVolumeScrollSpeedIndex(progress)
+                    locationPreferences.saveVolumeScrollSpeedIndex(speedIndex)
                 }
             }
             override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}

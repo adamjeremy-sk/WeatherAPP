@@ -160,6 +160,7 @@ class WeatherDisplayManager(
                         InlineSubTab.DARK_SKY -> astronomyManager.updateDarkSkyDisplay(currentLocation)
                         InlineSubTab.NIGHT_VISIBILITY -> astronomyManager.updateNightVisDisplay(currentLocation, cloudMap)
                         InlineSubTab.SOLUNAR -> astronomyManager.updateSolunarDisplay(currentLocation)
+                        InlineSubTab.LUNAR_CALENDAR -> astronomyManager.updateInlineLunarCalendarDisplay(currentLocation)
                         else -> {}
                     }
 
@@ -331,17 +332,58 @@ class WeatherDisplayManager(
             "$t (${setEvent.azimuthDegrees.toInt()}° ${UnitUtils.getDegreesToCompass(setEvent.azimuthDegrees)})"
         } else activity.getString(R.string.moon_no_set)
 
-        val message = (listOf(
+        val dayDataList = com.weatherapp.libre.almanac.MoonAlmanacManager.getMoonAlmanac(
+            startDate = todayDate,
+            daysForward = 1,
+            location = currentLocation,
+            zoneId = zoneId,
+            hourlyCloudCoverMap = astronomyManager.currentHourlyCloudCoverMap
+        )
+        val dayData = dayDataList.firstOrNull()
+
+        val atmosphericLines = mutableListOf<String>()
+        if (dayData != null) {
+            if (dayData.moonbowProbability > 0.6) {
+                val pct = kotlin.math.round(dayData.moonbowProbability * 100).toInt()
+                atmosphericLines.add(activity.getString(R.string.lunar_moonbow_likely, pct))
+            }
+            if (dayData.haloProbability > 0.6) {
+                val pct = kotlin.math.round(dayData.haloProbability * 100).toInt()
+                atmosphericLines.add(activity.getString(R.string.lunar_halo_possible, pct))
+            }
+            if (dayData.coronaProbability > 0.6) {
+                val pct = kotlin.math.round(dayData.coronaProbability * 100).toInt()
+                atmosphericLines.add(activity.getString(R.string.lunar_corona_possible, pct))
+            }
+            if (dayData.parseleneProbability > 0.5) {
+                val pct = kotlin.math.round(dayData.parseleneProbability * 100).toInt()
+                atmosphericLines.add(activity.getString(R.string.lunar_parselene_possible, pct))
+            }
+
+            if (atmosphericLines.isEmpty()) {
+                atmosphericLines.add(activity.getString(R.string.lunar_atmospheric_unlikely_single))
+            }
+        }
+
+        val baseLines = mutableListOf(
             activity.getString(R.string.moon_phase_label, formatted.phaseNameWithEmoji),
             activity.getString(R.string.moon_illumination_label, formatted.illuminationText),
             activity.getString(R.string.moon_age_label, String.format(Locale.US, "%.1f", currMoonInfo.ageDays)),
             activity.getString(R.string.moon_distance_label, String.format(Locale.US, "%,.0f", currMoonInfo.geocentricDistanceKm)),
             "",
             activity.getString(R.string.moonrise_label, riseStr),
-            activity.getString(R.string.moonset_label, setStr),
-            "",
-            activity.getString(R.string.upcoming_moon_phases_label)
-        ) + upcomingLines).joinToString("\n")
+            activity.getString(R.string.moonset_label, setStr)
+        )
+
+        if (atmosphericLines.isNotEmpty()) {
+            baseLines.add("")
+            baseLines.addAll(atmosphericLines)
+        }
+
+        baseLines.add("")
+        baseLines.add(activity.getString(R.string.upcoming_moon_phases_label))
+
+        val message = (baseLines + upcomingLines).joinToString("\n")
 
         val density = activity.resources.displayMetrics.density
 

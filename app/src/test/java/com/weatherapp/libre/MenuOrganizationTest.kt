@@ -68,7 +68,7 @@ class MenuOrganizationTest {
     @Test
     fun testMenuOrderPreferenceRoundTrip() {
         val initialOrder = prefs.getMenuOrder()
-        assertEquals(9, initialOrder.size)
+        assertEquals(10, initialOrder.size)
         assertEquals("CURRENT", initialOrder[0])
         assertEquals("SEPARATOR", initialOrder[3])
 
@@ -81,7 +81,8 @@ class MenuOrganizationTest {
             "SEVEN_DAY",
             "NATURAL_LIGHT",
             "NIGHT_VISIBILITY",
-            "SEPARATOR"
+            "SEPARATOR",
+            "LUNAR_CALENDAR"
         )
         prefs.saveMenuOrder(customOrder)
 

@@ -352,6 +352,7 @@ class MainActivity : AppCompatActivity() {
                     InlineSubTab.DARK_SKY -> "True Dark Sky"
                     InlineSubTab.NIGHT_VISIBILITY -> "Night Visibility"
                     InlineSubTab.SOLUNAR -> "Solunar Activity"
+                    InlineSubTab.LUNAR_CALENDAR -> getString(R.string.title_lunar_calendar)
                 }
                 popup.menu.add(currentGroupId, subTab.ordinal, orderIndex, label)
                 orderIndex++

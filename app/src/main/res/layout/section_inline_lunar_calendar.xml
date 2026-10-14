@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutInlineLunarCalendarContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- Top Navigation Scroller Bar -->
+    <LinearLayout
+        android:id="@+id/layoutInlineLunarNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="8dp">
+
+        <TextView
+            android:id="@+id/tvInlineLunarWeekTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/brand_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="WEEK OF MAR 16 - MAR 22, 2025" />
+
+        <!-- Navigation Controls Container (Far Right) -->
+        <LinearLayout
+            android:id="@+id/layoutLunarNavControls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnInlineLunarPrevWeek"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_prev_month"
+                android:src="@drawable/ic_arrow_left"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnInlineLunarJumpToToday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_jump_to_today"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_today"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnInlineLunarCache"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_generate_lunar_map"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_radar"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnInlineLunarFilter"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_filter_special_events"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_local_events"
+                app:tint="@color/text_primary" />
+
+            <ImageButton
+                android:id="@+id/btnInlineLunarNextWeek"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cd_next_month"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/text_primary" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Progress Indicator Container for 3-Year Lunar Map Generation -->
+    <LinearLayout
+        android:id="@+id/layoutLunarCacheProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@drawable/bg_metric_card"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvLunarCacheProgressStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="Generating 3-Year Lunar Map... 45%" />
+
+        <ProgressBar
+            android:id="@+id/progressLunarCache"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="6dp"
+            android:max="100" />
+    </LinearLayout>
+
+    <!-- Days of Week Header Row (Sun Mon Tue Wed Thu Fri Sat) -->
+    <LinearLayout
+        android:id="@+id/layoutLunarDayHeaders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:paddingVertical="6dp"
+        android:background="@drawable/bg_metric_card">
+
+        <TextView
+            android:id="@+id/tvLunarDaySun"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_sun"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDayMon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_mon"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDayTue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_tue"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDayWed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_wed"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDayThu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_thu"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDayFri"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_fri"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLunarDaySat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/day_sat"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Vertical List RecyclerView for 7 Days of the Week -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInlineLunarWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        tools:listitem="@layout/item_lunar_day" />
+
+</LinearLayout>

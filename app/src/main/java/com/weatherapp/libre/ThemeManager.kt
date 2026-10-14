@@ -177,6 +177,29 @@ class ThemeManager(
         binding.root.findViewById<android.widget.TextView>(R.id.tvDarkSkyTitle)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvNightVisTitle)?.setTextColor(palette.textPrimary)
         binding.root.findViewById<android.widget.TextView>(R.id.tvSolunarTitle)?.setTextColor(palette.textPrimary)
+        binding.root.findViewById<android.widget.TextView>(R.id.tvInlineLunarWeekTitle)?.setTextColor(palette.brandPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineLunarPrevWeek)?.setColorFilter(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineLunarNextWeek)?.setColorFilter(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineLunarJumpToToday)?.setColorFilter(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineLunarCache)?.setColorFilter(palette.textPrimary)
+        binding.root.findViewById<android.widget.ImageButton>(R.id.btnInlineLunarFilter)?.setColorFilter(
+            if ((activity as? MainActivity)?.astronomyManager?.isLunarFilterActive == true) palette.brandPrimary else palette.textPrimary
+        )
+
+        val lunarDayHeaders = listOf(
+            R.id.tvLunarDaySun, R.id.tvLunarDayMon, R.id.tvLunarDayTue,
+            R.id.tvLunarDayWed, R.id.tvLunarDayThu, R.id.tvLunarDayFri, R.id.tvLunarDaySat
+        )
+        for (headerId in lunarDayHeaders) {
+            binding.root.findViewById<android.widget.TextView>(headerId)?.setTextColor(palette.textSecondary)
+        }
+        binding.root.findViewById<android.view.View>(R.id.layoutLunarDayHeaders)?.backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+
+        (activity as? MainActivity)?.astronomyManager?.let {
+            if (it.activeInlineSubTab == InlineSubTab.LUNAR_CALENDAR) {
+                it.updateInlineLunarCalendarDisplay()
+            }
+        }
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvDarkSkyEmptyState)?.apply {
             setTextColor(palette.textSecondary)

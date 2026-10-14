@@ -736,18 +736,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/btnInlinePrevDay"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/cd_prev_day"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_left"
-                app:tint="@color/text_primary" />
+            android:orientation="horizontal"
+            android:paddingVertical="8dp">
 
             <LinearLayout
                 android:id="@+id/layoutInlineDateClickable"
@@ -756,7 +746,8 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="start|center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
@@ -764,7 +755,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/brand_primary"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="TODAY • THU, SEP 24, 2026" />
 
@@ -778,16 +769,35 @@
 
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/btnInlineNextDay"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/cd_next_day"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_right"
-                app:tint="@color/text_primary" />
+            <LinearLayout
+                android:id="@+id/layoutGoldenNavControls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnInlinePrevDay"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_prev_day"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_arrow_left"
+                    app:tint="@color/text_primary" />
+
+                <ImageButton
+                    android:id="@+id/btnInlineNextDay"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_next_day"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/text_primary" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -813,5 +823,8 @@
 
     <!-- Container 7: Inline 7-Day Forecast View -->
     <include layout="@layout/section_inline_seven_day" />
+
+    <!-- Container 8: Inline Lunar Calendar View -->
+    <include layout="@layout/section_inline_lunar_calendar" />
 
 </merge>

@@ -6,9 +6,11 @@ import android.os.Looper
 import android.provider.AlarmClock
 import android.view.KeyEvent
 import android.view.View
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,7 @@ import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.solar.Observer
 import com.weatherapp.libre.solar.SolarLightingEngine
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
@@ -35,7 +38,8 @@ enum class InlineSubTab {
     NATURAL_LIGHT,
     DARK_SKY,
     NIGHT_VISIBILITY,
-    SOLUNAR
+    SOLUNAR,
+    LUNAR_CALENDAR
 }
 
 class AstronomyDisplayManager(
@@ -58,6 +62,10 @@ class AstronomyDisplayManager(
     val nightVisAdapter = NightVisibilityPeriodAdapter()
     val solunarAdapter = SolunarDayAdapter()
 
+    var inlineLunarWeekDate: LocalDate = LocalDate.now()
+    private var lunarDebounceJob: Job? = null
+    lateinit var lunarCalendarAdapter: com.weatherapp.libre.almanac.LunarDayAdapter
+
     var currentHourlyCloudCoverMap: Map<Instant, Double>? = null
     private var calculationJob: Job? = null
 
@@ -68,8 +76,14 @@ class AstronomyDisplayManager(
     private val rapidCycleRunnable = object : Runnable {
         override fun run() {
             if (isVolumeKeyHeld) {
-                inlineGoldenDate = if (volumeKeyDirection > 0) inlineGoldenDate.plusDays(1) else inlineGoldenDate.minusDays(1)
-                updateInlineGoldenHourDisplay(currentLocationItem)
+                if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
+                    inlineGoldenDate = if (volumeKeyDirection > 0) inlineGoldenDate.plusDays(1) else inlineGoldenDate.minusDays(1)
+                    updateInlineGoldenHourDisplay(currentLocationItem)
+                } else if (activeInlineSubTab == InlineSubTab.LUNAR_CALENDAR) {
+                    inlineLunarWeekDate = if (volumeKeyDirection > 0) inlineLunarWeekDate.plusWeeks(1) else inlineLunarWeekDate.minusWeeks(1)
+                    updateInlineLunarCalendarDisplay(currentLocationItem)
+                }
+
                 val speedIdx = locationPreferences.getVolumeScrollSpeedIndex()
                 val delayMs = when (speedIdx) {
                     1 -> 250L
@@ -145,6 +159,7 @@ class AstronomyDisplayManager(
         val darkSkyVis = if (subTab == InlineSubTab.DARK_SKY) View.VISIBLE else View.GONE
         val nightVisVis = if (subTab == InlineSubTab.NIGHT_VISIBILITY) View.VISIBLE else View.GONE
         val solunarVis = if (subTab == InlineSubTab.SOLUNAR) View.VISIBLE else View.GONE
+        val lunarCalendarVis = if (subTab == InlineSubTab.LUNAR_CALENDAR) View.VISIBLE else View.GONE
 
         activity.findViewById<View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
         activity.findViewById<View>(R.id.layoutHeroSection)?.visibility = weatherVis
@@ -154,6 +169,7 @@ class AstronomyDisplayManager(
         activity.findViewById<View>(R.id.layoutInlineDarkSkyContainer)?.visibility = darkSkyVis
         activity.findViewById<View>(R.id.layoutInlineNightVisibilityContainer)?.visibility = nightVisVis
         activity.findViewById<View>(R.id.layoutInlineSolunarContainer)?.visibility = solunarVis
+        activity.findViewById<View>(R.id.layoutInlineLunarCalendarContainer)?.visibility = lunarCalendarVis
 
         val btnMenu = activity.findViewById<MaterialButton>(R.id.btnInlineMenu)
         when (subTab) {
@@ -189,6 +205,11 @@ class AstronomyDisplayManager(
                 btnMenu?.text = activity.getString(R.string.subtab_solunar_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_full)
                 updateSolunarDisplay(location)
+            }
+            InlineSubTab.LUNAR_CALENDAR -> {
+                btnMenu?.text = activity.getString(R.string.title_lunar_calendar)
+                btnMenu?.setIconResource(R.drawable.ic_moon)
+                updateInlineLunarCalendarDisplay(location)
             }
         }
         updateSevenDayForecastVisibility(subTab)
@@ -233,6 +254,11 @@ class AstronomyDisplayManager(
                 btnMenu?.text = activity.getString(R.string.subtab_solunar_dropdown)
                 btnMenu?.setIconResource(R.drawable.ic_moon_full)
             }
+            InlineSubTab.LUNAR_CALENDAR -> {
+                btnMenu?.text = activity.getString(R.string.title_lunar_calendar)
+                btnMenu?.setIconResource(R.drawable.ic_moon)
+                updateInlineLunarCalendarDisplay(currentLocationItem)
+            }
         }
 
         updateSevenDayForecastVisibility(subTab)
@@ -244,6 +270,7 @@ class AstronomyDisplayManager(
         val darkSkyVis = if (subTab == InlineSubTab.DARK_SKY) View.VISIBLE else View.GONE
         val nightVisVis = if (subTab == InlineSubTab.NIGHT_VISIBILITY) View.VISIBLE else View.GONE
         val solunarVis = if (subTab == InlineSubTab.SOLUNAR) View.VISIBLE else View.GONE
+        val lunarCalendarVis = if (subTab == InlineSubTab.LUNAR_CALENDAR) View.VISIBLE else View.GONE
 
         activity.findViewById<View>(R.id.layoutWeatherDetailsContainer)?.visibility = weatherVis
         activity.findViewById<View>(R.id.layoutHeroSection)?.visibility = weatherVis
@@ -253,6 +280,7 @@ class AstronomyDisplayManager(
         activity.findViewById<View>(R.id.layoutInlineDarkSkyContainer)?.visibility = darkSkyVis
         activity.findViewById<View>(R.id.layoutInlineNightVisibilityContainer)?.visibility = nightVisVis
         activity.findViewById<View>(R.id.layoutInlineSolunarContainer)?.visibility = solunarVis
+        activity.findViewById<View>(R.id.layoutInlineLunarCalendarContainer)?.visibility = lunarCalendarVis
     }
 
     fun updateSevenDayForecastVisibility(subTab: InlineSubTab = activeInlineSubTab) {
@@ -352,10 +380,190 @@ class AstronomyDisplayManager(
         }
     }
 
+    var isLunarFilterActive: Boolean = false
+
+    fun trigger3YearLunarMapGeneration(location: LocationItem = currentLocationItem) {
+        val layoutProgress = activity.findViewById<View>(R.id.layoutLunarCacheProgress)
+        val progressScore = activity.findViewById<ProgressBar>(R.id.progressLunarCache)
+        val tvStatus = activity.findViewById<TextView>(R.id.tvLunarCacheProgressStatus)
+
+        layoutProgress?.visibility = View.VISIBLE
+
+        activity.lifecycleScope.launch(kotlinx.coroutines.Dispatchers.Default) {
+            val zoneId = resolveZoneId(locationTimezoneStr)
+            val events = com.weatherapp.libre.almanac.LunarCacheManager.generate3YearMap(location, zoneId) { percent ->
+                activity.runOnUiThread {
+                    progressScore?.progress = percent
+                    tvStatus?.text = activity.getString(R.string.status_lunar_cache_progress, percent)
+                }
+            }
+
+            com.weatherapp.libre.almanac.LunarCacheManager.save3YearMapCache(activity.applicationContext, events)
+
+            activity.runOnUiThread {
+                layoutProgress?.visibility = View.GONE
+                isLunarFilterActive = true
+                updateInlineLunarCalendarDisplay(location)
+            }
+        }
+    }
+
+    fun updateInlineLunarCalendarDisplay(location: LocationItem = currentLocationItem) {
+        currentLocationItem = location
+        val zoneId = resolveZoneId(locationTimezoneStr)
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+
+        val btnPrev = activity.findViewById<ImageButton>(R.id.btnInlineLunarPrevWeek)
+        val btnNext = activity.findViewById<ImageButton>(R.id.btnInlineLunarNextWeek)
+        val btnToday = activity.findViewById<ImageButton>(R.id.btnInlineLunarJumpToToday)
+        val btnCache = activity.findViewById<ImageButton>(R.id.btnInlineLunarCache)
+        val btnFilter = activity.findViewById<ImageButton>(R.id.btnInlineLunarFilter)
+        val tvWeekTitle = activity.findViewById<TextView>(R.id.tvInlineLunarWeekTitle)
+        val rvWeek = activity.findViewById<RecyclerView>(R.id.rvInlineLunarWeek)
+
+        val sundayDate = inlineLunarWeekDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY))
+        val saturdayDate = sundayDate.plusDays(6)
+
+        // MaterialDatePicker Listener respecting dynamic BoutiqueThemeEngine themes
+        val showDatePicker = View.OnClickListener {
+            val startMilli = inlineLunarWeekDate.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli()
+
+            val picker = com.google.android.material.datepicker.MaterialDatePicker.Builder.datePicker()
+                .setTitleText(activity.getString(R.string.cd_select_date))
+                .setSelection(startMilli)
+                .build()
+
+            picker.addOnPositiveButtonClickListener { selection ->
+                val selectedDate = Instant.ofEpochMilli(selection).atZone(ZoneId.of("UTC")).toLocalDate()
+                inlineLunarWeekDate = selectedDate
+                isLunarFilterActive = false
+                updateInlineLunarCalendarDisplay(location)
+            }
+
+            picker.show(activity.supportFragmentManager, "LUNAR_DATE_PICKER")
+        }
+
+        // Attach DatePicker Listener to Title text
+        tvWeekTitle?.setOnClickListener(showDatePicker)
+
+        // Jump To Today Button Click
+        btnToday?.setOnClickListener {
+            inlineLunarWeekDate = LocalDate.now(zoneId)
+            isLunarFilterActive = false
+            updateInlineLunarCalendarDisplay(location)
+        }
+
+        // Generate 3-Year Lunar Map Cache Trigger Button Click
+        btnCache?.setOnClickListener {
+            MaterialAlertDialogBuilder(activity)
+                .setTitle(activity.getString(R.string.title_generate_lunar_map))
+                .setMessage(activity.getString(R.string.msg_generate_lunar_map_warning))
+                .setPositiveButton(activity.getString(R.string.btn_proceed)) { dialog, _ ->
+                    dialog.dismiss()
+                    trigger3YearLunarMapGeneration(location)
+                }
+                .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        // Special Events Filter Toggle Click
+        btnFilter?.setOnClickListener {
+            isLunarFilterActive = !isLunarFilterActive
+            updateInlineLunarCalendarDisplay(location)
+        }
+
+        if (isLunarFilterActive) {
+            tvWeekTitle?.text = activity.getString(R.string.title_special_lunar_events)
+            btnPrev?.visibility = View.GONE
+            btnNext?.visibility = View.GONE
+            btnToday?.visibility = View.VISIBLE
+            btnFilter?.setColorFilter(palette.brandPrimary)
+        } else {
+            val dateFmt = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+            val yearFmt = DateTimeFormatter.ofPattern("yyyy", Locale.getDefault())
+            val sunStr = sundayDate.format(dateFmt).uppercase(Locale.getDefault())
+            val satStr = saturdayDate.format(dateFmt).uppercase(Locale.getDefault())
+            val yrStr = saturdayDate.format(yearFmt)
+            tvWeekTitle?.text = activity.getString(R.string.week_of_format, sunStr, satStr, yrStr)
+
+            btnPrev?.visibility = View.VISIBLE
+            btnNext?.visibility = View.VISIBLE
+            btnToday?.visibility = View.VISIBLE
+            btnFilter?.setColorFilter(palette.textPrimary)
+        }
+
+        btnPrev?.setOnClickListener {
+            inlineLunarWeekDate = inlineLunarWeekDate.minusWeeks(1)
+            updateInlineLunarCalendarDisplay(location)
+        }
+
+        btnNext?.setOnClickListener {
+            inlineLunarWeekDate = inlineLunarWeekDate.plusWeeks(1)
+            updateInlineLunarCalendarDisplay(location)
+        }
+
+        if (rvWeek != null) {
+            if (rvWeek.layoutManager == null) {
+                rvWeek.layoutManager = LinearLayoutManager(activity)
+            }
+            if (!::lunarCalendarAdapter.isInitialized) {
+                lunarCalendarAdapter = com.weatherapp.libre.almanac.LunarDayAdapter()
+            }
+            rvWeek.adapter = lunarCalendarAdapter
+
+            val volumeSpeedMs = when (locationPreferences.getVolumeScrollSpeedIndex()) {
+                1 -> 250L
+                2 -> 200L
+                3 -> 160L
+                4 -> 120L
+                5 -> 80L
+                6 -> 50L
+                7 -> 30L
+                else -> 120L
+            }
+            val totalDebounceDelayMs = volumeSpeedMs + 30L
+
+            lunarDebounceJob?.cancel()
+            lunarDebounceJob = activity.lifecycleScope.launch {
+                delay(totalDebounceDelayMs) // Volume scroll speed + 30ms debounce
+                val days = if (isLunarFilterActive) {
+                    val cached = com.weatherapp.libre.almanac.LunarCacheManager.getCached3YearMap(activity.applicationContext)
+                    if (cached != null) {
+                        cached
+                    } else {
+                        val rangeStart = LocalDate.now(zoneId).minusMonths(6)
+                        val allDays = com.weatherapp.libre.almanac.MoonAlmanacManager.getMoonAlmanac(
+                            startDate = rangeStart,
+                            daysForward = 365,
+                            location = location,
+                            zoneId = zoneId
+                        )
+                        allDays.filter { day ->
+                            day.isBloodMoon || day.isSupermoon || day.isBlueMoon || day.isHarvestMoon || day.eclipseInfo != null
+                        }
+                    }
+                } else {
+                    com.weatherapp.libre.almanac.LunarCalendarManager.getWeeklyForecast(
+                        startDate = sundayDate,
+                        location = location,
+                        hourlyCloudCoverMap = currentHourlyCloudCoverMap,
+                        zoneId = zoneId
+                    )
+                }
+                lunarCalendarAdapter.submitData(days, locationPreferences.getSavedThemeMode())
+            }
+        }
+    }
+
     fun updatePalette(palette: ColorPalette) {
         darkSkyAdapter.setPalette(palette)
         nightVisAdapter.setPalette(palette)
         solunarAdapter.setPalette(palette)
+        if (::lunarCalendarAdapter.isInitialized) {
+            lunarCalendarAdapter.refreshTheme(locationPreferences.getSavedThemeMode())
+        }
     }
 
     fun updateInlineGoldenHourDisplay(location: LocationItem = currentLocationItem, nowInstant: Instant = Instant.now()) {
@@ -419,14 +627,19 @@ class AstronomyDisplayManager(
     }
 
     fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT && locationPreferences.isVolumeScrollEnabled()) {
+        if ((activeInlineSubTab == InlineSubTab.NATURAL_LIGHT || activeInlineSubTab == InlineSubTab.LUNAR_CALENDAR) && locationPreferences.isVolumeScrollEnabled()) {
             when (keyCode) {
                 KeyEvent.KEYCODE_VOLUME_UP -> {
                     if (!isVolumeKeyHeld) {
                         isVolumeKeyHeld = true
                         volumeKeyDirection = 1
-                        inlineGoldenDate = inlineGoldenDate.plusDays(1)
-                        updateInlineGoldenHourDisplay()
+                        if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
+                            inlineGoldenDate = inlineGoldenDate.plusDays(1)
+                            updateInlineGoldenHourDisplay()
+                        } else {
+                            inlineLunarWeekDate = inlineLunarWeekDate.plusWeeks(1)
+                            updateInlineLunarCalendarDisplay()
+                        }
 
                         val speedIdx = locationPreferences.getVolumeScrollSpeedIndex()
                         val delayMs = when (speedIdx) {
@@ -447,8 +660,13 @@ class AstronomyDisplayManager(
                     if (!isVolumeKeyHeld) {
                         isVolumeKeyHeld = true
                         volumeKeyDirection = -1
-                        inlineGoldenDate = inlineGoldenDate.minusDays(1)
-                        updateInlineGoldenHourDisplay()
+                        if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
+                            inlineGoldenDate = inlineGoldenDate.minusDays(1)
+                            updateInlineGoldenHourDisplay()
+                        } else {
+                            inlineLunarWeekDate = inlineLunarWeekDate.minusWeeks(1)
+                            updateInlineLunarCalendarDisplay()
+                        }
 
                         val speedIdx = locationPreferences.getVolumeScrollSpeedIndex()
                         val delayMs = when (speedIdx) {
@@ -481,6 +699,7 @@ class AstronomyDisplayManager(
 
     fun cleanup() {
         calculationJob?.cancel()
+        lunarDebounceJob?.cancel()
         isVolumeKeyHeld = false
         handler.removeCallbacksAndMessages(null)
     }

@@ -26,17 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".GoldenHourActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".SolarEventsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".LocalEventsActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

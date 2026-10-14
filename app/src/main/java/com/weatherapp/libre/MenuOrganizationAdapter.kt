@@ -81,6 +81,7 @@ class MenuOrganizationAdapter(
                     InlineSubTab.DARK_SKY -> "True Dark Sky"
                     InlineSubTab.NIGHT_VISIBILITY -> "Night Visibility"
                     InlineSubTab.SOLUNAR -> "Solunar Activity"
+                    InlineSubTab.LUNAR_CALENDAR -> context.getString(R.string.title_lunar_calendar)
                 }
             } catch (e: Exception) {
                 subTabKey
