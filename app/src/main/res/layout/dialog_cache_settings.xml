@@ -135,7 +135,7 @@
                         android:id="@+id/tvCachedDataTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cached Data"
+                        android:text="@string/title_cached_data"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -145,7 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Inspect and clear local storage"
+                        android:text="@string/desc_cached_data"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 

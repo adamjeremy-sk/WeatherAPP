@@ -53,13 +53,15 @@ class NightVisibilityPeriodAdapter : RecyclerView.Adapter<NightVisibilityPeriodA
             val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
             val startLocal = item.startUtc.atZone(zoneId).format(formatter)
             val endLocal = item.endUtc.atZone(zoneId).format(formatter)
+            val context = binding.root.context
 
-            binding.tvPeriodCategory.text = item.category
+            binding.tvPeriodCategory.text = item.getLocalizedCategory(context)
             binding.tvPeriodTimeRange.text = "$startLocal – $endLocal"
-            binding.tvPeriodTwilight.text = item.twilightStatus
+            binding.tvPeriodTwilight.text = item.getLocalizedTwilightStatus(context)
 
-            if (item.cloudCoverStatus != null) {
-                binding.tvPeriodCloudCover.text = item.cloudCoverStatus
+            val cloudStatus = item.getLocalizedCloudCoverStatus(context)
+            if (cloudStatus != null) {
+                binding.tvPeriodCloudCover.text = cloudStatus
                 binding.tvPeriodCloudCover.visibility = View.VISIBLE
             } else {
                 binding.tvPeriodCloudCover.visibility = View.GONE
@@ -75,7 +77,6 @@ class NightVisibilityPeriodAdapter : RecyclerView.Adapter<NightVisibilityPeriodA
 
             val now = java.time.Instant.now()
             val isCurrentPeriod = now.isAfter(item.startUtc) && now.isBefore(item.endUtc)
-            val context = binding.root.context
             val goldColor = ContextCompat.getColor(context, R.color.golden_hour_primary)
 
             val p = palette

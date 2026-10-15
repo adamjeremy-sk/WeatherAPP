@@ -44,7 +44,7 @@ class SolarPhaseAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SolarPhaseDetail) {
-            binding.tvPhaseName.text = item.name
+            binding.tvPhaseName.text = item.getDisplayName(binding.root.context)
             binding.tvPhaseTimeRange.text = item.timeRangeText
             binding.tvPhaseDuration.text = item.durationText
 

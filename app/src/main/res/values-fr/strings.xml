@@ -435,4 +435,114 @@
     <string name="lunar_corona_possible">Couronne lunaire possible (%1$d %%)</string>
     <string name="lunar_parselene_possible">Parasélène (Fausse Lune) possible (%1$d %%)</string>
     <string name="lunar_atmospheric_unlikely_single">Phénomènes lunaires atmosphériques peu probables aujourd\'hui</string>
+
+    <!-- Weather Conditions (Step 1) -->
+    <string name="condition_clear_sky">Ciel dégagé</string>
+    <string name="condition_mainly_clear">Généralement dégagé</string>
+    <string name="condition_partly_cloudy">Partiellement nuageux</string>
+    <string name="condition_overcast">Couvert</string>
+    <string name="condition_foggy">Brouillard</string>
+    <string name="condition_light_drizzle">Bruine légère</string>
+    <string name="condition_freezing_drizzle">Bruine verglaçante</string>
+    <string name="condition_slight_rain">Pluie faible</string>
+    <string name="condition_moderate_rain">Pluie modérée</string>
+    <string name="condition_heavy_rain">Forte pluie</string>
+    <string name="condition_freezing_rain">Pluie verglaçante</string>
+    <string name="condition_slight_snow">Neige faible</string>
+    <string name="condition_moderate_snow">Neige modérée</string>
+    <string name="condition_heavy_snow">Forte neige</string>
+    <string name="condition_snow_grains">Neige en grains</string>
+    <string name="condition_rain_showers">Averses de pluie</string>
+    <string name="condition_snow_showers">Averses de neige</string>
+    <string name="condition_thunderstorm">Orage</string>
+    <string name="condition_thunderstorm_hail">Orage avec grêle</string>
+    <string name="condition_varied">Conditions variables</string>
+
+    <!-- Metrics & Attributions (Step 1) -->
+    <string name="msg_source_gem_model">Source : Modèle GEM d\'Environnement Canada</string>
+    <string name="label_source_gem">Source : GEM</string>
+    <string name="label_rising_at">Lever à %1$s</string>
+    <string name="label_setting_at">Coucher à %1$s</string>
+    <string name="label_percent_illuminated">%1$d%% illuminé</string>
+    <string name="label_distance">Distance :</string>
+
+    <!-- Moon Phases & Lunar Metrics (Step 2) -->
+    <string name="label_phase_format">Phase : %1$s</string>
+    <string name="label_illumination_format">Illumination : %1$d%% illuminé</string>
+    <string name="phase_new_moon">Nouvelle lune</string>
+    <string name="phase_waxing_crescent">Premier croissant</string>
+    <string name="phase_first_quarter">Premier quartier</string>
+    <string name="phase_waxing_gibbous">Lune gibbeuse croissante</string>
+    <string name="phase_full_moon">Pleine lune</string>
+    <string name="phase_waning_gibbous">Lune gibbeuse décroissante</string>
+    <string name="phase_last_quarter">Dernier quartier</string>
+    <string name="phase_waning_crescent">Dernier croissant</string>
+
+    <!-- Natural Light Phases & Sub-Tabs (Step 3) -->
+    <string name="phase_night">Nuit</string>
+    <string name="phase_astronomical_twilight">Crépuscule astronomique</string>
+    <string name="phase_nautical_twilight">Crépuscule nautique</string>
+    <string name="phase_blue_hour">Heure bleue</string>
+    <string name="phase_civil_twilight">Crépuscule civil</string>
+    <string name="phase_sunrise">Lever du soleil</string>
+    <string name="phase_golden_hour">Heure dorée</string>
+    <string name="phase_daytime">Jour</string>
+    <string name="phase_sunset">Coucher du soleil</string>
+    <string name="label_today">Aujourd\'hui</string>
+
+    <!-- Night Visibility & Solunar Labels (Step 4) -->
+    <string name="vis_bright_night">Nuit claire</string>
+    <string name="vis_moderate_light">Lumière modérée</string>
+    <string name="vis_low_light">Faible luminosité</string>
+    <string name="vis_minimal_light">Luminosité minimale</string>
+    <string name="vis_no_natural_light">Aucune lumière naturelle</string>
+    <string name="label_moon_below_horizon">Lune sous l\'horizon</string>
+    <string name="label_moon_above_horizon">Lune au-dessus de l\'horizon</string>
+    <string name="rating_excellent">Excellente</string>
+    <string name="rating_good">Bonne</string>
+    <string name="rating_moderate">Modérée</string>
+    <string name="rating_poor">Mauvaise</string>
+    <string name="label_transit">Transit</string>
+    <string name="label_nadir">Nadir</string>
+    <string name="label_moonrise">Lever de lune</string>
+    <string name="label_moonset">Coucher de lune</string>
+
+    <!-- Settings: Cache, Models, Themes (Step 5) -->
+    <string name="title_cached_data">Données en cache</string>
+    <string name="desc_cached_data">Inspecter et vider le stockage local</string>
+    <string name="label_minutes">minutes</string>
+    <string name="model_gem_title">GEM (Environnement Canada)</string>
+    <string name="model_gem_desc">Modèle de prévision global officiel GEM d\'Environnement Canada</string>
+    <string name="model_gfs_title">Système de prévision global de la NOAA</string>
+    <string name="model_gfs_short">GFS (NOAA, États-Unis)</string>
+    <string name="model_ecmwf_title">ECMWF (Centre européen)</string>
+    <string name="model_ecmwf_desc">Centre européen pour les prévisions météorologiques à moyen terme (25 km)</string>
+    <string name="model_gefs_title">Ensemble GEFS (NOAA)</string>
+    <string name="model_gefs_desc">Système de prévision d\'ensemble global de la NOAA (ensemble de 30 membres)</string>
+    <string name="model_cma_title">CMA-GFS (Chine)</string>
+    <string name="model_cma_desc">Système de prévision global de l\'Administration météorologique de Chine</string>
+
+    <string name="theme_light_title">Thème clair</string>
+    <string name="theme_light_desc">Fond clair et épuré avec une typographie à fort contraste</string>
+    <string name="theme_dark_title">Thème sombre</string>
+    <string name="theme_dark_desc">Fond ardoise sombre bleuté moderne pour le confort nocturne</string>
+    <string name="theme_aurora_title">Thème aurore</string>
+    <string name="theme_aurora_desc">Bleu canard profond de minuit avec une lueur d\'aurore émeraude</string>
+    <string name="theme_charcoal_title">Thème anthracite</string>
+    <string name="theme_charcoal_desc">Fond anthracite neutre et profond pour les écrans OLED</string>
+    <string name="theme_cobalt_title">Thème cobalt</string>
+    <string name="theme_cobalt_desc">Fond bleu océan profond et vibrant</string>
+    <string name="theme_crema_title">Thème crème</string>
+    <string name="theme_crema_desc">Fond blanc cassé crème et chaud avec des accents brun doux</string>
+    <string name="theme_fire_engine_title">Thème rouge pompier</string>
+    <string name="theme_fire_engine_desc">Fond rouge cramoisi profond et audacieux</string>
+    <string name="theme_frost_title">Thème givre</string>
+    <string name="theme_frost_desc">Fond bleu ardoise glacé et frais</string>
+    <string name="theme_jade_title">Thème jade</string>
+    <string name="theme_jade_desc">Thème vert foncé riche de forêt</string>
+    <string name="theme_orange_grove_title">Thème orangeraie</string>
+    <string name="theme_orange_grove_desc">Fond orange riche de coucher de soleil</string>
+    <string name="theme_terracotta_title">Thème terre cuite</string>
+    <string name="theme_terracotta_desc">Tons chauds d\'argile terreuse avec des reflets cuivrés de coucher de soleil</string>
+    <string name="btn_ok">OK</string>
 </resources>

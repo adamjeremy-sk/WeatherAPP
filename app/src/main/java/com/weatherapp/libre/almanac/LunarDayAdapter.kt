@@ -14,6 +14,8 @@ import com.weatherapp.libre.R
 import com.weatherapp.libre.lunar.EclipseType
 import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.LunarPhaseCategory
+import com.weatherapp.libre.lunar.getEmoji
+import com.weatherapp.libre.lunar.getNameRes
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -226,8 +228,8 @@ class LunarDayAdapter(
             }
             ivMoonPhaseIcon.setImageResource(drawableRes)
 
-            val formattedPhase = LunarCalculator.formatPhaseDisplay(day.primaryPhase)
-            tvMoonStageName.text = formattedPhase.phaseNameWithEmoji
+            val phaseNameStr = itemView.context.getString(day.primaryPhase.phaseCategory.getNameRes())
+            tvMoonStageName.text = "$phaseNameStr ${day.primaryPhase.phaseCategory.getEmoji()}"
 
             // Illumination % and Peak Time
             val localTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())

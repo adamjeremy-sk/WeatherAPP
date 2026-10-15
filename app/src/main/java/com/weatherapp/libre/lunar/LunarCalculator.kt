@@ -40,6 +40,18 @@ object LunarCalculator {
     /**
      * Formats MoonPhaseInfo into user-friendly phase name with emoji and illumination percentage text.
      */
+    fun formatPhaseDisplay(moonInfo: MoonPhaseInfo, context: android.content.Context): FormattedLunarPhase {
+        val phaseName = context.getString(moonInfo.phaseCategory.getNameRes())
+        val emoji = moonInfo.phaseCategory.getEmoji()
+        val pct = (moonInfo.illuminationFraction * 100).roundToInt().coerceIn(0, 100)
+        val cyclePct = (moonInfo.phaseAngleDegrees / 360.0 * 100).roundToInt().coerceIn(0, 100)
+        return FormattedLunarPhase(
+            phaseNameWithEmoji = "$phaseName $emoji",
+            illuminationText = context.getString(com.weatherapp.libre.R.string.label_percent_illuminated, pct),
+            cyclePercentage = cyclePct,
+        )
+    }
+
     fun formatPhaseDisplay(moonInfo: MoonPhaseInfo): FormattedLunarPhase {
         val (phaseName, emoji) = when {
             (moonInfo.phaseAngleDegrees < 22.5) || (moonInfo.phaseAngleDegrees >= 337.5) -> Pair("New Moon", "🌑")

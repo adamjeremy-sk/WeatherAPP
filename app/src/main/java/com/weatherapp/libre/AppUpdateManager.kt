@@ -92,7 +92,7 @@ class AppUpdateManager(
         MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_app_up_to_date))
             .setMessage(activity.getString(R.string.msg_running_latest_version))
-            .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ ->
+            .setPositiveButton(activity.getString(R.string.btn_ok)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()

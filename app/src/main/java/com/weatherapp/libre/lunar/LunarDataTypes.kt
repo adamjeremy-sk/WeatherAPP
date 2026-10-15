@@ -9,6 +9,20 @@ enum class MoonPhaseName {
     LAST_QUARTER,
 }
 
+fun MoonPhaseName.getNameRes(): Int = when (this) {
+    MoonPhaseName.NEW_MOON -> com.weatherapp.libre.R.string.phase_new_moon
+    MoonPhaseName.FIRST_QUARTER -> com.weatherapp.libre.R.string.phase_first_quarter
+    MoonPhaseName.FULL_MOON -> com.weatherapp.libre.R.string.phase_full_moon
+    MoonPhaseName.LAST_QUARTER -> com.weatherapp.libre.R.string.phase_last_quarter
+}
+
+fun MoonPhaseName.getEmoji(): String = when (this) {
+    MoonPhaseName.NEW_MOON -> "🌑"
+    MoonPhaseName.FIRST_QUARTER -> "🌓"
+    MoonPhaseName.FULL_MOON -> "🌕"
+    MoonPhaseName.LAST_QUARTER -> "🌗"
+}
+
 enum class LunarPhaseCategory {
     NEW,
     WAXING_CRESCENT,
@@ -18,6 +32,28 @@ enum class LunarPhaseCategory {
     WANING_GIBBOUS,
     LAST_QUARTER,
     WANING_CRESCENT,
+}
+
+fun LunarPhaseCategory.getNameRes(): Int = when (this) {
+    LunarPhaseCategory.NEW -> com.weatherapp.libre.R.string.phase_new_moon
+    LunarPhaseCategory.WAXING_CRESCENT -> com.weatherapp.libre.R.string.phase_waxing_crescent
+    LunarPhaseCategory.FIRST_QUARTER -> com.weatherapp.libre.R.string.phase_first_quarter
+    LunarPhaseCategory.WAXING_GIBBOUS -> com.weatherapp.libre.R.string.phase_waxing_gibbous
+    LunarPhaseCategory.FULL -> com.weatherapp.libre.R.string.phase_full_moon
+    LunarPhaseCategory.WANING_GIBBOUS -> com.weatherapp.libre.R.string.phase_waning_gibbous
+    LunarPhaseCategory.LAST_QUARTER -> com.weatherapp.libre.R.string.phase_last_quarter
+    LunarPhaseCategory.WANING_CRESCENT -> com.weatherapp.libre.R.string.phase_waning_crescent
+}
+
+fun LunarPhaseCategory.getEmoji(): String = when (this) {
+    LunarPhaseCategory.NEW -> "🌑"
+    LunarPhaseCategory.WAXING_CRESCENT -> "🌒"
+    LunarPhaseCategory.FIRST_QUARTER -> "🌓"
+    LunarPhaseCategory.WAXING_GIBBOUS -> "🌔"
+    LunarPhaseCategory.FULL -> "🌕"
+    LunarPhaseCategory.WANING_GIBBOUS -> "🌖"
+    LunarPhaseCategory.LAST_QUARTER -> "🌗"
+    LunarPhaseCategory.WANING_CRESCENT -> "🌘"
 }
 
 enum class MoonEventType {

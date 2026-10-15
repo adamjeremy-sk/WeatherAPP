@@ -138,6 +138,7 @@ class SolunarManager {
         return SolunarDaySummary(
             date = date,
             phaseName = formattedPhase.phaseNameWithEmoji,
+            phaseCategory = phaseInfo.phaseCategory,
             illumination = phaseInfo.illuminationFraction,
             moonrise = moonrise,
             moonset = moonset,

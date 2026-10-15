@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.weatherapp.libre.databinding.ItemSolunarDayBinding
+import com.weatherapp.libre.lunar.getEmoji
+import com.weatherapp.libre.lunar.getNameRes
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -51,12 +53,15 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
 
             val timeFmt = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
 
-            val illumPct = (item.illumination * 100).toInt()
-            binding.tvSolunarDate.text = dateStr
-            binding.tvSolunarPhase.text = "${item.phaseName} • $illumPct% ill."
-            binding.tvSolunarRatingLabel.text = "${item.rating} • ${item.ratingLabel}"
-
             val context = binding.root.context
+            val illumPct = (item.illumination * 100).toInt()
+            val phaseNameLocalized = item.phaseCategory?.let { cat ->
+                "${context.getString(cat.getNameRes())} ${cat.getEmoji()}"
+            } ?: item.phaseName
+            binding.tvSolunarDate.text = dateStr
+            binding.tvSolunarPhase.text = "$phaseNameLocalized • ${context.getString(R.string.label_percent_illuminated, illumPct)}"
+            binding.tvSolunarRatingLabel.text = "${item.rating} • ${item.getLocalizedRatingLabel(context)}"
+
             val riseStr = item.moonrise?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_no_rise)
             val setStr = item.moonset?.atZone(zoneId)?.format(timeFmt) ?: context.getString(R.string.position_no_set)
             binding.tvSolunarMoonRiseSet.text = context.getString(R.string.solunar_moonrise_moonset, riseStr, setStr)
@@ -70,7 +75,7 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
                 item.majorPeriods.joinToString(", ") { p ->
                     val s = p.startUtc.atZone(zoneId).format(timeFmt)
                     val e = p.endUtc.atZone(zoneId).format(timeFmt)
-                    "$s – $e (${p.centerEvent})"
+                    "$s – $e (${p.getLocalizedCenterEvent(context)})"
                 }
             } else "None"
             binding.tvSolunarMajorPeriods.text = context.getString(R.string.solunar_major_periods, majorListStr)
@@ -80,7 +85,7 @@ class SolunarDayAdapter : RecyclerView.Adapter<SolunarDayAdapter.ViewHolder>() {
                 item.minorPeriods.joinToString(", ") { p ->
                     val s = p.startUtc.atZone(zoneId).format(timeFmt)
                     val e = p.endUtc.atZone(zoneId).format(timeFmt)
-                    "$s – $e (${p.centerEvent})"
+                    "$s – $e (${p.getLocalizedCenterEvent(context)})"
                 }
             } else "None"
             binding.tvSolunarMinorPeriods.text = context.getString(R.string.solunar_minor_periods, minorListStr)

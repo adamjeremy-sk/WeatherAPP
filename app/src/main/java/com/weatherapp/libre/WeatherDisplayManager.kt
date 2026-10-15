@@ -11,6 +11,8 @@ import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.MoonEventType
 import com.weatherapp.libre.lunar.MoonPhaseName
+import com.weatherapp.libre.lunar.getEmoji
+import com.weatherapp.libre.lunar.getNameRes
 import com.weatherapp.libre.lunar.Observer as LunarObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -104,7 +106,7 @@ class WeatherDisplayManager(
         binding.layoutError.visibility = View.GONE
 
         lifecycleScope.launch {
-            binding.tvAttribution.text = activeModel.sourceAttribution
+            binding.tvAttribution.text = activeModel.getSourceAttribution(activity)
 
             val result = repository.getWeatherForecast(
                 latitude = currentLocation.latitude,
@@ -190,7 +192,7 @@ class WeatherDisplayManager(
         val dateHeader = if (isToday) {
             val baseDateStr = day.formattedDate.uppercase(Locale.getDefault())
             val currentTime = UnitUtils.formatLocationTime(locationTimezone, is24Hour)
-            "$baseDateStr • $currentTime • Local Time"
+            "$baseDateStr • $currentTime • ${activity.getString(R.string.label_local_time)}"
         } else {
             day.formattedDate.uppercase(Locale.getDefault())
         }
@@ -202,7 +204,7 @@ class WeatherDisplayManager(
             val currentPalette = ColorPalette.forMode(locationPreferences.getThemeMode(), activity)
             setColorFilter(currentPalette.brandPrimary)
         }
-        binding.tvMainCondition.text = day.weatherDescription
+        binding.tvMainCondition.text = WeatherCodeUtils.getWeatherDescription(activity, day.weatherCode)
 
         val currentTemp = currentWeatherData?.temperature
         if (currentTemp != null && isToday) {
@@ -266,8 +268,8 @@ class WeatherDisplayManager(
 
         val srAz = solar?.sunriseAzimuthDegrees
         val ssAz = solar?.sunsetAzimuthDegrees
-        binding.root.findViewById<android.widget.TextView>(R.id.tvSunriseAzimuth)?.text = if (srAz != null) "Rising at $srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})" else "Rising at —"
-        binding.root.findViewById<android.widget.TextView>(R.id.tvSunsetAzimuth)?.text = if (ssAz != null) "Setting at $ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})" else "Setting at —"
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunriseAzimuth)?.text = if (srAz != null) activity.getString(R.string.label_rising_at, "$srAz° (${UnitUtils.getDegreesToCompass(srAz.toDouble())})") else activity.getString(R.string.label_rising_at, "—")
+        binding.root.findViewById<android.widget.TextView>(R.id.tvSunsetAzimuth)?.text = if (ssAz != null) activity.getString(R.string.label_setting_at, "$ssAz° (${UnitUtils.getDegreesToCompass(ssAz.toDouble())})") else activity.getString(R.string.label_setting_at, "—")
 
         val durationMins = solar?.daylightDurationMinutes
         if (durationMins != null) {
@@ -283,7 +285,7 @@ class WeatherDisplayManager(
         val lunarObserver = LunarObserver(currentLocation.latitude, currentLocation.longitude)
 
         val moonInfo = LunarCalculator.phaseAt(targetInstant)
-        val formattedPhase = LunarCalculator.formatPhaseDisplay(moonInfo)
+        val formattedPhase = LunarCalculator.formatPhaseDisplay(moonInfo, activity)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonPhase)?.text = formattedPhase.phaseNameWithEmoji
         binding.root.findViewById<android.widget.TextView>(R.id.tvMoonCyclePercentage)?.text = formattedPhase.illuminationText
@@ -299,7 +301,7 @@ class WeatherDisplayManager(
         val palette = ColorPalette.forMode(locationPreferences.getThemeMode(), activity)
 
         val currMoonInfo = LunarCalculator.phaseAt(targetInstant)
-        val formatted = LunarCalculator.formatPhaseDisplay(currMoonInfo)
+        val formatted = LunarCalculator.formatPhaseDisplay(currMoonInfo, activity)
 
         val startUtc = Instant.now()
         val endUtc = startUtc.plus(30, ChronoUnit.DAYS)
@@ -308,12 +310,7 @@ class WeatherDisplayManager(
         val formatter = DateTimeFormatter.ofPattern("EEE, MMM d • h:mm a", Locale.getDefault())
         val upcomingLines = upcomingPhases.take(4).map { ev ->
             val localTimeStr = ev.instantUtc.atZone(zoneId).format(formatter)
-            val phaseNameStr = when (ev.type) {
-                MoonPhaseName.NEW_MOON -> "🌑 New Moon"
-                MoonPhaseName.FIRST_QUARTER -> "🌓 First Quarter"
-                MoonPhaseName.FULL_MOON -> "🌕 Full Moon"
-                MoonPhaseName.LAST_QUARTER -> "🌗 Last Quarter"
-            }
+            val phaseNameStr = "${ev.type.getEmoji()} ${activity.getString(ev.type.getNameRes())}"
             "• $phaseNameStr: $localTimeStr"
         }
 
@@ -459,7 +456,7 @@ class WeatherDisplayManager(
             val dialog = MaterialAlertDialogBuilder(activity)
                 .setTitle(activity.getString(R.string.title_data_information))
                 .setMessage(activity.getString(R.string.msg_data_information, formattedDateStr, sourceModel))
-                .setPositiveButton(android.R.string.ok, null)
+                .setPositiveButton(activity.getString(R.string.btn_ok), null)
                 .create()
 
             dialog.setOnShowListener {

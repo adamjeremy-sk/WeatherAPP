@@ -65,6 +65,30 @@ enum class ForecastModel(
         false
     );
 
+    fun getDisplayName(context: android.content.Context): String = when (this) {
+        GEM -> context.getString(R.string.model_gem_title)
+        GFS -> context.getString(R.string.model_gfs_short)
+        ECMWF -> context.getString(R.string.model_ecmwf_title)
+        GEFS -> context.getString(R.string.model_gefs_title)
+        CMA_GFS -> context.getString(R.string.model_cma_title)
+    }
+
+    fun getSourceAttribution(context: android.content.Context): String = when (this) {
+        GEM -> context.getString(R.string.msg_source_gem_model)
+        GFS -> context.getString(R.string.model_gfs_title)
+        ECMWF -> context.getString(R.string.model_ecmwf_title)
+        GEFS -> context.getString(R.string.model_gefs_title)
+        CMA_GFS -> context.getString(R.string.model_cma_title)
+    }
+
+    fun getDescription(context: android.content.Context): String = when (this) {
+        GEM -> context.getString(R.string.model_gem_desc)
+        GFS -> context.getString(R.string.model_gfs_title)
+        ECMWF -> context.getString(R.string.model_ecmwf_desc)
+        GEFS -> context.getString(R.string.model_gefs_desc)
+        CMA_GFS -> context.getString(R.string.model_cma_desc)
+    }
+
     companion object {
         fun fromKey(key: String?): ForecastModel {
             return values().find { it.idKey.equals(key, ignoreCase = true) || it.openMeteoKey.equals(key, ignoreCase = true) } ?: GEM

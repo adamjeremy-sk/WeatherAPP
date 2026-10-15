@@ -476,14 +476,14 @@ class SettingsDialogManager(
             }
 
             val titleTv = TextView(activity).apply {
-                text = model.displayName
+                text = model.getDisplayName(activity)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 typeface = android.graphics.Typeface.DEFAULT_BOLD
                 setTextColor(palette.textPrimary)
             }
 
             val descTv = TextView(activity).apply {
-                text = model.description
+                text = model.getDescription(activity)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
                 setTextColor(palette.textSecondary)
                 val lp = LinearLayout.LayoutParams(
@@ -503,7 +503,7 @@ class SettingsDialogManager(
             card.setOnClickListener {
                 locationPreferences.saveForecastModel(model)
                 weatherDisplayManager.loadWeather(forceRefresh = true)
-                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.displayName), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.getDisplayName(activity)), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showModelsSettingsScreen(weatherDisplayManager)
             }
@@ -548,14 +548,14 @@ class SettingsDialogManager(
             }
 
             val titleTv = TextView(activity).apply {
-                text = model.displayName
+                text = model.getDisplayName(activity)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 typeface = android.graphics.Typeface.DEFAULT_BOLD
                 setTextColor(palette.textPrimary)
             }
 
             val descTv = TextView(activity).apply {
-                text = model.description
+                text = model.getDescription(activity)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
                 setTextColor(palette.textSecondary)
                 val lp = LinearLayout.LayoutParams(
@@ -575,7 +575,7 @@ class SettingsDialogManager(
             card.setOnClickListener {
                 locationPreferences.saveForecastModel(model)
                 weatherDisplayManager.loadWeather(forceRefresh = true)
-                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.displayName), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_model_set, model.getDisplayName(activity)), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 showModelsSettingsScreen(weatherDisplayManager)
             }
@@ -1345,7 +1345,7 @@ class SettingsDialogManager(
             android.app.AlertDialog.Builder(activity)
                 .setTitle(activity.getString(com.weatherapp.libre.R.string.alert_log_clear))
                 .setMessage(activity.getString(com.weatherapp.libre.R.string.alert_log_clear_confirm))
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+                .setPositiveButton(com.weatherapp.libre.R.string.btn_ok) { _, _ ->
                     com.weatherapp.libre.alerts.AlertLogRepository.clearAll(activity)
                     entries = emptyList()
                     Toast.makeText(activity, activity.getString(com.weatherapp.libre.R.string.alert_log_cleared), Toast.LENGTH_SHORT).show()

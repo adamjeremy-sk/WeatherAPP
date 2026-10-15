@@ -53,9 +53,10 @@ class DarkSkyWindowAdapter : RecyclerView.Adapter<DarkSkyWindowAdapter.ViewHolde
             val startLocal = item.startUtc.atZone(zoneId).format(formatter)
             val endLocal = item.endUtc.atZone(zoneId).format(formatter)
 
+            val context = binding.root.context
             binding.tvWindowTimeRange.text = "$startLocal – $endLocal"
-            binding.tvWindowMoonStatus.text = item.moonStatus
-            binding.tvWindowQuality.text = item.qualityLabel
+            binding.tvWindowMoonStatus.text = item.getLocalizedMoonStatus(context)
+            binding.tvWindowQuality.text = item.getLocalizedQualityLabel(context)
 
             val hours = item.durationMinutes / 60
             val mins = item.durationMinutes % 60

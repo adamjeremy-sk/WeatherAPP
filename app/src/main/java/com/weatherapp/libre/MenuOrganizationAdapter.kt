@@ -75,12 +75,12 @@ class MenuOrganizationAdapter(
             try {
                 when (InlineSubTab.valueOf(subTabKey)) {
                     InlineSubTab.CURRENT -> context.getString(R.string.subtab_current_weather).replace(" ▾", "")
-                    InlineSubTab.HOURLY -> "Hourly Forecast"
+                    InlineSubTab.HOURLY -> context.getString(R.string.subtab_hourly_dropdown).replace(" ▾", "")
                     InlineSubTab.SEVEN_DAY -> context.getString(R.string.title_seven_day_forecast)
-                    InlineSubTab.NATURAL_LIGHT -> "Natural Light"
-                    InlineSubTab.DARK_SKY -> "True Dark Sky"
-                    InlineSubTab.NIGHT_VISIBILITY -> "Night Visibility"
-                    InlineSubTab.SOLUNAR -> "Solunar Activity"
+                    InlineSubTab.NATURAL_LIGHT -> context.getString(R.string.subtab_natural_light_dropdown).replace(" ▾", "")
+                    InlineSubTab.DARK_SKY -> context.getString(R.string.subtab_dark_sky_dropdown).replace(" ▾", "")
+                    InlineSubTab.NIGHT_VISIBILITY -> context.getString(R.string.subtab_night_vis_dropdown).replace(" ▾", "")
+                    InlineSubTab.SOLUNAR -> context.getString(R.string.subtab_solunar_dropdown).replace(" ▾", "")
                     InlineSubTab.LUNAR_CALENDAR -> context.getString(R.string.title_lunar_calendar)
                 }
             } catch (e: Exception) {

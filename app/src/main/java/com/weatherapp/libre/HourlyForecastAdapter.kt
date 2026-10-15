@@ -155,7 +155,7 @@ class HourlyForecastAdapter(
             val code = forecast.weatherCode ?: 0
             val iconRes = WeatherCodeUtils.conditionIconRes(code)
             binding.ivHourlyConditionIcon.setImageResource(iconRes)
-            val conditionText = WeatherCodeUtils.getWeatherDescription(code)
+            val conditionText = WeatherCodeUtils.getWeatherDescription(binding.root.context, code)
             binding.tvHourlyConditionText.text = conditionText
 
             val tempText = forecast.temperature?.let { UnitUtils.formatTemp(it, unitSystem) } ?: "——"

@@ -301,25 +301,25 @@ class ThemeManager(
         dialogBinding.tvBoutiqueHeader.setTextColor(palette.textPrimary)
 
         val standardModes = listOf(
-            LocationPreferences.THEME_LIGHT to ("Light Theme" to "Clean light background and high contrast typography."),
-            LocationPreferences.THEME_DARK to ("Dark Theme" to "Modern bluish dark slate background for nighttime comfort.")
+            LocationPreferences.THEME_LIGHT to (R.string.theme_light_title to R.string.theme_light_desc),
+            LocationPreferences.THEME_DARK to (R.string.theme_dark_title to R.string.theme_dark_desc)
         )
 
         val boutiqueModes = listOf(
-            LocationPreferences.THEME_AURORA to ("Aurora Theme" to "Deep midnight teal with emerald aurora glow."),
-            LocationPreferences.THEME_CHARCOAL to ("Charcoal Theme" to "Deep neutral charcoal background for OLED displays."),
-            LocationPreferences.THEME_COBALT to ("Cobalt Theme" to "Vibrant deep ocean blue background."),
-            LocationPreferences.THEME_CREMA to ("Crema Theme" to "Warm creamy off-white background with soft brown accents."),
-            LocationPreferences.THEME_FIRE_ENGINE to ("Fire Engine Theme" to "Bold deep crimson red background."),
-            LocationPreferences.THEME_FROST to ("Frost Theme" to "Cool icy slate blue background."),
-            LocationPreferences.THEME_JADE to ("Jade Theme" to "Rich forest dark green theme."),
-            LocationPreferences.THEME_ORANGE_GROVE to ("Orange Grove Theme" to "Rich sunset orange background."),
-            LocationPreferences.THEME_TERRACOTTA to ("Terracotta Theme" to "Warm earthy clay tones with sunset copper highlights.")
+            LocationPreferences.THEME_AURORA to (R.string.theme_aurora_title to R.string.theme_aurora_desc),
+            LocationPreferences.THEME_CHARCOAL to (R.string.theme_charcoal_title to R.string.theme_charcoal_desc),
+            LocationPreferences.THEME_COBALT to (R.string.theme_cobalt_title to R.string.theme_cobalt_desc),
+            LocationPreferences.THEME_CREMA to (R.string.theme_crema_title to R.string.theme_crema_desc),
+            LocationPreferences.THEME_FIRE_ENGINE to (R.string.theme_fire_engine_title to R.string.theme_fire_engine_desc),
+            LocationPreferences.THEME_FROST to (R.string.theme_frost_title to R.string.theme_frost_desc),
+            LocationPreferences.THEME_JADE to (R.string.theme_jade_title to R.string.theme_jade_desc),
+            LocationPreferences.THEME_ORANGE_GROVE to (R.string.theme_orange_grove_title to R.string.theme_orange_grove_desc),
+            LocationPreferences.THEME_TERRACOTTA to (R.string.theme_terracotta_title to R.string.theme_terracotta_desc)
         )
 
         fun populateThemeGroup(
             container: LinearLayout,
-            modes: List<Pair<Int, Pair<String, String>>>
+            modes: List<Pair<Int, Pair<Int, Int>>>
         ) {
             container.removeAllViews()
             val density = activity.resources.displayMetrics.density
@@ -358,14 +358,14 @@ class ThemeManager(
                 }
 
                 val titleTv = TextView(activity).apply {
-                    text = info.first
+                    text = activity.getString(info.first)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                     typeface = android.graphics.Typeface.DEFAULT_BOLD
                     setTextColor(palette.textPrimary)
                 }
 
                 val descTv = TextView(activity).apply {
-                    text = info.second
+                    text = activity.getString(info.second)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
                     setTextColor(palette.textSecondary)
                     val lp = LinearLayout.LayoutParams(

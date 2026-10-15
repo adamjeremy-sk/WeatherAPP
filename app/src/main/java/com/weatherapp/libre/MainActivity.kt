@@ -346,12 +346,12 @@ class MainActivity : AppCompatActivity() {
             if (enabledFlags[subTab] == true) {
                 val label = when (subTab) {
                     InlineSubTab.CURRENT -> getString(R.string.subtab_current_weather).replace(" ▾", "")
-                    InlineSubTab.HOURLY -> "Hourly Forecast"
+                    InlineSubTab.HOURLY -> getString(R.string.subtab_hourly_dropdown).replace(" ▾", "")
                     InlineSubTab.SEVEN_DAY -> getString(R.string.title_seven_day_forecast)
-                    InlineSubTab.NATURAL_LIGHT -> "Natural Light"
-                    InlineSubTab.DARK_SKY -> "True Dark Sky"
-                    InlineSubTab.NIGHT_VISIBILITY -> "Night Visibility"
-                    InlineSubTab.SOLUNAR -> "Solunar Activity"
+                    InlineSubTab.NATURAL_LIGHT -> getString(R.string.subtab_natural_light_dropdown).replace(" ▾", "")
+                    InlineSubTab.DARK_SKY -> getString(R.string.subtab_dark_sky_dropdown).replace(" ▾", "")
+                    InlineSubTab.NIGHT_VISIBILITY -> getString(R.string.subtab_night_vis_dropdown).replace(" ▾", "")
+                    InlineSubTab.SOLUNAR -> getString(R.string.subtab_solunar_dropdown).replace(" ▾", "")
                     InlineSubTab.LUNAR_CALENDAR -> getString(R.string.title_lunar_calendar)
                 }
                 popup.menu.add(currentGroupId, subTab.ordinal, orderIndex, label)

@@ -36,6 +36,35 @@ object WeatherCodeUtils {
         }
     }
 
+    fun conditionStringRes(code: Int): Int {
+        return when (code) {
+            0 -> R.string.condition_clear_sky
+            1 -> R.string.condition_mainly_clear
+            2 -> R.string.condition_partly_cloudy
+            3 -> R.string.condition_overcast
+            45, 48 -> R.string.condition_foggy
+            51, 53, 55 -> R.string.condition_light_drizzle
+            56, 57 -> R.string.condition_freezing_drizzle
+            61 -> R.string.condition_slight_rain
+            63 -> R.string.condition_moderate_rain
+            65 -> R.string.condition_heavy_rain
+            66, 67 -> R.string.condition_freezing_rain
+            71 -> R.string.condition_slight_snow
+            73 -> R.string.condition_moderate_snow
+            75 -> R.string.condition_heavy_snow
+            77 -> R.string.condition_snow_grains
+            80, 81, 82 -> R.string.condition_rain_showers
+            85, 86 -> R.string.condition_snow_showers
+            95 -> R.string.condition_thunderstorm
+            96, 99 -> R.string.condition_thunderstorm_hail
+            else -> R.string.condition_varied
+        }
+    }
+
+    fun getWeatherDescription(context: android.content.Context, code: Int): String {
+        return context.getString(conditionStringRes(code))
+    }
+
     fun getWeatherDescription(code: Int): String {
         return when (code) {
             0 -> "Clear Sky"

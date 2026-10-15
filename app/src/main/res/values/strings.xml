@@ -492,4 +492,114 @@
     <string name="lunar_corona_possible">Lunar Corona Possible (%1$d%%)</string>
     <string name="lunar_parselene_possible">Parselene (Mock Moon) Possible (%1$d%%)</string>
     <string name="lunar_atmospheric_unlikely_single">Atmospheric Lunar Phenomena Unlikely Today</string>
+
+    <!-- Weather Conditions (Step 1) -->
+    <string name="condition_clear_sky">Clear Sky</string>
+    <string name="condition_mainly_clear">Mainly Clear</string>
+    <string name="condition_partly_cloudy">Partly Cloudy</string>
+    <string name="condition_overcast">Overcast</string>
+    <string name="condition_foggy">Foggy</string>
+    <string name="condition_light_drizzle">Light Drizzle</string>
+    <string name="condition_freezing_drizzle">Freezing Drizzle</string>
+    <string name="condition_slight_rain">Slight Rain</string>
+    <string name="condition_moderate_rain">Moderate Rain</string>
+    <string name="condition_heavy_rain">Heavy Rain</string>
+    <string name="condition_freezing_rain">Freezing Rain</string>
+    <string name="condition_slight_snow">Slight Snow</string>
+    <string name="condition_moderate_snow">Moderate Snow</string>
+    <string name="condition_heavy_snow">Heavy Snow</string>
+    <string name="condition_snow_grains">Snow Grains</string>
+    <string name="condition_rain_showers">Rain Showers</string>
+    <string name="condition_snow_showers">Snow Showers</string>
+    <string name="condition_thunderstorm">Thunderstorm</string>
+    <string name="condition_thunderstorm_hail">Thunderstorm with Hail</string>
+    <string name="condition_varied">Varied Conditions</string>
+
+    <!-- Metrics & Attributions (Step 1) -->
+    <string name="msg_source_gem_model">Source: Environment Canada GEM Model</string>
+    <string name="label_source_gem">Source: GEM</string>
+    <string name="label_rising_at">Rising at %1$s</string>
+    <string name="label_setting_at">Setting at %1$s</string>
+    <string name="label_percent_illuminated">%1$d%% illuminated</string>
+    <string name="label_distance">Distance:</string>
+
+    <!-- Moon Phases & Lunar Metrics (Step 2) -->
+    <string name="label_phase_format">Phase: %1$s</string>
+    <string name="label_illumination_format">Illumination: %1$d%% illuminated</string>
+    <string name="phase_new_moon">New Moon</string>
+    <string name="phase_waxing_crescent">Waxing Crescent</string>
+    <string name="phase_first_quarter">First Quarter</string>
+    <string name="phase_waxing_gibbous">Waxing Gibbous</string>
+    <string name="phase_full_moon">Full Moon</string>
+    <string name="phase_waning_gibbous">Waning Gibbous</string>
+    <string name="phase_last_quarter">Last Quarter</string>
+    <string name="phase_waning_crescent">Waning Crescent</string>
+
+    <!-- Natural Light Phases & Sub-Tabs (Step 3) -->
+    <string name="phase_night">Night</string>
+    <string name="phase_astronomical_twilight">Astronomical Twilight</string>
+    <string name="phase_nautical_twilight">Nautical Twilight</string>
+    <string name="phase_blue_hour">Blue Hour</string>
+    <string name="phase_civil_twilight">Civil Twilight</string>
+    <string name="phase_sunrise">Sunrise</string>
+    <string name="phase_golden_hour">Golden Hour</string>
+    <string name="phase_daytime">Daytime</string>
+    <string name="phase_sunset">Sunset</string>
+    <string name="label_today">Today</string>
+
+    <!-- Night Visibility & Solunar Labels (Step 4) -->
+    <string name="vis_bright_night">Bright Night</string>
+    <string name="vis_moderate_light">Moderate Light</string>
+    <string name="vis_low_light">Low Light</string>
+    <string name="vis_minimal_light">Minimal Light</string>
+    <string name="vis_no_natural_light">No Natural Light</string>
+    <string name="label_moon_below_horizon">Moon below horizon</string>
+    <string name="label_moon_above_horizon">Moon above horizon</string>
+    <string name="rating_excellent">Excellent</string>
+    <string name="rating_good">Good</string>
+    <string name="rating_moderate">Moderate</string>
+    <string name="rating_poor">Poor</string>
+    <string name="label_transit">Transit</string>
+    <string name="label_nadir">Nadir</string>
+    <string name="label_moonrise">Moonrise</string>
+    <string name="label_moonset">Moonset</string>
+
+    <!-- Settings: Cache, Models, Themes (Step 5) -->
+    <string name="title_cached_data">Cached Data</string>
+    <string name="desc_cached_data">Inspect and clear local storage</string>
+    <string name="label_minutes">minutes</string>
+    <string name="model_gem_title">GEM (Environment Canada)</string>
+    <string name="model_gem_desc">Official Environment Canada GEM global forecast model</string>
+    <string name="model_gfs_title">NOAA Global Forecast System</string>
+    <string name="model_gfs_short">GFS (NOAA, USA)</string>
+    <string name="model_ecmwf_title">ECMWF (European Centre)</string>
+    <string name="model_ecmwf_desc">European Centre for Medium-Range Weather Forecasts (25km)</string>
+    <string name="model_gefs_title">GEFS Ensemble (NOAA)</string>
+    <string name="model_gefs_desc">NOAA Global Ensemble Forecast System (30 member ensemble)</string>
+    <string name="model_cma_title">CMA-GFS (China)</string>
+    <string name="model_cma_desc">China Meteorological Administration Global Forecast System</string>
+
+    <string name="theme_light_title">Light Theme</string>
+    <string name="theme_light_desc">Clean light background and high contrast typography</string>
+    <string name="theme_dark_title">Dark Theme</string>
+    <string name="theme_dark_desc">Modern bluish dark slate background for nighttime comfort</string>
+    <string name="theme_aurora_title">Aurora Theme</string>
+    <string name="theme_aurora_desc">Deep midnight teal with emerald aurora glow.</string>
+    <string name="theme_charcoal_title">Charcoal Theme</string>
+    <string name="theme_charcoal_desc">Deep neutral charcoal background for OLED displays.</string>
+    <string name="theme_cobalt_title">Cobalt Theme</string>
+    <string name="theme_cobalt_desc">Vibrant deep ocean blue background.</string>
+    <string name="theme_crema_title">Crema Theme</string>
+    <string name="theme_crema_desc">Warm creamy off-white background with soft brown accents.</string>
+    <string name="theme_fire_engine_title">Fire Engine Theme</string>
+    <string name="theme_fire_engine_desc">Bold deep crimson red background</string>
+    <string name="theme_frost_title">Frost Theme</string>
+    <string name="theme_frost_desc">Cool icy slate blue background</string>
+    <string name="theme_jade_title">Jade Theme</string>
+    <string name="theme_jade_desc">Rich forest dark green theme</string>
+    <string name="theme_orange_grove_title">Orange Grove Theme</string>
+    <string name="theme_orange_grove_desc">Rich sunset orange background</string>
+    <string name="theme_terracotta_title">Terracotta Theme</string>
+    <string name="theme_terracotta_desc">Warm earthy clay tones with sunset copper highlights</string>
+    <string name="btn_ok">OK</string>
 </resources>
