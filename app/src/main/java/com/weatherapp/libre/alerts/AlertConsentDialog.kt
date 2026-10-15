@@ -15,7 +15,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
-import com.weatherapp.libre.BoutiqueThemeEngine
+import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.R
 

@@ -32,3 +32,4 @@ play-app-update-ktx = { group = "com.google.android.play", name = "app-update-kt
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }

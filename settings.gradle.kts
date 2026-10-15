@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WeatherAPP"
 include(":app")
+include(":theme-engine")

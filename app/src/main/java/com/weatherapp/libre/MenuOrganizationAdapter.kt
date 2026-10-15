@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import com.weatherapp.theme.ColorPalette
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater

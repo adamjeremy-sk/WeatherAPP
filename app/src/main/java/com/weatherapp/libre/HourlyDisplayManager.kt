@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import com.weatherapp.theme.ColorPalette
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

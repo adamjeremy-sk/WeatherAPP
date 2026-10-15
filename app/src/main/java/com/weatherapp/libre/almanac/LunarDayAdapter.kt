@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.weatherapp.libre.BoutiqueThemeEngine
+import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.libre.R
 import com.weatherapp.libre.lunar.EclipseType
 import com.weatherapp.libre.lunar.LunarCalculator

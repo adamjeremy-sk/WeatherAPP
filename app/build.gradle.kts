@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":theme-engine"))
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)

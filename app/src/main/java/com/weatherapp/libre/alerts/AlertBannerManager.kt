@@ -3,7 +3,7 @@ package com.weatherapp.libre.alerts
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.weatherapp.libre.BoutiqueThemeEngine
+import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.databinding.ActivityMainBinding

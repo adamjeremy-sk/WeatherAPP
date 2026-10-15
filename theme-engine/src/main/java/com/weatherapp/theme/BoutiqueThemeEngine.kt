@@ -1,35 +1,6 @@
-package com.weatherapp.libre
+package com.weatherapp.theme
 
 import android.graphics.Color
-
-data class ColorPalette(
-    val primary: Int,
-    val surfaceCard: Int,
-    val surfaceCardSecondary: Int,
-    val backgroundLight: Int,
-    val textPrimary: Int,
-    val textSecondary: Int,
-    val tempHigh: Int,
-    val tempHighBg: Int,
-    val tempLow: Int,
-    val tempLowBg: Int,
-    val goldenHourPrimary: Int,
-    val blueHourPrimary: Int,
-    val dividerColor: Int,
-    val alertExtreme: Int = Color.parseColor("#DC2626"),
-    val alertSevere: Int = Color.parseColor("#EA580C"),
-    val alertModerate: Int = Color.parseColor("#92400E"),
-    val alertMinor: Int = Color.parseColor("#0369A1")
-) {
-    val background: Int get() = backgroundLight
-    val brandPrimary: Int get() = primary
-
-    companion object {
-        fun forMode(themeMode: Int, context: android.content.Context? = null): ColorPalette {
-            return BoutiqueThemeEngine.getThemePalette(themeMode)
-        }
-    }
-}
 
 object BoutiqueThemeEngine {
 
@@ -239,17 +210,16 @@ object BoutiqueThemeEngine {
 
     fun getThemePalette(themeMode: Int): ColorPalette {
         return when (themeMode) {
-            LocationPreferences.THEME_LIGHT -> LIGHT_PALETTE
-            LocationPreferences.THEME_DARK -> DARK_PALETTE
-            LocationPreferences.THEME_CREMA -> CREMA_PALETTE
-            LocationPreferences.THEME_CHARCOAL -> CHARCOAL_PALETTE
-            LocationPreferences.THEME_COBALT -> COBALT_PALETTE
-            LocationPreferences.THEME_JADE -> JADE_PALETTE
-            LocationPreferences.THEME_AURORA -> AURORA_PALETTE
-            LocationPreferences.THEME_TERRACOTTA -> TERRACOTTA_PALETTE
-            LocationPreferences.THEME_FROST -> FROST_PALETTE
-            LocationPreferences.THEME_FIRE_ENGINE -> DARK_PALETTE
-            LocationPreferences.THEME_ORANGE_GROVE -> ORANGE_GROVE_PALETTE
+            ThemeMode.LIGHT -> LIGHT_PALETTE
+            ThemeMode.DARK -> DARK_PALETTE
+            ThemeMode.CREMA -> CREMA_PALETTE
+            ThemeMode.CHARCOAL -> CHARCOAL_PALETTE
+            ThemeMode.COBALT -> COBALT_PALETTE
+            ThemeMode.JADE -> JADE_PALETTE
+            ThemeMode.AURORA -> AURORA_PALETTE
+            ThemeMode.TERRACOTTA -> TERRACOTTA_PALETTE
+            ThemeMode.FROST -> FROST_PALETTE
+            ThemeMode.ORANGE_GROVE -> ORANGE_GROVE_PALETTE
             else -> DARK_PALETTE
         }
     }
