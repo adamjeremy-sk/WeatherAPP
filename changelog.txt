@@ -1,12 +1,13 @@
 ---------------
 Changelog 0.6.2VC22 - 2026/10/15
 ---------------
-* French localization fixes
-* Added 4x2, 4x1, 2x2 widgets
-* Edge-to-edge API35+ compliant
-* Removed fire-engine theme
-* Reorganized theme page
-* Removed Syzygy
+* French Localization Fixes: Externalized all remaining hardcoded English strings (weather conditions, moon phases, sub-tab and menu labels, natural light phases, night visibility and solunar labels, forecast model and theme descriptions); enforced French typography (space before colons); localized dropdown menu entries and dialog buttons.
+* Home Screen Widgets: Added 4x2, 4x1, and 2x2 widgets with on-widget location tab pills, tap-to-deep-link into the app, Material You dynamic theming, sunrise/sunset rows, active natural light period display, and optional Night Visibility / Solunar Activity lines.
+* Widget Efficiency: Cache-first background sync via WorkManager with an adjustable 60-minute TTL; widgets refresh immediately on in-app tab edits and on app launch; no GPS and no independent network polling.
+* Edge-to-edge API 35+ Compliant: Removed deprecated status/navigation bar coloring and theme attributes; added theme-aware system bar icon contrast via SystemBarContrastHelper; full window inset coverage across all Activities and full-screen dialogs; purged legacy window flags and opt-outs.
+* Removed Fire Engine Theme: Deleted with a self-healing migration that moves legacy installs to the Dark theme; all special-case branches purged from drawers, headers, dialogs, and night-mode mapping.
+* Reorganized Theme Page: Regrouped the picker into Light Themes (Light, Crema, Frost, Orange Grove, Terracotta) and Dark Themes (Dark, Aurora, Charcoal, Cobalt, Jade) with simplified display names in English and French.
+* Removed Syzygy: Badge, data flag, and strings removed from the Lunar Calendar as redundant (occurs at every New and Full Moon); the term remains documented in the Lunar Almanac glossary.
 
 ---------------
 Changelog 0.6.1VC21 - 2026/10/14

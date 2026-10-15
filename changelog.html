@@ -279,7 +279,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#VC21">0.6.1VC21 (Latest)</a></li>
+          <li><a href="#vc22">0.6.2VC22 (Latest)</a></li>
+          <li><a href="#VC21">0.6.1VC21</a></li>
           <li><a href="#vc20">0.6.0VC20</a></li>
           <li><a href="#vc18">0.5.2VC18</a></li>
           <li><a href="#vc17">0.5.1VC17</a></li>
@@ -328,11 +329,35 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc22" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.6.2VC22
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 15, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Home Screen Widgets: Added 4x2, 4x1, and 2x2 widgets with on-widget location tab pills, tap-to-deep-link into the app, Material You dynamic theming, sunrise/sunset rows, active natural light period display, and optional Night Visibility / Solunar Activity lines.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Widget Efficiency: Cache-first background sync via WorkManager with an adjustable 60-minute TTL; widgets refresh immediately on in-app tab edits and on app launch; no GPS and no independent network polling.</li>
+          <li>Edge-to-edge API 35+ Compliant: Removed deprecated status/navigation bar coloring and theme attributes; added theme-aware system bar icon contrast via SystemBarContrastHelper; full window inset coverage across all Activities and full-screen dialogs; purged legacy window flags and opt-outs.</li>
+          <li>Reorganized Theme Page: Regrouped the picker into Light Themes (Light, Crema, Frost, Orange Grove, Terracotta) and Dark Themes (Dark, Aurora, Charcoal, Cobalt, Jade) with simplified display names in English and French.</li>
+          <li>Removed Fire Engine Theme: Deleted with a self-healing migration that moves legacy installs to the Dark theme; all special-case branches purged from drawers, headers, dialogs, and night-mode mapping.</li>
+          <li>Removed Syzygy: Badge, data flag, and strings removed from the Lunar Calendar as redundant (occurs at every New and Full Moon); the term remains documented in the Lunar Almanac glossary.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>French Localization Fixes: Externalized all remaining hardcoded English strings (weather conditions, moon phases, sub-tab and menu labels, natural light phases, night visibility and solunar labels, forecast model and theme descriptions); enforced French typography (space before colons); localized dropdown menu entries and dialog buttons.</li>
+        </ul>
+      </section>
+
       <section id="VC21" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.1VC21
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 14, 2026</p>
         <h3>Added</h3>
