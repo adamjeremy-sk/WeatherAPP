@@ -4,9 +4,13 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class WidgetConfigureActivity : AppCompatActivity() {
 
@@ -27,7 +31,16 @@ class WidgetConfigureActivity : AppCompatActivity() {
             return
         }
 
+        enableEdgeToEdge()
         setContentView(R.layout.activity_widget_configure)
+
+        val rootView = findViewById<View>(R.id.root_widget_configure)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
         widgetPreferences = WidgetPreferences(this)
 
         val cbShowNightVis = findViewById<CheckBox>(R.id.cb_show_night_vis)

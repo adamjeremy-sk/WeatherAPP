@@ -40,6 +40,9 @@ class ThemeManager(
         binding.layoutStickyTabsContainer.setBackgroundColor(palette.background)
 
         val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
+        val activityBgColor = if (isFireEngine) Color.parseColor("#DC2626") else palette.background
+        SystemBarContrastHelper.updateSystemBarContrast(activity, activityBgColor)
+
         val density = activity.resources.displayMetrics.density
 
         val drawerDividers = listOf(

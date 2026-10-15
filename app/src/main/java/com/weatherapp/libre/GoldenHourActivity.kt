@@ -2,6 +2,7 @@ package com.weatherapp.libre
 
 import android.app.DatePickerDialog
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -63,6 +64,9 @@ class GoldenHourActivity : AppCompatActivity() {
         val locationPreferences = LocationPreferences(this)
         val savedTheme = locationPreferences.getSavedThemeMode()
         val palette = BoutiqueThemeEngine.getThemePalette(savedTheme)
+        val isFireEngine = (savedTheme == LocationPreferences.THEME_FIRE_ENGINE)
+        val activityBgColor = if (isFireEngine) Color.parseColor("#DC2626") else palette.backgroundLight
+        SystemBarContrastHelper.updateSystemBarContrast(this, activityBgColor)
 
         binding.root.setBackgroundColor(palette.backgroundLight)
         binding.mainGoldenHour.setBackgroundColor(palette.backgroundLight)

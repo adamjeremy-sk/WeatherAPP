@@ -61,7 +61,7 @@ class WidgetSyncWorker(
         }
 
         fun notifyWidgetsInvalidated(context: Context) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val appWidgetManager = AppWidgetManager.getInstance(context) ?: return
             val widgetTypes = listOf(
                 ComponentName(context, WeatherWidgetProvider4x2::class.java),
                 ComponentName(context, WeatherWidgetProvider4x1::class.java),

@@ -774,8 +774,6 @@ class SettingsDialogManager(
 
         dialog.window?.let { window ->
             androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
         }
         dialog.setContentView(cacheSettingsView)
 
@@ -948,8 +946,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         dialog.window?.let { window ->
             androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
         }
         val view = createCachedDataInspectorView(dialog) { dialog.dismiss() }
         dialog.setContentView(view)
@@ -1124,8 +1120,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         dialog.window?.let { window ->
             androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
         }
         val view = createAlertLogView(dialog) { dialog.dismiss() }
         dialog.setContentView(view)
