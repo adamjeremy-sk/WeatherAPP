@@ -26,6 +26,54 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".WidgetConfigureActivity"
+            android:exported="true"
+            android:theme="@style/Theme.WeatherAPP">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".WeatherWidgetProvider4x2"
+            android:exported="true"
+            android:label="@string/widget_name_4x2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.weatherapp.libre.ACTION_WIDGET_SWITCH_TAB" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_4x2" />
+        </receiver>
+
+        <receiver
+            android:name=".WeatherWidgetProvider4x1"
+            android:exported="true"
+            android:label="@string/widget_name_4x1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.weatherapp.libre.ACTION_WIDGET_SWITCH_TAB" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_4x1" />
+        </receiver>
+
+        <receiver
+            android:name=".WeatherWidgetProvider2x2"
+            android:exported="true"
+            android:label="@string/widget_name_2x2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.weatherapp.libre.ACTION_WIDGET_SWITCH_TAB" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_2x2" />
+        </receiver>
+
     </application>
 
 </manifest>

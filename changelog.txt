@@ -1,3 +1,10 @@
+---------------
+Changelog 0.6.2VC22 - 2026/10/15
+---------------
+* French localization fixes
+
+
+---------------
 Changelog 0.6.1VC21 - 2026/10/14
 ---------------
 * Lunar Calendar UI Overhaul: Replaced bottom sheets with a compact, inline week-by-week layout (Sunday–Saturday) featuring inline cell expansion for exhaustive lunar details.

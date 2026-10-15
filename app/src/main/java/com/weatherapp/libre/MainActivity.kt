@@ -101,6 +101,8 @@ class MainActivity : AppCompatActivity() {
         appUpdateManager = AppUpdateManager(this, locationPreferences)
         easterEggManager = EasterEggManager(this, binding)
 
+        WidgetSyncWorker.notifyWidgetsInvalidated(this)
+
         setupUI()
         val isFreshLaunch = (savedInstanceState == null)
         astronomyManager.applyInitialLaunchState(isFreshLaunch)
@@ -158,6 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleNotificationIntent(intent)
+        handleWidgetIntent(intent)
 
         val launchCount = locationPreferences.incrementAppLaunchCount()
         if (launchCount >= 500) {
@@ -171,6 +174,40 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleNotificationIntent(intent)
+        handleWidgetIntent(intent)
+    }
+
+    fun handleWidgetIntent(intent: Intent?) {
+        if (intent == null) return
+        if (!intent.hasExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX)) return
+
+        val tabIndex = intent.getIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX, -1)
+        val tabCount = locationPreferences.getTabCount()
+        if (tabIndex in 0 until tabCount) {
+            locationPreferences.saveActiveTabIndex(tabIndex)
+            binding.tabLayoutLocations.getTabAt(tabIndex)?.select()
+            val selectedLoc = locationPreferences.getTabLocation(tabIndex)
+            weatherDisplayManager.currentLocation = selectedLoc
+            weatherDisplayManager.updateLocationHeader()
+            weatherDisplayManager.loadWeather()
+        }
+
+        val subTabName = intent.getStringExtra(WeatherWidgetProvider.EXTRA_WIDGET_SUBTAB)
+        if (!subTabName.isNullOrEmpty()) {
+            try {
+                val subTab = InlineSubTab.valueOf(subTabName)
+                astronomyManager.switchInlineSubTab(
+                    subTab,
+                    weatherDisplayManager.currentLocation,
+                    weatherDisplayManager.locationTimezone
+                )
+            } catch (e: Exception) {
+                // Ignore unknown subtab
+            }
+        }
+
+        intent.removeExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX)
+        intent.removeExtra(WeatherWidgetProvider.EXTRA_WIDGET_SUBTAB)
     }
 
     fun handleNotificationIntent(intent: Intent?) {
@@ -384,6 +421,7 @@ class MainActivity : AppCompatActivity() {
                 locationDialogManager.showRecentLocationsDialog { selectedLoc ->
                     locationPreferences.saveTabLocation(i, selectedLoc)
                     tab.text = selectedLoc.name
+                    WidgetSyncWorker.notifyWidgetsInvalidated(this@MainActivity)
                     if (shouldReloadAfterTabEdit(i, locationPreferences.getActiveTabIndex())) {
                         weatherDisplayManager.currentLocation = selectedLoc
                         weatherDisplayManager.updateLocationHeader()
@@ -417,6 +455,7 @@ class MainActivity : AppCompatActivity() {
         val activeIndex = locationPreferences.getActiveTabIndex()
         locationPreferences.saveTabLocation(activeIndex, location)
         setupLocationTabs()
+        WidgetSyncWorker.notifyWidgetsInvalidated(this)
     }
 
     private fun setupDrawerNavigation() {

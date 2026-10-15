@@ -96,7 +96,7 @@ enum class ForecastModel(
     }
 }
 
-class LocationPreferences(context: Context) {
+class LocationPreferences(val context: Context) {
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
@@ -281,6 +281,7 @@ class LocationPreferences(context: Context) {
 
     fun saveTabCount(count: Int) {
         prefs.edit().putInt(KEY_TAB_COUNT, count.coerceIn(1, 4)).apply()
+        WidgetSyncWorker.notifyWidgetsInvalidated(this.context)
     }
 
     fun getActiveTabIndex(): Int {
@@ -417,6 +418,7 @@ class LocationPreferences(context: Context) {
             .putFloat("tab_${tabIndex}_lon", location.longitude.toFloat())
             .putFloat("tab_${tabIndex}_elev", location.elevationMeters.toFloat())
             .apply()
+        WidgetSyncWorker.notifyWidgetsInvalidated(this.context)
     }
 
     fun isChinaLocation(location: LocationItem): Boolean {

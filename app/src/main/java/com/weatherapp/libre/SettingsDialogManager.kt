@@ -381,6 +381,7 @@ class SettingsDialogManager(
 
             card.setOnClickListener {
                 locationPreferences.saveTabCount(count)
+                WidgetSyncWorker.notifyWidgetsInvalidated(activity.applicationContext)
                 if (activity is MainActivity) {
                     activity.setupLocationTabs()
                 }

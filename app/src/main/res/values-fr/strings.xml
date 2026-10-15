@@ -545,4 +545,21 @@
     <string name="theme_terracotta_title">Thème terre cuite</string>
     <string name="theme_terracotta_desc">Tons chauds d\'argile terreuse avec des reflets cuivrés de coucher de soleil</string>
     <string name="btn_ok">OK</string>
+
+    <!-- Widget Strings -->
+    <string name="widget_name_4x2">Météo &amp; Astronomie (4x2)</string>
+    <string name="widget_name_4x1">Onglets Météo (4x1)</string>
+    <string name="widget_name_2x2">Météo Actuelle (2x2)</string>
+    <string name="widget_config_title">Configuration du widget</string>
+    <string name="widget_config_theme">Thème du widget</string>
+    <string name="widget_theme_system">Selon le système (Material You)</string>
+    <string name="widget_theme_boutique">Selon l\'application (Boutique)</string>
+    <string name="widget_config_features">Options de fonctionnalités (Widget 4x2)</string>
+    <string name="widget_show_night_vis">Afficher le score de visibilité nocturne</string>
+    <string name="widget_show_solunar">Afficher l\'activité solunaire</string>
+    <string name="widget_btn_save">Ajouter le widget</string>
+    <string name="widget_night_vis_label">Visibilité nocturne :</string>
+    <string name="widget_solunar_label">Activité solunaire :</string>
+    <string name="widget_loading">Chargement de la météo...</string>
+    <string name="widget_no_data">Aucune donnée météo en cache</string>
 </resources>
