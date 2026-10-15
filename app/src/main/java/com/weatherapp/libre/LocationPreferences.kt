@@ -162,6 +162,7 @@ class LocationPreferences(val context: Context) {
         const val THEME_AURORA = 7
         const val THEME_TERRACOTTA = 8
         const val THEME_FROST = 9
+        @Deprecated("retained solely to migrate legacy installs")
         const val THEME_FIRE_ENGINE = 10
         const val THEME_ORANGE_GROVE = 11
 
@@ -698,8 +699,17 @@ class LocationPreferences(val context: Context) {
         prefs.edit().putString(KEY_UNIT_SYSTEM, unitSystem.name).apply()
     }
 
+    private fun resolveThemeMode(rawMode: Int): Int {
+        if (rawMode == THEME_FIRE_ENGINE) {
+            saveThemeMode(THEME_DARK)
+            return THEME_DARK
+        }
+        return rawMode
+    }
+
     fun getSavedThemeMode(): Int {
-        return prefs.getInt(KEY_THEME, THEME_SYSTEM)
+        val raw = prefs.getInt(KEY_THEME, THEME_SYSTEM)
+        return resolveThemeMode(raw)
     }
 
     fun getThemeMode(): Int = getSavedThemeMode()

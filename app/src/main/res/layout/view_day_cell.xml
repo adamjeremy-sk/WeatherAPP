@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
-                android:background="#DC2626"
+                android:background="@android:color/transparent"
                 android:paddingHorizontal="2dp"
                 android:paddingVertical="1dp"
                 android:text="🔴"

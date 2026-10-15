@@ -39,9 +39,7 @@ class ThemeManager(
         binding.main.setBackgroundColor(palette.background)
         binding.layoutStickyTabsContainer.setBackgroundColor(palette.background)
 
-        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
-        val activityBgColor = if (isFireEngine) Color.parseColor("#DC2626") else palette.background
-        SystemBarContrastHelper.updateSystemBarContrast(activity, activityBgColor)
+        SystemBarContrastHelper.updateSystemBarContrast(activity, palette.background)
 
         val density = activity.resources.displayMetrics.density
 
@@ -67,37 +65,19 @@ class ThemeManager(
             binding.tvShareSnippet
         )
 
-        if (isFireEngine) {
-            binding.drawerScrollView.setBackgroundColor(Color.parseColor("#DC2626"))
-            binding.tvDrawerTitle.setTextColor(Color.WHITE)
-            for (divider in drawerDividers) divider.setBackgroundColor(Color.WHITE)
-            for (tv in drawerTitles) tv.setTextColor(Color.WHITE)
-            for (tv in drawerSnippets) tv.setTextColor(Color.parseColor("#FEE2E2"))
-        } else {
-            binding.drawerScrollView.setBackgroundColor(palette.surfaceCard)
-            binding.tvDrawerTitle.setTextColor(palette.textPrimary)
-            for (divider in drawerDividers) divider.setBackgroundColor(palette.dividerColor)
-            for (tv in drawerTitles) tv.setTextColor(palette.textPrimary)
-            for (tv in drawerSnippets) tv.setTextColor(palette.textSecondary)
-        }
+        binding.drawerScrollView.setBackgroundColor(palette.surfaceCard)
+        binding.tvDrawerTitle.setTextColor(palette.textPrimary)
+        for (divider in drawerDividers) divider.setBackgroundColor(palette.dividerColor)
+        for (tv in drawerTitles) tv.setTextColor(palette.textPrimary)
+        for (tv in drawerSnippets) tv.setTextColor(palette.textSecondary)
 
-        if (isFireEngine) {
-            binding.cardHeader.setCardBackgroundColor(Color.parseColor("#DC2626"))
-            binding.cardHeader.strokeColor = Color.WHITE
-            binding.cardHeader.strokeWidth = (2 * density).toInt()
-            binding.btnMenu.setColorFilter(Color.WHITE)
-            binding.ivPin.setColorFilter(Color.WHITE)
-            binding.tvLocationName.setTextColor(Color.WHITE)
-            binding.tvAttribution.setTextColor(Color.parseColor("#FEE2E2"))
-        } else {
-            binding.cardHeader.setCardBackgroundColor(palette.surfaceCard)
-            binding.cardHeader.strokeColor = palette.dividerColor
-            binding.cardHeader.strokeWidth = (1 * density).toInt()
-            binding.btnMenu.setColorFilter(palette.textPrimary)
-            binding.ivPin.setColorFilter(palette.brandPrimary)
-            binding.tvLocationName.setTextColor(palette.textPrimary)
-            binding.tvAttribution.setTextColor(palette.textSecondary)
-        }
+        binding.cardHeader.setCardBackgroundColor(palette.surfaceCard)
+        binding.cardHeader.strokeColor = palette.dividerColor
+        binding.cardHeader.strokeWidth = (1 * density).toInt()
+        binding.btnMenu.setColorFilter(palette.textPrimary)
+        binding.ivPin.setColorFilter(palette.brandPrimary)
+        binding.tvLocationName.setTextColor(palette.textPrimary)
+        binding.tvAttribution.setTextColor(palette.textSecondary)
 
         binding.cardLocationTabs.setCardBackgroundColor(palette.surfaceCard)
         binding.cardLocationTabs.strokeColor = palette.dividerColor
@@ -252,8 +232,7 @@ class ThemeManager(
 
         val currentTheme = locationPreferences.getThemeMode()
         val palette = ColorPalette.forMode(currentTheme, activity)
-        val isFireEngine = (locationPreferences.getThemeMode() == LocationPreferences.THEME_FIRE_ENGINE)
-        val headerBg = if (isFireEngine) Color.parseColor("#DC2626") else palette.surfaceCard
+        val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
 
         dialogBinding.mainThemeSettings.setBackgroundColor(palette.background)
@@ -261,9 +240,7 @@ class ThemeManager(
         dialogBinding.btnBack.setColorFilter(headerTitleColor)
         val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
         (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
-        if (!isFireEngine) {
-            dialogBinding.cardHeader.strokeColor = palette.dividerColor
-        }
+        dialogBinding.cardHeader.strokeColor = palette.dividerColor
         dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
 
         val isSystemDefault = (currentTheme == LocationPreferences.THEME_SYSTEM)
@@ -303,21 +280,20 @@ class ThemeManager(
         dialogBinding.tvStandardHeader.setTextColor(palette.textPrimary)
         dialogBinding.tvBoutiqueHeader.setTextColor(palette.textPrimary)
 
-        val standardModes = listOf(
+        val lightModes = listOf(
             LocationPreferences.THEME_LIGHT to (R.string.theme_light_title to R.string.theme_light_desc),
-            LocationPreferences.THEME_DARK to (R.string.theme_dark_title to R.string.theme_dark_desc)
+            LocationPreferences.THEME_CREMA to (R.string.theme_crema_title to R.string.theme_crema_desc),
+            LocationPreferences.THEME_FROST to (R.string.theme_frost_title to R.string.theme_frost_desc),
+            LocationPreferences.THEME_ORANGE_GROVE to (R.string.theme_orange_grove_title to R.string.theme_orange_grove_desc),
+            LocationPreferences.THEME_TERRACOTTA to (R.string.theme_terracotta_title to R.string.theme_terracotta_desc)
         )
 
-        val boutiqueModes = listOf(
+        val darkModes = listOf(
+            LocationPreferences.THEME_DARK to (R.string.theme_dark_title to R.string.theme_dark_desc),
             LocationPreferences.THEME_AURORA to (R.string.theme_aurora_title to R.string.theme_aurora_desc),
             LocationPreferences.THEME_CHARCOAL to (R.string.theme_charcoal_title to R.string.theme_charcoal_desc),
             LocationPreferences.THEME_COBALT to (R.string.theme_cobalt_title to R.string.theme_cobalt_desc),
-            LocationPreferences.THEME_CREMA to (R.string.theme_crema_title to R.string.theme_crema_desc),
-            LocationPreferences.THEME_FIRE_ENGINE to (R.string.theme_fire_engine_title to R.string.theme_fire_engine_desc),
-            LocationPreferences.THEME_FROST to (R.string.theme_frost_title to R.string.theme_frost_desc),
-            LocationPreferences.THEME_JADE to (R.string.theme_jade_title to R.string.theme_jade_desc),
-            LocationPreferences.THEME_ORANGE_GROVE to (R.string.theme_orange_grove_title to R.string.theme_orange_grove_desc),
-            LocationPreferences.THEME_TERRACOTTA to (R.string.theme_terracotta_title to R.string.theme_terracotta_desc)
+            LocationPreferences.THEME_JADE to (R.string.theme_jade_title to R.string.theme_jade_desc)
         )
 
         fun populateThemeGroup(
@@ -397,8 +373,8 @@ class ThemeManager(
             }
         }
 
-        populateThemeGroup(dialogBinding.layoutStandardThemes, standardModes)
-        populateThemeGroup(dialogBinding.layoutBoutiqueThemes, boutiqueModes)
+        populateThemeGroup(dialogBinding.layoutStandardThemes, lightModes)
+        populateThemeGroup(dialogBinding.layoutBoutiqueThemes, darkModes)
 
         (activity as? MainActivity)?.settingsDialogManager?.trackDialog(dialog)
         if (!activity.isFinishing && !activity.isDestroyed) {

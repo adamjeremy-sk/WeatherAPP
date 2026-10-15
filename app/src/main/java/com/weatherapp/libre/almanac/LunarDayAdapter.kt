@@ -79,7 +79,6 @@ class LunarDayAdapter(
         private val tvBadgeBlue: TextView = itemView.findViewById(R.id.tvBadgeBlueMoon)
         private val tvBadgeHarvest: TextView = itemView.findViewById(R.id.tvBadgeHarvestMoon)
         private val tvBadgeMicromoon: TextView = itemView.findViewById(R.id.tvBadgeMicromoon)
-        private val tvBadgeSyzygy: TextView = itemView.findViewById(R.id.tvBadgeSyzygy)
 
         private val ivMoonPhaseIcon: ImageView = itemView.findViewById(R.id.ivMoonPhaseIcon)
         private val tvMoonStageName: TextView = itemView.findViewById(R.id.tvMoonStageName)
@@ -210,10 +209,6 @@ class LunarDayAdapter(
 
             tvBadgeMicromoon.visibility = if (day.isMicromoon) View.VISIBLE else View.GONE
             tvBadgeMicromoon.setBackgroundColor(palette.brandPrimary)
-
-            tvBadgeSyzygy.visibility = if (day.isSyzygy) View.VISIBLE else View.GONE
-            tvBadgeSyzygy.setBackgroundColor(palette.surfaceCardSecondary)
-            tvBadgeSyzygy.setTextColor(palette.textPrimary)
 
             // Phase Icon & Stage Name
             val drawableRes = when (day.primaryPhase.phaseCategory) {

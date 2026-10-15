@@ -213,26 +213,6 @@ object BoutiqueThemeEngine {
         alertMinor = Color.parseColor("#034078")
     )
 
-    val FIRE_ENGINE_PALETTE = ColorPalette(
-        primary = Color.parseColor("#DC2626"),
-        surfaceCard = Color.parseColor("#FFFFFF"),
-        surfaceCardSecondary = Color.parseColor("#F3F4F6"),
-        backgroundLight = Color.parseColor("#F9FAFB"),
-        textPrimary = Color.parseColor("#1A1A1A"),
-        textSecondary = Color.parseColor("#4B5563"),
-        tempHigh = Color.parseColor("#DC2626"),
-        tempHighBg = Color.parseColor("#FEE2E2"),
-        tempLow = Color.parseColor("#2563EB"),
-        tempLowBg = Color.parseColor("#DBEAFE"),
-        goldenHourPrimary = Color.parseColor("#D97706"),
-        blueHourPrimary = Color.parseColor("#4338CA"),
-        dividerColor = Color.parseColor("#E5E7EB"),
-        alertExtreme = Color.parseColor("#DC2626"),
-        alertSevere = Color.parseColor("#C2410C"),
-        alertModerate = Color.parseColor("#92400E"),
-        alertMinor = Color.parseColor("#0369A1")
-    )
-
     val ORANGE_GROVE_PALETTE = ColorPalette(
         primary = Color.parseColor("#D97706"),
         surfaceCard = Color.parseColor("#FAF7EF"),
@@ -268,7 +248,7 @@ object BoutiqueThemeEngine {
             LocationPreferences.THEME_AURORA -> AURORA_PALETTE
             LocationPreferences.THEME_TERRACOTTA -> TERRACOTTA_PALETTE
             LocationPreferences.THEME_FROST -> FROST_PALETTE
-            LocationPreferences.THEME_FIRE_ENGINE -> FIRE_ENGINE_PALETTE
+            LocationPreferences.THEME_FIRE_ENGINE -> DARK_PALETTE
             LocationPreferences.THEME_ORANGE_GROVE -> ORANGE_GROVE_PALETTE
             else -> DARK_PALETTE
         }

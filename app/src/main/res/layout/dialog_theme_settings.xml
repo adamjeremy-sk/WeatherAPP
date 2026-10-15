@@ -131,14 +131,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Standard Themes Header -->
+                <!-- Light Themes Header -->
                 <TextView
                     android:id="@+id/tvStandardHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/header_standard_themes"
-                    android:textColor="@color/brand_primary"
+                    android:text="@string/header_light_themes"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -148,15 +148,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
 
-                <!-- Boutique Themes Header -->
+                <!-- Dark Themes Header -->
                 <TextView
                     android:id="@+id/tvBoutiqueHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/header_boutique_themes"
-                    android:textColor="@color/brand_primary"
+                    android:text="@string/header_dark_themes"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 

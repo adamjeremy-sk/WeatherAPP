@@ -304,8 +304,8 @@
     <string name="desc_theme_settings">Select your preferred application appearance.</string>
     <string name="title_system_default_theme">System Default Theme</string>
     <string name="desc_system_default_theme">Automatically follow your phone\'s system dark and light theme settings.</string>
-    <string name="header_standard_themes">Standard Themes</string>
-    <string name="header_boutique_themes">Boutique Themes</string>
+    <string name="header_light_themes">Light Themes</string>
+    <string name="header_dark_themes">Dark Themes</string>
 
     <string name="label_moon_phase">Moon Phase</string>
     <string name="label_total_daylight">Total Daylight</string>
@@ -480,7 +480,6 @@
     <string name="badge_partial_eclipse">Partial</string>
     <string name="badge_total_eclipse">Total</string>
     <string name="badge_micromoon">Micromoon</string>
-    <string name="badge_syzygy">Syzygy</string>
     <string name="badge_lunar_moonbow">Moonbow</string>
     <string name="badge_lunar_halo">Lunar Halo</string>
     <string name="badge_lunar_corona">Lunar Corona</string>
@@ -579,27 +578,25 @@
     <string name="model_cma_title">CMA-GFS (China)</string>
     <string name="model_cma_desc">China Meteorological Administration Global Forecast System</string>
 
-    <string name="theme_light_title">Light Theme</string>
+    <string name="theme_light_title">Light</string>
     <string name="theme_light_desc">Clean light background and high contrast typography</string>
-    <string name="theme_dark_title">Dark Theme</string>
+    <string name="theme_dark_title">Dark</string>
     <string name="theme_dark_desc">Modern bluish dark slate background for nighttime comfort</string>
-    <string name="theme_aurora_title">Aurora Theme</string>
+    <string name="theme_aurora_title">Aurora</string>
     <string name="theme_aurora_desc">Deep midnight teal with emerald aurora glow.</string>
-    <string name="theme_charcoal_title">Charcoal Theme</string>
+    <string name="theme_charcoal_title">Charcoal</string>
     <string name="theme_charcoal_desc">Deep neutral charcoal background for OLED displays.</string>
-    <string name="theme_cobalt_title">Cobalt Theme</string>
+    <string name="theme_cobalt_title">Cobalt</string>
     <string name="theme_cobalt_desc">Vibrant deep ocean blue background.</string>
-    <string name="theme_crema_title">Crema Theme</string>
+    <string name="theme_crema_title">Crema</string>
     <string name="theme_crema_desc">Warm creamy off-white background with soft brown accents.</string>
-    <string name="theme_fire_engine_title">Fire Engine Theme</string>
-    <string name="theme_fire_engine_desc">Bold deep crimson red background</string>
-    <string name="theme_frost_title">Frost Theme</string>
+    <string name="theme_frost_title">Frost</string>
     <string name="theme_frost_desc">Cool icy slate blue background</string>
-    <string name="theme_jade_title">Jade Theme</string>
+    <string name="theme_jade_title">Jade</string>
     <string name="theme_jade_desc">Rich forest dark green theme</string>
-    <string name="theme_orange_grove_title">Orange Grove Theme</string>
+    <string name="theme_orange_grove_title">Orange Grove</string>
     <string name="theme_orange_grove_desc">Rich sunset orange background</string>
-    <string name="theme_terracotta_title">Terracotta Theme</string>
+    <string name="theme_terracotta_title">Terracotta</string>
     <string name="theme_terracotta_desc">Warm earthy clay tones with sunset copper highlights</string>
     <string name="btn_ok">OK</string>
 

@@ -3,7 +3,10 @@ Changelog 0.6.2VC22 - 2026/10/15
 ---------------
 * French localization fixes
 * Added 4x2, 4x1, 2x2 widgets
-* Edge-to-edge SDK35+ compliant
+* Edge-to-edge API35+ compliant
+* Removed fire-engine theme
+* Reorganized theme page
+* Removed Syzygy
 
 ---------------
 Changelog 0.6.1VC21 - 2026/10/14

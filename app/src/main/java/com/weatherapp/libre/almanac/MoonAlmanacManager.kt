@@ -30,7 +30,6 @@ data class MoonAlmanacDay(
     val isBlueMoon: Boolean = false,
     val isHarvestMoon: Boolean = false,
     val isMicromoon: Boolean = false,
-    val isSyzygy: Boolean = false,
     val isLunarMoonbow: Boolean = false,
     val isLunarHalo: Boolean = false,
     val isLunarCorona: Boolean = false,
@@ -77,7 +76,6 @@ object MoonAlmanacManager {
             val exactPhasePeakTime = dayPhaseEvent?.instantUtc
 
             val fullMoonEvent = phaseEvents.firstOrNull { it.type == MoonPhaseName.FULL_MOON }
-            val newMoonEvent = phaseEvents.firstOrNull { it.type == MoonPhaseName.NEW_MOON }
 
             var eclipseInfo: LunarEclipseInfo? = null
             var isSupermoon = false
@@ -85,7 +83,6 @@ object MoonAlmanacManager {
             var isBlueMoon = false
             var isHarvestMoon = false
             var isMicromoon = false
-            val isSyzygy = (fullMoonEvent != null || newMoonEvent != null)
 
             if (fullMoonEvent != null) {
                 eclipseInfo = when (val res = LunarEclipseCalculator.calculateLunarEclipse(fullMoonEvent.instantUtc)) {
@@ -174,7 +171,6 @@ object MoonAlmanacManager {
                     isBlueMoon = isBlueMoon,
                     isHarvestMoon = isHarvestMoon,
                     isMicromoon = isMicromoon,
-                    isSyzygy = isSyzygy,
                     isLunarMoonbow = moonbowProb > 0.7,
                     isLunarHalo = haloProb > 0.6,
                     isLunarCorona = coronaProb > 0.6,

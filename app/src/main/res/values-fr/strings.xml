@@ -260,8 +260,8 @@
     <string name="desc_theme_settings">Sélectionner l\'apparence de votre application préférée.</string>
     <string name="title_system_default_theme">Thème par défaut du système</string>
     <string name="desc_system_default_theme">Suivre automatiquement les paramètres de thème sombre et clair du système de votre téléphone.</string>
-    <string name="header_standard_themes">Thèmes standards</string>
-    <string name="header_boutique_themes">Thèmes de boutique</string>
+    <string name="header_light_themes">Thèmes clairs</string>
+    <string name="header_dark_themes">Thèmes sombres</string>
     <string name="label_moon_phase">Phase lunaire</string>
     <string name="label_total_daylight">Ensoleillement total</string>
     <string name="label_sunrise_sunset">Lever et coucher du soleil</string>
@@ -423,7 +423,6 @@
     <string name="badge_partial_eclipse">Partielle</string>
     <string name="badge_total_eclipse">Totale</string>
     <string name="badge_micromoon">Micro lune</string>
-    <string name="badge_syzygy">Syzygie</string>
     <string name="badge_lunar_moonbow">Arc-en-ciel lunaire</string>
     <string name="badge_lunar_halo">Halo lunaire</string>
     <string name="badge_lunar_corona">Couronne lunaire</string>
@@ -522,27 +521,25 @@
     <string name="model_cma_title">CMA-GFS (Chine)</string>
     <string name="model_cma_desc">Système de prévision global de l\'Administration météorologique de Chine</string>
 
-    <string name="theme_light_title">Thème clair</string>
+    <string name="theme_light_title">Clair</string>
     <string name="theme_light_desc">Fond clair et épuré avec une typographie à fort contraste</string>
-    <string name="theme_dark_title">Thème sombre</string>
+    <string name="theme_dark_title">Sombre</string>
     <string name="theme_dark_desc">Fond ardoise sombre bleuté moderne pour le confort nocturne</string>
-    <string name="theme_aurora_title">Thème aurore</string>
+    <string name="theme_aurora_title">Aurore</string>
     <string name="theme_aurora_desc">Bleu canard profond de minuit avec une lueur d\'aurore émeraude</string>
-    <string name="theme_charcoal_title">Thème anthracite</string>
+    <string name="theme_charcoal_title">Anthracite</string>
     <string name="theme_charcoal_desc">Fond anthracite neutre et profond pour les écrans OLED</string>
-    <string name="theme_cobalt_title">Thème cobalt</string>
+    <string name="theme_cobalt_title">Cobalt</string>
     <string name="theme_cobalt_desc">Fond bleu océan profond et vibrant</string>
-    <string name="theme_crema_title">Thème crème</string>
+    <string name="theme_crema_title">Crème</string>
     <string name="theme_crema_desc">Fond blanc cassé crème et chaud avec des accents brun doux</string>
-    <string name="theme_fire_engine_title">Thème rouge pompier</string>
-    <string name="theme_fire_engine_desc">Fond rouge cramoisi profond et audacieux</string>
-    <string name="theme_frost_title">Thème givre</string>
+    <string name="theme_frost_title">Givre</string>
     <string name="theme_frost_desc">Fond bleu ardoise glacé et frais</string>
-    <string name="theme_jade_title">Thème jade</string>
+    <string name="theme_jade_title">Jade</string>
     <string name="theme_jade_desc">Thème vert foncé riche de forêt</string>
-    <string name="theme_orange_grove_title">Thème orangeraie</string>
+    <string name="theme_orange_grove_title">Orangeraie</string>
     <string name="theme_orange_grove_desc">Fond orange riche de coucher de soleil</string>
-    <string name="theme_terracotta_title">Thème terre cuite</string>
+    <string name="theme_terracotta_title">Terre cuite</string>
     <string name="theme_terracotta_desc">Tons chauds d\'argile terreuse avec des reflets cuivrés de coucher de soleil</string>
     <string name="btn_ok">OK</string>
 
