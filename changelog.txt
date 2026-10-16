@@ -1,4 +1,9 @@
 ---------------
+Changelog 0.6.3VC23 -
+---------------
+* Modularized and decoupled theme engine for other projects
+
+---------------
 Changelog 0.6.2VC22 - 2026/10/15
 ---------------
 * French Localization Fixes: Externalized all remaining hardcoded English strings (weather conditions, moon phases, sub-tab and menu labels, natural light phases, night visibility and solunar labels, forecast model and theme descriptions); enforced French typography (space before colons); localized dropdown menu entries and dialog buttons.
