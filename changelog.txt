@@ -1,7 +1,10 @@
 ---------------
-Changelog 0.6.3VC23 -
+Changelog 0.6.3VC23 - 2026/10/16
 ---------------
-* Modularized and decoupled theme engine for other projects
+* Theme Engine Modularization: Extracted BoutiqueThemeEngine and ColorPalette into a standalone, portable Android Library module (theme-engine) for reuse across projects. The module exposes a single public surface via ThemeMode constants and getPalette(), with zero coupling to host-app business logic. Legacy Fire Engine installs continue to self-heal to the Dark theme via the host app's migration resolver.
+* Widget Information Architecture Overhaul: Restructured all three widget footprints for clarity and consistency. Removed the redundant city name from all layouts (the selected tab pill already displays it). Sunrise/sunset now render universally as locale-neutral arrows (↑/↓) on all layouts. Moonrise/moonset moved to the right column on 4x1 and 4x2 with localized labels. The 4x2 middle timings row narrowed to Transit and Nadir only; the feature panel (Night Visibility, Solunar Activity, True Dark Sky) now expands to fill available height.
+* 4x1 Alignment Fix: Resolved horizontal centering drift on the 4x1 temperature by restructuring the content row into three equal-weight regions (left data, hero temp, right data), ensuring the temperature renders on the exact centerline across all launcher implementations.
+* 2x1 Widget Conversion: Converted the small widget from a 2x2 quadrant grid to a compact 2x1 two-column stack, removing the pill bar to fit within one-cell height grants on tight launchers. Left column carries the solar narrative (icon, sun arrows, condition, high/low); right column carries the lunar narrative (hero temperature, moon arrows, moon phase name, night context, illumination). Increased icon size to 32dp and temperature autosize ceiling to 30sp for improved visual presence.
 
 ---------------
 Changelog 0.6.2VC22 - 2026/10/15

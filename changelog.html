@@ -279,7 +279,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc22">0.6.2VC22 (Latest)</a></li>
+          <li><a href="#vc23">0.6.3VC23 (Latest)</a></li>
+          <li><a href="#vc22">0.6.2VC22</a></li>
           <li><a href="#VC21">0.6.1VC21</a></li>
           <li><a href="#vc20">0.6.0VC20</a></li>
           <li><a href="#vc18">0.5.2VC18</a></li>
@@ -329,11 +330,29 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc23" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.6.3VC23
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 16, 2026</p>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Theme Engine Modularization: Extracted BoutiqueThemeEngine and ColorPalette into a standalone, portable Android Library module (theme-engine) for reuse across projects. The module exposes a single public surface via ThemeMode constants and getPalette(), with zero coupling to host-app business logic. Legacy Fire Engine installs continue to self-heal to the Dark theme via the host app's migration resolver.</li>
+          <li>Widget Information Architecture Overhaul: Restructured all three widget footprints for clarity and consistency. Removed the redundant city name from all layouts (the selected tab pill already displays it). Sunrise/sunset now render universally as locale-neutral arrows (↑/↓) on all layouts. Moonrise/moonset moved to the right column on 4x1 and 4x2 with localized labels. The 4x2 middle timings row narrowed to Transit and Nadir only; the feature panel (Night Visibility, Solunar Activity, True Dark Sky) now expands to fill available height.</li>
+          <li>2x1 Widget Conversion: Converted the small widget from a 2x2 quadrant grid to a compact 2x1 two-column stack, removing the pill bar to fit within one-cell height grants on tight launchers. Left column carries the solar narrative (icon, sun arrows, condition, high/low); right column carries the lunar narrative (hero temperature, moon arrows, moon phase name, night context, illumination). Increased icon size to 32dp and temperature autosize ceiling to 30sp for improved visual presence.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>4x1 Alignment Fix: Resolved horizontal centering drift on the 4x1 temperature by restructuring the content row into three equal-weight regions (left data, hero temp, right data), ensuring the temperature renders on the exact centerline across all launcher implementations.</li>
+        </ul>
+      </section>
+
       <section id="vc22" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.2VC22
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 15, 2026</p>
         <h3>Added</h3>
