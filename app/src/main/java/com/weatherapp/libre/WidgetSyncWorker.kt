@@ -18,6 +18,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.getEmoji
+import com.weatherapp.libre.lunar.getNameRes
 import com.weatherapp.libre.solar.Observer as SolarObserver
 import com.weatherapp.libre.solar.SolarLightingEngine
 import java.time.Instant
@@ -120,7 +121,7 @@ class WidgetSyncWorker(
 
             val remoteViews = RemoteViews(context.packageName, layoutId)
 
-            remoteViews.setTextViewText(R.id.tv_widget_location_name, location.name)
+
 
             if (weatherResult.isSuccess) {
                 val response = weatherResult.getOrNull()
@@ -152,6 +153,12 @@ class WidgetSyncWorker(
                 val moonPct = (moonInfo.illuminationFraction * 100).roundToInt().coerceIn(0, 100)
                 remoteViews.setTextViewText(R.id.tv_widget_moon_phase, "$moonEmoji $moonPct%")
 
+                if (layoutId == R.layout.widget_layout_2x1) {
+                    val phaseName = context.getString(moonInfo.phaseCategory.getNameRes())
+                    remoteViews.setTextViewText(R.id.tv_widget_moon_stage, phaseName)
+                    remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.VISIBLE)
+                }
+
                 val zoneId = try {
                     ZoneId.of(response?.timezone ?: ZoneId.systemDefault().id)
                 } catch (e: Exception) {
@@ -170,28 +177,26 @@ class WidgetSyncWorker(
                     solarObserver
                 )
 
-                // Bind Discrete Sunrise & Sunset Rows (2x2, 4x1, 4x2)
+                // Bind Discrete Sunrise & Sunset Rows (Arrow glyphs on all layouts)
                 val sunriseStr = formatInstantTime(solarLighting.sunrise?.instantUtc, zoneId)
                 val sunsetStr = formatInstantTime(solarLighting.sunset?.instantUtc, zoneId)
-                val sunriseLabel = context.getString(R.string.phase_sunrise)
-                val sunsetLabel = context.getString(R.string.phase_sunset)
 
                 if (solarLighting.sunrise?.instantUtc != null) {
-                    remoteViews.setTextViewText(R.id.tv_widget_sunrise, "$sunriseLabel: $sunriseStr")
+                    remoteViews.setTextViewText(R.id.tv_widget_sunrise, "↑ $sunriseStr")
                     remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.VISIBLE)
                 } else {
                     remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
                 }
 
                 if (solarLighting.sunset?.instantUtc != null) {
-                    remoteViews.setTextViewText(R.id.tv_widget_sunset, "$sunsetLabel: $sunsetStr")
+                    remoteViews.setTextViewText(R.id.tv_widget_sunset, "↓ $sunsetStr")
                     remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.VISIBLE)
                 } else {
                     remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
                 }
 
-                // Compute Active Natural Light Period (4x1 & 4x2)
-                if (layoutId == R.layout.widget_layout_4x2 || layoutId == R.layout.widget_layout_4x1) {
+                // Compute Active Natural Light Period (2x1, 4x1, 4x2)
+                if (layoutId == R.layout.widget_layout_4x2 || layoutId == R.layout.widget_layout_4x1 || layoutId == R.layout.widget_layout_2x1) {
                     val now = Instant.now()
                     val solarPhases = SolarLightingEngine.calculateChronologicalSolarPhases(
                         date = LocalDate.now(),
@@ -212,8 +217,8 @@ class WidgetSyncWorker(
                     }
                 }
 
-                // 4x2 Feature Toggles & Lunar Timings Row
-                if (layoutId == R.layout.widget_layout_4x2) {
+                // Solunar calculations for 2x1, 4x1 & 4x2 (Moonrise & Moonset)
+                if (layoutId == R.layout.widget_layout_4x2 || layoutId == R.layout.widget_layout_4x1 || layoutId == R.layout.widget_layout_2x1) {
                     val solunarSummaries = SolunarManager().calculateSolunarForecast(
                         dates = listOf(LocalDate.now()),
                         zoneId = zoneId,
@@ -223,16 +228,72 @@ class WidgetSyncWorker(
 
                     val riseStr = formatInstantTime(todaySolunar?.moonrise, zoneId)
                     val setStr = formatInstantTime(todaySolunar?.moonset, zoneId)
-                    val transitStr = formatInstantTime(todaySolunar?.transit, zoneId)
-                    val nadirStr = formatInstantTime(todaySolunar?.nadir, zoneId)
 
-                    val riseLabel = context.getString(R.string.label_moonrise)
-                    val setLabel = context.getString(R.string.label_moonset)
-                    val transitLabel = context.getString(R.string.label_transit)
-                    val nadirLabel = context.getString(R.string.label_nadir)
+                    if (todaySolunar?.moonrise != null) {
+                        val moonriseText = if (layoutId == R.layout.widget_layout_2x1) {
+                            "↑ $riseStr"
+                        } else {
+                            val riseLabel = context.getString(R.string.label_moonrise)
+                            "$riseLabel: $riseStr"
+                        }
+                        remoteViews.setTextViewText(R.id.tv_widget_moonrise, moonriseText)
+                        remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.VISIBLE)
+                    } else {
+                        remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
+                    }
 
-                    val timingsStr = "$riseLabel: $riseStr  •  $setLabel: $setStr  •  $transitLabel: $transitStr  •  $nadirLabel: $nadirStr"
-                    remoteViews.setTextViewText(R.id.tv_widget_lunar_timings, timingsStr)
+                    if (todaySolunar?.moonset != null) {
+                        val moonsetText = if (layoutId == R.layout.widget_layout_2x1) {
+                            "↓ $setStr"
+                        } else {
+                            val setLabel = context.getString(R.string.label_moonset)
+                            "$setLabel: $setStr"
+                        }
+                        remoteViews.setTextViewText(R.id.tv_widget_moonset, moonsetText)
+                        remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.VISIBLE)
+                    } else {
+                        remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
+                    }
+
+                    // 4x2 Feature Toggles & Lunar Timings Row
+                    if (layoutId == R.layout.widget_layout_4x2) {
+                        val transitStr = formatInstantTime(todaySolunar?.transit, zoneId)
+                        val nadirStr = formatInstantTime(todaySolunar?.nadir, zoneId)
+                        val transitLabel = context.getString(R.string.label_transit)
+                        val nadirLabel = context.getString(R.string.label_nadir)
+
+                        val timingsStr = "$transitLabel: $transitStr  •  $nadirLabel: $nadirStr"
+                        remoteViews.setTextViewText(R.id.tv_widget_lunar_timings, timingsStr)
+
+                    // Bind True Dark Sky Period Row
+                    val darkSkySummaries = DarkSkyManager().calculateDarkSkyWindows(
+                        dates = listOf(LocalDate.now()),
+                        zoneId = zoneId,
+                        location = location
+                    )
+                    val todayDarkSky = darkSkySummaries.firstOrNull()
+                    val darkSkyWindows = todayDarkSky?.windows ?: emptyList()
+                    val now = Instant.now()
+
+                    val currentDarkSkyWindow = darkSkyWindows.find { w ->
+                        !now.isBefore(w.startUtc) && now.isBefore(w.endUtc)
+                    }
+                    val upcomingDarkSkyWindow = if (currentDarkSkyWindow == null) {
+                        darkSkyWindows.find { w -> w.startUtc.isAfter(now) }
+                    } else null
+
+                    val darkSkyLabel = context.getString(R.string.subtab_dark_sky_dropdown).replace(" ▾", "")
+                    val activeDarkSkyWindow = currentDarkSkyWindow ?: upcomingDarkSkyWindow
+
+                    if (activeDarkSkyWindow != null) {
+                        val startStr = formatInstantTime(activeDarkSkyWindow.startUtc, zoneId)
+                        val endStr = formatInstantTime(activeDarkSkyWindow.endUtc, zoneId)
+                        val text = "$darkSkyLabel: $startStr - $endStr"
+                        remoteViews.setTextViewText(R.id.tv_widget_dark_sky_period, text)
+                    } else {
+                        remoteViews.setTextViewText(R.id.tv_widget_dark_sky_period, context.getString(R.string.widget_no_dark_sky))
+                    }
+                    remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.VISIBLE)
 
                     if (showNightVis) {
                         val visSummaries = NightVisibilityManager().calculateVisibilityPeriods(
@@ -263,12 +324,9 @@ class WidgetSyncWorker(
                         remoteViews.setViewVisibility(R.id.tv_widget_solunar, View.GONE)
                     }
 
-                    if (!showNightVis && !showSolunar) {
-                        remoteViews.setViewVisibility(R.id.layout_widget_features, View.GONE)
-                    } else {
-                        remoteViews.setViewVisibility(R.id.layout_widget_features, View.VISIBLE)
-                    }
+                    remoteViews.setViewVisibility(R.id.layout_widget_features, View.VISIBLE)
                 }
+            }
             } else {
                 remoteViews.setTextViewText(R.id.tv_widget_temp, "--")
                 remoteViews.setTextViewText(R.id.tv_widget_condition, context.getString(R.string.widget_no_data))
@@ -276,6 +334,12 @@ class WidgetSyncWorker(
                 remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
                 remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
                 remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.GONE)
+                if (layoutId == R.layout.widget_layout_2x1) {
+                    remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.GONE)
+                }
+                remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.GONE)
             }
 
             // Configure Tab Pills (for 4x2, 4x1, and 2x2)

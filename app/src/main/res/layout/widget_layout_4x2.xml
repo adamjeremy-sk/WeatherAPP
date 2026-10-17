@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/btn_widget_tab_0"
@@ -88,17 +88,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_widget_location_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Edmonton"
-            android:textColor="@color/widget_text_primary"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
+        <!-- Equal-Thirds Content Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -106,116 +96,179 @@
             android:gravity="center_vertical"
             android:layout_marginTop="4dp">
 
-            <ImageView
-                android:id="@+id/iv_widget_condition_icon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_condition_partly_cloudy" />
-
+            <!-- Left Region: Icon + Arrow Sun Times, Condition, High/Low (weight = 1) -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/tv_widget_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="18°C"
-                    android:textColor="@color/widget_text_primary"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                <!-- Condition Icon -->
+                <ImageView
+                    android:id="@+id/iv_widget_condition_icon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_condition_partly_cloudy" />
 
-                <TextView
-                    android:id="@+id/tv_widget_condition"
-                    android:layout_width="wrap_content"
+                <!-- Left Vertical Column: Arrow Sun Times, Condition, High/Low -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Partly Cloudy"
-                    android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_widget_natural_light_period"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/widget_accent"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="1dp" />
+                    <!-- Abbreviated Arrow Sun Times Row -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tv_widget_sunrise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/widget_text_secondary"
+                            android:textSize="10sp"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tv_widget_sunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/widget_text_secondary"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_widget_condition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Partly Cloudy"
+                        android:textColor="@color/widget_text_secondary"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tv_widget_high_low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="H: 22° / L: 12°"
+                        android:textColor="@color/widget_text_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
             </LinearLayout>
 
+            <!-- Middle Region: Temp (weight = 1) -->
+            <TextView
+                android:id="@+id/tv_widget_temp"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="18°C"
+                android:textColor="@color/widget_text_primary"
+                android:textStyle="bold"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="24sp"
+                android:autoSizeMaxTextSize="54sp"
+                android:autoSizeStepGranularity="1sp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Right Region: Moonrise, Moonset, Natural Light & Moon Phase (weight = 1) -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="end">
 
                 <TextView
-                    android:id="@+id/tv_widget_high_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="H: 22° / L: 12°"
-                    android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:id="@+id/tv_widget_moon_phase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🌔 78%"
-                    android:textColor="@color/widget_accent"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="2dp" />
-
-                <TextView
-                    android:id="@+id/tv_widget_sunrise"
+                    android:id="@+id/tv_widget_moonrise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp"
-                    android:layout_marginTop="2dp" />
+                    android:textSize="10sp" />
 
                 <TextView
-                    android:id="@+id/tv_widget_sunset"
+                    android:id="@+id/tv_widget_moonset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp"
-                    android:layout_marginTop="1dp" />
+                    android:textSize="10sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end|center_vertical"
+                    android:layout_gravity="end">
+
+                    <TextView
+                        android:id="@+id/tv_widget_natural_light_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/widget_accent"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="4dp" />
+
+                    <TextView
+                        android:id="@+id/tv_widget_moon_phase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="🌔 78%"
+                        android:textColor="@color/widget_accent"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Lunar Timings Row (Moonrise, Moonset, Transit, Nadir) -->
+        <!-- Lunar Timings Row (Transit, Nadir) -->
         <TextView
             android:id="@+id/tv_widget_lunar_timings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/widget_text_secondary"
             android:textSize="10sp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="2dp" />
 
         <!-- Toggleable Feature Sections -->
         <LinearLayout
             android:id="@+id/layout_widget_features"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/bg_widget_feature_box"
-            android:padding="6dp">
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/tv_widget_night_vis"
@@ -225,7 +278,7 @@
                 android:maxLines="1"
                 android:text="Night Visibility: Excellent"
                 android:textColor="@color/widget_text_secondary"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/tv_widget_solunar"
@@ -235,7 +288,17 @@
                 android:maxLines="1"
                 android:text="Solunar Activity: High"
                 android:textColor="@color/widget_text_secondary"
-                android:textSize="10sp"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_widget_dark_sky_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="11sp"
                 android:layout_marginTop="2dp" />
         </LinearLayout>
     </LinearLayout>

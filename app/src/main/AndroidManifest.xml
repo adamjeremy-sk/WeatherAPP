@@ -71,7 +71,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info_2x2" />
+                android:resource="@xml/widget_info_2x1" />
         </receiver>
 
     </application>
