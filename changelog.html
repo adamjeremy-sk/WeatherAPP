@@ -279,7 +279,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc23">0.6.3VC23 (Latest)</a></li>
+          <li><a href="#vc24">0.6.4VC24 (Latest)</a></li>
+          <li><a href="#vc23">0.6.3VC23</a></li>
           <li><a href="#vc22">0.6.2VC22</a></li>
           <li><a href="#VC21">0.6.1VC21</a></li>
           <li><a href="#vc20">0.6.0VC20</a></li>
@@ -330,11 +331,28 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc24" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.6.4VC24
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 17, 2026</p>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Cache TTL Alignment: Reduced the default weather cache time-to-live from 120 minutes to 60 minutes, synchronizing it perfectly with the WorkManager polling interval and XML update period.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Widget Clipping Fix: Tightened the vertical height budget across all three widget layouts (2x1, 4x1, 4x2) by reducing root padding to 4dp, shrinking margins to 2dp, and capping the 4x2 temperature height at 48dp, eliminating layout clipping on constrained third-party and OEM launchers like Niagara and Xiaomi.</li>
+          <li>Widget Sync Invalidation Trigger: Bridged the cache-write to widget-read disconnect by adding an immediate invalidation trigger in the WeatherRepository. Whenever the main app successfully writes fresh data to the persistent cache, all active widget instances are now enumerated, synchronously rebuilt, and forced to redraw instantly, permanently eliminating the stale "--" temperature fallback state.</li>
+        </ul>
+      </section>
+
       <section id="vc23" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.3VC23
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 16, 2026</p>
         <h3>Changed</h3>
@@ -398,195 +416,4 @@
         <ul class="change-list fixed">
           <li>Highlighting Parity: Fixed the "Today" cell highlighting in the Lunar Calendar to use solid, opaque colors, perfectly matching the visual rendering of the 7-day and hourly forecasts.</li>
           <li>Fixed Syzygy badge contrast for universal theme visibility.</li>
-          <li>Mathematical Verification: Audited and confirmed the Blood Moon (Total Lunar Eclipse) calculation logic strictly adheres to Jean Meeus Chapter 55 standards (<code>umbralMagnitude &gt;= 1.0</code>).</li>
-        </ul>
-      </section>
-
-      <section id="vc20" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.6.0VC20
-        </h2>
-        <p class="release-date">Released October 13, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>Published the complete application source code under the GNU GPLv3 license, ensuring long-term transparency and privacy guarantees.</li>
-          <li>Added a "Cached Data" inspector in settings to view all locally stored weather files and clear the cache with one tap.</li>
-          <li>Tapping the main weather hero card now displays a popup showing the exact time the forecast was cached and the active model source.</li>
-          <li>Added an in-app Diagnostic Logs screen and internal event logger for advanced troubleshooting and support.</li>
-          <li>Added a one-tap "Delete local app data" control in settings for a complete reset of app preferences.</li>
-        </ul>
-        <h3>Changed</h3>
-        <ul class="change-list changed">
-          <li>Completely overhauled the solar and lunar calculation engines (17-module remediation). Integrated official Espenak/Meeus Delta T polynomials and Meeus Chapter 49 quarter-phase corrections for almanac-grade accuracy.</li>
-          <li>Upgraded topocentric math and eradicated negative-epoch bugs, ensuring flawless calculations at the poles and for dates prior to 1970.</li>
-          <li>Rebuilt the solar timeline engine to dynamically handle polar latitudes (Midnight Sun and Polar Night) without UI placeholders.</li>
-          <li>Expanded the automated test suite to 140 tests to guarantee mathematical rigor and long-term numerical stability.</li>
-          <li>Unified all in-app popups and dialogs with 16dp rounded corners and full BoutiqueThemeEngine color integration.</li>
-          <li>Reorganized the System settings menu alphabetically and moved "Menu Organization" to the top level for easier access.</li>
-          <li>minSdk changed; 32 -> 33.</li>
-          <li>Renamed the mislabeled System screen cell and settings header from "7-Day Forecast Placement" to "Location Tabs"; the genuine 7-day placement control remains exclusively in Menu Organization.</li>
-          <li>Removed the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.</li>
-          <li>7-day forecast now displays wind direction alongside wind speed via the shared UnitUtils formatter ("X km/h D" / "X mph D" in both unit systems).</li>
-          <li>Location search dialog text now bound programmatically to BoutiqueThemeEngine palette tokens, restoring legibility across all dark themes.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Corrected atmospheric refraction physics and integrated exact geometric horizon dip for high-altitude sunrise/sunset times, eliminating multi-minute errors.</li>
-          <li>Fixed the Alert Log to correctly retain and display test alerts and historical CAP entries without background pruning.</li>
-          <li>Fixed full-screen dialog layouts to properly respect the system status bar area.</li>
-        </ul>
-      </section>
-
-      <section id="vc18" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.5.2VC18
-        </h2>
-        <p class="release-date">Released October 8, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>Comprehensive localization infrastructure and externalized all user-facing strings to prepare for multi-language support.</li>
-          <li>In-app User Manual accessible from the main navigation drawer and Info screen.</li>
-        </ul>
-        <h3>Changed</h3>
-        <ul class="change-list changed">
-          <li>R8 code shrinking, obfuscation, and resource optimization enabled for release builds to improve security and performance.</li>
-        </ul>
-      </section>
-
-      <section id="vc17" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.5.1VC17
-        </h2>
-        <p class="release-date">Released October 8, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>Option to move the 7-day forecast into the drop-down menu.</li>
-          <li>Toggle to choose whether the 7-day forecast appears in the menu or inline below Current Weather and Hourly Forecast.</li>
-          <li>Menu Organization screen for reordering drop-down menu pages by dragging.</li>
-          <li>Ability to set the default page shown on launch.</li>
-          <li>Ability to enable or disable individual pages in the drop-down menu.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Current Weather title now displays correctly on launch.</li>
-          <li>Fixed when the 7-day forecast is displayed.</li>
-          <li>Corrected the True Dark Sky window icons.</li>
-          <li>Night Visibility Forecast now highlights the current stage of the night.</li>
-        </ul>
-      </section>
-
-      <section id="vc16" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.5.0VC16
-        </h2>
-        <p class="release-date">Released October 7, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>True Dark Sky, Night Visibility, and Solunar Activity forecasts.</li>
-        </ul>
-      </section>
-
-      <section id="vc15" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.4.8VC15
-        </h2>
-        <p class="release-date">Released October 7, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>Alert log history.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Cleaned and hardened the compilation test suite.</li>
-        </ul>
-      </section>
-
-      <section id="vc14" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.4.7VC14
-        </h2>
-        <p class="release-date">Released October 6, 2026</p>
-        <h3>Added</h3>
-        <ul class="change-list added">
-          <li>"Feels like" temperature.</li>
-          <li>Long-press on a location tab to open the location chooser.</li>
-        </ul>
-        <h3>Changed</h3>
-        <ul class="change-list changed">
-          <li>Initial startup no longer requests a location full-screen.</li>
-          <li>Menu layout refreshed.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Text alignment in main page cells.</li>
-          <li>Back button now returns to the main weather view.</li>
-          <li>Repeated notification permission prompts on every update.</li>
-          <li>Alignment in the 7-day forecast.</li>
-        </ul>
-      </section>
-
-      <section id="vc13" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.4.6VC13
-        </h2>
-        <p class="release-date">Released October 3, 2026</p>
-        <h3>Changed</h3>
-        <ul class="change-list changed">
-          <li>Audited the legacy CAP notification system.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Fixed in-app CAP notifications.</li>
-          <li>System CAP notifications are now preserved.</li>
-          <li>Fixed the About, Privacy Policy, Roadmap, and Support links.</li>
-        </ul>
-      </section>
-
-      <section id="vc12" class="card">
-        <h2>
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-          0.4.5VC12
-        </h2>
-        <p class="release-date">Released October 1, 2026</p>
-        <h3>Changed</h3>
-        <ul class="change-list changed">
-          <li>Natural light cell highlighting changed to show all current states.</li>
-        </ul>
-        <h3>Fixed &amp; Improved</h3>
-        <ul class="change-list fixed">
-          <li>Fixed natural light time bands.</li>
-          <li>Fixed opt-in notifications and weather alerts.</li>
-        </ul>
-      </section>
-    </main>
-  </div>
-
-  <footer>
-    WeatherAPP Libre • Changelog &amp; Release Notes
-  </footer>
-
-<!-- Default Statcounter code for WeatherAPP Libre
-https://www.weatherapplibre.ca -->
-<script type="text/javascript">
-var sc_project=13358478; 
-var sc_invisible=0; 
-var sc_security="2de86961"; 
-var scJsHost = "https://";
-document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+
-"statcounter.com/counter/counter.js'></"+"script>");
-</script>
-<noscript><div class="statcounter"><a title="Web Analytics Made Easy -
-Statcounter" href="https://statcounter.com/" target="_blank"><img
-class="statcounter" src="https://c.statcounter.com/13358478/0/2de86961/0/"
-alt="Web Analytics Made Easy - Statcounter"
-referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
-</body>
-</html>
+          <li>Mathematical Verification: Audited and confirmed the Blood Moon (Total Lunar Eclipse) calculation logic strictly adheres

@@ -1,4 +1,12 @@
 ---------------
+Changelog 0.6.4VC24 - 2026/10/17
+---------------
+* Widget Clipping Fix: Tightened the vertical height budget across all three widget layouts (2x1, 4x1, 4x2) by reducing root padding to 4dp, shrinking margins to 2dp, and capping the 4x2 temperature height at 48dp, eliminating layout clipping on constrained third-party and OEM launchers like Niagara and Xiaomi.
+* Cache TTL Alignment: Reduced the default weather cache time-to-live from 120 minutes to 60 minutes, synchronizing it perfectly with the WorkManager polling interval and XML update period.
+* Widget Sync Invalidation Trigger: Bridged the cache-write to widget-read disconnect by adding an immediate invalidation trigger in the WeatherRepository. Whenever the main app successfully writes fresh data to the persistent cache, all active widget instances are now enumerated, synchronously rebuilt, and forced to redraw instantly, permanently eliminating the stale "--" temperature fallback state.
+
+
+---------------
 Changelog 0.6.3VC23 - 2026/10/16
 ---------------
 * Theme Engine Modularization: Extracted BoutiqueThemeEngine and ColorPalette into a standalone, portable Android Library module (theme-engine) for reuse across projects. The module exposes a single public surface via ThemeMode constants and getPalette(), with zero coupling to host-app business logic. Legacy Fire Engine installs continue to self-heal to the Dark theme via the host app's migration resolver.

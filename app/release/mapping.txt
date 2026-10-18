@@ -3,8 +3,8 @@
 # min_api: 33
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: ecf3ee526be6608cb6ed7031c48c5b04d8ce353e3bb8ca36038320ea23971bef
-# pg_map_hash: SHA-256 ecf3ee526be6608cb6ed7031c48c5b04d8ce353e3bb8ca36038320ea23971bef
+# pg_map_id: 0969bd9ecebebbaa5141c5b8ba3fce18adcd3c9d3560c902ad63ffa68191cb10
+# pg_map_hash: SHA-256 0969bd9ecebebbaa5141c5b8ba3fce18adcd3c9d3560c902ad63ffa68191cb10
 _COROUTINE.ArtificialStackFrames -> R8$$REMOVED$$CLASS$$0:
 # {"id":"sourceFile","fileName":"CoroutineDebugging.kt"}
 _COROUTINE.ArtificialStackFramesUnsafe -> c7:
@@ -58084,49 +58084,49 @@ androidx.lifecycle.LifecycleCoroutineScopeImpl$register$1 -> oy:
     23:32:java.lang.Object invoke(java.lang.Object,java.lang.Object):0 -> invoke
     11:18:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> invokeSuspend
     11:18:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):0 -> invokeSuspend
-    19:21:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):283:283 -> invokeSuspend
-    22:39:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):284:284 -> invokeSuspend
-    40:53:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):287:287 -> invokeSuspend
-    54:70:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):288:288 -> invokeSuspend
-    71:79:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):290:290 -> invokeSuspend
+    19:21:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):284:284 -> invokeSuspend
+    22:39:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):285:285 -> invokeSuspend
+    40:53:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):288:288 -> invokeSuspend
+    54:70:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):289:289 -> invokeSuspend
+    71:79:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):291:291 -> invokeSuspend
     80:84:okhttp3.Request$Builder okhttp3.Request$Builder.get():236:236 -> invokeSuspend
-    80:84:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):290 -> invokeSuspend
-    85:88:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):290:290 -> invokeSuspend
+    80:84:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):291 -> invokeSuspend
+    85:88:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):291:291 -> invokeSuspend
     89:92:okhttp3.OkHttpClient com.weatherapp.libre.WeatherRepository.access$getClient$p(com.weatherapp.libre.WeatherRepository):26:26 -> invokeSuspend
-    89:92:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):292 -> invokeSuspend
+    89:92:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293 -> invokeSuspend
     93:97:okhttp3.Call okhttp3.OkHttpClient.newCall(okhttp3.Request):268:268 -> invokeSuspend
-    93:97:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):292 -> invokeSuspend
-    98:101:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):292:292 -> invokeSuspend
-    102:107:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293:293 -> invokeSuspend
-    108:109:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):294:294 -> invokeSuspend
+    93:97:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293 -> invokeSuspend
+    98:101:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293:293 -> invokeSuspend
+    102:107:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):294:294 -> invokeSuspend
+    108:109:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):295:295 -> invokeSuspend
     110:111:int okhttp3.Response.code():59:59 -> invokeSuspend
-    110:111:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):294 -> invokeSuspend
-    112:136:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):294:294 -> invokeSuspend
+    110:111:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):295 -> invokeSuspend
+    112:136:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):295:295 -> invokeSuspend
     137:140:okhttp3.ResponseBody okhttp3.Response.body():78:78 -> invokeSuspend
-    137:140:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):296 -> invokeSuspend
-    141:144:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):296:296 -> invokeSuspend
+    137:140:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):297 -> invokeSuspend
+    141:144:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):297:297 -> invokeSuspend
     145:148:com.google.gson.Gson com.weatherapp.libre.WeatherRepository.access$getGson$p(com.weatherapp.libre.WeatherRepository):26:26 -> invokeSuspend
-    145:148:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):299 -> invokeSuspend
-    149:156:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):299:299 -> invokeSuspend
-    157:162:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):300:300 -> invokeSuspend
-    163:171:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):516:516 -> invokeSuspend
-    172:185:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):517:517 -> invokeSuspend
-    186:187:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):518:518 -> invokeSuspend
-    188:189:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):301:301 -> invokeSuspend
-    190:193:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):302:302 -> invokeSuspend
-    194:197:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):303:303 -> invokeSuspend
-    198:201:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):304:304 -> invokeSuspend
-    202:205:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):305:305 -> invokeSuspend
-    206:209:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):306:306 -> invokeSuspend
-    210:213:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):307:307 -> invokeSuspend
-    214:229:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):308:308 -> invokeSuspend
-    230:232:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):301:301 -> invokeSuspend
-    233:238:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):518:518 -> invokeSuspend
-    239:249:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):297:297 -> invokeSuspend
+    145:148:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):300 -> invokeSuspend
+    149:156:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):300:300 -> invokeSuspend
+    157:162:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):301:301 -> invokeSuspend
+    163:171:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):517:517 -> invokeSuspend
+    172:185:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):518:518 -> invokeSuspend
+    186:187:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):519:519 -> invokeSuspend
+    188:189:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):302:302 -> invokeSuspend
+    190:193:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):303:303 -> invokeSuspend
+    194:197:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):304:304 -> invokeSuspend
+    198:201:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):305:305 -> invokeSuspend
+    202:205:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):306:306 -> invokeSuspend
+    206:209:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):307:307 -> invokeSuspend
+    210:213:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):308:308 -> invokeSuspend
+    214:229:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):309:309 -> invokeSuspend
+    230:232:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):302:302 -> invokeSuspend
+    233:238:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):519:519 -> invokeSuspend
+    239:249:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):298:298 -> invokeSuspend
     250:253:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    250:253:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):292 -> invokeSuspend
-    254:260:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):292:292 -> invokeSuspend
-    261:269:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):315:315 -> invokeSuspend
+    250:253:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293 -> invokeSuspend
+    254:260:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):293:293 -> invokeSuspend
+    261:269:java.lang.Object com.weatherapp.libre.WeatherRepository$searchLocations$2.invokeSuspend(java.lang.Object):316:316 -> invokeSuspend
     270:271:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> invokeSuspend
     270:271:java.lang.Object invokeSuspend(java.lang.Object):0 -> invokeSuspend
     272:278:java.lang.Object invokeSuspend(java.lang.Object):393:393 -> invokeSuspend
@@ -73742,11 +73742,11 @@ androidx.room.InvalidationTracker$ObservedTableTracker -> zv:
     728:730:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():846:846 -> e
     731:742:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():848:848 -> e
     743:762:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():850:850 -> e
-    763:774:kotlin.Pair kotlin.TuplesKt.to(java.lang.Object,java.lang.Object):43:43 -> e
-    763:774:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():850 -> e
-    775:792:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():851:851 -> e
-    793:802:kotlin.Pair kotlin.TuplesKt.to(java.lang.Object,java.lang.Object):43:43 -> e
-    793:802:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():851 -> e
+    763:772:kotlin.Pair kotlin.TuplesKt.to(java.lang.Object,java.lang.Object):43:43 -> e
+    763:772:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():850 -> e
+    773:790:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():851:851 -> e
+    791:802:kotlin.Pair kotlin.TuplesKt.to(java.lang.Object,java.lang.Object):43:43 -> e
+    791:802:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():851 -> e
     803:820:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():852:852 -> e
     821:832:kotlin.Pair kotlin.TuplesKt.to(java.lang.Object,java.lang.Object):43:43 -> e
     821:832:void com.weatherapp.libre.SettingsDialogManager.showCacheSettingsScreen():852 -> e
@@ -77573,15 +77573,15 @@ androidx.startup.AppInitializer -> c6:
     27:28:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> E
     27:28:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):0 -> E
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/String;Lig;)Ljava/lang/Object;"}
-    29:49:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283:283 -> E
+    29:49:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284:284 -> E
     50:51:kotlinx.coroutines.CoroutineDispatcher kotlinx.coroutines.Dispatchers.getIO():65:65 -> E
-    50:51:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283 -> E
-    52:58:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283:283 -> E
+    50:51:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284 -> E
+    52:58:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284:284 -> E
     59:65:java.lang.Object kotlinx.coroutines.BuildersKt.withContext(kotlin.coroutines.CoroutineContext,kotlin.jvm.functions.Function2,kotlin.coroutines.Continuation):1:1 -> E
-    59:65:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283 -> E
-    66:67:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283:283 -> E
+    59:65:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284 -> E
+    66:67:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284:284 -> E
     68:70:java.lang.Object kotlin.Result.unbox-impl():0:0 -> E
-    68:70:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):283 -> E
+    68:70:java.lang.Object com.weatherapp.libre.WeatherRepository.searchLocations-gIAlu-s(java.lang.String,kotlin.coroutines.Continuation):284 -> E
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     1:2:int androidx.constraintlayout.core.widgets.ConstraintWidget.getMinWidth():1154:1154 -> F
     1:2:void androidx.constraintlayout.core.widgets.analyzer.BasicMeasure.solveLinearSystem(androidx.constraintlayout.core.widgets.ConstraintWidgetContainer,java.lang.String,int,int,int):148 -> F
@@ -77722,97 +77722,97 @@ androidx.startup.AppInitializer -> c6:
     76:81:void androidx.recyclerview.widget.ChildHelper.attachViewToParent(android.view.View,int,android.view.ViewGroup$LayoutParams,boolean):239 -> d
     82:85:void androidx.recyclerview.widget.RecyclerView$5.attachViewToParent(android.view.View,int,android.view.ViewGroup$LayoutParams):927:927 -> d
     82:85:void androidx.recyclerview.widget.ChildHelper.attachViewToParent(android.view.View,int,android.view.ViewGroup$LayoutParams,boolean):239 -> d
-    1:16:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):320:320 -> e
+    1:16:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):321:321 -> e
       # {"id":"com.android.tools.r8.residualsignature","signature":"(DDDLjava/time/LocalDate;Ljava/time/ZoneId;)Lpi0;"}
-    17:22:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):321:321 -> e
+    17:22:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):322:322 -> e
     23:27:com.weatherapp.libre.solar.SolarEvent com.weatherapp.libre.solar.SolarLightingResult.getSunrise():37:37 -> e
-    23:27:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):323 -> e
+    23:27:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):324 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     28:33:java.time.Instant com.weatherapp.libre.solar.SolarEvent.getInstantUtc():21:21 -> e
-    28:33:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):323 -> e
+    28:33:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):324 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     34:39:java.time.Instant com.weatherapp.libre.solar.SolarEvent.getInstantUtc():21:21 -> e
-    34:39:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):324 -> e
+    34:39:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):325 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     40:42:double com.weatherapp.libre.solar.SolarEvent.getAzimuthDegrees():22:22 -> e
-    40:42:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):325 -> e
+    40:42:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):326 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    43:50:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):325:325 -> e
+    43:50:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):326:326 -> e
     51:53:double com.weatherapp.libre.solar.SolarEvent.getAzimuthDegrees():22:22 -> e
-    51:53:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):326 -> e
+    51:53:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):327 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    54:63:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):326:326 -> e
-    64:82:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):329:329 -> e
-    83:84:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332:332 -> e
+    54:63:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):327:327 -> e
+    64:82:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):330:330 -> e
+    83:84:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333:333 -> e
     85:88:com.weatherapp.libre.solar.SolarPhase com.weatherapp.libre.solar.SolarLightingResult.getMorningGoldenHour():39:39 -> e
-    85:88:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):337 -> e
+    85:88:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):338 -> e
     89:94:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getStartInstantUtc():27:27 -> e
-    89:94:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):337 -> e
+    89:94:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):338 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     95:98:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getEndInstantUtc():28:28 -> e
-    95:98:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):338 -> e
+    95:98:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):339 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     99:102:com.weatherapp.libre.solar.SolarPhase com.weatherapp.libre.solar.SolarLightingResult.getEveningGoldenHour():40:40 -> e
-    99:102:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):339 -> e
+    99:102:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):340 -> e
     103:108:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getStartInstantUtc():27:27 -> e
-    103:108:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):339 -> e
+    103:108:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):340 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     109:112:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getEndInstantUtc():28:28 -> e
-    109:112:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):340 -> e
+    109:112:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):341 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     113:116:com.weatherapp.libre.solar.SolarPhase com.weatherapp.libre.solar.SolarLightingResult.getMorningBlueHour():41:41 -> e
-    113:116:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):341 -> e
+    113:116:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):342 -> e
     117:122:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getStartInstantUtc():27:27 -> e
-    117:122:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):341 -> e
+    117:122:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):342 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     123:126:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getEndInstantUtc():28:28 -> e
-    123:126:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):342 -> e
+    123:126:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):343 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     127:130:com.weatherapp.libre.solar.SolarPhase com.weatherapp.libre.solar.SolarLightingResult.getEveningBlueHour():42:42 -> e
-    127:130:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):343 -> e
+    127:130:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):344 -> e
     131:136:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getStartInstantUtc():27:27 -> e
-    131:136:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):343 -> e
+    131:136:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):344 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     137:138:java.time.Instant com.weatherapp.libre.solar.SolarPhase.getEndInstantUtc():28:28 -> e
-    137:138:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):344 -> e
+    137:138:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):345 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     139:142:com.weatherapp.libre.solar.SolarEvent com.weatherapp.libre.solar.SolarLightingResult.getSolarNoon():36:36 -> e
-    139:142:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):345 -> e
+    139:142:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):346 -> e
     143:145:double com.weatherapp.libre.solar.SolarEvent.getApparentAltitudeDegrees():23:23 -> e
-    143:145:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):345 -> e
+    143:145:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):346 -> e
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    146:149:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):345:345 -> e
+    146:149:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):346:346 -> e
     150:152:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):207:207 -> e
-    150:152:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    150:152:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     153:154:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):208:208 -> e
-    153:154:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    153:154:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     155:156:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):209:209 -> e
-    155:156:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    155:156:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     157:158:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):210:210 -> e
-    157:158:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    157:158:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     159:160:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):211:211 -> e
-    159:160:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    159:160:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     161:162:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):212:212 -> e
-    161:162:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    161:162:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     163:164:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):213:213 -> e
-    163:164:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    163:164:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     165:166:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):214:214 -> e
-    165:166:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    165:166:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     167:168:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):215:215 -> e
-    167:168:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    167:168:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     169:170:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):216:216 -> e
-    169:170:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    169:170:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     171:174:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):217:217 -> e
-    171:174:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    171:174:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     175:176:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):218:218 -> e
-    175:176:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    175:176:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     177:178:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):219:219 -> e
-    177:178:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    177:178:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     179:180:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):220:220 -> e
-    179:180:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
+    179:180:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
     181:182:void com.weatherapp.libre.SolarDaySummary.<init>(java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Integer,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.time.Instant,java.lang.Integer,java.lang.Long):221:221 -> e
-    181:182:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332 -> e
-    183:186:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):332:332 -> e
+    181:182:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333 -> e
+    183:186:com.weatherapp.libre.SolarDaySummary com.weatherapp.libre.WeatherRepository.calculateSolarSummary(double,double,double,java.time.LocalDate,java.time.ZoneId):333:333 -> e
     1:4:void androidx.recyclerview.widget.ChildHelper.detachViewFromParent(int):282:282 -> f
     5:11:void androidx.recyclerview.widget.ChildHelper.detachViewFromParent(int):283:283 -> f
     12:15:void androidx.recyclerview.widget.ChildHelper.detachViewFromParent(int):284:284 -> f
@@ -77884,43 +77884,43 @@ androidx.startup.AppInitializer -> c6:
     140:142:void androidx.tracing.Trace.endSection():94 -> h
     140:142:java.lang.Object doInitialize(java.lang.Class,java.util.Set):194 -> h
     143:143:java.lang.Object doInitialize(java.lang.Class,java.util.Set):195:195 -> h
-    1:6:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):198:198 -> i
-    7:10:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):199:199 -> i
-    11:14:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):200:200 -> i
-    15:55:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):209:209 -> i
-    56:90:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):213:213 -> i
-    91:99:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):215:215 -> i
+    1:6:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):199:199 -> i
+    7:10:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):200:200 -> i
+    11:14:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):201:201 -> i
+    15:55:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):210:210 -> i
+    56:90:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):214:214 -> i
+    91:99:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216:216 -> i
     100:105:okhttp3.Request$Builder okhttp3.Request$Builder.get():236:236 -> i
-    100:105:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):215 -> i
-    106:109:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):215:215 -> i
-    110:113:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216:216 -> i
+    100:105:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216 -> i
+    106:109:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216:216 -> i
+    110:113:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217:217 -> i
     114:118:okhttp3.Call okhttp3.OkHttpClient.newCall(okhttp3.Request):268:268 -> i
-    114:118:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216 -> i
-    119:122:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216:216 -> i
-    123:128:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217:217 -> i
+    114:118:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217 -> i
+    119:122:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217:217 -> i
+    123:128:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):218:218 -> i
     129:134:int okhttp3.Response.code():59:59 -> i
-    129:134:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):218 -> i
+    129:134:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):219 -> i
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    135:138:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):218:218 -> i
-    139:143:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):219:219 -> i
-    144:152:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):220:220 -> i
+    135:138:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):219:219 -> i
+    139:143:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):220:220 -> i
+    144:152:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):221:221 -> i
     153:159:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> i
-    153:159:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):220 -> i
-    160:180:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):222:222 -> i
+    153:159:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):221 -> i
+    160:180:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):223:223 -> i
     181:185:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> i
-    181:185:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):222 -> i
+    181:185:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):223 -> i
     186:189:okhttp3.ResponseBody okhttp3.Response.body():78:78 -> i
-    186:189:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):224 -> i
+    186:189:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):225 -> i
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    190:193:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):224:224 -> i
-    194:205:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):227:227 -> i
+    190:193:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):225:225 -> i
+    194:205:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):228:228 -> i
     206:209:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> i
-    206:209:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216 -> i
-    210:220:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):225:225 -> i
+    206:209:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217 -> i
+    210:220:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):226:226 -> i
     221:224:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> i
-    221:224:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):225 -> i
-    225:233:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):216:216 -> i
-    234:238:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):231:231 -> i
+    221:224:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):226 -> i
+    225:233:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):217:217 -> i
+    234:238:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchForecastData-0E7RQCE(double,double,com.weatherapp.libre.ForecastModel):232:232 -> i
     1:12:androidx.fragment.app.Fragment androidx.fragment.app.FragmentStore.findActiveFragment(java.lang.String):314:314 -> j
       # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/String;)Lzp;"}
     13:17:androidx.fragment.app.Fragment androidx.fragment.app.FragmentStateManager.getFragment():149:149 -> j
@@ -143360,58 +143360,58 @@ com.weatherapp.libre.WeatherDisplayManager$loadWeather$1 -> ds0:
     143:144:java.lang.Object invokeSuspend(java.lang.Object):137 -> invokeSuspend
     145:148:java.lang.Object invokeSuspend(java.lang.Object):137:137 -> invokeSuspend
     149:151:java.lang.Object invokeSuspend(java.lang.Object):134:134 -> invokeSuspend
-    152:164:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):358:358 -> invokeSuspend
+    152:164:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):359:359 -> invokeSuspend
     152:164:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    165:171:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):359:359 -> invokeSuspend
+    165:171:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):360:360 -> invokeSuspend
     165:171:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    172:178:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):360:360 -> invokeSuspend
+    172:178:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):361:361 -> invokeSuspend
     172:178:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    179:182:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):362:362 -> invokeSuspend
+    179:182:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):363:363 -> invokeSuspend
     179:182:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    183:204:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):364:364 -> invokeSuspend
+    183:204:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):365:365 -> invokeSuspend
     183:204:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    205:211:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):365:365 -> invokeSuspend
+    205:211:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):366:366 -> invokeSuspend
     205:211:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    212:216:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):367:367 -> invokeSuspend
+    212:216:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):368:368 -> invokeSuspend
     212:216:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    217:222:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):370:370 -> invokeSuspend
+    217:222:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):371:371 -> invokeSuspend
     217:222:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    223:233:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):372:372 -> invokeSuspend
+    223:233:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):373:373 -> invokeSuspend
     223:233:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    234:238:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):374:374 -> invokeSuspend
+    234:238:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):375:375 -> invokeSuspend
     234:238:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    239:272:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):377:377 -> invokeSuspend
+    239:272:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):378:378 -> invokeSuspend
     239:272:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    273:306:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):378:378 -> invokeSuspend
+    273:306:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):379:379 -> invokeSuspend
     273:306:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    307:340:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):379:379 -> invokeSuspend
+    307:340:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):380:380 -> invokeSuspend
     307:340:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    341:374:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):380:380 -> invokeSuspend
+    341:374:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):381:381 -> invokeSuspend
     341:374:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    375:408:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):381:381 -> invokeSuspend
+    375:408:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):382:382 -> invokeSuspend
     375:408:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    409:435:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):382:382 -> invokeSuspend
+    409:435:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):383:383 -> invokeSuspend
     409:435:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    436:464:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):383:383 -> invokeSuspend
+    436:464:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):384:384 -> invokeSuspend
     436:464:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    465:482:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):385:385 -> invokeSuspend
+    465:482:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):386:386 -> invokeSuspend
     465:482:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    483:502:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):386:386 -> invokeSuspend
+    483:502:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):387:387 -> invokeSuspend
     483:502:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    503:520:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):387:387 -> invokeSuspend
+    503:520:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):388:388 -> invokeSuspend
     503:520:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    521:529:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):388:388 -> invokeSuspend
+    521:529:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):389:389 -> invokeSuspend
     521:529:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    530:556:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):390:390 -> invokeSuspend
+    530:556:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):391:391 -> invokeSuspend
     530:556:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    557:560:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):392:392 -> invokeSuspend
+    557:560:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):393:393 -> invokeSuspend
     557:560:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    561:562:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):395:395 -> invokeSuspend
+    561:562:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):396:396 -> invokeSuspend
     561:562:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
-    563:579:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):398:398 -> invokeSuspend
+    563:579:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):399:399 -> invokeSuspend
     563:579:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
     580:588:void com.weatherapp.libre.DayForecast.<init>(java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,double,double,double,java.lang.Double,java.lang.Double,double,int,double,int,java.lang.Integer,com.weatherapp.libre.SolarDaySummary,boolean,int,kotlin.jvm.internal.DefaultConstructorMarker):224:224 -> invokeSuspend
-    580:588:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):395 -> invokeSuspend
+    580:588:com.weatherapp.libre.DayForecast com.weatherapp.libre.WeatherRepository.processTodayForecast(com.weatherapp.libre.WeatherResponse,double,double):396 -> invokeSuspend
     580:588:java.lang.Object invokeSuspend(java.lang.Object):134 -> invokeSuspend
     589:590:com.weatherapp.libre.LocationItem com.weatherapp.libre.WeatherDisplayManager.getCurrentLocation():36:36 -> invokeSuspend
     589:590:java.lang.Object invokeSuspend(java.lang.Object):142 -> invokeSuspend
@@ -143419,93 +143419,93 @@ com.weatherapp.libre.WeatherDisplayManager$loadWeather$1 -> ds0:
     595:596:com.weatherapp.libre.LocationItem com.weatherapp.libre.WeatherDisplayManager.getCurrentLocation():36:36 -> invokeSuspend
     595:596:java.lang.Object invokeSuspend(java.lang.Object):143 -> invokeSuspend
     597:600:java.lang.Object invokeSuspend(java.lang.Object):143:143 -> invokeSuspend
-    601:617:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):425:425 -> invokeSuspend
+    601:617:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):426:426 -> invokeSuspend
     601:617:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    618:624:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):426:426 -> invokeSuspend
+    618:624:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):427:427 -> invokeSuspend
     618:624:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    625:634:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):427:427 -> invokeSuspend
+    625:634:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):428:428 -> invokeSuspend
     625:634:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    635:644:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):428:428 -> invokeSuspend
+    635:644:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):429:429 -> invokeSuspend
     635:644:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    645:651:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):429:429 -> invokeSuspend
+    645:651:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):430:430 -> invokeSuspend
     645:651:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    652:661:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):430:430 -> invokeSuspend
+    652:661:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):431:431 -> invokeSuspend
     652:661:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    662:671:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):431:431 -> invokeSuspend
+    662:671:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):432:432 -> invokeSuspend
     662:671:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    672:682:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):432:432 -> invokeSuspend
+    672:682:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):433:433 -> invokeSuspend
     672:682:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    683:690:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):433:433 -> invokeSuspend
+    683:690:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):434:434 -> invokeSuspend
     683:690:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    691:694:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):435:435 -> invokeSuspend
+    691:694:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):436:436 -> invokeSuspend
     691:694:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    695:716:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):438:438 -> invokeSuspend
+    695:716:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):439:439 -> invokeSuspend
     695:716:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    717:723:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):439:439 -> invokeSuspend
+    717:723:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):440:440 -> invokeSuspend
     717:723:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    724:728:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):441:441 -> invokeSuspend
+    724:728:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):442:442 -> invokeSuspend
     724:728:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    729:732:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):444:444 -> invokeSuspend
+    729:732:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):445:445 -> invokeSuspend
     729:732:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    733:744:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):445:445 -> invokeSuspend
+    733:744:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):446:446 -> invokeSuspend
     733:744:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    745:752:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):446:446 -> invokeSuspend
+    745:752:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):447:447 -> invokeSuspend
     745:752:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    753:759:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):448:448 -> invokeSuspend
+    753:759:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):449:449 -> invokeSuspend
     753:759:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    760:770:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):449:449 -> invokeSuspend
+    760:770:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):450:450 -> invokeSuspend
     760:770:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    771:779:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):450:450 -> invokeSuspend
+    771:779:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):451:451 -> invokeSuspend
     771:779:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    780:789:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):453:453 -> invokeSuspend
+    780:789:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):454:454 -> invokeSuspend
     780:789:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    790:805:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):455:455 -> invokeSuspend
+    790:805:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):456:456 -> invokeSuspend
     790:805:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    806:810:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):457:457 -> invokeSuspend
+    806:810:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):458:458 -> invokeSuspend
     806:810:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    811:824:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):460:460 -> invokeSuspend
+    811:824:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):461:461 -> invokeSuspend
     811:824:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    825:828:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):464:464 -> invokeSuspend
+    825:828:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):465:465 -> invokeSuspend
     825:828:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    829:832:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):465:465 -> invokeSuspend
+    829:832:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):466:466 -> invokeSuspend
     829:832:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    833:849:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):467:467 -> invokeSuspend
+    833:849:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):468:468 -> invokeSuspend
     833:849:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    850:866:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):468:468 -> invokeSuspend
+    850:866:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):469:469 -> invokeSuspend
     850:866:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    867:883:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):469:469 -> invokeSuspend
+    867:883:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):470:470 -> invokeSuspend
     867:883:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    884:911:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):471:471 -> invokeSuspend
+    884:911:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):472:472 -> invokeSuspend
     884:911:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    912:943:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):472:472 -> invokeSuspend
+    912:943:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):473:473 -> invokeSuspend
     912:943:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    944:962:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):473:473 -> invokeSuspend
+    944:962:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):474:474 -> invokeSuspend
     944:962:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    963:983:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):474:474 -> invokeSuspend
+    963:983:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):475:475 -> invokeSuspend
     963:983:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    984:1009:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):476:476 -> invokeSuspend
+    984:1009:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):477:477 -> invokeSuspend
     984:1009:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1010:1029:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):477:477 -> invokeSuspend
+    1010:1029:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):478:478 -> invokeSuspend
     1010:1029:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1030:1047:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):478:478 -> invokeSuspend
+    1030:1047:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):479:479 -> invokeSuspend
     1030:1047:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1048:1056:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):479:479 -> invokeSuspend
+    1048:1056:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):480:480 -> invokeSuspend
     1048:1056:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1057:1080:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):481:481 -> invokeSuspend
+    1057:1080:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):482:482 -> invokeSuspend
     1057:1080:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1081:1084:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):483:483 -> invokeSuspend
+    1081:1084:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):484:484 -> invokeSuspend
     1081:1084:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1085:1088:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):486:486 -> invokeSuspend
+    1085:1088:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):487:487 -> invokeSuspend
     1085:1088:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1089:1090:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):489:489 -> invokeSuspend
+    1089:1090:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):490:490 -> invokeSuspend
     1089:1090:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1091:1093:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):491:491 -> invokeSuspend
+    1091:1093:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):492:492 -> invokeSuspend
     1091:1093:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1094:1096:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):492:492 -> invokeSuspend
+    1094:1096:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):493:493 -> invokeSuspend
     1094:1096:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1097:1101:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):489:489 -> invokeSuspend
+    1097:1101:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):490:490 -> invokeSuspend
     1097:1101:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
-    1102:1119:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):488:488 -> invokeSuspend
+    1102:1119:java.util.List com.weatherapp.libre.WeatherRepository.processDailyForecast(com.weatherapp.libre.WeatherResponse,double,double):489:489 -> invokeSuspend
     1102:1119:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
     1120:1121:void com.weatherapp.libre.WeatherDisplayManager.setDailyForecasts(java.util.List):41:41 -> invokeSuspend
     1120:1121:java.lang.Object invokeSuspend(java.lang.Object):140 -> invokeSuspend
@@ -143716,13 +143716,13 @@ com.weatherapp.libre.WeatherRepository$getWeatherForecast$2 -> js0:
     180:181:java.lang.Object invokeSuspend(java.lang.Object):102 -> invokeSuspend
     182:183:void com.weatherapp.libre.CachedWeatherEntry.<init>(com.weatherapp.libre.WeatherResponse,long):23:23 -> invokeSuspend
     182:183:java.lang.Object invokeSuspend(java.lang.Object):102 -> invokeSuspend
-    184:186:java.lang.Object invokeSuspend(java.lang.Object):102:102 -> invokeSuspend
-    187:191:java.lang.Object invokeSuspend(java.lang.Object):103:103 -> invokeSuspend
-    192:218:java.lang.Object invokeSuspend(java.lang.Object):114:114 -> invokeSuspend
-    219:222:java.lang.Object kotlin.Result.unbox-impl():0:0 -> invokeSuspend
-    219:222:java.lang.Object invokeSuspend(java.lang.Object):114 -> invokeSuspend
+    184:189:java.lang.Object invokeSuspend(java.lang.Object):102:102 -> invokeSuspend
+    190:194:java.lang.Object invokeSuspend(java.lang.Object):103:103 -> invokeSuspend
+    195:221:java.lang.Object invokeSuspend(java.lang.Object):114:114 -> invokeSuspend
+    222:225:java.lang.Object kotlin.Result.unbox-impl():0:0 -> invokeSuspend
+    222:225:java.lang.Object invokeSuspend(java.lang.Object):114 -> invokeSuspend
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
-    223:231:java.lang.Object invokeSuspend(java.lang.Object):193:193 -> invokeSuspend
+    226:234:java.lang.Object invokeSuspend(java.lang.Object):194:194 -> invokeSuspend
 com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1 -> is0:
 # {"id":"sourceFile","fileName":"WeatherRepository.kt"}
     java.lang.Object L$2 -> b
@@ -143865,7 +143865,11 @@ com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1 -> is0:
     1127:1136:java.lang.Object invokeSuspend(java.lang.Object):184 -> invokeSuspend
     1137:1139:void com.weatherapp.libre.LocationPreferences.savePersistentCache(java.lang.String,java.lang.String,long):533:533 -> invokeSuspend
     1137:1139:java.lang.Object invokeSuspend(java.lang.Object):184 -> invokeSuspend
-    1140:1144:java.lang.Object invokeSuspend(java.lang.Object):190:190 -> invokeSuspend
+    1140:1141:android.content.Context com.weatherapp.libre.LocationPreferences.getContext():99:99 -> invokeSuspend
+    1140:1141:java.lang.Object invokeSuspend(java.lang.Object):185 -> invokeSuspend
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    1142:1144:java.lang.Object invokeSuspend(java.lang.Object):185:185 -> invokeSuspend
+    1145:1149:java.lang.Object invokeSuspend(java.lang.Object):191:191 -> invokeSuspend
 com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$aqiDeferred$1 -> gs0:
 # {"id":"sourceFile","fileName":"WeatherRepository.kt"}
     byte WeatherRepository$getWeatherForecast$2$1$aqiDeferred$1.$r8$classId -> b
@@ -143887,155 +143891,155 @@ com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$aqiDeferred$1 -> g
     20:21:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> invokeSuspend
     20:21:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):0 -> invokeSuspend
     22:24:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116:116 -> invokeSuspend
-    25:26:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):236:236 -> invokeSuspend
+    25:26:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):237:237 -> invokeSuspend
     25:26:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     25:26:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    27:49:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):239:239 -> invokeSuspend
+    27:49:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):240:240 -> invokeSuspend
     27:49:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     27:49:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    50:57:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):247:247 -> invokeSuspend
+    50:57:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248:248 -> invokeSuspend
     50:57:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     50:57:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     58:60:okhttp3.Request$Builder okhttp3.Request$Builder.get():236:236 -> invokeSuspend
-    58:60:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):247 -> invokeSuspend
+    58:60:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248 -> invokeSuspend
     58:60:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     58:60:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    61:64:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):247:247 -> invokeSuspend
+    61:64:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248:248 -> invokeSuspend
     61:64:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     61:64:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    65:68:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248:248 -> invokeSuspend
+    65:68:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249:249 -> invokeSuspend
     65:68:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     65:68:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     69:73:okhttp3.Call okhttp3.OkHttpClient.newCall(okhttp3.Request):268:268 -> invokeSuspend
-    69:73:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248 -> invokeSuspend
+    69:73:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249 -> invokeSuspend
     69:73:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     69:73:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    74:77:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248:248 -> invokeSuspend
+    74:77:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249:249 -> invokeSuspend
     74:77:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     74:77:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    78:83:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249:249 -> invokeSuspend
+    78:83:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):250:250 -> invokeSuspend
     78:83:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     78:83:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    84:85:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):250:250 -> invokeSuspend
+    84:85:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):251:251 -> invokeSuspend
     84:85:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     84:85:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     86:87:int okhttp3.Response.code():59:59 -> invokeSuspend
-    86:87:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):250 -> invokeSuspend
+    86:87:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):251 -> invokeSuspend
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     86:87:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     86:87:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    88:106:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):250:250 -> invokeSuspend
+    88:106:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):251:251 -> invokeSuspend
     88:106:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     88:106:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     107:112:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    107:112:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):250 -> invokeSuspend
+    107:112:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):251 -> invokeSuspend
     107:112:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     107:112:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     113:116:okhttp3.ResponseBody okhttp3.Response.body():78:78 -> invokeSuspend
-    113:116:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):252 -> invokeSuspend
+    113:116:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):253 -> invokeSuspend
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     113:116:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     113:116:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    117:120:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):252:252 -> invokeSuspend
+    117:120:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):253:253 -> invokeSuspend
     117:120:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     117:120:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    121:132:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):253:253 -> invokeSuspend
+    121:132:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):254:254 -> invokeSuspend
     121:132:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     121:132:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     133:136:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    133:136:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248 -> invokeSuspend
+    133:136:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249 -> invokeSuspend
     133:136:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     133:136:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    137:147:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):252:252 -> invokeSuspend
+    137:147:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):253:253 -> invokeSuspend
     137:147:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     137:147:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     148:151:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    148:151:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):252 -> invokeSuspend
+    148:151:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):253 -> invokeSuspend
     148:151:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     148:151:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    152:158:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):248:248 -> invokeSuspend
+    152:158:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):249:249 -> invokeSuspend
     152:158:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     152:158:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
-    159:162:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):257:257 -> invokeSuspend
+    159:162:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchBestMatchMetrics-gIAlu-s(double,double):258:258 -> invokeSuspend
     159:162:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchBestMatchMetrics-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     159:162:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116 -> invokeSuspend
     163:167:java.lang.Object com.weatherapp.libre.WeatherRepository$getWeatherForecast$2$1$extraDeferred$1.invokeSuspend(java.lang.Object):116:116 -> invokeSuspend
     168:169:java.lang.Object kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsKt.getCOROUTINE_SUSPENDED():57:57 -> invokeSuspend
     168:169:java.lang.Object invokeSuspend(java.lang.Object):0 -> invokeSuspend
     170:172:java.lang.Object invokeSuspend(java.lang.Object):117:117 -> invokeSuspend
-    173:174:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):262:262 -> invokeSuspend
+    173:174:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):263:263 -> invokeSuspend
     173:174:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     173:174:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    175:197:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):264:264 -> invokeSuspend
+    175:197:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):265:265 -> invokeSuspend
     175:197:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     175:197:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    198:205:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):266:266 -> invokeSuspend
+    198:205:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267:267 -> invokeSuspend
     198:205:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     198:205:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     206:208:okhttp3.Request$Builder okhttp3.Request$Builder.get():236:236 -> invokeSuspend
-    206:208:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):266 -> invokeSuspend
+    206:208:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267 -> invokeSuspend
     206:208:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     206:208:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    209:212:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):266:266 -> invokeSuspend
+    209:212:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267:267 -> invokeSuspend
     209:212:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     209:212:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    213:216:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267:267 -> invokeSuspend
+    213:216:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268:268 -> invokeSuspend
     213:216:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     213:216:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     217:221:okhttp3.Call okhttp3.OkHttpClient.newCall(okhttp3.Request):268:268 -> invokeSuspend
-    217:221:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267 -> invokeSuspend
+    217:221:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268 -> invokeSuspend
     217:221:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     217:221:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    222:225:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267:267 -> invokeSuspend
+    222:225:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268:268 -> invokeSuspend
     222:225:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     222:225:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    226:231:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268:268 -> invokeSuspend
+    226:231:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):269:269 -> invokeSuspend
     226:231:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     226:231:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    232:233:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):269:269 -> invokeSuspend
+    232:233:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):270:270 -> invokeSuspend
     232:233:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     232:233:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     234:235:int okhttp3.Response.code():59:59 -> invokeSuspend
-    234:235:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):269 -> invokeSuspend
+    234:235:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):270 -> invokeSuspend
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     234:235:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     234:235:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    236:254:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):269:269 -> invokeSuspend
+    236:254:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):270:270 -> invokeSuspend
     236:254:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     236:254:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     255:260:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    255:260:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):269 -> invokeSuspend
+    255:260:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):270 -> invokeSuspend
     255:260:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     255:260:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     261:264:okhttp3.ResponseBody okhttp3.Response.body():78:78 -> invokeSuspend
-    261:264:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):271 -> invokeSuspend
+    261:264:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):272 -> invokeSuspend
       # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
     261:264:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     261:264:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    265:268:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):271:271 -> invokeSuspend
+    265:268:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):272:272 -> invokeSuspend
     265:268:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     265:268:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    269:280:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):272:272 -> invokeSuspend
+    269:280:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):273:273 -> invokeSuspend
     269:280:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     269:280:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    281:290:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):273:273 -> invokeSuspend
+    281:290:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):274:274 -> invokeSuspend
     281:290:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     281:290:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     291:295:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    291:295:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267 -> invokeSuspend
+    291:295:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268 -> invokeSuspend
     291:295:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     291:295:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    296:306:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):271:271 -> invokeSuspend
+    296:306:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):272:272 -> invokeSuspend
     296:306:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     296:306:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     307:310:void kotlin.io.CloseableKt.closeFinally(java.io.Closeable,java.lang.Throwable):46:46 -> invokeSuspend
-    307:310:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):271 -> invokeSuspend
+    307:310:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):272 -> invokeSuspend
     307:310:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     307:310:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    311:317:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):267:267 -> invokeSuspend
+    311:317:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):268:268 -> invokeSuspend
     311:317:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     311:317:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
-    318:321:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):276:276 -> invokeSuspend
+    318:321:java.lang.Object com.weatherapp.libre.WeatherRepository.fetchAirQualityData-gIAlu-s(double,double):277:277 -> invokeSuspend
     318:321:java.lang.Object com.weatherapp.libre.WeatherRepository.access$fetchAirQualityData-gIAlu-s(com.weatherapp.libre.WeatherRepository,double,double):26 -> invokeSuspend
     318:321:java.lang.Object invokeSuspend(java.lang.Object):117 -> invokeSuspend
     322:326:java.lang.Object invokeSuspend(java.lang.Object):117:117 -> invokeSuspend

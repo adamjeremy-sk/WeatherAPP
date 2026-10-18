@@ -182,6 +182,7 @@ class WeatherRepository {
                     try {
                         val json = gson.toJson(weatherResponse)
                         locationPreferences.savePersistentCache(cacheKey, json, now)
+                        WidgetSyncWorker.notifyWidgetsInvalidated(locationPreferences.context)
                     } catch (e: Exception) {
                         // Persistent cache write exception
                     }

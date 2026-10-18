@@ -496,7 +496,7 @@ class LocationPreferences(val context: Context) {
     }
 
     fun getCacheTtlMinutes(): Int {
-        return prefs.getInt(KEY_CACHE_TTL_MINUTES, 120)
+        return prefs.getInt(KEY_CACHE_TTL_MINUTES, 60)
     }
 
     fun saveCacheTtlMinutes(minutes: Int) {
