@@ -179,6 +179,12 @@
       color: var(--muted);
       text-align: center;
     }
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
 
     /* Media Queries */
     @media (prefers-reduced-motion: reduce) {
@@ -264,7 +270,8 @@
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="changelog.html">Changelog</a></li>
           <li><a href="almanac.html">Lunar Almanac</a></li>
-          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Download on Google Play</a></li>
+          <li><a href="support.html">Support &amp; Bug Reports</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
@@ -356,7 +363,7 @@
         <p>The app features a suite of advanced astronomical calculators that run entirely on your device.</p>
 
         <h3>Natural Light (Golden &amp; Blue Hour)</h3>
-        <p>This page breaks the day into specific solar phases based on the sun's azimuth and elevation. The currently active phase is highlighted with a gold border.</p>
+        <p>This page breaks the day into specific solar phases based on the sun's azimuth and elevation. The currently active phase is highlighted with a gold border. The Blue Hour window is calculated from -8&deg; to -4&deg; to provide an extended window for deep cobalt sky photography.</p>
         <p><strong>Setting Solar Alarms:</strong> Long-press any Natural Light segment (e.g., Golden Hour) to set a customizable alarm for that phase. The default lead time is 10 minutes, which can be adjusted in <strong>Drawer &gt; System &gt; Notifications &gt; Solar Phase Alarm Lead Time</strong>.</p>
         
         <h3>True Dark Sky Window</h3>
@@ -374,13 +381,14 @@
         <h3>Lunar Calendar</h3>
         <p>The Lunar Calendar provides a comprehensive, week-by-week view of lunar phases, rise/set times, and geometric data. Designed for astronomers and photographers, it features a compact inline layout (Sunday through Saturday) with expandable cells for exhaustive daily details.</p>
         <ul>
+          <li><strong>Dual Viewing Scores:</strong> Each day displays a <strong>Stellar</strong> score (favoring dark skies and new moons for deep-space observation) and a <strong>Selenic</strong> score (favoring illuminated moons for lunar observation).</li>
           <li><strong>Special Events Filter &amp; Caching:</strong> Generate a 3-year forward-looking cache to instantly filter and view rare events like Total Lunar Eclipses (Blood Moons), Supermoons, Micromoons, and Syzygies. Special event days are distinctly highlighted and badged.</li>
           <li><strong>Navigation:</strong> Use the on-screen chevrons, tap the date header to open a date picker, or use your device's hardware volume keys (when enabled in settings) to rapidly cycle through weeks with a built-in performance debounce.</li>
           <li><strong>Calendar Integration:</strong> Long-press any day in the Lunar Calendar to instantly create a reminder in your device's native calendar app for major lunar events.</li>
         </ul>
 
         <h3>Lunar Atmospheric Phenomena</h3>
-        <p>WeatherAPP Libre features unique probability heuristics that estimate the likelihood of rare optical events caused by the interaction of moonlight with atmospheric conditions. These probabilities are displayed in the main <strong>Moon Phase &amp; Cycle</strong> popup and within the expanded <strong>7-Day Forecast</strong> cells.</p>
+        <p>WeatherAPP Libre features unique probability heuristics that estimate the likelihood of rare optical events caused by the interaction of moonlight with atmospheric conditions. These probabilities are displayed in the main <strong>Moon Phase &amp; Cycle</strong> popup.</p>
         <ul>
           <li><strong>Lunar Moonbow:</strong> Estimates the chance of a lunar rainbow based on high illumination, low moon altitude, and specific cloud/precipitation alignments.</li>
           <li><strong>Lunar Halo &amp; Corona:</strong> Calculates the probability of ice crystal or water droplet diffraction rings based on moon brightness and high-altitude/thin cloud cover.</li>
@@ -410,7 +418,10 @@
         <p>Access the settings drawer to deeply customize the app's behavior and appearance.</p>
 
         <h3>Themes and Palettes</h3>
-        <p>Choose from 10 handcrafted themes, including light, dark, and specialized "Boutique" palettes (like Fire Engine, Terracotta, and Aurora) that dynamically change the color of every card, icon, and chart in the app.</p>
+        <p>Choose from twelve handcrafted themes, including light, dark, and specialized "Boutique" palettes (like Frutiger Aero, Hardy Heron, Terracotta, and Aurora) that dynamically change the color of every card, icon, and chart in the app.</p>
+
+        <h3>Widget Settings</h3>
+        <p>Navigate to <strong>Drawer &gt; System &gt; Widgets</strong> to access the centralized widget management menu. Here you can apply Boutique Themes to your home screen widgets (or set them to follow the app/system theme) and use the live-preview Opacity Slider to calibrate widget transparency against your wallpaper.</p>
 
         <h3>Behaviour Settings</h3>
         <ul>
@@ -420,7 +431,7 @@
         </ul>
 
         <h3>Cache Management</h3>
-        <p>Under <strong>Settings &gt; Cache</strong>, you can adjust the Time-To-Live (TTL) for weather data. A shorter TTL means more frequent server requests; a longer TTL saves battery and data but requires manual pull-to-refresh for new updates.</p>
+        <p>Under <strong>Settings &gt; Cache</strong>, you can adjust the Time-To-Live (TTL) for weather data. The default TTL is aligned to 60 minutes to synchronize with background polling intervals. A shorter TTL means more frequent server requests; a longer TTL saves battery and data but requires manual pull-to-refresh for new updates.</p>
       </section>
 
       <section id="pro-tips" class="card">
@@ -436,7 +447,7 @@
           <li><strong>Long-Press Lunar Calendar Day:</strong> Instantly creates a native calendar reminder for a major moon phase or eclipse.</li>
           <li><strong>Pull-Down to Refresh:</strong> Swiping down on the main screen forces a cache bypass and fetches fresh data.</li>
           <li><strong>Volume Keys (When Enabled):</strong> Scrub through future and past dates on the Natural Light page, or cycle through weeks on the Lunar Calendar, without touching the screen.</li>
-          <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details and lunar atmospheric probabilities.</li>
+          <li><strong>Tap 7-Day Forecast Lines:</strong> Expand any day in the weekly forecast to see granular daily details.</li>
           <li><strong>Tap Moon Phase &amp; Cycle:</strong> Instantly opens a popup displaying the next month of upcoming lunar phases, events, and atmospheric heuristics.</li>
         </ul>
       </section>
@@ -444,6 +455,7 @@
   </div>
 
   <footer>
+    <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
     WeatherAPP Libre • Official User Manual
   </footer>
 

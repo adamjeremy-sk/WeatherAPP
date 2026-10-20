@@ -236,6 +236,12 @@
       color: var(--muted);
       text-align: center;
     }
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
 
     /* Media Queries */
     @media (prefers-reduced-motion: reduce) {
@@ -316,14 +322,14 @@
           <li style="margin: 8px 0;"><a href="privacypolicy.html">Privacy Policy</a></li>
           <li style="margin: 8px 0;"><a href="changelog.html">Changelog</a></li>
           <li style="margin: 8px 0;"><a href="almanac.html">Lunar Almanac</a></li>
-          <li style="margin: 8px 0;"><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li style="margin: 8px 0;"><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Download on Google Play</a></li>
           <li style="margin: 8px 0;"><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
       
       <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
         <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases I, III, and IV are entirely done. Active development focuses on Phase II (widgets/localization) and Phase V (Extension Ecosystem).</p>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases I, II, III, and IV are entirely complete. The application is now in Public Beta. Active development focuses on Phase V (Advanced Features) and ongoing refinement.</p>
       </section>
       
       <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
@@ -340,14 +346,14 @@
         <h3>Production Readiness Assessment</h3>
         <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>This metric tracks our proximity to a full public release. All critical deployment blockers—including official CAP-CP alert sourcing and Open-Meteo licensing—have been cleared. Core infrastructure, including the 17-module astronomical engine overhaul, R8 release optimization, and a hardened automated test suite, is fully deployed and verified.</em></p>
         <div class="score-grid">
-          <div class="score-tile"><strong>Product Concept</strong><span class="score">8.5/10</span></div>
-          <div class="score-tile"><strong>Privacy Posture</strong><span class="score">9.0/10</span></div>
-          <div class="score-tile"><strong>Feature Depth</strong><span class="score">9.5/10</span></div>
-          <div class="score-tile"><strong>Visual Identity</strong><span class="score">9.0/10</span></div>
-          <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">8.5/10</span></div>
-          <div class="score-tile"><strong>Architecture</strong><span class="score">9.0/10</span></div>
+          <div class="score-tile"><strong>Product Concept</strong><span class="score">9.0/10</span></div>
+          <div class="score-tile"><strong>Privacy Posture</strong><span class="score">10/10</span></div>
+          <div class="score-tile"><strong>Feature Depth</strong><span class="score">10/10</span></div>
+          <div class="score-tile"><strong>Visual Identity</strong><span class="score">9.5/10</span></div>
+          <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">9.5/10</span></div>
+          <div class="score-tile"><strong>Architecture</strong><span class="score">9.5/10</span></div>
           <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">10/10</span></div>
-          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">9.5/10</span></div>
+          <div class="score-tile"><strong>Alert Integrity</strong><span class="score">10/10</span></div>
         </div>
       </section>
 
@@ -406,9 +412,7 @@
           <li><s>Implement 7-Day Forecast placement control (inline vs. dropdown menu) and a comprehensive Menu Organization screen (drag-to-reorder, visibility toggles, default launch page, separators).</s></li>
           <li><s>Create and integrate a comprehensive in-app User Manual accessible from the navigation drawer and Info screen.</s></li>
           <li><s>Implement visible "last refreshed" and "cached data" indicators via Hero Card metadata popup and a dedicated Cached Data Inspector screen.</s></li>
-        </ul>
-        <ul class="pending-list">
-          <li>Develop a home-screen widget for immediate at-a-glance utility.</li>
+          <li><s>Develop a home-screen widget for immediate at-a-glance utility.</s></li>
           <li><s>Implement French localization to serve the Canadian market effectively.</s></li>
         </ul>
       </section>
@@ -427,7 +431,7 @@
         </ul>
 
         <h3>3.2 Testing Matrix Implementation</h3>
-        <p>Establish automated test coverage for the following edge cases:</p>
+        <p><s>Establish automated test coverage for the following edge cases:</s></p>
         <ul class="checklist">
           <li><s>Daylight-saving transitions and Saskatchewan's non-DST behavior.</s></li>
           <li><s>Locations east and west of the International Date Line.</s></li>
@@ -541,7 +545,8 @@
   </div>
 
   <footer>
-    WeatherAPP Libre Production Roadmap • Updated October 15, 2026
+    <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
+    WeatherAPP Libre Production Roadmap • Updated October 21, 2026
   </footer>
 
 <!-- Default Statcounter code for WeatherAPP Libre

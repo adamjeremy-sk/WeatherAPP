@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="WeatherAPP Libre Beta Program, Bug Reports, Feature Requests, and Support">
+  <meta name="description" content="WeatherAPP Libre Bug Reports, Feature Requests, and Support">
   <title>WeatherAPP Libre Support</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
@@ -233,6 +233,12 @@
       color: var(--muted);
       text-align: center;
     }
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
 
     /* Media Queries */
     @media (prefers-reduced-motion: reduce) {
@@ -284,7 +290,7 @@
       </a>
       <div class="header-copy">
         <h1>WeatherAPP Support</h1>
-        <p>Beta Program Applications, Bug Reports, Feature Requests, Privacy Questions, and General Support.</p>
+        <p>Bug Reports, Feature Requests, Privacy Questions, and General Support.</p>
       </div>
     </div>
   </header>
@@ -316,7 +322,7 @@
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="changelog.html">Changelog</a></li>
           <li><a href="almanac.html">Lunar Almanac</a></li>
-          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Download on Google Play</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
@@ -326,13 +332,13 @@
       <section id="form" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          1. Beta Program, Bug Reports & Support
+          1. Bug Reports & Support
         </h2>
 
         <div class="highlight">
           <p style="margin-top: 0;"><strong>Use this form to:</strong></p>
           <ul>
-            <li>Apply for the WeatherAPP beta program</li>
+            <li>Provide feedback on the public beta</li>
             <li>Report bugs and crashes</li>
             <li>Request new features</li>
             <li>Receive technical support</li>
@@ -344,7 +350,7 @@
         <form onsubmit="event.preventDefault(); submitWeatherAppForm();">
           <label for="requestType">Request Type</label>
           <select id="requestType">
-            <option>Beta Program Application</option>
+            <option>Public Beta Feedback</option>
             <option>Bug Report</option>
             <option>Feature Request</option>
             <option>General Support</option>
@@ -363,7 +369,7 @@
           <input type="text" id="device" placeholder="Pixel 9, Galaxy S25, OnePlus 15, etc.">
 
           <label for="message">Details</label>
-          <textarea id="message" placeholder="Describe your beta application, bug report, feature request, or support question."></textarea>
+          <textarea id="message" placeholder="Describe your beta feedback, bug report, feature request, or support question."></textarea>
 
           <p class="form-help">For bug reports, please include: device model, Android version, WeatherAPP version, and steps to reproduce the issue.</p>
 
@@ -400,7 +406,8 @@
   </div>
 
   <footer>
-    WeatherAPP Libre • Support, Beta Program & Bug Reports
+    <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
+    WeatherAPP Libre • Support & Bug Reports
   </footer>
 
   <script>
