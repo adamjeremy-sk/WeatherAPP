@@ -150,18 +150,20 @@ class MainActivity : AppCompatActivity() {
 
         setupLocationTabs()
 
-        val activeIndex = locationPreferences.getActiveTabIndex()
-        val currentLoc = locationPreferences.getTabLocation(activeIndex)
-        weatherDisplayManager.currentLocation = currentLoc
-        weatherDisplayManager.updateLocationHeader()
-        weatherDisplayManager.loadWeather()
+        handleNotificationIntent(intent)
+        val handledWidgetIntent = handleWidgetIntent(intent)
+
+        if (!handledWidgetIntent) {
+            val activeIndex = locationPreferences.getActiveTabIndex()
+            val currentLoc = locationPreferences.getTabLocation(activeIndex)
+            weatherDisplayManager.currentLocation = currentLoc
+            weatherDisplayManager.updateLocationHeader()
+            weatherDisplayManager.loadWeather()
+        }
 
         if (locationPreferences.consumePendingReopenThemeSettings() || intent.getBooleanExtra(EXTRA_REOPEN_THEME_SETTINGS, false)) {
             themeManager.showThemeSettingsScreen()
         }
-
-        handleNotificationIntent(intent)
-        handleWidgetIntent(intent)
 
         val launchCount = locationPreferences.incrementAppLaunchCount()
         if (launchCount >= 500) {
@@ -178,12 +180,13 @@ class MainActivity : AppCompatActivity() {
         handleWidgetIntent(intent)
     }
 
-    fun handleWidgetIntent(intent: Intent?) {
-        if (intent == null) return
-        if (!intent.hasExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX)) return
+    fun handleWidgetIntent(intent: Intent?): Boolean {
+        if (intent == null) return false
+        if (!intent.hasExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX)) return false
 
         val tabIndex = intent.getIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX, -1)
         val tabCount = locationPreferences.getTabCount()
+        var handled = false
         if (tabIndex in 0 until tabCount) {
             locationPreferences.saveActiveTabIndex(tabIndex)
             binding.tabLayoutLocations.getTabAt(tabIndex)?.select()
@@ -191,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             weatherDisplayManager.currentLocation = selectedLoc
             weatherDisplayManager.updateLocationHeader()
             weatherDisplayManager.loadWeather()
+            handled = true
         }
 
         val subTabName = intent.getStringExtra(WeatherWidgetProvider.EXTRA_WIDGET_SUBTAB)
@@ -209,6 +213,7 @@ class MainActivity : AppCompatActivity() {
 
         intent.removeExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX)
         intent.removeExtra(WeatherWidgetProvider.EXTRA_WIDGET_SUBTAB)
+        return handled
     }
 
     fun handleNotificationIntent(intent: Intent?) {

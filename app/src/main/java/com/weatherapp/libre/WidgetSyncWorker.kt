@@ -328,18 +328,64 @@ class WidgetSyncWorker(
                 }
             }
             } else {
-                remoteViews.setTextViewText(R.id.tv_widget_temp, "--")
-                remoteViews.setTextViewText(R.id.tv_widget_condition, context.getString(R.string.widget_no_data))
-                remoteViews.setTextViewText(R.id.tv_widget_high_low, "--")
-                remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
-                remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
-                remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.GONE)
-                if (layoutId == R.layout.widget_layout_2x1) {
-                    remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.GONE)
+                val activeModel = locationPreferences.getActiveModelForLocation(location)
+                val modelKey = activeModel.openMeteoKey
+                val cacheKey = String.format(Locale.US, "cache_v2_%.4f_%.4f_%s", location.latitude, location.longitude, modelKey)
+                val staleJson = locationPreferences.getPersistentCacheJson(cacheKey)
+                val staleResponse = if (!staleJson.isNullOrEmpty()) {
+                    try {
+                        com.google.gson.Gson().fromJson(staleJson, WeatherResponse::class.java)
+                    } catch (e: Exception) {
+                        null
+                    }
+                } else null
+
+                if (staleResponse != null) {
+                    val tempStr = staleResponse.current?.temperature?.let {
+                        UnitUtils.formatTemp(it, unitSystem)
+                    } ?: context.getString(R.string.position_unavailable)
+                    remoteViews.setTextViewText(R.id.tv_widget_temp, tempStr)
+
+                    val weatherCode = staleResponse.current?.weatherCode ?: 0
+                    val condIconRes = WeatherCodeUtils.conditionIconRes(weatherCode)
+                    val condText = WeatherCodeUtils.getWeatherDescription(context, weatherCode) + " (stale)"
+
+                    remoteViews.setImageViewResource(R.id.iv_widget_condition_icon, condIconRes)
+                    remoteViews.setTextViewText(R.id.tv_widget_condition, condText)
+
+                    val maxTemp = staleResponse.daily?.temperatureMax?.firstOrNull()
+                    val minTemp = staleResponse.daily?.temperatureMin?.firstOrNull()
+                    val highLowStr = if (maxTemp != null && minTemp != null) {
+                        "H: ${UnitUtils.formatTemp(maxTemp, unitSystem)} / L: ${UnitUtils.formatTemp(minTemp, unitSystem)}"
+                    } else {
+                        "--"
+                    }
+                    remoteViews.setTextViewText(R.id.tv_widget_high_low, highLowStr)
+
+                    val moonInfo = LunarCalculator.phaseAt(Instant.now())
+                    val moonEmoji = moonInfo.phaseCategory.getEmoji()
+                    val moonPct = (moonInfo.illuminationFraction * 100).roundToInt().coerceIn(0, 100)
+                    remoteViews.setTextViewText(R.id.tv_widget_moon_phase, "$moonEmoji $moonPct%")
+
+                    if (layoutId == R.layout.widget_layout_2x1) {
+                        val phaseName = context.getString(moonInfo.phaseCategory.getNameRes())
+                        remoteViews.setTextViewText(R.id.tv_widget_moon_stage, phaseName)
+                        remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.VISIBLE)
+                    }
+                } else {
+                    remoteViews.setTextViewText(R.id.tv_widget_temp, "--")
+                    remoteViews.setTextViewText(R.id.tv_widget_condition, context.getString(R.string.widget_no_data))
+                    remoteViews.setTextViewText(R.id.tv_widget_high_low, "--")
+                    remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
+                    remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
+                    remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.GONE)
+                    if (layoutId == R.layout.widget_layout_2x1) {
+                        remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.GONE)
+                    }
+                    remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
+                    remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
+                    remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.GONE)
                 }
-                remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
-                remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
-                remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.GONE)
             }
 
             // Configure Tab Pills (for 4x2, 4x1, and 2x2)
@@ -395,6 +441,7 @@ class WidgetSyncWorker(
             // Attach Deep-Linking PendingIntent to main body
             val deepLinkIntent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                data = Uri.parse("weatherwidget://$appWidgetId")
                 putExtra(WeatherWidgetProvider.EXTRA_WIDGET_TAB_INDEX, safeActiveTab)
                 putExtra(WeatherWidgetProvider.EXTRA_WIDGET_SUBTAB, "CURRENT")
             }

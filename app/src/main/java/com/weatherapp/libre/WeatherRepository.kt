@@ -77,7 +77,7 @@ class WeatherRepository {
         model: ForecastModel = ForecastModel.GEM,
         forceRefresh: Boolean = false,
         isCacheEnabled: Boolean = true,
-        ttlMinutes: Int = 120,
+        ttlMinutes: Int = 60,
         locationPreferences: LocationPreferences? = null
     ): Result<WeatherResponse> = withContext(Dispatchers.IO) {
         val modelKey = model.openMeteoKey

@@ -320,10 +320,10 @@
     <string name="cache_binary_file_bytes">Fichier binaire (%1$d octets)</string>
     <string name="ttl_30_min_title">30 minutes</string>
     <string name="ttl_30_min_desc">Actualise les données météo si elles datent de plus de 30 minutes.</string>
-    <string name="ttl_60_min_title">60 minutes (1 heure)</string>
-    <string name="ttl_60_min_desc">Actualise les données météo si elles datent de plus d\'1 heure.</string>
-    <string name="ttl_120_min_title">120 minutes (2 heures - Par défaut)</string>
-    <string name="ttl_120_min_desc">Durée de TTL de cache standard. Réutilise les données météo jusqu\'à 2 heures.</string>
+    <string name="ttl_60_min_title">60 minutes (1 heure - Par défaut)</string>
+    <string name="ttl_60_min_desc">TTL de cache par défaut. Actualise les données météo si elles datent de plus d\'une heure.</string>
+    <string name="ttl_120_min_title">120 minutes (2 heures)</string>
+    <string name="ttl_120_min_desc">TTL de cache étendu. Réutilise les données météo jusqu\'à 2 heures.</string>
     <string name="ttl_240_min_title">240 minutes (4 heures)</string>
     <string name="ttl_240_min_desc">TTL de cache étendu pour une utilisation réduite des données mobiles.</string>
     <string name="ttl_360_min_title">360 minutes (6 heures)</string>

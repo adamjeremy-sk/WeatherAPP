@@ -23,7 +23,7 @@ In direct contrast to conventional weather applications, WeatherAPP does not col
 The Application processes the following data strictly on your device:
 
 - **Manually Selected Locations:** Any city, region, or coordinates you elect to view forecasts for are stored locally within the Application's cache.
-- **Cached Meteorological Data:** A 120-minute in-memory and persistent disk cache temporarily stores forecast data retrieved from upstream meteorological providers. Cached data is automatically purged upon expiry of the 120-minute window or upon user-initiated clearance.
+- **Cached Meteorological Data:** A 60-minute in-memory and persistent disk cache temporarily stores forecast data retrieved from upstream meteorological providers. Cached data is automatically purged upon expiry of the 60-minute window or upon user-initiated clearance.
 
 No locally stored data is transmitted to our servers or to any third-party server operated by us.
 
