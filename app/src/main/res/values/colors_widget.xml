@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="widget_bg_color">#CC1E293B</color>
+    <color name="widget_bg_solid">#1E293B</color>
     <color name="widget_text_primary">#FFFFFF</color>
     <color name="widget_text_secondary">#CBD5E1</color>
     <color name="widget_pill_selected_color">#0284C7</color>

@@ -40,8 +40,10 @@ class LunarCalendarManagerTest {
         forecast.forEach { day ->
             assertNotNull(day.date)
             assertTrue(day.distanceKm > 350000.0 && day.distanceKm < 410000.0)
-            assertNotNull(day.cloudCoverScore)
-            assertTrue(day.cloudCoverScore!! in 0.0..100.0)
+            assertNotNull(day.deepSkyScore)
+            assertTrue(day.deepSkyScore!! in 0.0..100.0)
+            assertNotNull(day.lunarViewingScore)
+            assertTrue(day.lunarViewingScore!! in 0.0..100.0)
         }
     }
 

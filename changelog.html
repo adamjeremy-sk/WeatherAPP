@@ -214,6 +214,12 @@
       color: var(--muted);
       text-align: center;
     }
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
 
     /* Media Queries */
     @media (prefers-reduced-motion: reduce) {
@@ -279,7 +285,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc24">0.6.4VC24 (Latest)</a></li>
+          <li><a href="#vc25">0.6.5VC25 (Latest)</a></li>
+          <li><a href="#vc24">0.6.4VC24</a></li>
           <li><a href="#vc23">0.6.3VC23</a></li>
           <li><a href="#vc22">0.6.2VC22</a></li>
           <li><a href="#VC21">0.6.1VC21</a></li>
@@ -306,7 +313,7 @@
           <li><a href="privacypolicy.html">Privacy Policy</a></li>
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="almanac.html">Lunar Almanac</a></li>
-          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Download on Google Play</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
@@ -331,11 +338,42 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc25" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.6.5VC25
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 20, 2026</p>
+        <div class="highlight">
+          <strong>Note:</strong> Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
+        </div>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Widget Configuration Centralization: Removed the widget configuration popup from the home screen picker flow and centralized all widget management into a dedicated settings menu (Drawer &gt; System &gt; Widgets).</li>
+          <li>Widget Theming &amp; Opacity Control: Introduced full Boutique Theme Engine integration for widgets, allowing users to apply any of the app's bespoke themes (or follow the system/app theme). Added a highly visual Widget Opacity slider (1-100%, default 70%) with a live contrast preview cell, allowing precise translucency calibration against any home screen wallpaper.</li>
+          <li>Boutique Theme Expansion: Added two new Boutique Themes: Frutiger Aero (Light) and Hardy Heron (Dark).</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Astronomical Heuristics Refinement: Adjusted the Blue Hour astronomical window from -6° to -4° down to -8° to -4°, providing astrophotographers with a more accurate and extended deep cobalt sky window. Audited and verified the mathematical integrity of night visibility cloud cover interactions and true dark sky window calculations.</li>
+          <li>Lunar Almanac Polish: Refined the Lunar Calendar to display dual viewing metrics: "Stellar" (favoring dark skies for deep-space observation) and "Selenic" (favoring illuminated moons for lunar observation). Streamlined the 3-year Special Lunar Events sheet by removing redundant "Next Phase" countdowns and suppressing special-event outline strokes for a cleaner list view.</li>
+          <li>Share Intent &amp; Polish: Modernized the "Share This Project" intent with updated Google Play Store and official website calls-to-action.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>System Default Theme Fidelity: Permanently resolved the legacy "System Default Theme" bug. The toggle now flawlessly tracks the device's true light/dark state using un-overridden system configuration resources, ensuring the UI and widgets perfectly mirror the OS polarity.</li>
+          <li>Edge-to-Edge API 35+ Compliance: Re-established full Android 15 compliance by purging deprecated <code>android:windowLightStatusBar</code> XML attributes and relying exclusively on the programmatic <code>WindowInsetsController</code> for system bar contrast.</li>
+          <li>7-Day Forecast Localization &amp; Cleanup: Resolved French localization bypasses for sky conditions and moon phase names in the 7-day forecast. Removed atmospheric lunar phenomena (halos, coronas, moonbows) from the daily forecast expanded cells, keeping them exclusively accessible within the dedicated Moon Phase &amp; Cycle popup to reduce visual clutter.</li>
+          <li>Hero Cell State Fix: Resolved a defect where the main hero weather cell was incorrectly pulling the hero weather state from a previously viewed location tab.</li>
+          <li>Cache &amp; Polish: Confirmed the default cache TTL correctly identifies 60 minutes and resolved minor widget caching bugs.</li>
+        </ul>
+      </section>
+
       <section id="vc24" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.4VC24
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 17, 2026</p>
         <h3>Changed</h3>
@@ -587,6 +625,7 @@
   </div>
 
   <footer>
+    <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
     WeatherAPP Libre • Changelog &amp; Release Notes
   </footer>
 

@@ -5,10 +5,14 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import com.weatherapp.theme.BoutiqueThemeEngine
+import com.weatherapp.theme.ColorPalette
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
@@ -86,8 +90,22 @@ class WidgetSyncWorker(
             for (appWidgetId in activeWidgetIds.distinct()) {
                 rebuildAndUpdate(context, appWidgetId)
             }
+        }
 
-            enqueueImmediate(context)
+        fun notifyWidgetsThemeChanged(context: Context) {
+            val appWidgetManager = AppWidgetManager.getInstance(context) ?: return
+            val widgetTypes = listOf(
+                ComponentName(context, WeatherWidgetProvider4x2::class.java),
+                ComponentName(context, WeatherWidgetProvider4x1::class.java),
+                ComponentName(context, WeatherWidgetProvider2x2::class.java),
+                ComponentName(context, WeatherWidgetProvider::class.java)
+            )
+            for (component in widgetTypes) {
+                val ids = appWidgetManager.getAppWidgetIds(component)
+                for (appWidgetId in ids) {
+                    rebuildAndUpdate(context, appWidgetId)
+                }
+            }
         }
 
         fun rebuildAndUpdate(context: Context, appWidgetId: Int) = kotlinx.coroutines.runBlocking {
@@ -120,6 +138,76 @@ class WidgetSyncWorker(
             )
 
             val remoteViews = RemoteViews(context.packageName, layoutId)
+
+            val palette = when (widgetPrefs.getWidgetThemeSource()) {
+                WidgetPreferences.WIDGET_THEME_SOURCE_FOLLOW -> {
+                    val savedMode = locationPreferences.getSavedThemeMode()
+                    val effectiveMode = locationPreferences.resolveEffectiveTheme(savedMode, context)
+                    BoutiqueThemeEngine.getThemePalette(effectiveMode)
+                }
+                WidgetPreferences.WIDGET_THEME_SOURCE_CUSTOM -> {
+                    val customMode = widgetPrefs.getWidgetCustomThemeMode()
+                    val modeToUse = if (customMode == WidgetPreferences.WIDGET_THEME_UNSET) {
+                        locationPreferences.getSavedThemeMode()
+                    } else {
+                        customMode
+                    }
+                    val effectiveMode = locationPreferences.resolveEffectiveTheme(modeToUse, context)
+                    BoutiqueThemeEngine.getThemePalette(effectiveMode)
+                }
+                else -> {
+                    ColorPalette(
+                        primary = Color.parseColor("#0284C7"),
+                        surfaceCard = Color.parseColor("#1E293B"),
+                        surfaceCardSecondary = Color.parseColor("#334155"),
+                        backgroundLight = Color.parseColor("#1E293B"),
+                        textPrimary = Color.parseColor("#FFFFFF"),
+                        textSecondary = Color.parseColor("#94A3B8"),
+                        tempHigh = Color.parseColor("#DC2626"),
+                        tempHighBg = Color.parseColor("#FEE2E2"),
+                        tempLow = Color.parseColor("#0284C7"),
+                        tempLowBg = Color.parseColor("#E0F2FE"),
+                        goldenHourPrimary = Color.parseColor("#D97706"),
+                        blueHourPrimary = Color.parseColor("#4F46E5"),
+                        dividerColor = Color.parseColor("#CBD5E1")
+                    )
+                }
+            }
+
+            val opacityPercent = widgetPrefs.getWidgetOpacity().coerceIn(1, 100)
+            val alpha = ((opacityPercent * 255) / 100).coerceIn(0, 255)
+            val rootBgColor = (palette.surfaceCard and 0x00FFFFFF) or (0xFF shl 24)
+            remoteViews.setInt(R.id.iv_widget_bg, "setColorFilter", rootBgColor)
+            remoteViews.setInt(R.id.iv_widget_bg, "setImageAlpha", alpha)
+
+            if (layoutId == R.layout.widget_layout_4x2) {
+                val featureBgColor = (palette.textSecondary and 0x00FFFFFF) or (0xFF shl 24)
+                remoteViews.setInt(R.id.iv_feature_bg, "setColorFilter", featureBgColor)
+            }
+
+            remoteViews.setTextColor(R.id.tv_widget_temp, palette.textPrimary)
+            remoteViews.setTextColor(R.id.tv_widget_condition, palette.textSecondary)
+            remoteViews.setTextColor(R.id.tv_widget_high_low, palette.textSecondary)
+            remoteViews.setTextColor(R.id.tv_widget_sunrise, palette.textSecondary)
+            remoteViews.setTextColor(R.id.tv_widget_sunset, palette.textSecondary)
+            remoteViews.setTextColor(R.id.tv_widget_natural_light_period, palette.primary)
+            remoteViews.setTextColor(R.id.tv_widget_moon_phase, palette.primary)
+
+            if (layoutId == R.layout.widget_layout_4x2 || layoutId == R.layout.widget_layout_4x1 || layoutId == R.layout.widget_layout_2x1) {
+                remoteViews.setTextColor(R.id.tv_widget_moonrise, palette.textSecondary)
+                remoteViews.setTextColor(R.id.tv_widget_moonset, palette.textSecondary)
+            }
+
+            if (layoutId == R.layout.widget_layout_2x1) {
+                remoteViews.setTextColor(R.id.tv_widget_moon_stage, palette.textSecondary)
+            }
+
+            if (layoutId == R.layout.widget_layout_4x2) {
+                remoteViews.setTextColor(R.id.tv_widget_lunar_timings, palette.textSecondary)
+                remoteViews.setTextColor(R.id.tv_widget_dark_sky_period, palette.textSecondary)
+                remoteViews.setTextColor(R.id.tv_widget_night_vis, palette.textSecondary)
+                remoteViews.setTextColor(R.id.tv_widget_solunar, palette.textSecondary)
+            }
 
 
 
@@ -162,6 +250,7 @@ class WidgetSyncWorker(
                 val zoneId = try {
                     ZoneId.of(response?.timezone ?: ZoneId.systemDefault().id)
                 } catch (e: Exception) {
+                    Log.e("WidgetSync", "EXCEPTION id=$appWidgetId", e)
                     ZoneId.systemDefault()
                 }
 
@@ -336,6 +425,7 @@ class WidgetSyncWorker(
                     try {
                         com.google.gson.Gson().fromJson(staleJson, WeatherResponse::class.java)
                     } catch (e: Exception) {
+                        Log.e("WidgetSync", "EXCEPTION id=$appWidgetId", e)
                         null
                     }
                 } else null
@@ -388,53 +478,63 @@ class WidgetSyncWorker(
                 }
             }
 
-            // Configure Tab Pills (for 4x2, 4x1, and 2x2)
-            val pillIds = arrayOf(
-                R.id.btn_widget_tab_0,
-                R.id.btn_widget_tab_1,
-                R.id.btn_widget_tab_2,
-                R.id.btn_widget_tab_3
-            )
+            // Configure Tab Pills (for 4x2 and 4x1)
+            if (layoutId == R.layout.widget_layout_4x2 || layoutId == R.layout.widget_layout_4x1) {
+                val pillFrameIds = arrayOf(
+                    R.id.btn_widget_tab_0,
+                    R.id.btn_widget_tab_1,
+                    R.id.btn_widget_tab_2,
+                    R.id.btn_widget_tab_3
+                )
+                val pillBgIds = arrayOf(
+                    R.id.iv_pill_bg_0,
+                    R.id.iv_pill_bg_1,
+                    R.id.iv_pill_bg_2,
+                    R.id.iv_pill_bg_3
+                )
+                val pillTextIds = arrayOf(
+                    R.id.tv_pill_text_0,
+                    R.id.tv_pill_text_1,
+                    R.id.tv_pill_text_2,
+                    R.id.tv_pill_text_3
+                )
 
-            for (i in 0 until 4) {
-                if (i < tabCount) {
-                    val tabLoc = locationPreferences.getTabLocation(i)
-                    val isSelected = (i == safeActiveTab)
+                for (i in 0 until 4) {
+                    if (i < tabCount) {
+                        val tabLoc = locationPreferences.getTabLocation(i)
+                        val isSelected = (i == safeActiveTab)
 
-                    remoteViews.setTextViewText(pillIds[i], tabLoc.name)
-                    remoteViews.setViewVisibility(pillIds[i], View.VISIBLE)
+                        remoteViews.setTextViewText(pillTextIds[i], tabLoc.name)
+                        remoteViews.setViewVisibility(pillFrameIds[i], View.VISIBLE)
 
-                    val bgRes = if (isSelected) {
-                        R.drawable.bg_widget_pill_selected
+                        val pillBgColor = if (isSelected) palette.primary else palette.surfaceCardSecondary
+                        remoteViews.setInt(pillBgIds[i], "setColorFilter", pillBgColor)
+
+                        val pillTextColor = if (isSelected) {
+                            if (ColorUtils.calculateLuminance(palette.primary) > 0.5) Color.BLACK else Color.WHITE
+                        } else {
+                            palette.textSecondary
+                        }
+                        remoteViews.setTextColor(pillTextIds[i], pillTextColor)
+
+                        val switchIntent = Intent().apply {
+                            component = providerComponent
+                            action = WeatherWidgetProvider.ACTION_WIDGET_SWITCH_TAB
+                            data = Uri.parse("weatherwidget://tab/$appWidgetId/$i")
+                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                            putExtra(WeatherWidgetProvider.EXTRA_TAB_INDEX, i)
+                        }
+
+                        val switchPendingIntent = PendingIntent.getBroadcast(
+                            context,
+                            (appWidgetId * 100) + i,
+                            switchIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                        )
+                        remoteViews.setOnClickPendingIntent(pillFrameIds[i], switchPendingIntent)
                     } else {
-                        R.drawable.bg_widget_pill_unselected
+                        remoteViews.setViewVisibility(pillFrameIds[i], View.GONE)
                     }
-                    remoteViews.setInt(pillIds[i], "setBackgroundResource", bgRes)
-
-                    val textColor = if (isSelected) {
-                        ContextCompat.getColor(context, R.color.widget_text_primary)
-                    } else {
-                        ContextCompat.getColor(context, R.color.widget_text_secondary)
-                    }
-                    remoteViews.setTextColor(pillIds[i], textColor)
-
-                    val switchIntent = Intent().apply {
-                        component = providerComponent
-                        action = WeatherWidgetProvider.ACTION_WIDGET_SWITCH_TAB
-                        data = Uri.parse("weatherwidget://tab/$appWidgetId/$i")
-                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                        putExtra(WeatherWidgetProvider.EXTRA_TAB_INDEX, i)
-                    }
-
-                    val switchPendingIntent = PendingIntent.getBroadcast(
-                        context,
-                        (appWidgetId * 100) + i,
-                        switchIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
-                    remoteViews.setOnClickPendingIntent(pillIds[i], switchPendingIntent)
-                } else {
-                    remoteViews.setViewVisibility(pillIds[i], View.GONE)
                 }
             }
 

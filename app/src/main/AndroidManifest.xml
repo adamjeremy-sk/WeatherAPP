@@ -26,15 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".WidgetConfigureActivity"
-            android:exported="true"
-            android:theme="@style/Theme.WeatherAPP">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-
         <receiver
             android:name=".WeatherWidgetProvider4x2"
             android:exported="true"

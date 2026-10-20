@@ -268,12 +268,15 @@ class ThemeManager(
             if (isChecked) {
                 setChoicesEnabled(false)
                 locationPreferences.saveThemeMode(LocationPreferences.THEME_SYSTEM)
+                locationPreferences.setPendingReopenThemeSettings(true)
+                WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 applyTheme(LocationPreferences.THEME_SYSTEM)
             } else {
                 setChoicesEnabled(true)
                 val modeToSet = if (currentTheme == LocationPreferences.THEME_SYSTEM) LocationPreferences.THEME_DARK else currentTheme
                 locationPreferences.saveThemeMode(modeToSet)
+                WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
                 applyTheme(modeToSet)
             }
         }
@@ -285,6 +288,7 @@ class ThemeManager(
             LocationPreferences.THEME_LIGHT to (R.string.theme_light_title to R.string.theme_light_desc),
             LocationPreferences.THEME_CREMA to (R.string.theme_crema_title to R.string.theme_crema_desc),
             LocationPreferences.THEME_FROST to (R.string.theme_frost_title to R.string.theme_frost_desc),
+            LocationPreferences.THEME_FRUTIGER_AERO to (R.string.theme_frutiger_aero_title to R.string.theme_frutiger_aero_desc),
             LocationPreferences.THEME_ORANGE_GROVE to (R.string.theme_orange_grove_title to R.string.theme_orange_grove_desc),
             LocationPreferences.THEME_TERRACOTTA to (R.string.theme_terracotta_title to R.string.theme_terracotta_desc)
         )
@@ -294,6 +298,7 @@ class ThemeManager(
             LocationPreferences.THEME_AURORA to (R.string.theme_aurora_title to R.string.theme_aurora_desc),
             LocationPreferences.THEME_CHARCOAL to (R.string.theme_charcoal_title to R.string.theme_charcoal_desc),
             LocationPreferences.THEME_COBALT to (R.string.theme_cobalt_title to R.string.theme_cobalt_desc),
+            LocationPreferences.THEME_HARDY_HERON to (R.string.theme_hardy_heron_title to R.string.theme_hardy_heron_desc),
             LocationPreferences.THEME_JADE to (R.string.theme_jade_title to R.string.theme_jade_desc)
         )
 
@@ -365,6 +370,7 @@ class ThemeManager(
                 card.setOnClickListener {
                     if (dialogBinding.switchSystemDefault.isChecked) return@setOnClickListener
                     locationPreferences.saveThemeMode(mode)
+                    WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
                     applyTheme(mode)
                     dialog.dismiss()
                     showThemeSettingsScreen()

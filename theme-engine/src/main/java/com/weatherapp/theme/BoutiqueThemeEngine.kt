@@ -204,12 +204,59 @@ object BoutiqueThemeEngine {
         alertMinor = Color.parseColor("#0369A1")
     )
 
+    val FRUTIGER_AERO_PALETTE = ColorPalette(
+        primary = Color.parseColor("#00C4B0"),
+        surfaceCard = Color.parseColor("#FFFFFF"),
+        surfaceCardSecondary = Color.parseColor("#E1EFF5"),
+        backgroundLight = Color.parseColor("#F2F7FA"),
+        textPrimary = Color.parseColor("#0A2540"),
+        textSecondary = Color.parseColor("#4A6572"),
+        tempHigh = Color.parseColor("#E11D48"),
+        tempHighBg = Color.parseColor("#FCE8E6"),
+        tempLow = Color.parseColor("#00A896"),
+        tempLowBg = Color.parseColor("#D8F3F0"),
+        goldenHourPrimary = Color.parseColor("#D97706"),
+        blueHourPrimary = Color.parseColor("#0284C7"),
+        dividerColor = Color.parseColor("#C2D8E3"),
+        alertExtreme = Color.parseColor("#B91C1C"),
+        alertSevere = Color.parseColor("#C2410C"),
+        alertModerate = Color.parseColor("#92400E"),
+        alertMinor = Color.parseColor("#00C4B0")
+    )
+
+    val HARDY_HERON_PALETTE = ColorPalette(
+        primary = Color.parseColor("#E95420"),
+        surfaceCard = Color.parseColor("#3D261A"),
+        surfaceCardSecondary = Color.parseColor("#523424"),
+        backgroundLight = Color.parseColor("#2A1A10"),
+        textPrimary = Color.parseColor("#F2E8DC"),
+        textSecondary = Color.parseColor("#A88B75"),
+        tempHigh = Color.parseColor("#FF6B4A"),
+        tempHighBg = Color.parseColor("#4A1E14"),
+        tempLow = Color.parseColor("#4EA8DE"),
+        tempLowBg = Color.parseColor("#1C2B36"),
+        goldenHourPrimary = Color.parseColor("#FBBF24"),
+        blueHourPrimary = Color.parseColor("#818CF8"),
+        dividerColor = Color.parseColor("#5A3C2C"),
+        alertExtreme = Color.parseColor("#FF6B6B"),
+        alertSevere = Color.parseColor("#E95420"),
+        alertModerate = Color.parseColor("#FFB74D"),
+        alertMinor = Color.parseColor("#4EA8DE")
+    )
+
     fun getPalette(isDarkMode: Boolean): ColorPalette {
         return if (isDarkMode) DARK_PALETTE else LIGHT_PALETTE
     }
 
-    fun getThemePalette(themeMode: Int): ColorPalette {
-        return when (themeMode) {
+    fun getThemePalette(themeMode: Int, context: android.content.Context? = null): ColorPalette {
+        val effectiveMode = if (themeMode == ThemeMode.SYSTEM) {
+            val sysConfig = android.content.res.Resources.getSystem().configuration
+            val nightMode = sysConfig.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) ThemeMode.DARK else ThemeMode.LIGHT
+        } else {
+            themeMode
+        }
+        return when (effectiveMode) {
             ThemeMode.LIGHT -> LIGHT_PALETTE
             ThemeMode.DARK -> DARK_PALETTE
             ThemeMode.CREMA -> CREMA_PALETTE
@@ -220,6 +267,8 @@ object BoutiqueThemeEngine {
             ThemeMode.TERRACOTTA -> TERRACOTTA_PALETTE
             ThemeMode.FROST -> FROST_PALETTE
             ThemeMode.ORANGE_GROVE -> ORANGE_GROVE_PALETTE
+            ThemeMode.FRUTIGER_AERO -> FRUTIGER_AERO_PALETTE
+            ThemeMode.HARDY_HERON -> HARDY_HERON_PALETTE
             else -> DARK_PALETTE
         }
     }

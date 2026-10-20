@@ -11,6 +11,8 @@ import com.weatherapp.libre.lunar.LunarCalculator
 import com.weatherapp.libre.lunar.MoonEventType
 import com.weatherapp.libre.lunar.MoonPhaseName
 import com.weatherapp.libre.lunar.Observer
+import com.weatherapp.libre.lunar.getEmoji
+import com.weatherapp.libre.lunar.getNameRes
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -72,7 +74,8 @@ class DayForecastAdapter(
             binding.tvDayDate.text = item.formattedDate
             val iconRes = WeatherCodeUtils.conditionIconRes(item.weatherCode)
             binding.ivWeatherIcon.setImageResource(iconRes)
-            binding.tvWeatherDesc.text = item.weatherDescription
+            val localizedDesc = WeatherCodeUtils.getWeatherDescription(binding.root.context, item.weatherCode)
+            binding.tvWeatherDesc.text = localizedDesc
 
             binding.tvTempHigh.text = UnitUtils.formatTemp(item.tempMax, unitSystem)
             binding.tvTempMin.text = UnitUtils.formatTemp(item.tempMin, unitSystem)
@@ -158,16 +161,7 @@ class DayForecastAdapter(
                 val targetInstant = item.date.atStartOfDay(zoneId).toInstant()
                 val phaseInfo = LunarCalculator.phaseAt(targetInstant)
 
-                val phaseNameText = when (phaseInfo.phaseCategory) {
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.NEW -> "New Moon 🌑"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.WAXING_CRESCENT -> "Waxing Crescent 🌒"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.FIRST_QUARTER -> "First Quarter 🌓"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.WAXING_GIBBOUS -> "Waxing Gibbous 🌔"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.FULL -> "Full Moon 🌕"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.WANING_GIBBOUS -> "Waning Gibbous 🌖"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.LAST_QUARTER -> "Last Quarter 🌗"
-                    com.weatherapp.libre.lunar.LunarPhaseCategory.WANING_CRESCENT -> "Waning Crescent 🌘"
-                }
+                val phaseNameText = "${binding.root.context.getString(phaseInfo.phaseCategory.getNameRes())} ${phaseInfo.phaseCategory.getEmoji()}"
 
                 binding.tvExpandedMoonPhase.text = "$phaseNameText (${(phaseInfo.illuminationFraction * 100).toInt()}%)"
 
@@ -194,60 +188,15 @@ class DayForecastAdapter(
                 }
 
                 binding.tvExpandedMoonAzimuth.text = joinTwoLines(riseLine, setLine)
-
-                // Bind Lunar Atmospheric Events in 7-Day Forecast Expanded View
-                if (item.isExpanded) {
-                    val dayDataList = com.weatherapp.libre.almanac.MoonAlmanacManager.getMoonAlmanac(
-                        startDate = item.date,
-                        daysForward = 1,
-                        location = loc,
-                        zoneId = zoneId
-                    )
-                    val dayData = dayDataList.firstOrNull()
-
-                    val atmosphericLines = mutableListOf<String>()
-                    if (dayData != null) {
-                        if (dayData.moonbowProbability > 0.6) {
-                            val pct = kotlin.math.round(dayData.moonbowProbability * 100).toInt()
-                            atmosphericLines.add(context.getString(R.string.lunar_moonbow_likely, pct))
-                        }
-                        if (dayData.haloProbability > 0.6) {
-                            val pct = kotlin.math.round(dayData.haloProbability * 100).toInt()
-                            atmosphericLines.add(context.getString(R.string.lunar_halo_possible, pct))
-                        }
-                        if (dayData.coronaProbability > 0.6) {
-                            val pct = kotlin.math.round(dayData.coronaProbability * 100).toInt()
-                            atmosphericLines.add(context.getString(R.string.lunar_corona_possible, pct))
-                        }
-                        if (dayData.parseleneProbability > 0.5) {
-                            val pct = kotlin.math.round(dayData.parseleneProbability * 100).toInt()
-                            atmosphericLines.add(context.getString(R.string.lunar_parselene_possible, pct))
-                        }
-
-                        if (atmosphericLines.isEmpty()) {
-                            atmosphericLines.add(context.getString(R.string.lunar_atmospheric_unlikely_single))
-                        }
-                    }
-
-                    if (atmosphericLines.isNotEmpty()) {
-                        binding.tvAtmosphericConditions.text = atmosphericLines.joinToString("\n")
-                        binding.tvAtmosphericConditions.visibility = View.VISIBLE
-                    } else {
-                        binding.tvAtmosphericConditions.visibility = View.GONE
-                    }
-                } else {
-                    binding.tvAtmosphericConditions.visibility = View.GONE
-                }
             } else {
                 binding.tvExpandedMoonPhase.text = "——"
                 binding.tvExpandedMoonAzimuth.text = context.getString(R.string.position_unavailable)
-                binding.tvAtmosphericConditions.visibility = View.GONE
             }
 
             ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)
             ExpandCollapseHelper.setupExpandableAccessibility(
                 binding.cardDay,
-                "${item.dayOfWeek}, ${item.formattedDate}, ${item.weatherDescription}",
+                "${item.dayOfWeek}, ${item.formattedDate}, $localizedDesc",
                 item.isExpanded
             )
 
@@ -258,7 +207,7 @@ class DayForecastAdapter(
                     ExpandCollapseHelper.togglePanel(binding.layoutExpandedDetails, item.isExpanded, binding.cardDay)
                     ExpandCollapseHelper.setupExpandableAccessibility(
                         binding.cardDay,
-                        "${item.dayOfWeek}, ${item.formattedDate}, ${item.weatherDescription}",
+                        "${item.dayOfWeek}, ${item.formattedDate}, $localizedDesc",
                         item.isExpanded
                     )
                     notifyItemChanged(pos)

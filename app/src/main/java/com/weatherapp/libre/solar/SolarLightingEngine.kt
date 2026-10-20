@@ -159,7 +159,7 @@ object SolarLightingEngine {
                     iconEmoji = "🟦",
                     timeRangeText = "${fmt(mbStart)} – ${fmt(mbEnd)}",
                     durationText = dur(mbStart, mbEnd),
-                    elevationDescription = "Sun elevation -6° to -4° • Deep electric blue sky for photography",
+                    elevationDescription = "Sun elevation -8° to -4° • Extended deep blue sky for photography",
                     isCurrentActivePhase = false,
                     startInstant = mbStart,
                     endInstant = mbEnd
@@ -287,7 +287,7 @@ object SolarLightingEngine {
                     iconEmoji = "🟦",
                     timeRangeText = "${fmt(ebStart)} – ${fmt(ebEnd)}",
                     durationText = dur(ebStart, ebEnd),
-                    elevationDescription = "Sun elevation -4° to -6° • Deep cobalt evening sky",
+                    elevationDescription = "Sun elevation -4° to -8° • Extended deep cobalt evening sky",
                     isCurrentActivePhase = false,
                     startInstant = ebStart,
                     endInstant = ebEnd

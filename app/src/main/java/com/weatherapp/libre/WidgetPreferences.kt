@@ -11,6 +11,38 @@ class WidgetPreferences(context: Context) {
     companion object {
         const val WIDGET_THEME_MATERIAL_YOU = 0
         const val WIDGET_THEME_BOUTIQUE = 1
+
+        const val WIDGET_THEME_SOURCE_SYSTEM = 0
+        const val WIDGET_THEME_SOURCE_FOLLOW = 1
+        const val WIDGET_THEME_SOURCE_CUSTOM = 2
+
+        const val WIDGET_THEME_UNSET = -1
+
+        const val DEFAULT_WIDGET_OPACITY = 70
+    }
+
+    fun getWidgetThemeSource(): Int {
+        return prefs.getInt("widget_theme_source", WIDGET_THEME_SOURCE_SYSTEM)
+    }
+
+    fun saveWidgetThemeSource(source: Int) {
+        prefs.edit().putInt("widget_theme_source", source).apply()
+    }
+
+    fun getWidgetCustomThemeMode(): Int {
+        return prefs.getInt("widget_custom_theme_mode", WIDGET_THEME_UNSET)
+    }
+
+    fun saveWidgetCustomThemeMode(themeMode: Int) {
+        prefs.edit().putInt("widget_custom_theme_mode", themeMode).apply()
+    }
+
+    fun getWidgetOpacity(): Int {
+        return prefs.getInt("widget_opacity", DEFAULT_WIDGET_OPACITY).coerceIn(1, 100)
+    }
+
+    fun saveWidgetOpacity(opacity: Int) {
+        prefs.edit().putInt("widget_opacity", opacity.coerceIn(1, 100)).apply()
     }
 
     fun getWidgetTheme(appWidgetId: Int): Int {

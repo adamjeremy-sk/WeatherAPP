@@ -1,6 +1,7 @@
 package com.weatherapp.libre
 
 import com.weatherapp.theme.BoutiqueThemeEngine
+import com.weatherapp.theme.ColorPalette
 import com.weatherapp.libre.BuildConfig
 import android.app.Dialog
 import android.content.Intent
@@ -1412,7 +1413,8 @@ class SettingsDialogManager(
             dialogBinding.cardLocationTabs to (dialogBinding.tvLocationTabsTitle to dialogBinding.tvLocationTabsDesc),
             dialogBinding.cardOrganizeMenu to (dialogBinding.tvOrganizeMenuTitle to dialogBinding.tvOrganizeMenuDesc),
             dialogBinding.cardNotifications to (dialogBinding.tvNotificationsTitle to dialogBinding.tvNotificationsDesc),
-            dialogBinding.cardWeatherModels to (dialogBinding.tvWeatherModelsTitle to dialogBinding.tvWeatherModelsDesc)
+            dialogBinding.cardWeatherModels to (dialogBinding.tvWeatherModelsTitle to dialogBinding.tvWeatherModelsDesc),
+            dialogBinding.cardWidgets to (dialogBinding.tvWidgetsTitle to dialogBinding.tvWidgetsDesc)
         )
 
         for ((card, textPair) in cards) {
@@ -1428,6 +1430,353 @@ class SettingsDialogManager(
         dialogBinding.cardLocationTabs.setOnClickListener { showLocationTabsSettingsScreen() }
         dialogBinding.cardNotifications.setOnClickListener { showWeatherAlertsSettingsScreen() }
         dialogBinding.cardWeatherModels.setOnClickListener { showModelsSettingsScreen(weatherDisplayManager) }
+        dialogBinding.cardWidgets.setOnClickListener { showWidgetsSettingsScreen() }
+
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    fun showWidgetsSettingsScreen() {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = com.weatherapp.libre.databinding.DialogWidgetsSettingsBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val headerBg = palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        val headerRow = dialogBinding.cardHeader.getChildAt(0) as? LinearLayout
+        (headerRow?.getChildAt(1) as? TextView)?.setTextColor(headerTitleColor)
+        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+
+        dialogBinding.tvWidgetThemeTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvWidgetThemeSystemTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvWidgetThemeFollowTitle.setTextColor(palette.textPrimary)
+        dialogBinding.tvWidgetThemeCustomTitle.setTextColor(palette.textPrimary)
+
+        dialogBinding.cardWidgetThemeSystem.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardWidgetThemeSystem.strokeColor = palette.dividerColor
+        dialogBinding.cardWidgetThemeFollow.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardWidgetThemeFollow.strokeColor = palette.dividerColor
+        dialogBinding.cardWidgetThemeCustom.setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        dialogBinding.cardWidgetThemeCustom.strokeColor = palette.dividerColor
+        dialogBinding.cardWidgetOpacity.strokeColor = palette.dividerColor
+
+        dialogBinding.radioWidgetThemeSystem.buttonTintList = ColorStateList.valueOf(palette.primary)
+        dialogBinding.radioWidgetThemeFollow.buttonTintList = ColorStateList.valueOf(palette.primary)
+        dialogBinding.radioWidgetThemeCustom.buttonTintList = ColorStateList.valueOf(palette.primary)
+
+        dialogBinding.tvWidgetThemeSystemDesc.setTextColor(palette.textSecondary)
+        dialogBinding.tvWidgetThemeFollowDesc.setTextColor(palette.textSecondary)
+        dialogBinding.tvWidgetThemeCustomDesc.setTextColor(palette.textSecondary)
+        dialogBinding.ivWidgetThemeChevron.setColorFilter(palette.textSecondary)
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        val widgetPrefs = WidgetPreferences(activity)
+
+        val themeModeNames = mapOf(
+            LocationPreferences.THEME_LIGHT to R.string.theme_light_title,
+            LocationPreferences.THEME_DARK to R.string.theme_dark_title,
+            LocationPreferences.THEME_CREMA to R.string.theme_crema_title,
+            LocationPreferences.THEME_CHARCOAL to R.string.theme_charcoal_title,
+            LocationPreferences.THEME_COBALT to R.string.theme_cobalt_title,
+            LocationPreferences.THEME_JADE to R.string.theme_jade_title,
+            LocationPreferences.THEME_AURORA to R.string.theme_aurora_title,
+            LocationPreferences.THEME_TERRACOTTA to R.string.theme_terracotta_title,
+            LocationPreferences.THEME_FROST to R.string.theme_frost_title,
+            LocationPreferences.THEME_ORANGE_GROVE to R.string.theme_orange_grove_title,
+            LocationPreferences.THEME_FRUTIGER_AERO to R.string.theme_frutiger_aero_title,
+            LocationPreferences.THEME_HARDY_HERON to R.string.theme_hardy_heron_title
+        )
+
+        fun resolveWidgetPalette(): ColorPalette {
+            return when (widgetPrefs.getWidgetThemeSource()) {
+                WidgetPreferences.WIDGET_THEME_SOURCE_FOLLOW -> {
+                    val savedMode = locationPreferences.getSavedThemeMode()
+                    val effectiveMode = locationPreferences.resolveEffectiveTheme(savedMode, activity)
+                    BoutiqueThemeEngine.getThemePalette(effectiveMode)
+                }
+                WidgetPreferences.WIDGET_THEME_SOURCE_CUSTOM -> {
+                    val customMode = widgetPrefs.getWidgetCustomThemeMode()
+                    val modeToUse = if (customMode == WidgetPreferences.WIDGET_THEME_UNSET) {
+                        locationPreferences.getSavedThemeMode()
+                    } else {
+                        customMode
+                    }
+                    val effectiveMode = locationPreferences.resolveEffectiveTheme(modeToUse, activity)
+                    BoutiqueThemeEngine.getThemePalette(effectiveMode)
+                }
+                else -> {
+                    ColorPalette(
+                        primary = Color.parseColor("#0284C7"),
+                        surfaceCard = Color.parseColor("#1E293B"),
+                        surfaceCardSecondary = Color.parseColor("#334155"),
+                        backgroundLight = Color.parseColor("#1E293B"),
+                        textPrimary = Color.parseColor("#FFFFFF"),
+                        textSecondary = Color.parseColor("#94A3B8"),
+                        tempHigh = Color.parseColor("#DC2626"),
+                        tempHighBg = Color.parseColor("#FEE2E2"),
+                        tempLow = Color.parseColor("#0284C7"),
+                        tempLowBg = Color.parseColor("#E0F2FE"),
+                        goldenHourPrimary = Color.parseColor("#D97706"),
+                        blueHourPrimary = Color.parseColor("#4F46E5"),
+                        dividerColor = Color.parseColor("#CBD5E1")
+                    )
+                }
+            }
+        }
+
+        fun refreshOpacityPreview(opacityPercent: Int = dialogBinding.sliderWidgetOpacity.value.toInt()) {
+            val alpha = ((opacityPercent.coerceIn(1, 100) * 255) / 100).coerceIn(0, 255)
+            val palette = resolveWidgetPalette()
+            val previewColor = (palette.surfaceCard and 0x00FFFFFF) or (alpha shl 24)
+            dialogBinding.layoutOpacityPreview.backgroundTintMode = android.graphics.PorterDuff.Mode.SRC_IN
+            dialogBinding.layoutOpacityPreview.backgroundTintList = ColorStateList.valueOf(previewColor)
+
+            dialogBinding.tvWidgetOpacityTitle.setTextColor(palette.textPrimary)
+            dialogBinding.tvWidgetOpacityDesc.setTextColor(palette.textSecondary)
+            dialogBinding.tvWidgetOpacityValue.setTextColor(palette.textPrimary)
+
+            dialogBinding.sliderWidgetOpacity.thumbTintList = ColorStateList.valueOf(palette.textPrimary)
+            dialogBinding.sliderWidgetOpacity.trackActiveTintList = ColorStateList.valueOf(palette.textPrimary)
+            dialogBinding.sliderWidgetOpacity.trackInactiveTintList = ColorStateList.valueOf((palette.textPrimary and 0x00FFFFFF) or (0x66 shl 24))
+        }
+
+        fun refreshThemeCells() {
+            val source = widgetPrefs.getWidgetThemeSource()
+            dialogBinding.radioWidgetThemeSystem.isChecked = (source == WidgetPreferences.WIDGET_THEME_SOURCE_SYSTEM)
+            dialogBinding.radioWidgetThemeFollow.isChecked = (source == WidgetPreferences.WIDGET_THEME_SOURCE_FOLLOW)
+            dialogBinding.radioWidgetThemeCustom.isChecked = (source == WidgetPreferences.WIDGET_THEME_SOURCE_CUSTOM)
+
+            val customMode = widgetPrefs.getWidgetCustomThemeMode()
+            if (customMode == WidgetPreferences.WIDGET_THEME_UNSET) {
+                dialogBinding.tvWidgetThemeCustomDesc.text = activity.getString(R.string.widget_theme_not_set)
+            } else {
+                val themeResId = themeModeNames[customMode] ?: R.string.theme_dark_title
+                val themeName = activity.getString(themeResId)
+                dialogBinding.tvWidgetThemeCustomDesc.text = activity.getString(R.string.widget_theme_currently, themeName)
+            }
+
+            refreshOpacityPreview()
+        }
+
+        refreshThemeCells()
+
+        dialogBinding.cardWidgetThemeSystem.setOnClickListener {
+            widgetPrefs.saveWidgetThemeSource(WidgetPreferences.WIDGET_THEME_SOURCE_SYSTEM)
+            refreshThemeCells()
+            WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
+            WidgetSyncWorker.enqueueImmediate(activity)
+        }
+
+        dialogBinding.cardWidgetThemeFollow.setOnClickListener {
+            widgetPrefs.saveWidgetThemeSource(WidgetPreferences.WIDGET_THEME_SOURCE_FOLLOW)
+            refreshThemeCells()
+            WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
+            WidgetSyncWorker.enqueueImmediate(activity)
+        }
+
+        dialogBinding.cardWidgetThemeCustom.setOnClickListener {
+            widgetPrefs.saveWidgetThemeSource(WidgetPreferences.WIDGET_THEME_SOURCE_CUSTOM)
+            refreshThemeCells()
+            WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
+            WidgetSyncWorker.enqueueImmediate(activity)
+            showWidgetCustomThemePickerScreen(widgetPrefs) {
+                refreshThemeCells()
+                WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
+                WidgetSyncWorker.enqueueImmediate(activity)
+            }
+        }
+
+        val darkModesList = listOf(
+            LocationPreferences.THEME_DARK,
+            LocationPreferences.THEME_AURORA,
+            LocationPreferences.THEME_CHARCOAL,
+            LocationPreferences.THEME_COBALT,
+            LocationPreferences.THEME_HARDY_HERON,
+            LocationPreferences.THEME_JADE
+        )
+        val savedThemeMode = locationPreferences.getSavedThemeMode()
+        val isDarkTheme = if (savedThemeMode == LocationPreferences.THEME_SYSTEM) {
+            (activity.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        } else {
+            savedThemeMode in darkModesList
+        }
+
+        val opacityCardBgColor = if (isDarkTheme) Color.WHITE else Color.parseColor("#1E293B")
+        dialogBinding.cardWidgetOpacity.setCardBackgroundColor(ColorStateList.valueOf(opacityCardBgColor))
+
+        val currentOpacity = widgetPrefs.getWidgetOpacity()
+        dialogBinding.sliderWidgetOpacity.value = currentOpacity.toFloat()
+        dialogBinding.tvWidgetOpacityValue.text = activity.getString(R.string.widget_opacity_format, currentOpacity)
+        refreshOpacityPreview(currentOpacity)
+
+        dialogBinding.sliderWidgetOpacity.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val opacity = value.toInt().coerceIn(1, 100)
+                dialogBinding.tvWidgetOpacityValue.text = activity.getString(R.string.widget_opacity_format, opacity)
+                refreshOpacityPreview(opacity)
+            }
+        }
+
+        dialogBinding.sliderWidgetOpacity.addOnSliderTouchListener(object : com.google.android.material.slider.Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: com.google.android.material.slider.Slider) {}
+
+            override fun onStopTrackingTouch(slider: com.google.android.material.slider.Slider) {
+                val opacity = slider.value.toInt().coerceIn(1, 100)
+                refreshOpacityPreview(opacity)
+                widgetPrefs.saveWidgetOpacity(opacity)
+                WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
+                WidgetSyncWorker.enqueueImmediate(activity)
+            }
+        })
+
+        trackDialog(dialog)
+        dialog.show()
+    }
+
+    fun showWidgetCustomThemePickerScreen(widgetPrefs: WidgetPreferences, onThemeSelected: () -> Unit) {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val dialogBinding = com.weatherapp.libre.databinding.DialogWidgetThemePickerBinding.inflate(activity.layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val headerBg = palette.surfaceCard
+        val headerTitleColor = getAaaTitleColor(headerBg)
+
+        dialogBinding.root.setBackgroundColor(palette.backgroundLight)
+        dialogBinding.cardHeader.setCardBackgroundColor(ColorStateList.valueOf(headerBg))
+        dialogBinding.btnBack.setColorFilter(headerTitleColor)
+        dialogBinding.tvHeaderTitle.setTextColor(headerTitleColor)
+        dialogBinding.cardHeader.strokeColor = palette.dividerColor
+
+        dialogBinding.tvLightThemesHeader.setTextColor(palette.textPrimary)
+        dialogBinding.tvDarkThemesHeader.setTextColor(palette.textPrimary)
+
+        dialogBinding.btnBack.setOnClickListener { dialog.dismiss() }
+
+        val currentCustomMode = widgetPrefs.getWidgetCustomThemeMode()
+
+        val lightModes = listOf(
+            LocationPreferences.THEME_LIGHT to (R.string.theme_light_title to R.string.theme_light_desc),
+            LocationPreferences.THEME_CREMA to (R.string.theme_crema_title to R.string.theme_crema_desc),
+            LocationPreferences.THEME_FROST to (R.string.theme_frost_title to R.string.theme_frost_desc),
+            LocationPreferences.THEME_FRUTIGER_AERO to (R.string.theme_frutiger_aero_title to R.string.theme_frutiger_aero_desc),
+            LocationPreferences.THEME_ORANGE_GROVE to (R.string.theme_orange_grove_title to R.string.theme_orange_grove_desc),
+            LocationPreferences.THEME_TERRACOTTA to (R.string.theme_terracotta_title to R.string.theme_terracotta_desc)
+        ).sortedBy { activity.getString(it.second.first) }
+
+        val darkModes = listOf(
+            LocationPreferences.THEME_DARK to (R.string.theme_dark_title to R.string.theme_dark_desc),
+            LocationPreferences.THEME_AURORA to (R.string.theme_aurora_title to R.string.theme_aurora_desc),
+            LocationPreferences.THEME_CHARCOAL to (R.string.theme_charcoal_title to R.string.theme_charcoal_desc),
+            LocationPreferences.THEME_COBALT to (R.string.theme_cobalt_title to R.string.theme_cobalt_desc),
+            LocationPreferences.THEME_HARDY_HERON to (R.string.theme_hardy_heron_title to R.string.theme_hardy_heron_desc),
+            LocationPreferences.THEME_JADE to (R.string.theme_jade_title to R.string.theme_jade_desc)
+        ).sortedBy { activity.getString(it.second.first) }
+
+        val radioButtons = mutableMapOf<Int, RadioButton>()
+
+        fun populateThemeGroup(
+            container: LinearLayout,
+            modes: List<Pair<Int, Pair<Int, Int>>>
+        ) {
+            container.removeAllViews()
+            val density = activity.resources.displayMetrics.density
+
+            for ((mode, info) in modes) {
+                val card = MaterialCardView(activity).apply {
+                    radius = 12 * density
+                    strokeWidth = (1 * density).toInt()
+                    strokeColor = palette.dividerColor
+                    setCardBackgroundColor(palette.surfaceCard)
+                    val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    lp.setMargins(0, 0, 0, (12 * density).toInt())
+                    layoutParams = lp
+                }
+
+                val row = LinearLayout(activity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+                }
+
+                val radioButton = RadioButton(activity).apply {
+                    isChecked = (currentCustomMode == mode)
+                    isClickable = false
+                    isFocusable = false
+                }
+                radioButtons[mode] = radioButton
+
+                val textLayout = LinearLayout(activity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+                    lp.setMargins((12 * density).toInt(), 0, 0, 0)
+                    layoutParams = lp
+                }
+
+                val titleTv = TextView(activity).apply {
+                    text = activity.getString(info.first)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    setTextColor(palette.textPrimary)
+                }
+
+                val descTv = TextView(activity).apply {
+                    text = activity.getString(info.second)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                    setTextColor(palette.textSecondary)
+                    val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    lp.setMargins(0, (2 * density).toInt(), 0, 0)
+                    layoutParams = lp
+                }
+
+                textLayout.addView(titleTv)
+                textLayout.addView(descTv)
+                row.addView(radioButton)
+                row.addView(textLayout)
+                card.addView(row)
+
+                card.setOnClickListener {
+                    radioButtons.values.forEach { rb -> rb.isChecked = false }
+                    radioButton.isChecked = true
+                    widgetPrefs.saveWidgetCustomThemeMode(mode)
+                    onThemeSelected()
+                    dialog.dismiss()
+                }
+
+                container.addView(card)
+            }
+        }
+
+        populateThemeGroup(dialogBinding.layoutLightThemes, lightModes)
+        populateThemeGroup(dialogBinding.layoutDarkThemes, darkModes)
 
         trackDialog(dialog)
         dialog.show()
@@ -1775,7 +2124,7 @@ class SettingsDialogManager(
     }
 
     fun shareProject() {
-        val message = activity.getString(R.string.share_message_body, BETA_SUPPORT_URL)
+        val message = activity.getString(R.string.share_message_body, PLAY_STORE_URL, WEBSITE_URL)
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, message)
@@ -1785,6 +2134,7 @@ class SettingsDialogManager(
     }
 
     companion object {
-        const val BETA_SUPPORT_URL = UrlConfig.URL_SUPPORT
+        const val PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.weatherapp.libre"
+        const val WEBSITE_URL = "https://www.weatherapplibre.ca"
     }
 }

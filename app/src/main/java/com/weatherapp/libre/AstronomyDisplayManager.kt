@@ -510,8 +510,16 @@ class AstronomyDisplayManager(
             if (rvWeek.layoutManager == null) {
                 rvWeek.layoutManager = LinearLayoutManager(activity)
             }
-            if (!::lunarCalendarAdapter.isInitialized) {
-                lunarCalendarAdapter = com.weatherapp.libre.almanac.LunarDayAdapter()
+            val shouldShowNextPhase = !isLunarFilterActive
+            val shouldHighlightSpecialEvents = !isLunarFilterActive
+            if (!::lunarCalendarAdapter.isInitialized ||
+                lunarCalendarAdapter.showNextPhaseCountdown != shouldShowNextPhase ||
+                lunarCalendarAdapter.highlightSpecialEvents != shouldHighlightSpecialEvents
+            ) {
+                lunarCalendarAdapter = com.weatherapp.libre.almanac.LunarDayAdapter(
+                    showNextPhaseCountdown = shouldShowNextPhase,
+                    highlightSpecialEvents = shouldHighlightSpecialEvents
+                )
             }
             rvWeek.adapter = lunarCalendarAdapter
 

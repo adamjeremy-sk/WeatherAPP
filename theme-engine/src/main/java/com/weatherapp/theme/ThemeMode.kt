@@ -12,4 +12,6 @@ object ThemeMode {
     const val TERRACOTTA = 8
     const val FROST = 9
     const val ORANGE_GROVE = 11
+    const val FRUTIGER_AERO = 12
+    const val HARDY_HERON = 13
 }

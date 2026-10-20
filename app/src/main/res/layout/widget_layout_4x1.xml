@@ -1,243 +1,303 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="4dp"
-    android:background="@drawable/bg_widget_container">
+    android:padding="4dp">
 
-    <!-- Tab Bar: 4 Location Tabs -->
-    <LinearLayout
-        android:id="@+id/layout_tab_bar"
+    <ImageView
+        android:id="@+id/iv_widget_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="2dp">
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_widget_container"
+        android:scaleType="fitXY" />
 
-        <TextView
-            android:id="@+id/btn_widget_tab_0"
-            android:layout_width="0dp"
-            android:layout_height="22dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="2dp"
-            android:background="@drawable/bg_widget_pill_selected"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="2dp"
-            android:paddingEnd="2dp"
-            android:text="Tab 1"
-            android:textColor="@color/widget_text_primary"
-            android:textSize="9sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/btn_widget_tab_1"
-            android:layout_width="0dp"
-            android:layout_height="22dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="2dp"
-            android:background="@drawable/bg_widget_pill_unselected"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="2dp"
-            android:paddingEnd="2dp"
-            android:text="Tab 2"
-            android:textColor="@color/widget_text_secondary"
-            android:textSize="9sp" />
-
-        <TextView
-            android:id="@+id/btn_widget_tab_2"
-            android:layout_width="0dp"
-            android:layout_height="22dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="2dp"
-            android:background="@drawable/bg_widget_pill_unselected"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="2dp"
-            android:paddingEnd="2dp"
-            android:text="Tab 3"
-            android:textColor="@color/widget_text_secondary"
-            android:textSize="9sp" />
-
-        <TextView
-            android:id="@+id/btn_widget_tab_3"
-            android:layout_width="0dp"
-            android:layout_height="22dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_widget_pill_unselected"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingStart="2dp"
-            android:paddingEnd="2dp"
-            android:text="Tab 4"
-            android:textColor="@color/widget_text_secondary"
-            android:textSize="9sp" />
-    </LinearLayout>
-
-    <!-- Main Widget Body (Clickable Deep-Link Area) -->
     <LinearLayout
-        android:id="@+id/widget_main_body"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- Left Region: Icon + Arrow Sun Times, Condition, High/Low (weight = 1) -->
+        <!-- Tab Bar: 4 Location Tabs -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/layout_tab_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="2dp">
+
+            <FrameLayout
+                android:id="@+id/btn_widget_tab_0"
+                android:layout_width="0dp"
+                android:layout_height="22dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp">
+
+                <ImageView
+                    android:id="@+id/iv_pill_bg_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_widget_pill_unselected"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/tv_pill_text_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="Tab 1"
+                    android:textColor="#000000"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_widget_tab_1"
+                android:layout_width="0dp"
+                android:layout_height="22dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp">
+
+                <ImageView
+                    android:id="@+id/iv_pill_bg_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_widget_pill_unselected"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/tv_pill_text_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="Tab 2"
+                    android:textColor="#000000"
+                    android:textSize="9sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_widget_tab_2"
+                android:layout_width="0dp"
+                android:layout_height="22dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp">
+
+                <ImageView
+                    android:id="@+id/iv_pill_bg_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_widget_pill_unselected"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/tv_pill_text_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="Tab 3"
+                    android:textColor="#000000"
+                    android:textSize="9sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_widget_tab_3"
+                android:layout_width="0dp"
+                android:layout_height="22dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/iv_pill_bg_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_widget_pill_unselected"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/tv_pill_text_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:text="Tab 4"
+                    android:textColor="#000000"
+                    android:textSize="9sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Main Widget Body (Clickable Deep-Link Area) -->
+        <LinearLayout
+            android:id="@+id/widget_main_body"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Condition Icon -->
-            <ImageView
-                android:id="@+id/iv_widget_condition_icon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="6dp"
-                android:src="@drawable/ic_condition_partly_cloudy" />
-
-            <!-- Left Vertical Column: Arrow Sun Times, Condition, High/Low -->
+            <!-- Left Region: Icon + Arrow Sun Times, Condition, High/Low (weight = 1) -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <!-- Abbreviated Arrow Sun Times Row -->
+                <!-- Condition Icon -->
+                <ImageView
+                    android:id="@+id/iv_widget_condition_icon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_condition_partly_cloudy" />
+
+                <!-- Left Vertical Column: Arrow Sun Times, Condition, High/Low -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Abbreviated Arrow Sun Times Row -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tv_widget_sunrise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="#000000"
+                            android:textSize="10sp"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tv_widget_sunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="#000000"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_widget_condition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Partly Cloudy"
+                        android:textColor="#000000"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tv_widget_high_low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="H:22° L:12°"
+                        android:textColor="#000000"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Middle Region: Temp (weight = 1) -->
+            <TextView
+                android:id="@+id/tv_widget_temp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="18°C"
+                android:textColor="#000000"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="22sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Right Region: Moonrise, Moonset, Natural Light & Moon Phase (weight = 1) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/tv_widget_moonrise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:id="@+id/tv_widget_moonset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="9sp" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="end|center_vertical"
+                    android:layout_gravity="end">
 
                     <TextView
-                        android:id="@+id/tv_widget_sunrise"
+                        android:id="@+id/tv_widget_natural_light_period"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="@color/widget_text_secondary"
-                        android:textSize="10sp"
-                        android:layout_marginEnd="6dp" />
+                        android:textColor="#000000"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="4dp" />
 
                     <TextView
-                        android:id="@+id/tv_widget_sunset"
+                        android:id="@+id/tv_widget_moon_phase"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="@color/widget_text_secondary"
-                        android:textSize="10sp" />
+                        android:text="🌔 78%"
+                        android:textColor="#000000"
+                        android:textSize="9sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_widget_condition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Partly Cloudy"
-                    android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:id="@+id/tv_widget_high_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="H:22° L:12°"
-                    android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Middle Region: Temp (weight = 1) -->
-        <TextView
-            android:id="@+id/tv_widget_temp"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="18°C"
-            android:textColor="@color/widget_text_primary"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="22sp"
-            android:autoSizeMaxTextSize="32sp"
-            android:autoSizeStepGranularity="1sp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" />
-
-        <!-- Right Region: Moonrise, Moonset, Natural Light & Moon Phase (weight = 1) -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="end">
-
-            <TextView
-                android:id="@+id/tv_widget_moonrise"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/widget_text_secondary"
-                android:textSize="9sp" />
-
-            <TextView
-                android:id="@+id/tv_widget_moonset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/widget_text_secondary"
-                android:textSize="9sp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="end|center_vertical"
-                android:layout_gravity="end">
-
-                <TextView
-                    android:id="@+id/tv_widget_natural_light_period"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/widget_accent"
-                    android:textSize="9sp"
-                    android:textStyle="bold"
-                    android:layout_marginEnd="4dp" />
-
-                <TextView
-                    android:id="@+id/tv_widget_moon_phase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="🌔 78%"
-                    android:textColor="@color/widget_accent"
-                    android:textSize="9sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

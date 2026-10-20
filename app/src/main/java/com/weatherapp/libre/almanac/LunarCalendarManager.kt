@@ -20,8 +20,11 @@ object LunarCalendarManager {
         val rawDays = MoonAlmanacManager.getMoonAlmanac(startDate, 7, location, zoneId)
 
         return rawDays.map { day ->
-            val viewingScore = calculateViewingScore(day, hourlyCloudCoverMap, zoneId)
-            day.copy(cloudCoverScore = viewingScore)
+            val scores = calculateViewingScores(day, hourlyCloudCoverMap, zoneId)
+            day.copy(
+                deepSkyScore = scores?.first,
+                lunarViewingScore = scores?.second
+            )
         }
     }
 
@@ -41,22 +44,26 @@ object LunarCalendarManager {
         val rawDays = MoonAlmanacManager.getMoonAlmanac(startDate, daysInMonth, location, zoneId)
 
         return rawDays.map { day ->
-            val viewingScore = calculateViewingScore(day, hourlyCloudCoverMap, zoneId)
-            day.copy(cloudCoverScore = viewingScore)
+            val scores = calculateViewingScores(day, hourlyCloudCoverMap, zoneId)
+            day.copy(
+                deepSkyScore = scores?.first,
+                lunarViewingScore = scores?.second
+            )
         }
     }
 
     /**
-     * Calculates an Astrophotography / Viewing Score (0-100) based on
-     * sky clarity (cloud cover) and sky darkness (illumination).
+     * Calculates Astrophotography / Viewing Scores (0-100) based on
+     * sky clarity (cloud cover) and illumination.
      *
+     * Returns Pair(deepSkyScore, lunarViewingScore).
      * Hides / returns null for dates beyond a 7-day forecast horizon.
      */
-    private fun calculateViewingScore(
+    private fun calculateViewingScores(
         day: MoonAlmanacDay,
         hourlyCloudCoverMap: Map<Instant, Double>?,
         zoneId: ZoneId,
-    ): Double? {
+    ): Pair<Double, Double>? {
         val today = LocalDate.now(zoneId)
         val maxForecastDate = today.plusDays(7)
         if (day.date.isAfter(maxForecastDate)) {
@@ -77,8 +84,10 @@ object LunarCalendarManager {
 
         val darknessScore = (1.0 - 0.5 * illumination) * 100.0
 
-        val finalScore = (skyClarityScore * 0.7 + darknessScore * 0.3).roundToInt().toDouble()
-        return finalScore.coerceIn(0.0, 100.0)
+        val deepSkyScore = (skyClarityScore * 0.7 + darknessScore * 0.3).roundToInt().toDouble().coerceIn(0.0, 100.0)
+        val lunarViewingScore = (skyClarityScore * 0.5 + (illumination * 100.0) * 0.5).roundToInt().toDouble().coerceIn(0.0, 100.0)
+
+        return Pair(deepSkyScore, lunarViewingScore)
     }
 
     private fun getAverageCloudCover(

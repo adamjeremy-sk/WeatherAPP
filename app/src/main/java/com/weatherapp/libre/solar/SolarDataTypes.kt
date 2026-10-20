@@ -9,7 +9,7 @@ data class LightingDefinitions(
     val astronomicalTwilightDegrees: Double = -18.0,
     val goldenHourLowerBoundDegrees: Double = -4.0,
     val goldenHourUpperBoundDegrees: Double = 6.0,
-    val blueHourLowerBoundDegrees: Double = -6.0,
+    val blueHourLowerBoundDegrees: Double = -8.0,
     val blueHourUpperBoundDegrees: Double = -4.0,
 ) {
     companion object {

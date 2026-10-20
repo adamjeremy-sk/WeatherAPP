@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         val savedTheme = locationPreferences.getThemeMode()
 
         val nightMode = when (savedTheme) {
-            LocationPreferences.THEME_LIGHT, LocationPreferences.THEME_CREMA, LocationPreferences.THEME_TERRACOTTA, LocationPreferences.THEME_FROST, LocationPreferences.THEME_ORANGE_GROVE -> AppCompatDelegate.MODE_NIGHT_NO
-            LocationPreferences.THEME_DARK, LocationPreferences.THEME_CHARCOAL, LocationPreferences.THEME_COBALT, LocationPreferences.THEME_JADE, LocationPreferences.THEME_AURORA -> AppCompatDelegate.MODE_NIGHT_YES
+            LocationPreferences.THEME_LIGHT, LocationPreferences.THEME_CREMA, LocationPreferences.THEME_TERRACOTTA, LocationPreferences.THEME_FROST, LocationPreferences.THEME_ORANGE_GROVE, LocationPreferences.THEME_FRUTIGER_AERO -> AppCompatDelegate.MODE_NIGHT_NO
+            LocationPreferences.THEME_DARK, LocationPreferences.THEME_CHARCOAL, LocationPreferences.THEME_COBALT, LocationPreferences.THEME_JADE, LocationPreferences.THEME_AURORA, LocationPreferences.THEME_HARDY_HERON -> AppCompatDelegate.MODE_NIGHT_YES
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)

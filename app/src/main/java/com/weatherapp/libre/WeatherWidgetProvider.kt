@@ -4,8 +4,14 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 
 abstract class BaseWeatherWidgetProvider : AppWidgetProvider() {
+
+    companion object {
+        private var lastUpdateTime = 0L
+        private const val DEBOUNCE_WINDOW_MS = 10_000L // 10 seconds
+    }
 
     override fun onUpdate(
         context: Context,
@@ -13,9 +19,13 @@ abstract class BaseWeatherWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        for (appWidgetId in appWidgetIds) {
-            WidgetSyncWorker.rebuildAndUpdate(context, appWidgetId)
+        val now = System.currentTimeMillis()
+        if (now - lastUpdateTime < DEBOUNCE_WINDOW_MS) {
+            Log.i("WidgetSync", "onUpdate DEBOUNCED (last update ${now - lastUpdateTime}ms ago)")
+            return
         }
+        lastUpdateTime = now
+
         WidgetSyncWorker.enqueueImmediate(context)
     }
 

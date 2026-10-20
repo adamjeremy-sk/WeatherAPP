@@ -4,7 +4,7 @@
     <string name="support_email" translatable="false">support@weatherapplibre.ca</string>
     <string name="menu_item_share_title">Share This Project</string>
     <string name="share_chooser_title">Share WeatherAPP Libre</string>
-    <string name="share_message_body">I\'m beta testing WeatherAPP Libre, a private ad-free weather and natural-light planner with official Environment Canada alerts. Join the beta: %s</string>
+    <string name="share_message_body">Try WeatherAPP Libre — a private, ad-free weather and natural-light planner with official Environment Canada alerts.\n\nDownload on the Play Store: %1$s\nVisit the website: %2$s</string>
     <string name="about_page_title">About WeatherAPP v%1$s</string>
     <string name="alerts_settings_switch_title">Severe Weather Notifications</string>
     <string name="alerts_settings_switch_desc">Receive severe weather warnings, watches, and advisories for your active city. Severe weather notifications additionally require notifications to be enabled for WeatherAPP in Android system settings.</string>
@@ -46,6 +46,9 @@
     <string name="title_behaviour">Behaviour</string>
     <string name="title_info">Info</string>
     <string name="title_weather_models">Weather Models</string>
+    <string name="title_widgets">Widgets</string>
+    <string name="desc_widgets_card">Configure home screen widget appearance and behavior.</string>
+    <string name="title_widgets_settings">Widget Settings</string>
     <string name="drawer_title">Drawer</string>
     <string name="snippet_theme">Palettes, colours, and appearance.</string>
     <string name="snippet_settings">Behaviour, cache, locations, notifications, and models.</string>
@@ -592,6 +595,10 @@
     <string name="theme_crema_desc">Warm creamy off-white background with soft brown accents.</string>
     <string name="theme_frost_title">Frost</string>
     <string name="theme_frost_desc">Cool icy slate blue background</string>
+    <string name="theme_frutiger_aero_title">Frutiger Aero</string>
+    <string name="theme_frutiger_aero_desc">Crisp eco-futurist sky white with aero turquoise</string>
+    <string name="theme_hardy_heron_title">Hardy Heron</string>
+    <string name="theme_hardy_heron_desc">Deep human espresso brown with Ubuntu orange</string>
     <string name="theme_jade_title">Jade</string>
     <string name="theme_jade_desc">Rich forest dark green theme</string>
     <string name="theme_orange_grove_title">Orange Grove</string>
@@ -606,8 +613,16 @@
     <string name="widget_name_2x2">Weather Current (2x1)</string>
     <string name="widget_config_title">Widget Configuration</string>
     <string name="widget_config_theme">Widget Theme</string>
-    <string name="widget_theme_system">Match System (Material You)</string>
+    <string name="widget_theme_system">System Theme</string>
     <string name="widget_theme_boutique">Match App Theme (Boutique)</string>
+    <string name="widget_theme_source_title">Widget Theme</string>
+    <string name="widget_theme_follow">Follow App Theme</string>
+    <string name="widget_theme_custom">Custom Theme</string>
+    <string name="widget_theme_system_desc">Matches your device\'s system light or dark appearance.</string>
+    <string name="widget_theme_follow_desc">Matches the theme currently applied in the app.</string>
+    <string name="widget_theme_currently">Currently: %1$s</string>
+    <string name="widget_theme_not_set">Theme not set</string>
+    <string name="widget_select_custom">Select Theme</string>
     <string name="widget_config_features">Feature Options (4x2 Widget)</string>
     <string name="widget_show_night_vis">Show Night Visibility Score</string>
     <string name="widget_show_solunar">Show Solunar Activity</string>
@@ -617,4 +632,8 @@
     <string name="widget_loading">Loading weather...</string>
     <string name="widget_no_data">No cached weather data</string>
     <string name="widget_no_dark_sky">No True Dark Sky tonight</string>
+    <string name="widget_opacity_title">Widget Opacity</string>
+    <string name="widget_opacity_desc">Adjust the transparency of the widget background.</string>
+    <string name="widget_opacity_format">%1$d%%</string>
+    <string name="lunar_score_dual_format">Stellar: %1$d  |  Selenic: %2$d</string>
 </resources>

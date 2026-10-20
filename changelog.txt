@@ -1,4 +1,21 @@
 ---------------
+Changelog 0.6.5VC25 - 2026/10/20
+---------------
+Note: Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
+
+* Widget Configuration Centralization: Removed the widget configuration popup from the home screen picker flow and centralized all widget management into a dedicated settings menu (Drawer > System > Widgets).
+* Widget Theming & Opacity Control: Introduced full Boutique Theme Engine integration for widgets, allowing users to apply any of the app's bespoke themes (or follow the system/app theme). Added a highly visual Widget Opacity slider (1-100%, default 70%) with a live contrast preview cell, allowing precise translucency calibration against any home screen wallpaper.
+* Boutique Theme Expansion: Added two new Boutique Themes: Frutiger Aero (Light) and Hardy Heron (Dark).
+* System Default Theme Fidelity: Permanently resolved the legacy "System Default Theme" bug. The toggle now flawlessly tracks the device's true light/dark state using un-overridden system configuration resources, ensuring the UI and widgets perfectly mirror the OS polarity.
+* Edge-to-Edge API 35+ Compliance: Re-established full Android 15 compliance by purging deprecated `android:windowLightStatusBar` XML attributes and relying exclusively on the programmatic `WindowInsetsController` for system bar contrast.
+* Astronomical Heuristics Refinement: Adjusted the Blue Hour astronomical window from -6° to -4° down to -8° to -4°, providing astrophotographers with a more accurate and extended deep cobalt sky window. Audited and verified the mathematical integrity of night visibility cloud cover interactions and true dark sky window calculations.
+* Lunar Almanac Polish: Refined the Lunar Calendar to display dual viewing metrics: "Stellar" (favoring dark skies for deep-space observation) and "Selenic" (favoring illuminated moons for lunar observation). Streamlined the 3-year Special Lunar Events sheet by removing redundant "Next Phase" countdowns and suppressing special-event outline strokes for a cleaner list view.
+* 7-Day Forecast Localization & Cleanup: Resolved French localization bypasses for sky conditions and moon phase names in the 7-day forecast. Removed atmospheric lunar phenomena (halos, coronas, moonbows) from the daily forecast expanded cells, keeping them exclusively accessible within the dedicated Moon Phase & Cycle popup to reduce visual clutter.
+* Hero Cell State Fix: Resolved a defect where the main hero weather cell was incorrectly pulling the hero weather state from a previously viewed location tab.
+* Share Intent & Polish: Modernized the "Share This Project" intent with updated Google Play Store and official website calls-to-action.
+* Cache & Polish: Confirmed the default cache TTL correctly identifies 60 minutes and resolved minor widget caching bugs.
+
+---------------
 Changelog 0.6.4VC24 - 2026/10/17
 ---------------
 * Widget Clipping Fix: Tightened the vertical height budget across all three widget layouts (2x1, 4x1, 4x2) by reducing root padding to 4dp, shrinking margins to 2dp, and capping the 4x2 temperature height at 48dp, eliminating layout clipping on constrained third-party and OEM launchers like Niagara and Xiaomi.

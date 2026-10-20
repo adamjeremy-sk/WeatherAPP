@@ -26,6 +26,8 @@ import kotlin.math.roundToInt
 class LunarDayAdapter(
     private var days: List<MoonAlmanacDay> = emptyList(),
     private var themeMode: Int = 1,
+    val showNextPhaseCountdown: Boolean = true,
+    val highlightSpecialEvents: Boolean = true,
     private val onDayClick: ((MoonAlmanacDay) -> Unit)? = null,
 ) : RecyclerView.Adapter<LunarDayAdapter.DayViewHolder>() {
 
@@ -54,7 +56,7 @@ class LunarDayAdapter(
         val day = days[position]
         val isExpanded = expandedPositions.contains(position)
         val isSpecialEventsList = days.size > 7
-        holder.bind(day, position, isExpanded, themeMode, isSpecialEventsList) { pos ->
+        holder.bind(day, position, isExpanded, themeMode, isSpecialEventsList, showNextPhaseCountdown, highlightSpecialEvents) { pos ->
             if (expandedPositions.contains(pos)) {
                 expandedPositions.remove(pos)
             } else {
@@ -113,6 +115,8 @@ class LunarDayAdapter(
             isExpanded: Boolean,
             themeMode: Int,
             isSpecialEventsList: Boolean = false,
+            showNextPhaseCountdown: Boolean = true,
+            highlightSpecialEvents: Boolean = true,
             onToggleExpand: (Int) -> Unit
         ) {
             val palette = BoutiqueThemeEngine.getThemePalette(themeMode)
@@ -134,7 +138,7 @@ class LunarDayAdapter(
                 cardLunarDay.strokeWidth = (2.5f * density).roundToInt()
                 tvDayName.setTextColor(palette.brandPrimary)
                 tvDayDate.setTextColor(palette.brandPrimary)
-            } else if (isSpecialEvent) {
+            } else if (isSpecialEvent && highlightSpecialEvents) {
                 cardLunarDay.setCardBackgroundColor(palette.surfaceCardSecondary)
                 cardLunarDay.strokeColor = palette.brandPrimary
                 cardLunarDay.strokeWidth = (2.5f * density).roundToInt()
@@ -262,7 +266,11 @@ class LunarDayAdapter(
                 // Bind Expanded Geometry
                 val distKm = day.distanceKm.roundToInt()
                 tvMoonDistance.text = itemView.context.getString(R.string.label_moon_distance_km, distKm)
-                tvMoonAgeNextPhase.text = itemView.context.getString(R.string.moon_age_format, day.moonAgeDays) + " • " + itemView.context.getString(R.string.next_phase_countdown_format, day.nextMajorPhaseName, day.daysUntilNextPhase)
+                if (showNextPhaseCountdown) {
+                    tvMoonAgeNextPhase.text = itemView.context.getString(R.string.moon_age_format, day.moonAgeDays) + " • " + itemView.context.getString(R.string.next_phase_countdown_format, day.nextMajorPhaseName, day.daysUntilNextPhase)
+                } else {
+                    tvMoonAgeNextPhase.text = itemView.context.getString(R.string.moon_age_format, day.moonAgeDays)
+                }
 
                 // Eclipse Details
                 if (day.eclipseInfo != null) {
@@ -289,15 +297,16 @@ class LunarDayAdapter(
                 }
 
                 // Viewing Score Section
-                if (day.cloudCoverScore != null) {
+                if (day.deepSkyScore != null) {
                     layoutScoreContainer.visibility = View.VISIBLE
-                    val score = day.cloudCoverScore.roundToInt()
-                    tvViewingScoreTitle.text = itemView.context.getString(R.string.label_viewing_score_format, score)
-                    progressScore.progress = score
+                    val deepSky = day.deepSkyScore.roundToInt()
+                    val lunar = day.lunarViewingScore?.roundToInt() ?: 0
+                    tvViewingScoreTitle.text = itemView.context.getString(R.string.lunar_score_dual_format, deepSky, lunar)
+                    progressScore.progress = deepSky
 
                     val descRes = when {
-                        score >= 70 -> R.string.score_excellent_desc
-                        score >= 40 -> R.string.score_good_desc
+                        deepSky >= 70 -> R.string.score_excellent_desc
+                        deepSky >= 40 -> R.string.score_good_desc
                         else -> R.string.score_poor_desc
                     }
                     tvViewingScoreDesc.text = itemView.context.getString(descRes)

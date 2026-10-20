@@ -85,7 +85,7 @@
                         android:lineSpacingExtra="4dp"
                         android:textColor="@color/text_primary"
                         android:textSize="13.5sp"
-                        tools:text="Privacy Policy content loaded dynamically from privacypolicy.md..." />
+                        tools:text="Privacy Policy content loaded dynamically from the website..." />
 
                 </LinearLayout>
 

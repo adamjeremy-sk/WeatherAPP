@@ -3,7 +3,7 @@
     <string name="app_name">WeatherAPP</string>
     <string name="menu_item_share_title">Partager ce projet</string>
     <string name="share_chooser_title">Partager WeatherAPP Libre</string>
-    <string name="share_message_body">Je teste la version bêta de WeatherAPP Libre, une application météo et de planification de lumière naturelle privée et sans publicité avec les alertes officielles d\'Environnement Canada. Rejoignez la bêta : %s</string>
+    <string name="share_message_body">Essayez WeatherAPP Libre — une application météo et de planification de lumière naturelle privée et sans publicité, avec les alertes officielles d\'Environnement Canada.\n\nTéléchargez sur le Play Store : %1$s\nVisitez le site web : %2$s</string>
     <string name="about_page_title">À propos de WeatherAPP v%1$s</string>
     <string name="alerts_settings_switch_title">Notifications de météo violente</string>
     <string name="alerts_settings_switch_desc">Recevez des avertissements, des veilles et des avis de météo violente pour votre ville active. Les notifications de météo violente nécessitent également que les notifications soient activées pour WeatherAPP dans les paramètres système d\'Android.</string>
@@ -45,6 +45,9 @@
     <string name="title_behaviour">Comportement</string>
     <string name="title_info">Infos</string>
     <string name="title_weather_models">Modèles météo</string>
+    <string name="title_widgets">Widgets</string>
+    <string name="desc_widgets_card">Configurer l\'apparence et le comportement des widgets de l\'écran d\'accueil.</string>
+    <string name="title_widgets_settings">Paramètres des widgets</string>
     <string name="drawer_title">Tiroir</string>
     <string name="snippet_theme">Palettes, couleurs et apparence.</string>
     <string name="snippet_settings">Comportement, cache, lieux, notifications et modèles.</string>
@@ -535,6 +538,10 @@
     <string name="theme_crema_desc">Fond blanc cassé crème et chaud avec des accents brun doux</string>
     <string name="theme_frost_title">Givre</string>
     <string name="theme_frost_desc">Fond bleu ardoise glacé et frais</string>
+    <string name="theme_frutiger_aero_title">Frutiger Aero</string>
+    <string name="theme_frutiger_aero_desc">Fond blanc ciel éco-futuriste avec turquoise aéro</string>
+    <string name="theme_hardy_heron_title">Hardy Heron</string>
+    <string name="theme_hardy_heron_desc">Fond espresso profond avec orange Ubuntu</string>
     <string name="theme_jade_title">Jade</string>
     <string name="theme_jade_desc">Thème vert foncé riche de forêt</string>
     <string name="theme_orange_grove_title">Orangeraie</string>
@@ -549,8 +556,16 @@
     <string name="widget_name_2x2">Météo Actuelle (2x1)</string>
     <string name="widget_config_title">Configuration du widget</string>
     <string name="widget_config_theme">Thème du widget</string>
-    <string name="widget_theme_system">Selon le système (Material You)</string>
+    <string name="widget_theme_system">Thème du système</string>
     <string name="widget_theme_boutique">Selon l\'application (Boutique)</string>
+    <string name="widget_theme_source_title">Thème du widget</string>
+    <string name="widget_theme_follow">Suivre le thème de l\'application</string>
+    <string name="widget_theme_custom">Thème personnalisé</string>
+    <string name="widget_theme_system_desc">Suit l\'apparence claire ou sombre du système de votre appareil.</string>
+    <string name="widget_theme_follow_desc">Suit le thème actuellement appliqué dans l\'application.</string>
+    <string name="widget_theme_currently">Actuellement : %1$s</string>
+    <string name="widget_theme_not_set">Aucun thème défini</string>
+    <string name="widget_select_custom">Sélectionner le thème</string>
     <string name="widget_config_features">Options de fonctionnalités (Widget 4x2)</string>
     <string name="widget_show_night_vis">Afficher le score de visibilité nocturne</string>
     <string name="widget_show_solunar">Afficher l\'activité solunaire</string>
@@ -560,4 +575,8 @@
     <string name="widget_loading">Chargement de la météo...</string>
     <string name="widget_no_data">Aucune donnée météo en cache</string>
     <string name="widget_no_dark_sky">Aucun ciel vraiment noir ce soir</string>
+    <string name="widget_opacity_title">Opacité du widget</string>
+    <string name="widget_opacity_desc">Ajustez la transparence de l\'arrière-plan du widget.</string>
+    <string name="widget_opacity_format">%1$d&#160;%%</string>
+    <string name="lunar_score_dual_format">Stellaire : %1$d | Sélénique : %2$d</string>
 </resources>

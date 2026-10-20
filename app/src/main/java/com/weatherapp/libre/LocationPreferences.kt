@@ -165,6 +165,8 @@ class LocationPreferences(val context: Context) {
         @Deprecated("retained solely to migrate legacy installs")
         const val THEME_FIRE_ENGINE = 10
         const val THEME_ORANGE_GROVE = 11
+        const val THEME_FRUTIGER_AERO = 12
+        const val THEME_HARDY_HERON = 13
 
         const val STARTUP_LAST_USED = 0
         const val STARTUP_FIXED_DEFAULT = 1
@@ -714,8 +716,20 @@ class LocationPreferences(val context: Context) {
 
     fun getThemeMode(): Int = getSavedThemeMode()
 
+    fun resolveEffectiveTheme(themeMode: Int, context: Context = this.context): Int {
+        if (themeMode != THEME_SYSTEM) return themeMode
+        val sysConfig = android.content.res.Resources.getSystem().configuration
+        val nightMode = sysConfig.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        return if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+            THEME_DARK
+        } else {
+            THEME_LIGHT
+        }
+    }
+
     fun saveThemeMode(mode: Int) {
         prefs.edit().putInt(KEY_THEME, mode).apply()
+        WidgetSyncWorker.notifyWidgetsThemeChanged(context)
     }
 
     fun getLunarReminderLeadTimeMinutes(): Int {

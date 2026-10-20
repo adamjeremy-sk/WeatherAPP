@@ -27,7 +27,15 @@ data class ColorPalette(
 
     companion object {
         fun forMode(themeMode: Int, context: Context? = null): ColorPalette {
-            return BoutiqueThemeEngine.getThemePalette(themeMode)
+            val effectiveMode = context?.let {
+                val nightMode = it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+                if (themeMode == ThemeMode.SYSTEM) {
+                    if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) ThemeMode.DARK else ThemeMode.LIGHT
+                } else {
+                    themeMode
+                }
+            } ?: themeMode
+            return BoutiqueThemeEngine.getThemePalette(effectiveMode)
         }
     }
 }

@@ -216,6 +216,12 @@
       color: var(--muted);
       text-align: center;
     }
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
 
     /* Media Queries */
     @media (prefers-reduced-motion: reduce) {
@@ -301,7 +307,7 @@
           <li><a href="roadmap.html">Production Roadmap</a></li>
           <li><a href="changelog.html">Changelog</a></li>
           <li><a href="almanac.html" class="current-page">Lunar Almanac</a></li>
-          <li><a href="support.html">Beta Signup &amp; Support</a></li>
+          <li><a href="https://play.google.com/store/apps/details?id=com.weatherapp.libre" target="_blank" rel="noopener noreferrer">Download on Google Play</a></li>
           <li><a href="https://ko-fi.com/adamjeremy" target="_blank" rel="noopener noreferrer">Support on Ko-fi</a></li>
         </ul>
       </section>
@@ -453,6 +459,14 @@
             <dd>Estimates the ambient light potential for the night. It factors in lunar illumination, moon altitude, twilight phases, and crucially, integrates with local weather forecasts to account for <strong>cloud cover attenuation</strong>, providing a realistic "Viewing Score" for the night.</dd>
           </div>
           <div class="term-item">
+            <dt>Stellar and Selenic Viewing Scores</dt>
+            <dd>To serve both deep-sky and lunar observers, the Lunar Calendar displays two distinct metrics. The <strong>Stellar</strong> score favors dark skies and minimal moonlight, indicating conditions suitable for viewing the Milky Way, stars, and deep-space objects. The <strong>Selenic</strong> score favors high lunar illumination and clear skies, indicating conditions suitable for observing the Moon's surface features.</dd>
+          </div>
+          <div class="term-item">
+            <dt>Special Events Generator</dt>
+            <dd>A calculation engine that generates a three-year forward-looking schedule of special lunar events (eclipses, supermoons, micromoons). This schedule is cached locally, allowing instant browsing of rare celestial alignments within the app's dedicated events view.</dd>
+          </div>
+          <div class="term-item">
             <dt>Solunar Activity</dt>
             <dd>Based on traditional solunar theory, this tool calculates Major and Minor activity periods for wildlife. Major periods occur when the Moon is transiting (directly overhead) or at its nadir (directly underfoot). Minor periods align with moonrise and moonset. Highly utilized by anglers and hunters.</dd>
           </div>
@@ -466,6 +480,7 @@
   </div>
 
   <footer>
+    <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
     WeatherAPP Libre • Lunar Almanac &amp; Astronomical Guide
   </footer>
 
