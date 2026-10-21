@@ -47,7 +47,7 @@ class SnowflakeView @JvmOverloads constructor(
 
     private fun generateFlakes() {
         snowflakes.clear()
-        val count = 45
+        val count = 60
         val w = if (width > 0) width.toFloat() else 1080f
         val h = if (height > 0) height.toFloat() else 1920f
 
@@ -58,7 +58,7 @@ class SnowflakeView @JvmOverloads constructor(
                     y = Random.nextFloat() * h,
                     radius = Random.nextFloat() * 6f + 3f,
                     speedY = Random.nextFloat() * 4f + 2f,
-                    alpha = Random.nextInt(140, 240),
+                    alpha = Random.nextInt(200, 256),
                     xDrift = Random.nextFloat() * 2f - 1f
                 )
             )

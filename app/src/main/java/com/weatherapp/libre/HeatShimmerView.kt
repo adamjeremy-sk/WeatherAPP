@@ -29,7 +29,7 @@ class HeatShimmerView @JvmOverloads constructor(
 
     private val wavePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        strokeWidth = 3f
+        strokeWidth = 4f
         color = Color.parseColor("#44FFA500") // Warm amber heat glow
     }
 
@@ -58,7 +58,7 @@ class HeatShimmerView @JvmOverloads constructor(
 
     private fun generateParticles() {
         heatParticles.clear()
-        val count = 35
+        val count = 50
         val w = if (width > 0) width.toFloat() else 1080f
         val h = if (height > 0) height.toFloat() else 1920f
 
@@ -69,7 +69,7 @@ class HeatShimmerView @JvmOverloads constructor(
                     y = Random.nextFloat() * h,
                     speedY = Random.nextFloat() * 3.5f + 1.5f,
                     radius = Random.nextFloat() * 12f + 6f,
-                    alpha = Random.nextInt(30, 90),
+                    alpha = Random.nextInt(100, 180),
                     waveOffset = Random.nextFloat() * 6.28f
                 )
             )

@@ -1,7 +1,6 @@
 package com.weatherapp.libre
 
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.weatherapp.libre.databinding.ActivityMainBinding
 
@@ -49,7 +48,6 @@ class EasterEggManager(
         stopShimmerEffect()
         binding.snowflakeOverlay.startSnowing()
         binding.root.findViewById<android.view.View>(R.id.btnDismissLowEffect)?.visibility = View.VISIBLE
-        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_snowfall_activated), Toast.LENGTH_SHORT).show()
     }
 
     fun stopSnowEffect() {
@@ -61,7 +59,6 @@ class EasterEggManager(
         stopSnowEffect()
         binding.heatShimmerOverlay.startHeatShimmer()
         binding.root.findViewById<android.view.View>(R.id.btnDismissHighEffect)?.visibility = View.VISIBLE
-        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_heat_shimmer_activated), Toast.LENGTH_SHORT).show()
     }
 
     fun stopShimmerEffect() {

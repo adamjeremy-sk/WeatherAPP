@@ -14,18 +14,6 @@
         android:layout_height="match_parent"
         android:background="@color/background_light">
 
-        <!-- Snowfall Easter Egg Layer -->
-        <com.weatherapp.libre.SnowflakeView
-            android:id="@+id/snowflakeOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <!-- Heat Mirage Shimmer Easter Egg Layer -->
-        <com.weatherapp.libre.HeatShimmerView
-            android:id="@+id/heatShimmerOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -424,6 +412,26 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <!-- Snowfall Easter Egg Layer -->
+        <com.weatherapp.libre.SnowflakeView
+            android:id="@+id/snowflakeOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:elevation="99dp"
+            android:focusable="false"
+            android:translationZ="99dp" />
+
+        <!-- Heat Mirage Shimmer Easter Egg Layer -->
+        <com.weatherapp.libre.HeatShimmerView
+            android:id="@+id/heatShimmerOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:elevation="99dp"
+            android:focusable="false"
+            android:translationZ="99dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
