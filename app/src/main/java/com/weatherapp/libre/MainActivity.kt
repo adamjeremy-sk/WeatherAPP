@@ -388,13 +388,13 @@ class MainActivity : AppCompatActivity() {
 
             if (enabledFlags[subTab] == true) {
                 val label = when (subTab) {
-                    InlineSubTab.CURRENT -> getString(R.string.subtab_current_weather).replace(" ▾", "")
-                    InlineSubTab.HOURLY -> getString(R.string.subtab_hourly_dropdown).replace(" ▾", "")
+                    InlineSubTab.CURRENT -> getString(R.string.subtab_current_weather)
+                    InlineSubTab.HOURLY -> getString(R.string.subtab_hourly_dropdown)
                     InlineSubTab.SEVEN_DAY -> getString(R.string.title_seven_day_forecast)
-                    InlineSubTab.NATURAL_LIGHT -> getString(R.string.subtab_natural_light_dropdown).replace(" ▾", "")
-                    InlineSubTab.DARK_SKY -> getString(R.string.subtab_dark_sky_dropdown).replace(" ▾", "")
-                    InlineSubTab.NIGHT_VISIBILITY -> getString(R.string.subtab_night_vis_dropdown).replace(" ▾", "")
-                    InlineSubTab.SOLUNAR -> getString(R.string.subtab_solunar_dropdown).replace(" ▾", "")
+                    InlineSubTab.NATURAL_LIGHT -> getString(R.string.subtab_natural_light_dropdown)
+                    InlineSubTab.DARK_SKY -> getString(R.string.subtab_dark_sky_dropdown)
+                    InlineSubTab.NIGHT_VISIBILITY -> getString(R.string.subtab_night_vis_dropdown)
+                    InlineSubTab.SOLUNAR -> getString(R.string.subtab_solunar_dropdown)
                     InlineSubTab.LUNAR_CALENDAR -> getString(R.string.title_lunar_calendar)
                 }
                 popup.menu.add(currentGroupId, subTab.ordinal, orderIndex, label)
@@ -403,7 +403,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         popup.setOnMenuItemClickListener { item ->
-            val selectedSubTab = InlineSubTab.values().getOrNull(item.itemId) ?: InlineSubTab.CURRENT
+            val selectedSubTab = InlineSubTab.entries.getOrNull(item.itemId) ?: InlineSubTab.CURRENT
             astronomyManager.switchInlineSubTab(
                 selectedSubTab,
                 weatherDisplayManager.currentLocation,

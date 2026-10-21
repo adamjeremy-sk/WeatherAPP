@@ -2,10 +2,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardSolunarDay"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/surface_card"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
@@ -15,21 +19,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="vertical">
 
-        <!-- Header Row: Date & Rating Badge -->
-        <LinearLayout
+        <!-- Collapsed Summary Row -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutCollapsedHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp">
 
+            <!-- Column 1: Date & Phase Info -->
             <LinearLayout
+                android:id="@+id/layoutSolunarDateInfo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/layoutSolunarRatingInfo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/tvSolunarDate"
@@ -40,22 +50,43 @@
                     android:textStyle="bold"
                     tools:text="THU, MAR 20" />
 
-                <TextView
-                    android:id="@+id/tvSolunarPhase"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
-                    tools:text="Full Moon 🌕 • 100% ill." />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvSolunarPhase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        tools:text="Full Moon 🌕" />
+
+                    <TextView
+                        android:id="@+id/tvSolunarIllumination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        tools:text="100% illuminated" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <!-- Column 2: Rating Badge & Sub-label -->
             <LinearLayout
+                android:id="@+id/layoutSolunarRatingInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/tvSolunarRatingLabel"
@@ -81,53 +112,66 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
+        <!-- Expanded Details Container -->
+        <LinearLayout
+            android:id="@+id/layoutExpandedDetails"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/divider_color" />
-
-        <!-- Astronomical Timings: Moonrise/Set, Transit/Nadir -->
-        <TextView
-            android:id="@+id/tvSolunarMoonRiseSet"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            tools:text="Moonrise: 19:42 • Moonset: 06:15" />
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/tvSolunarTransitNadir"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            tools:text="Transit: 00:58 • Nadir: 12:45" />
+            <View
+                android:id="@+id/viewDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/divider_color" />
 
-        <!-- Major Periods -->
-        <TextView
-            android:id="@+id/tvSolunarMajorPeriods"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            tools:text="Major: 23:58 – 01:58 (Transit), 11:45 – 13:45 (Nadir)" />
+            <!-- Astronomical Timings: Moonrise/Set, Transit/Nadir -->
+            <TextView
+                android:id="@+id/tvSolunarMoonRiseSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                tools:text="Moonrise: 19:42 • Moonset: 06:15" />
 
-        <!-- Minor Periods -->
-        <TextView
-            android:id="@+id/tvSolunarMinorPeriods"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            tools:text="Minor: 19:12 – 20:12 (Rise), 05:45 – 06:45 (Set)" />
+            <TextView
+                android:id="@+id/tvSolunarTransitNadir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                tools:text="Transit: 00:58 • Nadir: 12:45" />
+
+            <!-- Major Periods -->
+            <TextView
+                android:id="@+id/tvSolunarMajorPeriods"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="Major: 23:58 – 01:58 (Transit), 11:45 – 13:45 (Nadir)" />
+
+            <!-- Minor Periods -->
+            <TextView
+                android:id="@+id/tvSolunarMinorPeriods"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                tools:text="Minor: 19:12 – 20:12 (Rise), 05:45 – 06:45 (Set)" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

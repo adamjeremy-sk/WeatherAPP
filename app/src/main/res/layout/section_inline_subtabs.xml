@@ -784,7 +784,7 @@
                     android:contentDescription="@string/cd_prev_day"
                     android:padding="6dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow_left"
+                    android:src="@drawable/ic_chevron_left"
                     app:tint="@color/text_primary" />
 
                 <ImageButton
@@ -795,7 +795,7 @@
                     android:contentDescription="@string/cd_next_day"
                     android:padding="6dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow_right"
+                    android:src="@drawable/ic_chevron_right"
                     app:tint="@color/text_primary" />
             </LinearLayout>
 

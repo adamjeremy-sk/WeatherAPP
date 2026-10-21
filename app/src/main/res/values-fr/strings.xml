@@ -23,8 +23,8 @@
     <string name="gusts_inline_format">(Rafales %1$s)</string>
     <string name="gusts_secondary_format">Rafales : %1$s</string>
     <string name="title_theme">Thème</string>
-    <string name="subtab_current_weather">Météo actuelle ▾</string>
-    <string name="subtab_seven_day">Prévisions sur 7 jours ▾</string>
+    <string name="subtab_current_weather">Météo actuelle</string>
+    <string name="subtab_seven_day">Prévisions sur 7 jours</string>
     <string name="title_seven_day_forecast">Prévisions sur 7 jours</string>
     <string name="title_seven_day_placement">Emplacement des prévisions sur 7 jours</string>
     <string name="desc_seven_day_placement_inline">Affiché en ligne sous la météo actuelle et les prévisions horaires.</string>
@@ -113,11 +113,11 @@
     <string name="btn_maybe_later">Peut-être plus tard</string>
     <string name="btn_donate_kofi">Faire un don (Ko-fi)</string>
     <string name="toast_could_not_open_browser">Impossible d\'ouvrir le navigateur</string>
-    <string name="subtab_hourly_dropdown">Prévisions horaires ▾</string>
-    <string name="subtab_natural_light_dropdown">Lumière naturelle ▾</string>
-    <string name="subtab_dark_sky_dropdown">Ciel noir véritable ▾</string>
-    <string name="subtab_night_vis_dropdown">Visibilité nocturne ▾</string>
-    <string name="subtab_solunar_dropdown">Activité solunaire ▾</string>
+    <string name="subtab_hourly_dropdown">Prévisions horaires</string>
+    <string name="subtab_natural_light_dropdown">Lumière naturelle</string>
+    <string name="subtab_dark_sky_dropdown">Ciel noir véritable</string>
+    <string name="subtab_night_vis_dropdown">Visibilité nocturne</string>
+    <string name="subtab_solunar_dropdown">Activité solunaire</string>
     <string name="toast_continuous_event_alarm_error">Impossible de définir une alarme pour un événement continu</string>
     <string name="title_set_solar_alarm">Définir une alarme solaire</string>
     <string name="msg_set_solar_alarm">Définir une alarme système %1$d minutes avant %2$s (%3$s) ?\n\nHeure de l\'alarme : %4$s</string>

@@ -26,7 +26,7 @@
             android:layout_height="22dp"
             android:layout_marginEnd="12dp"
             android:contentDescription="@string/cd_location_icon"
-            android:src="@drawable/ic_location_pin"
+            android:src="@drawable/ic_map_pin"
             app:tint="@color/text_secondary" />
 
         <LinearLayout
@@ -82,7 +82,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:contentDescription="@string/cd_active_check"
-            android:src="@drawable/ic_location_pin"
+            android:src="@drawable/ic_map_pin"
             android:visibility="gone"
             app:tint="@color/brand_primary"
             tools:visibility="visible" />

@@ -244,7 +244,7 @@
                         android:layout_height="24dp"
                         android:layout_marginStart="8dp"
                         android:contentDescription="@string/widget_select_custom"
-                        android:src="@drawable/ic_arrow_right"
+                        android:src="@drawable/ic_chevron_right"
                         app:tint="@color/text_primary" />
 
                 </LinearLayout>

@@ -123,11 +123,11 @@ class MenuOrganizationTest {
         prefs.saveInlineSubTab(InlineSubTab.HOURLY.ordinal)
 
         val isFreshLaunch = true
-        val freshResolved = if (isFreshLaunch) prefs.getDefaultLaunchSubTab() else InlineSubTab.values()[prefs.getSavedInlineSubTab()]
+        val freshResolved = if (isFreshLaunch) prefs.getDefaultLaunchSubTab() else InlineSubTab.entries[prefs.getSavedInlineSubTab()]
         assertEquals(InlineSubTab.SOLUNAR, freshResolved)
 
         val isRecreation = false
-        val recreationResolved = if (isRecreation) prefs.getDefaultLaunchSubTab() else InlineSubTab.values()[prefs.getSavedInlineSubTab()]
+        val recreationResolved = if (isRecreation) prefs.getDefaultLaunchSubTab() else InlineSubTab.entries[prefs.getSavedInlineSubTab()]
         assertEquals(InlineSubTab.HOURLY, recreationResolved)
     }
 

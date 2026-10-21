@@ -49,9 +49,16 @@ class InstantAdapter : JsonSerializer<Instant>, JsonDeserializer<Instant> {
     }
 }
 
+@androidx.annotation.Keep
+data class Lunar3YearCacheWrapper(
+    val version: Int = LunarCacheManager.CACHE_SCHEMA_VERSION,
+    val data: List<MoonAlmanacDay> = emptyList()
+)
+
 object LunarCacheManager {
 
     private const val CACHE_FILE_NAME = "lunar_events_3yr_cache.json"
+    const val CACHE_SCHEMA_VERSION = 1
 
     val gson: Gson = GsonBuilder()
         .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
@@ -63,8 +70,13 @@ object LunarCacheManager {
         if (!file.exists() || !file.canRead()) return null
         return try {
             val json = file.readText()
-            val type = object : TypeToken<List<MoonAlmanacDay>>() {}.type
-            gson.fromJson<List<MoonAlmanacDay>>(json, type)
+            val type = object : TypeToken<Lunar3YearCacheWrapper>() {}.type
+            val wrapper: Lunar3YearCacheWrapper? = gson.fromJson(json, type)
+            if (wrapper != null && wrapper.version == CACHE_SCHEMA_VERSION) {
+                wrapper.data
+            } else {
+                null
+            }
         } catch (e: Exception) {
             null
         }
@@ -73,7 +85,8 @@ object LunarCacheManager {
     fun save3YearMapCache(context: Context, events: List<MoonAlmanacDay>) {
         try {
             val file = File(context.cacheDir, CACHE_FILE_NAME)
-            val json = gson.toJson(events)
+            val wrapper = Lunar3YearCacheWrapper(version = CACHE_SCHEMA_VERSION, data = events)
+            val json = gson.toJson(wrapper)
             file.writeText(json)
         } catch (e: Exception) {
             // Ignore cache write failure

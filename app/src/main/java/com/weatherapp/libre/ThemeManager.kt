@@ -78,14 +78,15 @@ class ThemeManager(
         binding.btnMenu.setColorFilter(palette.textPrimary)
         binding.ivPin.setColorFilter(palette.brandPrimary)
         binding.tvLocationName.setTextColor(palette.textPrimary)
+        binding.tvLocationName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_down, 0)
+        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(binding.tvLocationName, ColorStateList.valueOf(palette.textPrimary))
+        binding.tvLocationName.compoundDrawablePadding = (4 * density).toInt()
         binding.tvAttribution.setTextColor(palette.textSecondary)
 
         binding.cardLocationTabs.setCardBackgroundColor(palette.surfaceCard)
         binding.cardLocationTabs.strokeColor = palette.dividerColor
         binding.tabLayoutLocations.setSelectedTabIndicatorColor(palette.brandPrimary)
         binding.tabLayoutLocations.setTabTextColors(palette.textSecondary, palette.brandPrimary)
-
-
 
         binding.cardTodayDetails.setCardBackgroundColor(palette.surfaceCard)
         binding.cardTodayDetails.strokeColor = palette.dividerColor
@@ -112,6 +113,9 @@ class ThemeManager(
             iconTint = ColorStateList.valueOf(palette.brandPrimary)
             strokeColor = ColorStateList.valueOf(palette.dividerColor)
             backgroundTintList = ColorStateList.valueOf(palette.surfaceCardSecondary)
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_down, 0)
+            androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(palette.brandPrimary))
+            compoundDrawablePadding = (4 * density).toInt()
         }
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvInlineSelectedDate)?.setTextColor(palette.brandPrimary)

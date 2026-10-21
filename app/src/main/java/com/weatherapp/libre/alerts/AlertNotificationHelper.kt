@@ -115,7 +115,7 @@ object AlertNotificationHelper {
         )
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_location_pin)
+            .setSmallIcon(R.drawable.ic_map_pin)
             .setContentTitle(eventTitle)
             .setContentText(info.headline ?: "${info.event} in effect")
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))

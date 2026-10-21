@@ -86,7 +86,12 @@ class WeatherDisplayManager(
     }
 
     fun updateLocationHeader() {
-        binding.tvLocationName.text = "${currentLocation.displayName} ▾"
+        val density = binding.root.resources.displayMetrics.density
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        binding.tvLocationName.text = currentLocation.displayName
+        binding.tvLocationName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_down, 0)
+        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(binding.tvLocationName, android.content.res.ColorStateList.valueOf(palette.textPrimary))
+        binding.tvLocationName.compoundDrawablePadding = (4 * density).toInt()
     }
 
     fun loadWeather(forceRefresh: Boolean = false, onWeatherLoaded: (() -> Unit)? = null) {

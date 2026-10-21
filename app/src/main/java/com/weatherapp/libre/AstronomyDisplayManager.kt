@@ -51,7 +51,7 @@ class AstronomyDisplayManager(
 ) {
 
     val savedSubTabIdx = locationPreferences.getSavedInlineSubTab()
-    var activeInlineSubTab = InlineSubTab.values().getOrElse(savedSubTabIdx) { InlineSubTab.CURRENT }
+    var activeInlineSubTab = InlineSubTab.entries.getOrElse(savedSubTabIdx) { InlineSubTab.CURRENT }
     var inlineGoldenDate: LocalDate = LocalDate.now()
     lateinit var inlineSolarPhaseAdapter: SolarPhaseAdapter
     var hourlyDisplayManager: HourlyDisplayManager? = null
@@ -174,6 +174,13 @@ class AstronomyDisplayManager(
         activity.findViewById<View>(R.id.layoutInlineLunarCalendarContainer)?.visibility = lunarCalendarVis
 
         val btnMenu = activity.findViewById<MaterialButton>(R.id.btnInlineMenu)
+        if (btnMenu != null) {
+            val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+            val density = activity.resources.displayMetrics.density
+            btnMenu.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_down, 0)
+            androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(btnMenu, android.content.res.ColorStateList.valueOf(palette.brandPrimary))
+            btnMenu.compoundDrawablePadding = (4 * density).toInt()
+        }
         when (subTab) {
             InlineSubTab.CURRENT -> {
                 btnMenu?.text = activity.getString(R.string.subtab_current_weather)
@@ -472,14 +479,29 @@ class AstronomyDisplayManager(
 
         // Special Events Filter Toggle Click
         btnFilter?.setOnClickListener {
-            isLunarFilterActive = !isLunarFilterActive
-            updateInlineLunarCalendarDisplay(location)
+            val cachedMap = com.weatherapp.libre.almanac.LunarCacheManager.getCached3YearMap(activity.applicationContext)
+            if (cachedMap != null) {
+                isLunarFilterActive = !isLunarFilterActive
+                updateInlineLunarCalendarDisplay(location)
+            } else {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle(activity.getString(R.string.title_generate_lunar_map))
+                    .setMessage(activity.getString(R.string.msg_generate_lunar_map_warning))
+                    .setPositiveButton(activity.getString(R.string.btn_proceed)) { dialog, _ ->
+                        dialog.dismiss()
+                        trigger3YearLunarMapGeneration(location)
+                    }
+                    .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
         }
 
         if (isLunarFilterActive) {
             tvWeekTitle?.text = activity.getString(R.string.title_special_lunar_events)
-            btnPrev?.visibility = View.GONE
-            btnNext?.visibility = View.GONE
+            btnPrev?.visibility = View.INVISIBLE
+            btnNext?.visibility = View.INVISIBLE
             btnToday?.visibility = View.VISIBLE
             btnFilter?.setColorFilter(palette.brandPrimary)
         } else {
@@ -538,23 +560,14 @@ class AstronomyDisplayManager(
             lunarDebounceJob?.cancel()
             lunarDebounceJob = activity.lifecycleScope.launch {
                 delay(totalDebounceDelayMs) // Volume scroll speed + 30ms debounce
-                val days = if (isLunarFilterActive) {
-                    val cached = com.weatherapp.libre.almanac.LunarCacheManager.getCached3YearMap(activity.applicationContext)
-                    if (cached != null) {
-                        cached
-                    } else {
-                        val rangeStart = LocalDate.now(zoneId).minusMonths(6)
-                        val allDays = com.weatherapp.libre.almanac.MoonAlmanacManager.getMoonAlmanac(
-                            startDate = rangeStart,
-                            daysForward = 365,
-                            location = location,
-                            zoneId = zoneId
-                        )
-                        allDays.filter { day ->
-                            day.isBloodMoon || day.isSupermoon || day.isBlueMoon || day.isHarvestMoon || day.eclipseInfo != null
-                        }
-                    }
+                val cached = if (isLunarFilterActive) {
+                    com.weatherapp.libre.almanac.LunarCacheManager.getCached3YearMap(activity.applicationContext)
+                } else null
+
+                val days = if (isLunarFilterActive && cached != null) {
+                    cached
                 } else {
+                    isLunarFilterActive = false
                     com.weatherapp.libre.almanac.LunarCalendarManager.getWeeklyForecast(
                         startDate = sundayDate,
                         location = location,

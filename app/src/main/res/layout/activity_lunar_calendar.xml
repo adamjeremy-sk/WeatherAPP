@@ -35,7 +35,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_prev_month"
-            android:src="@drawable/ic_arrow_left" />
+            android:src="@drawable/ic_chevron_left" />
 
         <TextView
             android:id="@+id/tvCurrentMonthYear"
@@ -54,7 +54,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_next_month"
-            android:src="@drawable/ic_arrow_right" />
+            android:src="@drawable/ic_chevron_right" />
     </LinearLayout>
 
     <!-- Days of Week Header Row (Sun Mon Tue Wed Thu Fri Sat) -->

@@ -127,6 +127,38 @@ class CacheInspectorTest {
     }
 
     @Test
+    fun testCacheInspectorReadFullContent() {
+        val fakePrefs = TestSharedPreferences()
+        val dummyLongValue = "{" + "\"test\":".repeat(10) + "\"full_content_payload\"}"
+        fakePrefs.edit().putString("alert_full_key", dummyLongValue).commit()
+
+        val tempDir = File(System.getProperty("java.io.tmpdir"), "test_cache_dir_${System.currentTimeMillis()}")
+        tempDir.mkdirs()
+        val testFile = File(tempDir, "cached_file.json")
+        testFile.writeText("{\"file_key\":\"file_payload_content\"}")
+
+        val fakeContext = object : ContextWrapper(null) {
+            override fun getSharedPreferences(name: String?, mode: Int): SharedPreferences {
+                return fakePrefs
+            }
+
+            override fun getCacheDir(): File {
+                return tempDir
+            }
+        }
+
+        val entries = CacheInspector.inspectAll(fakeContext)
+        val prefEntry = entries.first { it.key == "alert_full_key" }
+        val fileEntry = entries.first { it.key == "cached_file.json" }
+
+        val fullPrefContent = CacheInspector.readFullContent(fakeContext, prefEntry)
+        val fullFileContent = CacheInspector.readFullContent(fakeContext, fileEntry)
+
+        assertEquals(dummyLongValue, fullPrefContent)
+        assertEquals("{\"file_key\":\"file_payload_content\"}", fullFileContent)
+    }
+
+    @Test
     fun testWeatherModelMetadataStamping() {
         val response = WeatherResponse(
             latitude = 45.4215,

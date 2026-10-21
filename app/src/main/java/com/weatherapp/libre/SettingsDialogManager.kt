@@ -4,6 +4,8 @@ import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.theme.ColorPalette
 import com.weatherapp.libre.BuildConfig
 import android.app.Dialog
+import androidx.activity.ComponentDialog
+import androidx.activity.OnBackPressedCallback
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -437,7 +439,7 @@ class SettingsDialogManager(
 
         // Populate Western Models
         dialogBinding.rgWesternModels.removeAllViews()
-        val westernModels = ForecastModel.values().filter { it.isWestern }
+        val westernModels = ForecastModel.entries.filter { it.isWestern }
         for (model in westernModels) {
             val card = MaterialCardView(activity).apply {
                 radius = 12 * density
@@ -509,7 +511,7 @@ class SettingsDialogManager(
 
         // Populate Chinese Models
         dialogBinding.rgChineseModels.removeAllViews()
-        val chineseModels = ForecastModel.values().filter { !it.isWestern }
+        val chineseModels = ForecastModel.entries.filter { !it.isWestern }
         for (model in chineseModels) {
             val card = MaterialCardView(activity).apply {
                 radius = 12 * density
@@ -666,7 +668,7 @@ class SettingsDialogManager(
         dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
         dialogBinding.btnSendTestAlert.setOnClickListener { v ->
             val popup = PopupMenu(activity, v)
-            val fixtures = AlertTestHarness.TestFixture.values()
+            val fixtures = AlertTestHarness.TestFixture.entries
             for (i in fixtures.indices) {
                 popup.menu.add(0, i, i, fixtures[i].displayName)
             }
@@ -752,17 +754,18 @@ class SettingsDialogManager(
         val dialogBinding = DialogCacheSettingsBinding.inflate(activity.layoutInflater)
         val cacheSettingsView = dialogBinding.root
 
-        val dialog = object : Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar) {
-            @Suppress("DEPRECATION")
-            override fun onBackPressed() {
+        val dialog = ComponentDialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
                 if (isSubScreenActive) {
                     isSubScreenActive = false
-                    setContentView(cacheSettingsView)
+                    dialog.setContentView(cacheSettingsView)
                 } else {
-                    super.onBackPressed()
+                    dialog.dismiss()
                 }
             }
         }
+        dialog.onBackPressedDispatcher.addCallback(dialog, backCallback)
 
         dialog.window?.let { window ->
             androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -807,7 +810,7 @@ class SettingsDialogManager(
         alertLogCard?.setOnClickListener {
             isSubScreenActive = true
             val alertLogView = createAlertLogView(dialog) {
-                dialog.onBackPressed()
+                dialog.onBackPressedDispatcher.onBackPressed()
             }
             dialog.setContentView(alertLogView)
         }
@@ -823,7 +826,7 @@ class SettingsDialogManager(
         cachedDataCard?.setOnClickListener {
             isSubScreenActive = true
             val inspectorView = createCachedDataInspectorView(dialog) {
-                dialog.onBackPressed()
+                dialog.onBackPressedDispatcher.onBackPressed()
             }
             dialog.setContentView(inspectorView)
         }
@@ -1077,6 +1080,13 @@ class SettingsDialogManager(
                 col.addView(rowHeader)
                 col.addView(snippetTv)
                 card.addView(col)
+
+                card.isClickable = true
+                card.isFocusable = true
+                card.setOnClickListener {
+                    showFullContentViewerDialog(entry)
+                }
+
                 entriesLayout.addView(card)
             }
         }
@@ -1101,6 +1111,145 @@ class SettingsDialogManager(
         root.addView(btnClearAll)
 
         return root
+    }
+
+    private fun showFullContentViewerDialog(entry: CacheEntry) {
+        if (activity.isFinishing || activity.isDestroyed) return
+
+        val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
+        val density = activity.resources.displayMetrics.density
+
+        val detailDialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
+        detailDialog.window?.let { window ->
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+
+        val root = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(palette.backgroundLight)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        // Header Card
+        val cardHeader = MaterialCardView(activity).apply {
+            radius = 0f
+            strokeWidth = 0
+            setCardBackgroundColor(ColorStateList.valueOf(palette.surfaceCard))
+        }
+
+        val headerRow = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding((16 * density).toInt(), (14 * density).toInt(), (16 * density).toInt(), (14 * density).toInt())
+        }
+
+        val btnBack = ImageButton(activity).apply {
+            setImageResource(R.drawable.ic_back)
+            setBackgroundResource(android.R.color.transparent)
+            setColorFilter(palette.textPrimary)
+        }
+        btnBack.setOnClickListener { detailDialog.dismiss() }
+
+        val tvTitle = TextView(activity).apply {
+            text = entry.key
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setTextColor(palette.textPrimary)
+            maxLines = 1
+            ellipsize = android.text.TextUtils.TruncateAt.MIDDLE
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+            lp.setMargins((12 * density).toInt(), 0, (12 * density).toInt(), 0)
+            layoutParams = lp
+        }
+
+        val tvSize = TextView(activity).apply {
+            text = activity.getString(R.string.cache_bytes_format, entry.sizeBytes)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            setTextColor(palette.textSecondary)
+        }
+
+        headerRow.addView(btnBack)
+        headerRow.addView(tvTitle)
+        headerRow.addView(tvSize)
+        cardHeader.addView(headerRow)
+        root.addView(cardHeader)
+
+        // WebView for full content display
+        val webView = android.webkit.WebView(activity).apply {
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f)
+            layoutParams = lp
+
+            settings.apply {
+                javaScriptEnabled = false
+                setSupportZoom(true)
+                builtInZoomControls = true
+                displayZoomControls = false
+            }
+        }
+
+        fun Int.toHexColor(): String = String.format("#%06X", 0xFFFFFF and this)
+
+        val fullPayload = CacheInspector.readFullContent(activity, entry)
+        val escapedPayload = fullPayload
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#39;")
+
+        val bgColorHex = palette.backgroundLight.toHexColor()
+        val textColorHex = palette.textPrimary.toHexColor()
+        val accentColorHex = palette.brandPrimary.toHexColor()
+
+        val htmlContent = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body {
+                    background-color: $bgColorHex;
+                    color: $textColorHex;
+                    margin: 0;
+                    padding: 16px;
+                    font-family: monospace;
+                    font-size: 13px;
+                    line-height: 1.4;
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                }
+                pre {
+                    margin: 0;
+                    padding: 0;
+                    font-family: monospace;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    color: $textColorHex;
+                    border-left: 3px solid $accentColorHex;
+                    padding-left: 10px;
+                }
+            </style>
+            </head>
+            <body>
+            <pre>$escapedPayload</pre>
+            </body>
+            </html>
+        """.trimIndent()
+
+        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+        root.addView(webView)
+
+        detailDialog.setContentView(root)
+        trackDialog(detailDialog)
+        if (!activity.isFinishing && !activity.isDestroyed) {
+            detailDialog.show()
+        }
     }
 
     fun showAlertLogScreen() {
@@ -2019,7 +2168,7 @@ class SettingsDialogManager(
         // Reset to Default button
         dialogBinding.btnResetDefaults.setOnClickListener {
             locationPreferences.saveMenuOrder(LocationPreferences.DEFAULT_MENU_ORDER)
-            locationPreferences.saveMenuEnabledFlags(InlineSubTab.values().associateWith { true })
+            locationPreferences.saveMenuEnabledFlags(InlineSubTab.entries.associateWith { true })
             locationPreferences.saveDefaultLaunchSubTab(InlineSubTab.CURRENT)
             locationPreferences.saveSevenDayAsMenuItem(false)
 

@@ -133,7 +133,6 @@
             android:id="@+id/layoutExpandedPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/surface_card_secondary"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
             android:paddingBottom="16dp"

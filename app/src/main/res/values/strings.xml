@@ -24,8 +24,8 @@
     <string name="gusts_inline_format">(Gusts %1$s)</string>
     <string name="gusts_secondary_format">Gusts: %1$s</string>
     <string name="title_theme">Theme</string>
-    <string name="subtab_current_weather">Current Weather ▾</string>
-    <string name="subtab_seven_day">7-Day Forecast ▾</string>
+    <string name="subtab_current_weather">Current Weather</string>
+    <string name="subtab_seven_day">7-Day Forecast</string>
     <string name="title_seven_day_forecast">7-Day Forecast</string>
     <string name="title_seven_day_placement">7-Day Forecast Placement</string>
     <string name="desc_seven_day_placement_inline">Displayed inline below Current Weather and Hourly Forecast.</string>
@@ -129,11 +129,11 @@
     <string name="toast_could_not_open_browser">Could not open browser</string>
 
     <!-- Astronomy / Solar Strings -->
-    <string name="subtab_hourly_dropdown">Hourly Forecast ▾</string>
-    <string name="subtab_natural_light_dropdown">Natural Light ▾</string>
-    <string name="subtab_dark_sky_dropdown">True Dark Sky ▾</string>
-    <string name="subtab_night_vis_dropdown">Night Visibility ▾</string>
-    <string name="subtab_solunar_dropdown">Solunar Activity ▾</string>
+    <string name="subtab_hourly_dropdown">Hourly Forecast</string>
+    <string name="subtab_natural_light_dropdown">Natural Light</string>
+    <string name="subtab_dark_sky_dropdown">True Dark Sky</string>
+    <string name="subtab_night_vis_dropdown">Night Visibility</string>
+    <string name="subtab_solunar_dropdown">Solunar Activity</string>
     <string name="toast_continuous_event_alarm_error">Cannot set alarm for continuous event</string>
     <string name="title_set_solar_alarm">Set Solar Alarm</string>
     <string name="msg_set_solar_alarm">Set a system alarm for %1$d minutes before %2$s (%3$s)?\n\nAlarm time: %4$s</string>

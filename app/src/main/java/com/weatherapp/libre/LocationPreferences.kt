@@ -323,11 +323,11 @@ class LocationPreferences(val context: Context) {
             return DEFAULT_MENU_ORDER
         }
 
-        val containsAllTabs = InlineSubTab.values().all { list.contains(it.name) }
+        val containsAllTabs = InlineSubTab.entries.all { list.contains(it.name) }
 
         if (!containsAllTabs) {
             val updatedList = list.toMutableList()
-            InlineSubTab.values().forEach { subTab ->
+            InlineSubTab.entries.forEach { subTab ->
                 if (!updatedList.contains(subTab.name)) {
                     updatedList.add(subTab.name)
                 }
@@ -345,7 +345,7 @@ class LocationPreferences(val context: Context) {
     }
 
     fun getMenuEnabledFlags(): Map<InlineSubTab, Boolean> {
-        val defaultFlags = InlineSubTab.values().associateWith { true }
+        val defaultFlags = InlineSubTab.entries.associateWith { true }
         val str = prefs.getString("app_menu_enabled_json", null) ?: return defaultFlags
         return try {
             val map = defaultFlags.toMutableMap()

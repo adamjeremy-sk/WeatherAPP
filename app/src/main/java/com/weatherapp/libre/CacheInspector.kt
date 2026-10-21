@@ -83,6 +83,43 @@ object CacheInspector {
         return entries
     }
 
+    fun readFullContent(context: Context, entry: CacheEntry): String {
+        // 1. Try file in cacheDir
+        try {
+            val cacheDir = context.cacheDir
+            if (cacheDir != null) {
+                val file = java.io.File(cacheDir, entry.key)
+                if (file.exists() && file.isFile && file.canRead()) {
+                    return file.readText()
+                }
+            }
+        } catch (e: Throwable) {
+            // Ignore
+        }
+
+        // 2. Try alert_cache_prefs
+        try {
+            val alertPrefs = context.getSharedPreferences("alert_cache_prefs", Context.MODE_PRIVATE)
+            if (alertPrefs != null && alertPrefs.contains(entry.key)) {
+                return alertPrefs.all[entry.key]?.toString() ?: ""
+            }
+        } catch (e: Throwable) {
+            // Ignore
+        }
+
+        // 3. Try weather_location_prefs
+        try {
+            val weatherPrefs = context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
+            if (weatherPrefs != null && weatherPrefs.contains(entry.key)) {
+                return weatherPrefs.all[entry.key]?.toString() ?: ""
+            }
+        } catch (e: Throwable) {
+            // Ignore
+        }
+
+        return entry.snippet
+    }
+
     fun clearWeatherCache(context: Context, locationPreferences: LocationPreferences? = null) {
         // 1. Clear cacheDir recursively
         try {

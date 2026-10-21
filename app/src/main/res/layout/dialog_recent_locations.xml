@@ -55,6 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_search_new_city"
-        app:icon="@drawable/ic_location_pin" />
+        app:icon="@drawable/ic_map_pin" />
 
 </LinearLayout>

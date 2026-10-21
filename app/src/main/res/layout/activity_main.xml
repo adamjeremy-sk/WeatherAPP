@@ -83,7 +83,7 @@
                             android:layout_width="26dp"
                             android:layout_height="26dp"
                             android:contentDescription="@string/cd_location_pin"
-                            android:src="@drawable/ic_location_pin"
+                            android:src="@drawable/ic_map_pin"
                             app:tint="@color/brand_primary" />
 
                         <LinearLayout

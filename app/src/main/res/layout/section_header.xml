@@ -53,7 +53,7 @@
                             android:layout_width="26dp"
                             android:layout_height="26dp"
                             android:contentDescription="@string/cd_location_pin"
-                            android:src="@drawable/ic_location_pin"
+                            android:src="@drawable/ic_map_pin"
                             app:tint="@color/brand_primary" />
 
                         <LinearLayout
@@ -67,10 +67,12 @@
                                 android:id="@+id/tvLocationName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                app:drawableEndCompat="@drawable/ic_chevron_down"
+                                android:drawablePadding="4dp"
                                 android:textColor="@color/text_primary"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
-                                tools:text="Ottawa, Ontario ▾" />
+                                tools:text="Ottawa, Ontario" />
 
                             <TextView
                                 android:id="@+id/tvAttribution"

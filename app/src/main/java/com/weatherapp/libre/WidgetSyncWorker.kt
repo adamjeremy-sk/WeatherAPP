@@ -371,7 +371,7 @@ class WidgetSyncWorker(
                         darkSkyWindows.find { w -> w.startUtc.isAfter(now) }
                     } else null
 
-                    val darkSkyLabel = context.getString(R.string.subtab_dark_sky_dropdown).replace(" ▾", "")
+                    val darkSkyLabel = context.getString(R.string.subtab_dark_sky_dropdown)
                     val activeDarkSkyWindow = currentDarkSkyWindow ?: upcomingDarkSkyWindow
 
                     if (activeDarkSkyWindow != null) {
