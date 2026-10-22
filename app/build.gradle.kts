@@ -1,3 +1,14 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+val meteoGateApiKey: String = localProperties.getProperty("METEOGATE_API_KEY")
+    ?: (project.findProperty("METEOGATE_API_KEY") as String? ?: "")
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -12,6 +23,8 @@ android {
         targetSdk = 37
         versionCode = 25
         versionName = "0.6.5"
+
+        buildConfigField("String", "METEOGATE_API_KEY", "\"$meteoGateApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,6 +67,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.okhttp)
     implementation(libs.gson)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)

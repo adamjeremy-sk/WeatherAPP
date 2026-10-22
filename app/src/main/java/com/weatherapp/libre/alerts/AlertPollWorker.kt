@@ -67,7 +67,7 @@ class AlertPollWorker(
                 forceRefresh = true
             )
             
-            val activeLiveAlerts = alertManager.getLiveAlertsForLocation(loc.id)
+            val activeLiveAlerts = alertManager.getLiveAlertsForLocation(loc)
             val cachedAlerts = activeLiveAlerts.mapNotNull { with(AlertCache) { it.toCachedAlert(loc) } }
             AlertCache.writeCacheForLocation(appContext, loc, cachedAlerts)
         }

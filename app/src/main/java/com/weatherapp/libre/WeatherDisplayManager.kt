@@ -17,6 +17,9 @@ import com.weatherapp.libre.lunar.getEmoji
 import com.weatherapp.libre.lunar.getNameRes
 import com.weatherapp.libre.lunar.Observer as LunarObserver
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
@@ -33,7 +36,7 @@ class WeatherDisplayManager(
     private val lifecycleScope: CoroutineScope
 ) {
 
-    var currentLocation: LocationItem = LocationItem(0L, "Ottawa", "Ontario", "Canada", 45.4215, -75.6972)
+    var currentLocation: LocationItem = LocationItem(id = 0L, name = "Ottawa", admin1 = "Ontario", country = "Canada", latitude = 45.4215, longitude = -75.6972)
     var locationTimezone: String? = null
     var currentWeatherData: CurrentData? = null
     var currentResponse: WeatherResponse? = null
@@ -94,7 +97,13 @@ class WeatherDisplayManager(
         binding.tvLocationName.compoundDrawablePadding = (4 * density).toInt()
     }
 
+    private var loadWeatherJob: Job? = null
+
     fun loadWeather(forceRefresh: Boolean = false, onWeatherLoaded: (() -> Unit)? = null) {
+        loadWeatherJob?.cancel()
+        locationTimezone = null
+        val targetLocation = currentLocation
+
         val activeModel = locationPreferences.getActiveModelForLocation(currentLocation)
         val isCacheEnabled = locationPreferences.isCacheTtlEnabled()
         val ttlMinutes = locationPreferences.getCacheTtlMinutes()
@@ -112,12 +121,12 @@ class WeatherDisplayManager(
         }
         binding.layoutError.visibility = View.GONE
 
-        lifecycleScope.launch {
+        loadWeatherJob = lifecycleScope.launch {
             binding.tvAttribution.text = activeModel.getSourceAttribution(activity)
 
             val result = repository.getWeatherForecast(
-                latitude = currentLocation.latitude,
-                longitude = currentLocation.longitude,
+                latitude = targetLocation.latitude,
+                longitude = targetLocation.longitude,
                 model = activeModel,
                 forceRefresh = forceRefresh,
                 isCacheEnabled = isCacheEnabled,
@@ -125,64 +134,72 @@ class WeatherDisplayManager(
                 locationPreferences = locationPreferences
             )
 
+            ensureActive()
+            if (targetLocation.latitude != currentLocation.latitude || targetLocation.longitude != currentLocation.longitude || targetLocation.name != currentLocation.name) {
+                android.util.Log.d("WeatherDisplayManager", "Discarding stale weather response for ${targetLocation.name} (current is ${currentLocation.name})")
+                return@launch
+            }
+
             binding.pbLoading.visibility = View.GONE
             binding.swipeRefresh.isRefreshing = false
 
-            result.fold(
-                onSuccess = { response ->
-                    currentResponse = response
-                    locationTimezone = response.timezone
-                    currentWeatherData = response.current
+            if (isActive) {
+                result.fold(
+                    onSuccess = { response ->
+                        currentResponse = response
+                        locationTimezone = response.timezone
+                        currentWeatherData = response.current
 
-                    val unitSystem = locationPreferences.getUnitSystem()
+                        val unitSystem = locationPreferences.getUnitSystem()
 
-                    val todayForecast = repository.processTodayForecast(
-                        response = response,
-                        latitude = currentLocation.latitude,
-                        longitude = currentLocation.longitude
-                    )
+                        val todayForecast = repository.processTodayForecast(
+                            response = response,
+                            latitude = currentLocation.latitude,
+                            longitude = currentLocation.longitude
+                        )
 
-                    dailyForecasts = repository.processDailyForecast(
-                        response = response,
-                        latitude = currentLocation.latitude,
-                        longitude = currentLocation.longitude
-                    )
+                        dailyForecasts = repository.processDailyForecast(
+                            response = response,
+                            latitude = currentLocation.latitude,
+                            longitude = currentLocation.longitude
+                        )
 
-                    forecastAdapter?.setUnitSystem(unitSystem)
-                    forecastAdapter?.setLocation(currentLocation, locationTimezone)
-                    forecastAdapter?.submitList(dailyForecasts)
+                        forecastAdapter?.setUnitSystem(unitSystem)
+                        forecastAdapter?.setLocation(currentLocation, locationTimezone)
+                        forecastAdapter?.submitList(dailyForecasts)
 
-                    if (todayForecast != null) {
-                        selectedDayForecast = todayForecast
-                        updateDetailCard(todayForecast)
-                    } else if (dailyForecasts.isNotEmpty()) {
-                        selectedDayForecast = dailyForecasts.first()
-                        updateDetailCard(dailyForecasts.first())
+                        if (todayForecast != null) {
+                            selectedDayForecast = todayForecast
+                            updateDetailCard(todayForecast)
+                        } else if (dailyForecasts.isNotEmpty()) {
+                            selectedDayForecast = dailyForecasts.first()
+                            updateDetailCard(dailyForecasts.first())
+                        }
+
+                        val cloudMap = extractHourlyCloudCoverMap(response)
+                        astronomyManager.setLocation(currentLocation, locationTimezone)
+                        astronomyManager.currentHourlyCloudCoverMap = cloudMap
+
+                        when (astronomyManager.activeInlineSubTab) {
+                            InlineSubTab.NATURAL_LIGHT -> astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
+                            InlineSubTab.DARK_SKY -> astronomyManager.updateDarkSkyDisplay(currentLocation)
+                            InlineSubTab.NIGHT_VISIBILITY -> astronomyManager.updateNightVisDisplay(currentLocation, cloudMap)
+                            InlineSubTab.SOLUNAR -> astronomyManager.updateSolunarDisplay(currentLocation)
+                            InlineSubTab.LUNAR_CALENDAR -> astronomyManager.updateInlineLunarCalendarDisplay(currentLocation)
+                            else -> {}
+                        }
+
+                        hourlyDisplayManager?.updateHourlyData(response, currentLocation, locationTimezone)
+
+                        updateAlertBanner()
+                        onWeatherLoaded?.invoke()
+                    },
+                    onFailure = {
+                        binding.layoutError.visibility = View.VISIBLE
+                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_failed_load_weather), Toast.LENGTH_SHORT).show()
                     }
-
-                    val cloudMap = extractHourlyCloudCoverMap(response)
-                    astronomyManager.setLocation(currentLocation, locationTimezone)
-                    astronomyManager.currentHourlyCloudCoverMap = cloudMap
-
-                    when (astronomyManager.activeInlineSubTab) {
-                        InlineSubTab.NATURAL_LIGHT -> astronomyManager.updateInlineGoldenHourDisplay(currentLocation)
-                        InlineSubTab.DARK_SKY -> astronomyManager.updateDarkSkyDisplay(currentLocation)
-                        InlineSubTab.NIGHT_VISIBILITY -> astronomyManager.updateNightVisDisplay(currentLocation, cloudMap)
-                        InlineSubTab.SOLUNAR -> astronomyManager.updateSolunarDisplay(currentLocation)
-                        InlineSubTab.LUNAR_CALENDAR -> astronomyManager.updateInlineLunarCalendarDisplay(currentLocation)
-                        else -> {}
-                    }
-
-                    hourlyDisplayManager?.updateHourlyData(response, currentLocation, locationTimezone)
-
-                    updateAlertBanner()
-                    onWeatherLoaded?.invoke()
-                },
-                onFailure = {
-                    binding.layoutError.visibility = View.VISIBLE
-                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_failed_load_weather), Toast.LENGTH_SHORT).show()
-                }
-            )
+                )
+            }
         }
     }
 

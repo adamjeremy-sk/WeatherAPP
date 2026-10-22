@@ -120,7 +120,7 @@ object AlertNotificationHelper {
             .setContentText(info.headline ?: "${info.event} in effect")
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
             .setPriority(if (isSevere) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT)
-            .setGroup("WEATHER_ALERTS_${location.id}")
+            .setGroup(String.format(Locale.US, "WEATHER_ALERTS_%.4f_%.4f", location.latitude, location.longitude))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()

@@ -280,6 +280,7 @@
     <string name="label_uv_index">Indice UV</string>
     <string name="badge_default_location">PAR DÉFAUT</string>
     <string name="source_eccc_protocol">Source : Environnement et Changement climatique Canada (ECCC / Protocole CAP-CP)</string>
+    <string name="source_meteoalarm">MeteoAlarm (UE)</string>
     <string name="label_sunlight_duration">Durée d\'ensoleillement</string>
     <string name="label_moon_phase_cycle">Phase et cycle lunaires</string>
     <string name="label_daily_high">Maximum du jour</string>

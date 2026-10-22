@@ -327,6 +327,7 @@
     <string name="badge_default_location">DEFAULT</string>
 
     <string name="source_eccc_protocol">Source: Environment and Climate Change Canada (ECCC / CAP-CP Protocol)</string>
+    <string name="source_meteoalarm">MeteoAlarm (EU)</string>
     <string name="label_sunlight_duration">Sunlight duration</string>
     <string name="label_moon_phase_cycle">Moon Phase &amp; Cycle</string>
 

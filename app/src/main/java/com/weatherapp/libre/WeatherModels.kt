@@ -17,6 +17,7 @@ data class LocationItem(
     val name: String,
     val admin1: String? = null,
     val country: String? = null,
+    val countryCode: String? = null,
     val latitude: Double,
     val longitude: Double,
     val elevationMeters: Double = 0.0
@@ -48,8 +49,9 @@ data class GeocodingResponse(
 data class GeocodingResult(
     val id: Long,
     val name: String,
-    val admin1: String?,
-    val country: String?,
+    val admin1: String? = null,
+    val country: String? = null,
+    @SerializedName("country_code") val countryCode: String? = null,
     val latitude: Double,
     val longitude: Double,
     val elevation: Double? = 0.0

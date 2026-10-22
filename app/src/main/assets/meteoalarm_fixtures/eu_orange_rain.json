@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "meteoalarm_test_orange_rain_002",
+      "properties": {
+        "event": "Heavy Rain Warning",
+        "phenomenon": "Rain",
+        "awareness_level": "3; orange; Severe",
+        "awareness_type": "2; Rain",
+        "severity": "Severe",
+        "onset": "2026-01-01T00:00:00Z",
+        "expires": "2030-01-01T00:00:00Z",
+        "headline": "Severe Heavy Rain Warning in effect",
+        "description": "Torrential rainfall accumulating 60-90mm expected within 12 hours. Risk of localized flooding.",
+        "instruction": "Avoid driving through flooded roads. Keep drainage channels clear.",
+        "areaDesc": "Central District (EU Test)",
+        "region_name": "Central District",
+        "country": "FR"
+      }
+    }
+  ]
+}

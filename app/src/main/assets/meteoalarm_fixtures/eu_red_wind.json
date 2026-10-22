@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "meteoalarm_test_red_wind_001",
+      "properties": {
+        "event": "Gale-force Wind Warning",
+        "phenomenon": "Wind",
+        "awareness_level": "4; red; Extreme",
+        "awareness_type": "1; Wind",
+        "severity": "Extreme",
+        "onset": "2026-01-01T00:00:00Z",
+        "expires": "2030-01-01T00:00:00Z",
+        "headline": "Extreme Wind Warning in effect for European Region",
+        "description": "Destructive wind gusts exceeding 130 km/h are expected across the region. Threat to life and property.",
+        "instruction": "Remain indoors. Stay away from windows and trees. Secure loose outdoor objects immediately.",
+        "areaDesc": "Metropolitan Region (EU Test)",
+        "region_name": "Metropolitan Region",
+        "country": "DE"
+      }
+    }
+  ]
+}

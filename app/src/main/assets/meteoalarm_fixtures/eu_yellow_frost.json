@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "meteoalarm_test_yellow_frost_003",
+      "properties": {
+        "event": "Frost Advisory",
+        "phenomenon": "Frost",
+        "awareness_level": "2; yellow; Moderate",
+        "awareness_type": "6; Low temperature",
+        "severity": "Moderate",
+        "onset": "2026-01-01T00:00:00Z",
+        "expires": "2030-01-01T00:00:00Z",
+        "headline": "Moderate Frost Advisory in effect",
+        "description": "Temperatures dropping below 0°C causing widespread frost and slick surface conditions.",
+        "instruction": "Exercise caution on untreated roads and walkways. Protect sensitive vegetation.",
+        "areaDesc": "Northern Zone (EU Test)",
+        "region_name": "Northern Zone",
+        "country": "IT"
+      }
+    }
+  ]
+}

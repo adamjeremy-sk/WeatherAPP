@@ -39,9 +39,7 @@ object AlertCache {
     }
 
     fun cacheKey(location: LocationItem): String {
-        val nameClean = location.displayName.lowercase(Locale.getDefault())
-        val coordsClean = String.format(Locale.US, "%.4f,%.4f", location.latitude, location.longitude)
-        return "${nameClean}_${coordsClean}"
+        return String.format(Locale.US, "eccc_alerts_loc_%.4f_%.4f", location.latitude, location.longitude)
     }
 
     fun readCache(context: Context): Map<String, List<CachedAlert>> {

@@ -102,7 +102,7 @@ class AstronomyDisplayManager(
         }
     }
 
-    private var currentLocationItem: LocationItem = LocationItem(0L, "Ottawa", "Ontario", "Canada", 45.4215, -75.6972)
+    private var currentLocationItem: LocationItem = LocationItem(id = 0L, name = "Ottawa", admin1 = "Ontario", country = "Canada", latitude = 45.4215, longitude = -75.6972)
     private var locationTimezoneStr: String? = null
 
     fun setupUI() {

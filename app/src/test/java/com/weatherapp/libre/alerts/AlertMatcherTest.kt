@@ -12,8 +12,8 @@ import java.time.Instant
 
 class AlertMatcherTest {
 
-    private val ottawa = LocationItem(1L, "Ottawa", "Ontario", "Canada", 45.4215, -75.6972)
-    private val vancouver = LocationItem(2L, "Vancouver", "BC", "Canada", 49.2827, -123.1207)
+    private val ottawa = LocationItem(id = 1L, name = "Ottawa", admin1 = "Ontario", country = "Canada", latitude = 45.4215, longitude = -75.6972)
+    private val vancouver = LocationItem(id = 2L, name = "Vancouver", admin1 = "BC", country = "Canada", latitude = 49.2827, longitude = -123.1207)
 
     @Test
     fun testCircleRadiusMatchingTrue() {

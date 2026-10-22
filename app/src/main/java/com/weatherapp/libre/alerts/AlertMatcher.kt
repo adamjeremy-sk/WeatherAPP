@@ -30,7 +30,13 @@ object AlertMatcher {
             // Check areas
             if (info.areaList.isEmpty()) {
                 if (alert.scope.equals("Public", ignoreCase = true)) {
-                    return MatchResult(true, MatchRule.PUBLIC_CANADA, "All Canada (Public Scope)")
+                    val isCanada = location.countryCode.equals("CA", ignoreCase = true) ||
+                            location.country.equals("Canada", ignoreCase = true)
+                    if (isCanada) {
+                        return MatchResult(true, MatchRule.PUBLIC_CANADA, "All Canada (Public Scope)")
+                    } else {
+                        return MatchResult(false, MatchRule.NONE)
+                    }
                 }
             }
 

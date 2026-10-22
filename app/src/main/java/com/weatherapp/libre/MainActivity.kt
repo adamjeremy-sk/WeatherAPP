@@ -137,6 +137,9 @@ class MainActivity : AppCompatActivity() {
 
         locationPreferences.migrateLegacyConsentState()
         AlertConsentDialog.checkAndShowConsentPrompt(this, locationPreferences)
+        if (locationPreferences.getAlertConsentState() == LocationPreferences.ALERT_CONSENT_OPT_IN) {
+            com.weatherapp.libre.alerts.workers.AlertSyncWorker.schedule(applicationContext)
+        }
 
         themeManager.applyTheme(savedTheme)
 
@@ -151,15 +154,7 @@ class MainActivity : AppCompatActivity() {
         setupLocationTabs()
 
         handleNotificationIntent(intent)
-        val handledWidgetIntent = handleWidgetIntent(intent)
-
-        if (!handledWidgetIntent) {
-            val activeIndex = locationPreferences.getActiveTabIndex()
-            val currentLoc = locationPreferences.getTabLocation(activeIndex)
-            weatherDisplayManager.currentLocation = currentLoc
-            weatherDisplayManager.updateLocationHeader()
-            weatherDisplayManager.loadWeather()
-        }
+        handleWidgetIntent(intent)
 
         if (locationPreferences.consumePendingReopenThemeSettings() || intent.getBooleanExtra(EXTRA_REOPEN_THEME_SETTINGS, false)) {
             themeManager.showThemeSettingsScreen()
@@ -414,6 +409,16 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
+    fun loadTabData(position: Int) {
+        val tabCount = locationPreferences.getTabCount()
+        val pos = position.coerceIn(0, tabCount - 1)
+        locationPreferences.saveActiveTabIndex(pos)
+        val selectedLoc = locationPreferences.getTabLocation(pos)
+        weatherDisplayManager.currentLocation = selectedLoc
+        weatherDisplayManager.updateLocationHeader()
+        weatherDisplayManager.loadWeather()
+    }
+
     fun setupLocationTabs() {
         val tabCount = locationPreferences.getTabCount()
         binding.tabLayoutLocations.clearOnTabSelectedListeners()
@@ -429,32 +434,26 @@ class MainActivity : AppCompatActivity() {
                     tab.text = selectedLoc.name
                     WidgetSyncWorker.notifyWidgetsInvalidated(this@MainActivity)
                     if (shouldReloadAfterTabEdit(i, locationPreferences.getActiveTabIndex())) {
-                        weatherDisplayManager.currentLocation = selectedLoc
-                        weatherDisplayManager.updateLocationHeader()
-                        weatherDisplayManager.loadWeather()
+                        loadTabData(i)
                     }
                 }
                 true
             }
         }
 
-        val activeIndex = locationPreferences.getActiveTabIndex().coerceIn(0, tabCount - 1)
-        binding.tabLayoutLocations.getTabAt(activeIndex)?.select()
-
-        updateStickyTabsPosition()
-
         binding.tabLayoutLocations.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) {
-                val pos = tab.position
-                locationPreferences.saveActiveTabIndex(pos)
-                val selectedLoc = locationPreferences.getTabLocation(pos)
-                weatherDisplayManager.currentLocation = selectedLoc
-                weatherDisplayManager.updateLocationHeader()
-                weatherDisplayManager.loadWeather()
+                loadTabData(tab.position)
             }
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
         })
+
+        val activeIndex = locationPreferences.getActiveTabIndex().coerceIn(0, tabCount - 1)
+        binding.tabLayoutLocations.getTabAt(activeIndex)?.select()
+
+        updateStickyTabsPosition()
+        loadTabData(activeIndex)
     }
 
     fun updateActiveTabCity(location: LocationItem) {

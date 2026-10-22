@@ -110,7 +110,7 @@ class FirstLaunchSeedingTest {
 
     @Test
     fun testDefaultLocationConstants() {
-        assertEquals(3L, LocationPreferences.DEFAULT_EDMONTON.id)
+        assertEquals(1001L, LocationPreferences.DEFAULT_EDMONTON.id)
         assertEquals("Edmonton", LocationPreferences.DEFAULT_EDMONTON.name)
         assertEquals("Alberta", LocationPreferences.DEFAULT_EDMONTON.admin1)
         assertEquals("Canada", LocationPreferences.DEFAULT_EDMONTON.country)
@@ -118,7 +118,7 @@ class FirstLaunchSeedingTest {
         assertEquals(-113.4938, LocationPreferences.DEFAULT_EDMONTON.longitude, 0.0001)
         assertEquals(645.0, LocationPreferences.DEFAULT_EDMONTON.elevationMeters, 0.01)
 
-        assertEquals(5L, LocationPreferences.DEFAULT_MONTREAL.id)
+        assertEquals(1002L, LocationPreferences.DEFAULT_MONTREAL.id)
         assertEquals("Montreal", LocationPreferences.DEFAULT_MONTREAL.name)
         assertEquals("Quebec", LocationPreferences.DEFAULT_MONTREAL.admin1)
         assertEquals("Canada", LocationPreferences.DEFAULT_MONTREAL.country)
@@ -126,7 +126,7 @@ class FirstLaunchSeedingTest {
         assertEquals(-73.5674, LocationPreferences.DEFAULT_MONTREAL.longitude, 0.0001)
         assertEquals(216.0, LocationPreferences.DEFAULT_MONTREAL.elevationMeters, 0.01)
 
-        assertEquals(6L, LocationPreferences.DEFAULT_HALIFAX.id)
+        assertEquals(1003L, LocationPreferences.DEFAULT_HALIFAX.id)
         assertEquals("Halifax", LocationPreferences.DEFAULT_HALIFAX.name)
         assertEquals("Nova Scotia", LocationPreferences.DEFAULT_HALIFAX.admin1)
         assertEquals("Canada", LocationPreferences.DEFAULT_HALIFAX.country)

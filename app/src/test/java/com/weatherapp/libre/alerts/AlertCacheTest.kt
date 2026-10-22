@@ -26,8 +26,8 @@ class AlertCacheTest {
         assertNotEquals(keyWinnipeg, keyQuebec)
         assertNotEquals(keyEdmonton, keyQuebec)
 
-        assertEquals("winnipeg, manitoba_49.8951,-97.1384", keyWinnipeg)
-        assertEquals("edmonton, alberta_53.5461,-113.4938", keyEdmonton)
+        assertEquals("eccc_alerts_loc_49.8951_-97.1384", keyWinnipeg)
+        assertEquals("eccc_alerts_loc_53.5461_-113.4938", keyEdmonton)
     }
 
     @Test

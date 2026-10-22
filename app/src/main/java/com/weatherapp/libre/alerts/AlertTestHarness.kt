@@ -3,9 +3,7 @@ package com.weatherapp.libre.alerts
 import android.content.Context
 import android.util.Log
 import com.weatherapp.libre.LocationItem
-import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.alerts.models.CapAlert
-import java.io.InputStream
 import java.util.Locale
 
 object AlertTestHarness {
@@ -25,10 +23,20 @@ object AlertTestHarness {
     fun injectTestFixture(
         context: Context,
         fixture: TestFixture,
-        location: LocationItem,
+        locations: List<LocationItem>,
         timezoneStr: String?,
         alertManager: AlertManager
     ): CapAlert? {
+        val eligibleLocations = locations.filter { loc ->
+            loc.countryCode.equals("CA", ignoreCase = true) ||
+                    loc.country.equals("Canada", ignoreCase = true)
+        }
+
+        if (eligibleLocations.isEmpty()) {
+            Log.w(TAG, "Aborting ECCC test alert injection: No eligible Canadian locations found in list.")
+            return null
+        }
+
         val assetPath = "cap_fixtures/${fixture.filename}"
         val rawXml = try {
             context.assets.open(assetPath).use { it.bufferedReader().readText() }
@@ -37,58 +45,51 @@ object AlertTestHarness {
             return null
         }
 
-        // Re-stamp fixture area circle centered on active location coordinates (radius 50km)
-        val restampedXml = restampFixtureArea(rawXml, location)
+        var lastInjectedAlert: CapAlert? = null
 
-        // Parse XML with CapXmlParser
-        val parsedAlert = CapXmlParser.parse(restampedXml, isTestFixture = true)
-        if (parsedAlert == null) {
-            Log.e(TAG, "Failed to parse test fixture XML for ${fixture.displayName}")
-            return null
-        }
+        for (location in eligibleLocations) {
+            // Re-stamp fixture area circle centered on location coordinates (radius 50km)
+            val restampedXml = restampFixtureArea(rawXml, location)
 
-        // Run through real AlertMatcher
-        val matchResult = AlertMatcher.matchesLocation(parsedAlert, location)
-        Log.d(TAG, "Test Harness Matcher result for ${fixture.displayName}: matched=${matchResult.isMatched}, rule=${matchResult.rule}")
-
-        if (matchResult.isMatched) {
-            val now = java.time.Instant.now()
-            val expirySeconds = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120L else 3600L
-            val futureExpiry = now.plusSeconds(expirySeconds)
-            val updatedInfoList = parsedAlert.infoList.map { info ->
-                info.copy(expires = futureExpiry)
+            // Parse XML with CapXmlParser
+            val parsedAlert = CapXmlParser.parse(restampedXml, isTestFixture = true)
+            if (parsedAlert == null) {
+                Log.e(TAG, "Failed to parse test fixture XML for ${fixture.displayName} at ${location.displayName}")
+                continue
             }
-            val syntheticAlert = parsedAlert.copy(
-                isSyntheticTest = true,
-                infoList = updatedInfoList
-            )
 
-            // Process through AlertManager pipeline (updates in-memory state and saves to AlertLogRepository)
-            alertManager.processCapAlert(
-                alert = syntheticAlert,
-                location = location,
-                timezoneStr = timezoneStr,
-                isForegroundActiveLocation = true
-            )
-            
-            // Write directly to AlertCache with future expiry (at least +1 hour in the future)
-            with(AlertCache) {
-                val cached = syntheticAlert.toCachedAlert(location, isSyntheticTest = true)
-                if (cached != null) {
-                    val nowMs = System.currentTimeMillis()
-                    val expiryOffsetMs = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120000L else 3600000L
-                    val futureExpiresMs = maxOf(cached.expiresUtcMs ?: (nowMs + expiryOffsetMs), nowMs + expiryOffsetMs)
-                    val futureCached = cached.copy(
-                        expiresUtcMs = futureExpiresMs,
-                        isSyntheticTest = true
-                    )
-                    AlertCache.writeCacheForLocation(context, location, listOf(futureCached))
+            // Run through real AlertMatcher
+            val matchResult = AlertMatcher.matchesLocation(parsedAlert, location)
+            Log.d(TAG, "Test Harness Matcher result for ${fixture.displayName} at ${location.displayName}: matched=${matchResult.isMatched}, rule=${matchResult.rule}")
+
+            if (matchResult.isMatched) {
+                val now = java.time.Instant.now()
+                val expirySeconds = if (fixture == TestFixture.SHORT_EXPIRY_TEST) 120L else 3600L
+                val futureExpiry = now.plusSeconds(expirySeconds)
+                val updatedInfoList = parsedAlert.infoList.map { info ->
+                    info.copy(expires = futureExpiry)
                 }
+                val syntheticAlert = parsedAlert.copy(
+                    isSyntheticTest = true,
+                    infoList = updatedInfoList
+                )
+
+                // Feed directly through AlertManager real processing pipeline
+                alertManager.processCapAlert(
+                    alert = syntheticAlert,
+                    location = location,
+                    timezoneStr = timezoneStr,
+                    isForegroundActiveLocation = true
+                )
+
+                Log.d(TAG, "Injected ECCC test alert into ${location.displayName}")
+                lastInjectedAlert = syntheticAlert
+            } else {
+                lastInjectedAlert = parsedAlert
             }
-            return syntheticAlert
         }
 
-        return parsedAlert
+        return lastInjectedAlert
     }
 
     fun restampFixtureArea(xmlString: String, location: LocationItem): String {

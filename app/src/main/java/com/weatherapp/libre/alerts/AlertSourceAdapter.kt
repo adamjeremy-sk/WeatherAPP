@@ -1,12 +1,13 @@
 package com.weatherapp.libre.alerts
 
+import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.CapAlert
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
 
 interface AlertSourceAdapter {
-    fun fetchAlerts(etag: String? = null, lastModified: String? = null): FetchResult
+    fun fetchAlerts(location: LocationItem? = null, etag: String? = null, lastModified: String? = null): FetchResult
 }
 
 data class FetchResult(
@@ -22,12 +23,38 @@ class EcccCapSourceAdapter(
 ) : AlertSourceAdapter {
 
     companion object {
-        // VERIFIED ECCC DATAMART ENDPOINTS:
-        // 1. National CAP Atom Feed: https://dd.weather.gc.ca/alerts/cap/atom/
-        // 2. National CAP Directory: https://dd.weather.gc.ca/alerts/cap/
-        // 3. ECCC MSC Datamart Alerts Service
-        const val ECCC_PRIMARY_ATOM_URL = "https://dd.weather.gc.ca/alerts/cap/atom/"
+        const val ECCC_PRIMARY_ATOM_URL = "https://dd.weather.gc.ca/alerts/cap/atom.xml"
         const val ECCC_FALLBACK_URL = "https://dd.weather.gc.ca/alerts/cap/"
+
+        val PROVINCE_TO_ECCC_CODE = mapOf(
+            "Ontario" to "CWTO",
+            "ON" to "CWTO",
+            "Quebec" to "CWUL",
+            "QC" to "CWUL",
+            "Alberta" to "CWAO",
+            "AB" to "CWAO",
+            "British Columbia" to "CWVR",
+            "BC" to "CWVR",
+            "Saskatchewan" to "CWRK",
+            "SK" to "CWRK",
+            "Manitoba" to "CWRN",
+            "MB" to "CWRN",
+            "Nova Scotia" to "CWHX",
+            "NS" to "CWHX",
+            "New Brunswick" to "CWHN",
+            "NB" to "CWHN",
+            "Newfoundland and Labrador" to "CWNT",
+            "NL" to "CWNT",
+            "Prince Edward Island" to "CWHX",
+            "PE" to "CWHX",
+            "PEI" to "CWHX",
+            "Yukon" to "CWYK",
+            "YT" to "CWYK",
+            "Northwest Territories" to "CWNT",
+            "NT" to "CWNT",
+            "Nunavut" to "CWNT",
+            "NU" to "CWNT"
+        )
 
         private fun defaultHttpClient(): OkHttpClient {
             return OkHttpClient.Builder()
@@ -37,8 +64,20 @@ class EcccCapSourceAdapter(
         }
     }
 
-    override fun fetchAlerts(etag: String?, lastModified: String?): FetchResult {
-        val requestBuilder = Request.Builder().url(ECCC_PRIMARY_ATOM_URL)
+    override fun fetchAlerts(location: LocationItem?, etag: String?, lastModified: String?): FetchResult {
+        val province = location?.admin1?.trim()
+        val ecccCode = if (!province.isNullOrBlank()) {
+            PROVINCE_TO_ECCC_CODE[province]
+                ?: PROVINCE_TO_ECCC_CODE.entries.firstOrNull { it.key.equals(province, ignoreCase = true) }?.value
+        } else null
+
+        val targetUrl = if (ecccCode != null) {
+            "https://dd.weather.gc.ca/alerts/cap/$ecccCode/atom.xml"
+        } else {
+            ECCC_PRIMARY_ATOM_URL
+        }
+
+        val requestBuilder = Request.Builder().url(targetUrl)
         if (!etag.isNullOrBlank()) {
             requestBuilder.header("If-None-Match", etag)
         }
@@ -47,8 +86,16 @@ class EcccCapSourceAdapter(
         }
 
         try {
-            val response = httpClient.newCall(requestBuilder.build()).execute()
-            val code = response.code
+            var response = httpClient.newCall(requestBuilder.build()).execute()
+            var code = response.code
+
+            // Fallback if regional atom.xml returns 404
+            if (code == 404 && targetUrl != ECCC_PRIMARY_ATOM_URL) {
+                val fallbackRequest = Request.Builder().url(ECCC_PRIMARY_ATOM_URL).build()
+                response = httpClient.newCall(fallbackRequest).execute()
+                code = response.code
+            }
+
             val newEtag = response.header("ETag")
             val newLastModified = response.header("Last-Modified")
 
@@ -65,11 +112,10 @@ class EcccCapSourceAdapter(
                 return FetchResult(statusCode = code, etag = newEtag, lastModified = newLastModified, alerts = emptyList())
             }
 
-            // Extract individual CAP XML URLs or parse Atom feed entries
             val capXmlUrls = extractCapXmlUrlsFromFeed(bodyString)
             val alerts = mutableListOf<CapAlert>()
 
-            for (capUrl in capXmlUrls.take(20)) { // limit batch
+            for (capUrl in capXmlUrls.take(20)) {
                 try {
                     val capRequest = Request.Builder().url(capUrl).build()
                     val capResponse = httpClient.newCall(capRequest).execute()

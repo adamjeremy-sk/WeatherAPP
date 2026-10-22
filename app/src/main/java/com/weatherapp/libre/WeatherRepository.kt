@@ -3,9 +3,14 @@ package com.weatherapp.libre
 import com.google.gson.Gson
 import com.weatherapp.libre.solar.Observer
 import com.weatherapp.libre.solar.SolarLightingEngine
+import com.weatherapp.libre.solar.SolarRiseSetSolver
+import kotlin.math.round
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -17,6 +22,8 @@ import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 data class CachedWeatherEntry(
     val response: WeatherResponse,
@@ -60,11 +67,49 @@ class WeatherRepository {
             if (diskTime > 0L && (now - diskTime) < ttlMillis) {
                 val diskJson = locationPreferences.getPersistentCacheJson(cacheKey)
                 if (!diskJson.isNullOrEmpty()) {
-                    return true
+                    try {
+                        val response = gson.fromJson(diskJson, WeatherResponse::class.java)
+                        if (response != null) {
+                            forecastCache[cacheKey] = CachedWeatherEntry(response, diskTime)
+                            return true
+                        }
+                    } catch (e: Exception) {
+                        // Disk JSON parse error fallback
+                    }
                 }
             }
         }
         return false
+    }
+
+    private suspend fun executeCancellableRequest(request: Request): String = suspendCancellableCoroutine { continuation ->
+        val call = client.newCall(request)
+        continuation.invokeOnCancellation {
+            try {
+                call.cancel()
+            } catch (e: Exception) {
+                // Ignore cancellation exception during call.cancel()
+            }
+        }
+        try {
+            val response = call.execute()
+            response.use { resp ->
+                if (!resp.isSuccessful) {
+                    if (!continuation.isCancelled) {
+                        continuation.resumeWithException(IOException("HTTP Error: ${resp.code}"))
+                    }
+                } else {
+                    val bodyString = resp.body?.string() ?: ""
+                    if (!continuation.isCancelled) {
+                        continuation.resume(bodyString)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            if (!continuation.isCancelled) {
+                continuation.resumeWithException(e)
+            }
+        }
     }
 
     /**
@@ -112,11 +157,14 @@ class WeatherRepository {
 
         try {
             coroutineScope {
+                coroutineContext.ensureActive()
                 val forecastDeferred = async { fetchForecastData(latitude, longitude, model) }
                 val extraDeferred = async { fetchBestMatchMetrics(latitude, longitude) }
                 val aqiDeferred = async { fetchAirQualityData(latitude, longitude) }
 
                 val forecastResult = forecastDeferred.await()
+                coroutineContext.ensureActive()
+
                 if (forecastResult.isFailure) {
                     return@coroutineScope forecastResult
                 }
@@ -124,6 +172,7 @@ class WeatherRepository {
                 val weatherResponse = forecastResult.getOrThrow()
                 val extraResponse = extraDeferred.await().getOrNull()
                 val aqiResult = aqiDeferred.await().getOrNull()
+                coroutineContext.ensureActive()
 
                 weatherResponse.fetchedAtEpochMillis = now
                 weatherResponse.sourceModelName = model.idKey
@@ -191,11 +240,12 @@ class WeatherRepository {
                 Result.success(weatherResponse)
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.failure(e)
         }
     }
 
-    private fun fetchForecastData(latitude: Double, longitude: Double, model: ForecastModel): Result<WeatherResponse> {
+    private suspend fun fetchForecastData(latitude: Double, longitude: Double, model: ForecastModel): Result<WeatherResponse> {
         return try {
             val baseUrl = model.baseUrl
             val modelApiString = model.openMeteoKey
@@ -214,26 +264,17 @@ class WeatherRepository {
             android.util.Log.d("WeatherAPI_Routing", "Requesting Model: ${model.displayName} | Endpoint: $baseUrl | URL: $url")
 
             val request = Request.Builder().url(url).get().build()
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    if (response.code == 400 && model == ForecastModel.ECMWF) {
-                        android.util.Log.w("WeatherAPI_Routing", "ECMWF returned HTTP 400, falling back to GFS")
-                        return fetchForecastData(latitude, longitude, ForecastModel.GFS)
-                    }
-                    return Result.failure(IOException("HTTP Error: ${response.code}"))
-                }
-                val bodyString = response.body?.string()
-                    ?: return Result.failure(IOException("Empty response body"))
+            val bodyString = executeCancellableRequest(request)
 
-                val weatherResponse = gson.fromJson(bodyString, WeatherResponse::class.java)
-                Result.success(weatherResponse)
-            }
+            val weatherResponse = gson.fromJson(bodyString, WeatherResponse::class.java)
+            Result.success(weatherResponse)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.failure(e)
         }
     }
 
-    private fun fetchBestMatchMetrics(latitude: Double, longitude: Double): Result<WeatherResponse> {
+    private suspend fun fetchBestMatchMetrics(latitude: Double, longitude: Double): Result<WeatherResponse> {
         return try {
             val url = "https://api.open-meteo.com/v1/forecast?" +
                     "latitude=$latitude" +
@@ -246,34 +287,26 @@ class WeatherRepository {
                     "&timezone=auto"
 
             val request = Request.Builder().url(url).get().build()
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    return Result.failure(IOException("HTTP Error: ${response.code}"))
-                }
-                val bodyString = response.body?.string() ?: return Result.failure(IOException("Empty extra body"))
-                val weatherResponse = gson.fromJson(bodyString, WeatherResponse::class.java)
-                Result.success(weatherResponse)
-            }
+            val bodyString = executeCancellableRequest(request)
+            val weatherResponse = gson.fromJson(bodyString, WeatherResponse::class.java)
+            Result.success(weatherResponse)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.failure(e)
         }
     }
 
-    private fun fetchAirQualityData(latitude: Double, longitude: Double): Result<Int?> {
+    private suspend fun fetchAirQualityData(latitude: Double, longitude: Double): Result<Int?> {
         return try {
             val url = "https://air-quality-api.open-meteo.com/v1/air-quality?" +
                     "latitude=$latitude&longitude=$longitude&current=us_aqi"
 
             val request = Request.Builder().url(url).get().build()
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    return Result.failure(IOException("HTTP Error: ${response.code}"))
-                }
-                val bodyString = response.body?.string() ?: return Result.failure(IOException("Empty AQI body"))
-                val aqiResponse = gson.fromJson(bodyString, AirQualityResponse::class.java)
-                Result.success(aqiResponse.current?.usAqi)
-            }
+            val bodyString = executeCancellableRequest(request)
+            val aqiResponse = gson.fromJson(bodyString, AirQualityResponse::class.java)
+            Result.success(aqiResponse.current?.usAqi)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.failure(e)
         }
     }
@@ -304,6 +337,7 @@ class WeatherRepository {
                         name = it.name,
                         admin1 = it.admin1,
                         country = it.country,
+                        countryCode = it.countryCode,
                         latitude = it.latitude,
                         longitude = it.longitude,
                         elevationMeters = it.elevation ?: 0.0
@@ -313,18 +347,36 @@ class WeatherRepository {
                 Result.success(results)
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.failure(e)
         }
     }
 
-    private fun calculateSolarSummary(latitude: Double, longitude: Double, elevationMeters: Double, date: LocalDate, zoneId: ZoneId): SolarDaySummary {
-        val observer = Observer(latitude, longitude, elevationMeters)
+    fun calculateSolarSummary(
+        latitude: Double,
+        longitude: Double,
+        elevationMeters: Double,
+        date: LocalDate,
+        timezoneStr: String?
+    ): SolarDaySummary {
+        val zoneId = try {
+            if (!timezoneStr.isNullOrBlank()) ZoneId.of(timezoneStr) else ZoneId.systemDefault()
+        } catch (e: Exception) {
+            ZoneId.systemDefault()
+        }
+
+        val observer = Observer(
+            latitudeDegrees = latitude,
+            longitudeDegrees = longitude,
+            elevationMeters = elevationMeters
+        )
+
         val lighting = SolarLightingEngine.calculateSolarLightingPhases(date, zoneId, observer)
 
         val srInstant = lighting.sunrise?.instantUtc
         val ssInstant = lighting.sunset?.instantUtc
-        val srAz = lighting.sunrise?.azimuthDegrees?.toInt()
-        val ssAz = lighting.sunset?.azimuthDegrees?.toInt()
+        val srAz = lighting.sunrise?.azimuthDegrees?.let { round(it).toInt() }
+        val ssAz = lighting.sunset?.azimuthDegrees?.let { round(it).toInt() }
 
         val durationMins = if (srInstant != null && ssInstant != null) {
             ChronoUnit.MINUTES.between(srInstant, ssInstant).coerceAtLeast(0L)
@@ -343,173 +395,169 @@ class WeatherRepository {
             morningBlueHourEnd = lighting.morningBlueHour?.endInstantUtc,
             eveningBlueHourStart = lighting.eveningBlueHour?.startInstantUtc,
             eveningBlueHourEnd = lighting.eveningBlueHour?.endInstantUtc,
-            solarNoonElevationDegrees = lighting.solarNoon?.apparentAltitudeDegrees?.toInt(),
+            solarNoonElevationDegrees = lighting.solarNoon?.apparentAltitudeDegrees?.let { round(it).toInt() },
             daylightDurationMinutes = durationMins
         )
     }
 
-    /**
-     * Processes specifically Today's forecast for cardTodayDetails.
-     */
-    fun processTodayForecast(
-        response: WeatherResponse,
-        latitude: Double,
-        longitude: Double
-    ): DayForecast? {
+    fun processTodayForecast(response: WeatherResponse, latitude: Double, longitude: Double): DayForecast? {
         val daily = response.daily ?: return null
         val times = daily.time ?: return null
         if (times.isEmpty()) return null
 
+        val localZone = try {
+            ZoneId.of(response.timezone ?: "UTC")
+        } catch (e: Exception) {
+            ZoneId.of("UTC")
+        }
+
+        val nowLocal = LocalDate.now(localZone)
+        var todayIdx = -1
+
+        for (i in times.indices) {
+            try {
+                val parsedDate = LocalDate.parse(times[i])
+                if (parsedDate.isEqual(nowLocal)) {
+                    todayIdx = i
+                    break
+                }
+            } catch (e: Exception) {
+                // Ignore date parse
+            }
+        }
+
+        if (todayIdx == -1) todayIdx = 0
+
+        val dateStr = times[todayIdx]
+        val parsedTodayDate = try {
+            LocalDate.parse(dateStr)
+        } catch (e: Exception) {
+            nowLocal
+        }
+
+        val formattedDate = try {
+            val formatter = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
+            parsedTodayDate.format(formatter)
+        } catch (e: Exception) {
+            dateStr
+        }
+
+        val weatherCode = daily.weatherCode?.getOrNull(todayIdx) ?: 0
+        val tempMax = daily.temperatureMax?.getOrNull(todayIdx) ?: 0.0
+        val tempMin = daily.temperatureMin?.getOrNull(todayIdx) ?: 0.0
+        val uvIndex = daily.uvIndexMax?.getOrNull(todayIdx) ?: 0.0
+        val windSpeed = daily.windSpeedMax?.getOrNull(todayIdx) ?: 0.0
+        val windGusts = daily.windGustsMax?.getOrNull(todayIdx)
+        val windDir = daily.windDirectionDominant?.getOrNull(todayIdx)
+
+        val weatherDescription = WeatherCodeUtils.getWeatherDescription(weatherCode)
         val current = response.current
-        val zoneId = try {
-            if (!response.timezone.isNullOrEmpty()) ZoneId.of(response.timezone)
-            else ZoneId.systemDefault()
-        } catch (e: Exception) {
-            ZoneId.systemDefault()
-        }
 
-        val dateStr = times[0]
-        val date = try {
-            LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        } catch (e: Exception) {
-            LocalDate.now(zoneId)
-        }
-
-        val code = daily.weatherCode?.getOrNull(0) ?: current?.weatherCode ?: 0
-        val maxTemp = daily.temperatureMax?.getOrNull(0) ?: current?.temperature ?: 0.0
-        val minTemp = daily.temperatureMin?.getOrNull(0) ?: current?.temperature ?: 0.0
-        val uvMax = daily.uvIndexMax?.getOrNull(0) ?: current?.uvIndex ?: 0.0
-        val windMax = daily.windSpeedMax?.getOrNull(0) ?: current?.windSpeed ?: 0.0
-        val windGustsMax = daily.windGustsMax?.getOrNull(0) ?: current?.windGusts
-        val windDirDominant = daily.windDirectionDominant?.getOrNull(0) ?: current?.windDirection
-
-        val humidity = current?.relativeHumidity?.toInt() ?: 60
-        val visibility = current?.visibilityMeters ?: 10000.0
-        val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
-        val aqi = current?.airQualityIndex
-
-        val solarSummary = calculateSolarSummary(latitude, longitude, response.elevation ?: 0.0, date, zoneId)
-
-        val desc = WeatherCodeUtils.getWeatherDescription(code)
-        val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)
+        val elevation = response.elevation ?: 0.0
+        val solarSummary = calculateSolarSummary(latitude, longitude, elevation, parsedTodayDate, response.timezone)
 
         return DayForecast(
             dateString = dateStr,
             dayOfWeek = "Today",
-            formattedDate = date.format(DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())),
-            weatherCode = code,
-            weatherDescription = desc,
-            iconEmoji = emoji,
-            tempMax = maxTemp,
-            tempMin = minTemp,
-            windSpeedMaxKmH = windMax,
-            windGustsMaxKmH = windGustsMax,
-            windDirectionDominant = windDirDominant,
-            uvIndexMax = uvMax,
-            humidityPct = humidity,
-            visibilityMeters = visibility,
-            cloudCoverPct = cloudCover,
-            airQualityIndex = aqi,
+            formattedDate = formattedDate,
+            weatherCode = weatherCode,
+            weatherDescription = weatherDescription,
+            iconEmoji = "",
+            tempMax = tempMax,
+            tempMin = tempMin,
+            windSpeedMaxKmH = windSpeed,
+            windGustsMaxKmH = windGusts,
+            windDirectionDominant = windDir,
+            uvIndexMax = uvIndex,
+            humidityPct = current?.relativeHumidity?.toInt() ?: 0,
+            visibilityMeters = current?.visibilityMeters ?: 10000.0,
+            cloudCoverPct = current?.cloudCoverPct?.toInt() ?: 0,
+            airQualityIndex = current?.airQualityIndex,
             solarSummary = solarSummary
         )
     }
 
-    /**
-     * Converts raw WeatherResponse into list of DayForecast items for the forecast list (excluding Today).
-     * Tomorrow (the first item in the list) is expanded by default.
-     */
-    fun processDailyForecast(
-        response: WeatherResponse,
-        latitude: Double,
-        longitude: Double
-    ): List<DayForecast> {
+    fun processDailyForecast(response: WeatherResponse, latitude: Double, longitude: Double): List<DayForecast> {
         val daily = response.daily ?: return emptyList()
         val times = daily.time ?: return emptyList()
-        val codes = daily.weatherCode ?: emptyList()
-        val maxTemps = daily.temperatureMax ?: emptyList()
-        val minTemps = daily.temperatureMin ?: emptyList()
-        val uvMaxList = daily.uvIndexMax ?: emptyList()
-        val windMaxList = daily.windSpeedMax ?: emptyList()
-        val windGustsList = daily.windGustsMax ?: emptyList()
-        val windDirsList = daily.windDirectionDominant ?: emptyList()
+        if (times.isEmpty()) return emptyList()
 
-        val current = response.current
-
-        val zoneId = try {
-            if (!response.timezone.isNullOrEmpty()) ZoneId.of(response.timezone)
-            else ZoneId.systemDefault()
+        val localZone = try {
+            ZoneId.of(response.timezone ?: "UTC")
         } catch (e: Exception) {
-            ZoneId.systemDefault()
+            ZoneId.of("UTC")
         }
 
-        val inputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
-        val displayDateFormatter = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+        val nowLocal = LocalDate.now(localZone)
+        val resultList = mutableListOf<DayForecast>()
 
-        val list = mutableListOf<DayForecast>()
-        val count = times.size.coerceAtMost(8)
-        val today = LocalDate.now(zoneId)
-
-        for (i in 0 until count) {
+        for (i in times.indices) {
             val dateStr = times[i]
-            val date = try {
-                LocalDate.parse(dateStr, inputDateFormatter)
+            val parsedDate = try {
+                LocalDate.parse(dateStr)
             } catch (e: Exception) {
-                today.plusDays(i.toLong())
+                null
             }
 
-            if (date.isEqual(today) || i == 0) {
+            if (parsedDate != null && parsedDate.isBefore(nowLocal)) {
                 continue
             }
 
-            val dayOfWeekStr = date.format(dayOfWeekFormatter)
-            val formattedDateStr = date.format(displayDateFormatter)
+            val dayOfWeekStr = if (parsedDate != null) {
+                val diffDays = ChronoUnit.DAYS.between(nowLocal, parsedDate)
+                when (diffDays) {
+                    0L -> "Today"
+                    1L -> "Tomorrow"
+                    else -> parsedDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, Locale.getDefault())
+                }
+            } else {
+                "Day ${i + 1}"
+            }
 
-            val code = codes.getOrNull(i) ?: 0
-            val maxTemp = maxTemps.getOrNull(i) ?: 0.0
-            val minTemp = minTemps.getOrNull(i) ?: 0.0
+            val formattedDate = if (parsedDate != null) {
+                val formatter = DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
+                parsedDate.format(formatter)
+            } else {
+                dateStr
+            }
 
-            val uvMax = uvMaxList.getOrNull(i) ?: current?.uvIndex ?: 0.0
-            val windMax = windMaxList.getOrNull(i) ?: current?.windSpeed ?: 0.0
-            val windGustsMax = windGustsList.getOrNull(i) ?: current?.windGusts
-            val windDirDominant = windDirsList.getOrNull(i) ?: current?.windDirection
+            val weatherCode = daily.weatherCode?.getOrNull(i) ?: 0
+            val tempMax = daily.temperatureMax?.getOrNull(i) ?: 0.0
+            val tempMin = daily.temperatureMin?.getOrNull(i) ?: 0.0
+            val uvIndex = daily.uvIndexMax?.getOrNull(i) ?: 0.0
+            val windSpeed = daily.windSpeedMax?.getOrNull(i) ?: 0.0
+            val windGusts = daily.windGustsMax?.getOrNull(i)
+            val windDir = daily.windDirectionDominant?.getOrNull(i)
 
-            val humidity = current?.relativeHumidity?.toInt() ?: 60
-            val visibility = current?.visibilityMeters ?: 10000.0
-            val cloudCover = current?.cloudCoverPct?.toInt() ?: 0
-            val aqi = current?.airQualityIndex
+            val weatherDescription = WeatherCodeUtils.getWeatherDescription(weatherCode)
 
-            val solarSummary = calculateSolarSummary(latitude, longitude, response.elevation ?: 0.0, date, zoneId)
+            val dayDate = parsedDate ?: nowLocal
+            val elevation = response.elevation ?: 0.0
+            val solarSummary = calculateSolarSummary(latitude, longitude, elevation, dayDate, response.timezone)
 
-            val desc = WeatherCodeUtils.getWeatherDescription(code)
-            val emoji = WeatherCodeUtils.getWeatherEmoji(code, isDay = true)
-
-            val isExpandedByDefault = (list.isEmpty())
-
-            list.add(
+            resultList.add(
                 DayForecast(
                     dateString = dateStr,
                     dayOfWeek = dayOfWeekStr,
-                    formattedDate = formattedDateStr,
-                    weatherCode = code,
-                    weatherDescription = desc,
-                    iconEmoji = emoji,
-                    tempMax = maxTemp,
-                    tempMin = minTemp,
-                    windSpeedMaxKmH = windMax,
-                    windGustsMaxKmH = windGustsMax,
-                    windDirectionDominant = windDirDominant,
-                    uvIndexMax = uvMax,
-                    humidityPct = humidity,
-                    visibilityMeters = visibility,
-                    cloudCoverPct = cloudCover,
-                    airQualityIndex = aqi,
-                    solarSummary = solarSummary,
-                    isExpanded = isExpandedByDefault
+                    formattedDate = formattedDate,
+                    weatherCode = weatherCode,
+                    weatherDescription = weatherDescription,
+                    iconEmoji = "",
+                    tempMax = tempMax,
+                    tempMin = tempMin,
+                    windSpeedMaxKmH = windSpeed,
+                    windGustsMaxKmH = windGusts,
+                    windDirectionDominant = windDir,
+                    uvIndexMax = uvIndex,
+                    humidityPct = response.current?.relativeHumidity?.toInt() ?: 0,
+                    visibilityMeters = response.current?.visibilityMeters ?: 10000.0,
+                    cloudCoverPct = response.current?.cloudCoverPct?.toInt() ?: 0,
+                    airQualityIndex = response.current?.airQualityIndex,
+                    solarSummary = solarSummary
                 )
             )
         }
 
-        return list
+        return resultList
     }
 }

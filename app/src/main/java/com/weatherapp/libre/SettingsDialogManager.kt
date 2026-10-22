@@ -668,37 +668,82 @@ class SettingsDialogManager(
         dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
         dialogBinding.btnSendTestAlert.setOnClickListener { v ->
             val popup = PopupMenu(activity, v)
-            val fixtures = AlertTestHarness.TestFixture.entries
-            for (i in fixtures.indices) {
-                popup.menu.add(0, i, i, fixtures[i].displayName)
+            val ecccFixtures = AlertTestHarness.TestFixture.entries
+            val globalFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.GlobalTestFixture.entries
+
+            for (i in ecccFixtures.indices) {
+                popup.menu.add(0, i, i, ecccFixtures[i].displayName)
             }
+            val dividerItem = popup.menu.add(1, 999, 999, "──────────────")
+            dividerItem.isEnabled = false
+
+            for (i in globalFixtures.indices) {
+                val itemId = ecccFixtures.size + i
+                popup.menu.add(1, itemId, itemId, globalFixtures[i].displayName)
+            }
+
             popup.setOnMenuItemClickListener { menuItem ->
-                val selectedFixture = fixtures[menuItem.itemId]
+                val itemId = menuItem.itemId
                 val currentLoc = if (activity is MainActivity) activity.weatherDisplayManager.currentLocation else locationPreferences.getSavedLocation()
                 val tz = if (activity is MainActivity) activity.weatherDisplayManager.locationTimezone else null
                 val alertMgr = if (activity is MainActivity) activity.alertManager else AlertManager(activity.applicationContext, locationPreferences)
 
-                // Clear previous test dismissals for this fixture so we can re-trigger it
-                locationPreferences.clearPersistentCache()
-                locationPreferences.clearTestAlertDismissals()
-                alertMgr.clearTestAlerts(currentLoc)
+                val savedTabs = (0 until locationPreferences.getTabCount()).map { locationPreferences.getTabLocation(it) }
 
-                val injectedAlert = AlertTestHarness.injectTestFixture(
-                    context = activity.applicationContext,
-                    fixture = selectedFixture,
-                    location = currentLoc,
-                    timezoneStr = tz,
-                    alertManager = alertMgr
-                )
+                if (itemId < ecccFixtures.size) {
+                    val selectedFixture = ecccFixtures[itemId]
+                    locationPreferences.clearPersistentCache()
+                    savedTabs.forEach { alertMgr.clearTestAlerts(it) }
 
-                if (injectedAlert != null) {
-                    AlertNotificationHelper.postNotification(activity.applicationContext, injectedAlert, currentLoc, tz)
-                    if (activity is MainActivity) {
-                        activity.alertBannerManager.updateAlertBanner(currentLoc)
+                    val eligibleEcccTabs = savedTabs.filter { tab ->
+                        tab.countryCode.equals("CA", ignoreCase = true) || tab.country.equals("Canada", ignoreCase = true)
                     }
-                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+
+                    val injectedAlert = AlertTestHarness.injectTestFixture(
+                        context = activity.applicationContext,
+                        fixture = selectedFixture,
+                        locations = eligibleEcccTabs,
+                        timezoneStr = tz,
+                        alertManager = alertMgr
+                    )
+
+                    if (injectedAlert != null) {
+                        val targetNotifyLoc = eligibleEcccTabs.firstOrNull { it.latitude == currentLoc.latitude && it.longitude == currentLoc.longitude }
+                            ?: eligibleEcccTabs.firstOrNull() ?: currentLoc
+                        AlertNotificationHelper.postNotification(activity.applicationContext, injectedAlert, targetNotifyLoc, tz)
+                        if (activity is MainActivity) {
+                            activity.alertBannerManager.updateAlertBanner(currentLoc)
+                        }
+                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                    }
+                } else if (itemId >= ecccFixtures.size && itemId < ecccFixtures.size + globalFixtures.size) {
+                    val globalIdx = itemId - ecccFixtures.size
+                    val selectedFixture = globalFixtures[globalIdx]
+                    locationPreferences.clearPersistentCache()
+
+                    val eligibleGlobalTabs = savedTabs.filter { tab ->
+                        val countryCode = tab.countryCode?.uppercase(Locale.US) ?: ""
+                        com.weatherapp.libre.alerts.routing.AlertProviderRouter.METEOALARM_COUNTRY_CODES.contains(countryCode)
+                    }
+
+                    activity.lifecycleScope.launch {
+                        val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectGlobalTestFixture(
+                            context = activity.applicationContext,
+                            fixture = selectedFixture,
+                            locations = eligibleGlobalTabs
+                        )
+
+                        if (injectedList.isNotEmpty()) {
+                            if (activity is MainActivity) {
+                                activity.alertBannerManager.updateAlertBanner(currentLoc)
+                            }
+                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 true
             }
@@ -733,9 +778,11 @@ class SettingsDialogManager(
                     }
                 }
                 AlertPollWorker.schedule(activity.applicationContext)
+                com.weatherapp.libre.alerts.workers.AlertSyncWorker.schedule(activity.applicationContext)
             } else {
                 locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_OUT)
                 AlertPollWorker.cancel(activity.applicationContext)
+                com.weatherapp.libre.alerts.workers.AlertSyncWorker.cancel(activity.applicationContext)
             }
         }
 

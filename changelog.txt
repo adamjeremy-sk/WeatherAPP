@@ -1,13 +1,14 @@
 ---------------
-Changelog 0.6.6VC26 - 2026/10/
+Changelog 0.6.6VC26 - 2026/10/22
 ---------------
-* Enum values/entries switched
-* onBackPress fixed
-* Icons made
-* Changed how 3-year map is generated
-* Widgets have screenshots
-* Easter eggs
-* Fixed Solunar collapsable panels
+* Unified app iconography with a custom stroke-style design system and stabilized lunar calendar navigation controls.
+* Redesigned the Solunar Activity page with collapsible daily forecasts and standardized expanded detail panels across all forecast views.
+* Resolved a UI freeze when generating the 3-year lunar event map by implementing a versioned background cache.
+* Restored hidden weather easter eggs (snowfall and heat mirage) to render prominently above all UI elements.
+* Added full-content inspection for cached weather data within the settings menu.
+* Added visual preview images for all home screen widgets in the system widget picker.
+* Abbreviated long natural light phases in widgets to prevent text truncation.
+* Modernized internal architecture and back-navigation handling for modern Android compatibility.
 
 ---------------
 Changelog 0.6.5VC25 - 2026/10/20

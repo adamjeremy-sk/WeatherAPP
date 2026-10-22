@@ -5,8 +5,8 @@ import android.util.Log
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.alerts.models.CapAlert
-import com.weatherapp.libre.alerts.models.CapInfo
 import java.time.Instant
+import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 class AlertManager(
@@ -21,8 +21,10 @@ class AlertManager(
     }
 
     private var lastFetchTimeMs = 0L
-    private val liveAlertsByLocation = ConcurrentHashMap<Long, MutableList<CapAlert>>()
-    private val testAlertsByLocation = ConcurrentHashMap<Long, MutableList<CapAlert>>()
+    private val liveAlertsByLocation = ConcurrentHashMap<String, MutableList<CapAlert>>()
+    private val testAlertsByLocation = ConcurrentHashMap<String, MutableList<CapAlert>>()
+
+    private fun locationKey(location: LocationItem): String = String.format(Locale.US, "%.4f_%.4f", location.latitude, location.longitude)
 
     fun processCapAlert(
         alert: CapAlert,
@@ -34,7 +36,8 @@ class AlertManager(
         cleanExpiredAlerts(location)
 
         val targetMap = if (alert.isTestFixture || alert.isSyntheticTest) testAlertsByLocation else liveAlertsByLocation
-        val locationAlerts = targetMap.getOrPut(location.id) { mutableListOf() }
+        val key = locationKey(location)
+        val locationAlerts = targetMap.getOrPut(key) { mutableListOf() }
 
         // Rule 1: Expiry check
         val info = alert.infoList.firstOrNull()
@@ -43,7 +46,7 @@ class AlertManager(
             return false
         }
 
-        when (alert.msgType.lowercase()) {
+        when (alert.msgType.lowercase(Locale.US)) {
             "cancel" -> {
                 // Remove cancelled alerts by referenced IDs
                 val refIds = alert.getReferencedIdentifiers()
@@ -103,6 +106,12 @@ class AlertManager(
             )
         )
 
+        // Sync location alerts to persistent AlertCache
+        val cachedAlerts = locationAlerts.mapNotNull {
+            with(AlertCache) { it.toCachedAlert(location) }
+        }
+        AlertCache.writeCacheForLocation(context, location, cachedAlerts)
+
         return true
     }
 
@@ -119,8 +128,9 @@ class AlertManager(
         return validAlerts.maxByOrNull { it.severityLevel() }
     }
 
-    fun getLiveAlertsForLocation(locationId: Long): List<CapAlert> {
-        return liveAlertsByLocation[locationId]?.toList() ?: emptyList()
+    fun getLiveAlertsForLocation(location: LocationItem): List<CapAlert> {
+        val key = locationKey(location)
+        return liveAlertsByLocation[key]?.toList() ?: emptyList()
     }
 
     fun cleanExpiredAlerts(location: LocationItem) {
@@ -134,15 +144,17 @@ class AlertManager(
             isExpired
         }
 
-        liveAlertsByLocation[location.id]?.removeAll(removeAction)
-        testAlertsByLocation[location.id]?.removeAll(removeAction)
+        val key = locationKey(location)
+        liveAlertsByLocation[key]?.removeAll(removeAction)
+        testAlertsByLocation[key]?.removeAll(removeAction)
     }
 
     fun clearTestAlerts(location: LocationItem) {
-        testAlertsByLocation[location.id]?.forEach { alert ->
+        val key = locationKey(location)
+        testAlertsByLocation[key]?.forEach { alert ->
             AlertNotificationHelper.dismissNotification(context, alert.identifier)
         }
-        testAlertsByLocation.remove(location.id)
+        testAlertsByLocation.remove(key)
     }
 
     fun fetchAndEvaluateAlertsForLocation(
@@ -158,11 +170,16 @@ class AlertManager(
         }
 
         Log.d(TAG, "Fetching live ECCC alerts for location: ${location.displayName}")
-        val fetchResult = sourceAdapter.fetchAlerts()
+        val fetchResult = sourceAdapter.fetchAlerts(location = location)
         lastFetchTimeMs = nowMs
 
+        if (fetchResult.statusCode == 404) {
+            Log.d(TAG, "ECCC Datamart structure requires directory scraping; live fetch suppressed until dedicated sweep.")
+            return 0
+        }
+
         if (fetchResult.statusCode != 200 && fetchResult.statusCode != 304) {
-            Log.e(TAG, "Failed to fetch ECCC alerts: ${fetchResult.errorMessage}")
+            Log.w(TAG, "ECCC alert fetch notice: ${fetchResult.errorMessage}")
             return 0
         }
 

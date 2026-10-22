@@ -9,25 +9,25 @@ import java.time.ZoneId
 
 class AstronomicalManagersTest {
 
-    private val ottawaLocation = LocationItem(1L, "Ottawa", "ON", "Canada", 45.4215, -75.6972)
+    private val ottawaLocation = LocationItem(id = 1L, name = "Ottawa", admin1 = "ON", country = "Canada", latitude = 45.4215, longitude = -75.6972)
     private val zoneId = ZoneId.of("America/Toronto")
 
-    private val quitoLocation = LocationItem(2L, "Quito", "", "Ecuador", -0.1807, -78.4678)
+    private val quitoLocation = LocationItem(id = 2L, name = "Quito", admin1 = "", country = "Ecuador", latitude = -0.1807, longitude = -78.4678)
     private val quitoZone = ZoneId.of("America/Guayaquil")
 
-    private val sydneyLocation = LocationItem(3L, "Sydney", "NSW", "Australia", -33.8688, 151.2093)
+    private val sydneyLocation = LocationItem(id = 3L, name = "Sydney", admin1 = "NSW", country = "Australia", latitude = -33.8688, longitude = 151.2093)
     private val sydneyZone = ZoneId.of("Australia/Sydney")
 
-    private val tromsoLocation = LocationItem(4L, "Tromso", "", "Norway", 69.6492, 18.9553)
+    private val tromsoLocation = LocationItem(id = 4L, name = "Tromso", admin1 = "", country = "Norway", latitude = 69.6492, longitude = 18.9553)
     private val tromsoZone = ZoneId.of("Europe/Oslo")
 
-    private val mcMurdoLocation = LocationItem(5L, "McMurdo", "", "Antarctica", -77.8460, 166.6760)
+    private val mcMurdoLocation = LocationItem(id = 5L, name = "McMurdo", admin1 = "", country = "Antarctica", latitude = -77.8460, longitude = 166.6760)
     private val mcMurdoZone = ZoneId.of("Antarctica/McMurdo")
 
-    private val fijiLocation = LocationItem(6L, "Suva", "", "Fiji", -18.1416, 178.4419)
+    private val fijiLocation = LocationItem(id = 6L, name = "Suva", admin1 = "", country = "Fiji", latitude = -18.1416, longitude = 178.4419)
     private val fijiZone = ZoneId.of("Pacific/Fiji")
 
-    private val adelaideLocation = LocationItem(7L, "Adelaide", "SA", "Australia", -34.9285, 138.6007)
+    private val adelaideLocation = LocationItem(id = 7L, name = "Adelaide", admin1 = "SA", country = "Australia", latitude = -34.9285, longitude = 138.6007)
     private val adelaideZone = ZoneId.of("Australia/Adelaide") // Fractional offset +9:30
 
     @Test

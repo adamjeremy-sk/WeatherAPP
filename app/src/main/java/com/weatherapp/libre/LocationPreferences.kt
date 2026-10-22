@@ -172,7 +172,7 @@ class LocationPreferences(val context: Context) {
         const val STARTUP_FIXED_DEFAULT = 1
 
         val DEFAULT_OTTAWA = LocationItem(
-            id = 1L,
+            id = 1000L,
             name = "Ottawa",
             admin1 = "Ontario",
             country = "Canada",
@@ -182,7 +182,7 @@ class LocationPreferences(val context: Context) {
         )
 
         val DEFAULT_EDMONTON = LocationItem(
-            id = 3L,
+            id = 1001L,
             name = "Edmonton",
             admin1 = "Alberta",
             country = "Canada",
@@ -192,7 +192,7 @@ class LocationPreferences(val context: Context) {
         )
 
         val DEFAULT_MONTREAL = LocationItem(
-            id = 5L,
+            id = 1002L,
             name = "Montreal",
             admin1 = "Quebec",
             country = "Canada",
@@ -202,7 +202,7 @@ class LocationPreferences(val context: Context) {
         )
 
         val DEFAULT_HALIFAX = LocationItem(
-            id = 6L,
+            id = 1003L,
             name = "Halifax",
             admin1 = "Nova Scotia",
             country = "Canada",
@@ -387,24 +387,39 @@ class LocationPreferences(val context: Context) {
         prefs.edit().putString("app_default_launch_sub_tab", subTab.name).apply()
     }
 
+    private fun SharedPreferences.Editor.putDouble(key: String, value: Double): SharedPreferences.Editor {
+        return putLong(key, java.lang.Double.doubleToRawLongBits(value))
+    }
+
+    private fun SharedPreferences.getDouble(key: String, defaultValue: Double): Double {
+        if (!contains(key)) return defaultValue
+        return try {
+            java.lang.Double.longBitsToDouble(getLong(key, 0L))
+        } catch (e: Exception) {
+            getFloat(key, defaultValue.toFloat()).toDouble()
+        }
+    }
+
     fun getTabLocation(tabIndex: Int): LocationItem {
         val keyName = "tab_${tabIndex}_name"
         val name = prefs.getString(keyName, null)
         if (name != null) {
+            val id = prefs.getLong("tab_${tabIndex}_id", (1001 + tabIndex).toLong())
             val admin1 = prefs.getString("tab_${tabIndex}_admin1", null)
             val country = prefs.getString("tab_${tabIndex}_country", null)
-            val lat = prefs.getFloat("tab_${tabIndex}_lat", 0f).toDouble()
-            val lon = prefs.getFloat("tab_${tabIndex}_lon", 0f).toDouble()
-            val elev = prefs.getFloat("tab_${tabIndex}_elev", 0f).toDouble()
-            return LocationItem(name = name, admin1 = admin1, country = country, latitude = lat, longitude = lon, elevationMeters = elev)
+            val countryCode = prefs.getString("tab_${tabIndex}_country_code", null)
+            val lat = prefs.getDouble("tab_${tabIndex}_lat", 0.0)
+            val lon = prefs.getDouble("tab_${tabIndex}_lon", 0.0)
+            val elev = prefs.getDouble("tab_${tabIndex}_elev", 0.0)
+            return LocationItem(id = id, name = name, admin1 = admin1, country = country, countryCode = countryCode, latitude = lat, longitude = lon, elevationMeters = elev)
         }
 
         // Default initial fallbacks for tabs (persist on first read so tabs remain independent and stable)
         val defaultLoc = when (tabIndex) {
             0 -> getInitialLocation()
-            1 -> LocationItem(name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832, elevationMeters = 76.0)
-            2 -> LocationItem(name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702, elevationMeters = 481.0)
-            3 -> LocationItem(name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207, elevationMeters = 0.0)
+            1 -> LocationItem(id = 1004L, name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832, elevationMeters = 76.0)
+            2 -> LocationItem(id = 1005L, name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702, elevationMeters = 481.0)
+            3 -> LocationItem(id = 1006L, name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207, elevationMeters = 0.0)
             else -> getInitialLocation()
         }
 
@@ -414,12 +429,14 @@ class LocationPreferences(val context: Context) {
 
     fun saveTabLocation(tabIndex: Int, location: LocationItem) {
         prefs.edit()
+            .putLong("tab_${tabIndex}_id", location.id)
             .putString("tab_${tabIndex}_name", location.name)
             .putString("tab_${tabIndex}_admin1", location.admin1)
             .putString("tab_${tabIndex}_country", location.country)
-            .putFloat("tab_${tabIndex}_lat", location.latitude.toFloat())
-            .putFloat("tab_${tabIndex}_lon", location.longitude.toFloat())
-            .putFloat("tab_${tabIndex}_elev", location.elevationMeters.toFloat())
+            .putString("tab_${tabIndex}_country_code", location.countryCode)
+            .putDouble("tab_${tabIndex}_lat", location.latitude)
+            .putDouble("tab_${tabIndex}_lon", location.longitude)
+            .putDouble("tab_${tabIndex}_elev", location.elevationMeters)
             .apply()
         WidgetSyncWorker.notifyWidgetsInvalidated(this.context)
     }
@@ -831,12 +848,14 @@ class LocationPreferences(val context: Context) {
         editor.apply()
     }
 
-    fun isAlertDismissed(alertId: String): Boolean {
-        return prefs.getBoolean("${KEY_ALERT_DISMISSED}_$alertId", false)
+    fun isAlertDismissed(alertId: String, location: LocationItem): Boolean {
+        val coordKey = String.format(Locale.US, "%.4f_%.4f", location.latitude, location.longitude)
+        return prefs.getBoolean("${KEY_ALERT_DISMISSED}_${coordKey}_$alertId", false)
     }
 
-    fun dismissAlert(alertId: String) {
-        prefs.edit().putBoolean("${KEY_ALERT_DISMISSED}_$alertId", true).apply()
+    fun dismissAlert(alertId: String, location: LocationItem) {
+        val coordKey = String.format(Locale.US, "%.4f_%.4f", location.latitude, location.longitude)
+        prefs.edit().putBoolean("${KEY_ALERT_DISMISSED}_${coordKey}_$alertId", true).apply()
     }
 
     fun getSavedLocation(): LocationItem = getInitialLocation()
