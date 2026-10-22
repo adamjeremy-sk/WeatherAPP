@@ -7,10 +7,10 @@
     <string name="about_page_title">À propos de WeatherAPP v%1$s</string>
     <string name="alerts_settings_switch_title">Notifications de météo violente</string>
     <string name="alerts_settings_switch_desc">Recevez des avertissements, des veilles et des avis de météo violente pour votre ville active. Les notifications de météo violente nécessitent également que les notifications soient activées pour WeatherAPP dans les paramètres système d\'Android.</string>
-    <string name="alert_consent_title">Alertes de météo violente</string>
-    <string name="alert_consent_message">WeatherAPP peut surveiller en arrière-plan les avertissements de météo violente officiels d\'Environnement et Changement climatique Canada (ECCC) et vous notifier lorsque des conditions météorologiques violentes menacent votre ville active.\n\nLa surveillance en arrière-plan et les notifications sont facultatives et strictement sur option. Souhaitez-vous activer les notifications d\'alerte météo ?</string>
+    <string name="alert_consent_title">Alertes météo sévères</string>
+    <string name="alert_consent_message">WeatherAPP peut surveiller en arrière-plan les avertissements de temps violents officiels émis par Environnement et Changement climatique Canada (ECCC), MeteoAlarm (Europe) et d\'autres services météorologiques régionaux, et vous notifier lorsque des conditions météorologiques dangereuses menacent votre emplacement.\n\nLa surveillance en arrière-plan et les notifications sont facultatives et strictement soumises à votre consentement. Souhaitez-vous activer les notifications d\'alertes météo ?</string>
     <string name="alert_consent_btn_enable">Activer les alertes</string>
-    <string name="alert_consent_btn_no_thanks">Non merci</string>
+    <string name="alert_consent_btn_no_thanks">Non, merci</string>
     <string name="feels_like_format">Ressenti %1$s</string>
     <string name="position_rise_format">Lever %1$s</string>
     <string name="position_set_format">Coucher %1$s</string>

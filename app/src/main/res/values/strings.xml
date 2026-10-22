@@ -9,7 +9,7 @@
     <string name="alerts_settings_switch_title">Severe Weather Notifications</string>
     <string name="alerts_settings_switch_desc">Receive severe weather warnings, watches, and advisories for your active city. Severe weather notifications additionally require notifications to be enabled for WeatherAPP in Android system settings.</string>
     <string name="alert_consent_title">Severe Weather Alerts</string>
-    <string name="alert_consent_message">WeatherAPP can monitor official Environment and Climate Change Canada (ECCC) severe weather warnings in the background and notify you when severe weather threatens your active city.\n\nBackground monitoring and notifications are optional and strictly opt-in. Would you like to enable weather alert notifications?</string>
+    <string name="alert_consent_message">WeatherAPP can monitor official severe weather warnings from Environment and Climate Change Canada (ECCC), MeteoAlarm (Europe), and other regional meteorological services in the background and notify you when severe weather threatens your location.\n\nBackground monitoring and notifications are optional and strictly opt-in. Would you like to enable weather alert notifications?</string>
     <string name="alert_consent_btn_enable">Enable Alerts</string>
     <string name="alert_consent_btn_no_thanks">No Thanks</string>
     <string name="feels_like_format">Feels like %1$s</string>

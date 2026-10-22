@@ -1,15 +1,23 @@
 ---------------
-Changelog 0.6.6VC26 - 2026/10/22
+Changelog 0.7.0VC26 - 2026/10/22
 ---------------
-* Unified app iconography with a custom stroke-style design system and stabilized lunar calendar navigation controls.
-* Redesigned the Solunar Activity page with collapsible daily forecasts and standardized expanded detail panels across all forecast views.
-* Resolved a UI freeze when generating the 3-year lunar event map by implementing a versioned background cache.
-* Restored hidden weather easter eggs (snowfall and heat mirage) to render prominently above all UI elements.
-* Added full-content inspection for cached weather data within the settings menu.
-* Added visual preview images for all home screen widgets in the system widget picker.
-* Abbreviated long natural light phases in widgets to prevent text truncation.
-* Modernized internal architecture and back-navigation handling for modern Android compatibility.
 
+- Refactor Alert Architecture (Major Overhaul):
+  - Implemented EcccProvider for Datamart CAP-CP directory scraping.
+  - Integrated MeteoAlarm provider for comprehensive EU alerts.
+  - Unified GlobalAlertCache and AlertBannerManager pipelines.
+  - Implemented coordinate-scoped dismissals and strict geographic gating.
+  - Added system-level push notifications for Global alerts (with consent enforcement).
+  - Completely excised legacy Atom feed workers and adapters.
+
+- Solar Precision Restoration:
+  - Enforced 64-bit coordinate serialization (resolved 5-min offset bug).
+  - Restored elevation passing for accurate sunrise/sunset azimuth calculations.
+
+- UI/UX & Localization:
+  - Updated multi-provider alert consent dialog (EN/FR).
+  - Stabilized lunar calendar, solunar activity views, and widget previews.
+  
 ---------------
 Changelog 0.6.5VC25 - 2026/10/20
 ---------------

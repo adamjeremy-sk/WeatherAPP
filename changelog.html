@@ -285,7 +285,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc25">0.6.5VC25 (Latest)</a></li>
+          <li><a href="#vc26">0.7.0VC26 (Latest)</a></li>
+          <li><a href="#vc25">0.6.5VC25</a></li>
           <li><a href="#vc24">0.6.4VC24</a></li>
           <li><a href="#vc23">0.6.3VC23</a></li>
           <li><a href="#vc22">0.6.2VC22</a></li>
@@ -338,16 +339,42 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc26" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.7.0VC26
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 22, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Integrated the MeteoAlarm network for comprehensive European weather alerts, complete with system-level push notifications and strict opt-in consent enforcement.</li>
+          <li>Added full-content inspection for cached weather data within the settings menu.</li>
+          <li>Added visual preview images for all home screen widgets in the system widget picker.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Replaced the deprecated Environment Canada Atom feed with a modern Datamart directory scraper that directly parses CAP-CP XML, unifying the Canadian and international alert pipelines.</li>
+          <li>Overhauled the alert state management engine to enforce strict geographic boundaries, eliminating cross-contamination between multi-region tabs and implementing coordinate-scoped dismissal tracking.</li>
+          <li>Unified app iconography with a custom stroke-style design system and stabilized lunar calendar navigation controls.</li>
+          <li>Redesigned the Solunar Activity page with collapsible daily forecasts and standardized expanded detail panels across all forecast views.</li>
+          <li>Abbreviated long natural light phases in widgets to prevent text truncation.</li>
+          <li>Modernized internal architecture and back-navigation handling for modern Android compatibility.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Restored solar calculation precision by enforcing 64-bit coordinate serialization, resolving time offsets and missing azimuth angles in the daily forecast cards.</li>
+          <li>Resolved a UI freeze when generating the 3-year lunar event map by implementing a versioned background cache.</li>
+          <li>Restored hidden weather easter eggs (snowfall and heat mirage) to render prominently above all UI elements.</li>
+        </ul>
+      </section>
+
       <section id="vc25" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.6.5VC25
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 20, 2026</p>
-        <div class="highlight">
-          <strong>Note:</strong> Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
-        </div>
         <h3>Added</h3>
         <ul class="change-list added">
           <li>Widget Configuration Centralization: Removed the widget configuration popup from the home screen picker flow and centralized all widget management into a dedicated settings menu (Drawer &gt; System &gt; Widgets).</li>

@@ -329,7 +329,7 @@
       
       <section class="sidebar-cell" style="border-left: 4px solid var(--success);">
         <strong style="color: var(--success); display: block; margin-bottom: 8px; font-size: 0.95rem;">Current Status</strong>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases I, II, III, and IV are entirely complete. The application is now in Public Beta. Active development focuses on Phase V (Advanced Features) and ongoing refinement.</p>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Phases I, II, III, and IV are entirely complete. The application is now in Public Beta. Active development focuses on Phase V (Advanced Features), the newly deployed modular multi-provider alert architecture (ECCC &amp; MeteoAlarm), and ongoing refinement.</p>
       </section>
       
       <a class="sidebar-cell" href="#release-gates" style="text-align: center; font-weight: 700; color: #fff; background: var(--success); border: none; text-decoration: none;">View Release Gates</a>
@@ -341,17 +341,17 @@
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           Executive Summary
         </h2>
-        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre is <strong style="color: var(--text);">a private, ad-free weather and natural-light planner for photographers and outdoor users, featuring selectable forecast models and zero GPS tracking.</strong> To reach production readiness, we executed a massive architectural refactoring to a modular system, rebuilt the solar and lunar engines via a 17-module almanac-grade remediation, and successfully integrated official ECCC CAP-CP alerts.</p>
+        <p style="color: var(--muted); font-size: 1.08rem;">WeatherAPP Libre is <strong style="color: var(--text);">a private, ad-free weather and natural-light planner for photographers and outdoor users, featuring selectable forecast models and zero GPS tracking.</strong> To reach production readiness, we executed a massive architectural refactoring to a modular system, rebuilt the solar and lunar engines via a 17-module almanac-grade remediation, and successfully integrated official multi-provider alerts (ECCC Datamart and MeteoAlarm).</p>
 
         <h3>Production Readiness Assessment</h3>
-        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>This metric tracks our proximity to a full public release. All critical deployment blockers—including official CAP-CP alert sourcing and Open-Meteo licensing—have been cleared. Core infrastructure, including the 17-module astronomical engine overhaul, R8 release optimization, and a hardened automated test suite, is fully deployed and verified.</em></p>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-bottom: 16px;"><em>This metric tracks our proximity to a full public release. All critical deployment blockers—including official CAP-CP alert sourcing, Open-Meteo licensing, and multi-provider alert state management—have been cleared. Core infrastructure, including the 17-module astronomical engine overhaul, R8 release optimization, and a hardened automated test suite, is fully deployed and verified.</em></p>
         <div class="score-grid">
           <div class="score-tile"><strong>Product Concept</strong><span class="score">9.0/10</span></div>
           <div class="score-tile"><strong>Privacy Posture</strong><span class="score">10/10</span></div>
           <div class="score-tile"><strong>Feature Depth</strong><span class="score">10/10</span></div>
           <div class="score-tile"><strong>Visual Identity</strong><span class="score">9.5/10</span></div>
           <div class="score-tile"><strong>Weather Data Handling</strong><span class="score">9.5/10</span></div>
-          <div class="score-tile"><strong>Architecture</strong><span class="score">9.5/10</span></div>
+          <div class="score-tile"><strong>Architecture</strong><span class="score">10/10</span></div>
           <div class="score-tile"><strong>Astronomical Accuracy</strong><span class="score">10/10</span></div>
           <div class="score-tile"><strong>Alert Integrity</strong><span class="score">10/10</span></div>
         </div>
@@ -369,6 +369,9 @@
           <li><s>Implement official alert sourcing via a verified CAP-CP feed, preserving original identifier, issuer, timestamp, severity, and expiry.</s></li>
           <li><s>Execute the CAP-CP agent prompt to finalize background WorkManager polling, XML parsing, and polygon/circle matching.</s></li>
           <li><s>Resolve Alert Log persistence bug to ensure synthetic test alerts and historical CAP entries are correctly retained and displayed.</s></li>
+          <li><s>Architect a modular alert provider pipeline (<code>AlertProviderRouter</code>) to support multiple international meteorological networks.</s></li>
+          <li><s>Integrate the MeteoAlarm network for comprehensive European weather alerts, including strict geographic gating and system-level push notifications.</s></li>
+          <li><s>Replace deprecated ECCC Atom feeds with a modern Datamart directory scraper that parses CAP-CP XML directly.</s></li>
         </ul>
 
         <h3>1.2 Astronomical Data Validation</h3>
@@ -428,6 +431,7 @@
           <li><s>Decompose the monolithic <code>MainActivity</code> into focused components (<code>ThemeManager</code>, <code>WeatherDisplayManager</code>, <code>AstronomyDisplayManager</code>, <code>LocationTabsManager</code>, etc.).</s></li>
           <li><s>Decompose <code>activity_main.xml</code> into composed section layouts to eliminate deep LinearLayout nesting.</s></li>
           <li><s>Convert repeated hand-written metric cells into a RecyclerView grid backed by an adapter.</s></li>
+          <li><s>Unify alert caching and UI rendering under a single <code>GlobalAlertCache</code> and <code>UnifiedAlert</code> model, eliminating legacy provider-specific state management.</s></li>
         </ul>
 
         <h3>3.2 Testing Matrix Implementation</h3>
@@ -458,6 +462,8 @@
           <li><s>Publish application source code under the GNU GPLv3 with explicit trademark reservation for the WeatherAPP Libre brand.</s></li>
           <li><s>Implement a "Clear All Cache" control within the Data Cache settings via the new Cached Data Inspector.</s></li>
           <li><s>Implement a one-tap "Delete local app data" (full factory reset of preferences) control within the application settings.</s></li>
+          <li><s>Implement strict opt-in consent enforcement for background alert monitoring across all integrated meteorological networks.</s></li>
+          <li><s>Localize the multi-provider alert consent dialog into English and French.</s></li>
         </ul>
       </section>
 
@@ -502,6 +508,13 @@
           <li>Build and deploy the community extension catalog API and submission workflow at weatherapplibre.ca.</li>
           <li>Implement the in-app extension browser, downloader, and manifest validator.</li>
         </ul>
+
+        <h3>5.6 Global Alert Expansion</h3>
+        <ul class="pending-list">
+          <li>Leverage the newly established <code>AlertProviderRouter</code> to integrate the US National Weather Service (NWS) CAP feed for American locations.</li>
+          <li>Investigate and integrate the Bureau of Meteorology (BOM) feed for Australian locations.</li>
+          <li>Implement automated regional provider routing based on user-selected location country codes.</li>
+        </ul>
       </section>
 
       <section id="release-gates">
@@ -515,6 +528,7 @@
           <strong>Completed Release Criteria:</strong>
           <ul class="checklist" style="margin-top: 8px;">
             <li><s>Official ECCC CAP-CP alert pipeline is fully implemented, tested end-to-end, and strictly truthful (zero synthetic alerts).</s></li>
+            <li><s>Modular multi-provider alert architecture deployed, supporting both ECCC (Datamart) and MeteoAlarm networks with strict coordinate-scoped state management.</s></li>
             <li><s>Comprehensive automated test suite passes consistently across all architectural modules.</s></li>
             <li><s>All hardcoded UI strings are externalized to <code>strings.xml</code> to support future localization.</s></li>
             <li><s>DEX code optimization and R8 obfuscation enabled for release builds.</s></li>
@@ -523,7 +537,7 @@
           </ul>
         </div>
 
-        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Core architecture refactoring, astronomical data validation, layout decomposition, accessibility compliance, baseline privacy compliance, and official ECCC CAP-CP alert integrity have been satisfied and are no longer blocking release gates.</em></p>
+        <p style="font-size: 0.95rem; color: var(--muted); margin-top: 16px;"><em>Note: Core architecture refactoring, astronomical data validation, layout decomposition, accessibility compliance, baseline privacy compliance, and official multi-provider alert integrity have been satisfied and are no longer blocking release gates.</em></p>
       </section>
 
       <section id="sources">
@@ -536,6 +550,7 @@
           <li><a href="https://open-meteo.com/en/pricing">Open-Meteo Pricing</a></li>
           <li><a href="https://open-meteo.com/en/terms">Open-Meteo Terms</a></li>
           <li><a href="https://weather.gc.ca/warnings/index_e.html">ECCC Public Weather Alerts (CAP-CP)</a></li>
+          <li><a href="https://www.meteoalarm.org/en/euro-codes/terms-of-use">MeteoAlarm Terms of Use</a></li>
           <li><a href="https://support.google.com/googleplay/android-developer/answer/112622">Google Play Console Service Fees</a></li>
           <li><a href="https://support.google.com/googleplay/answer/11416267">Google Play Data Safety Information</a></li>
         </ul>
@@ -546,7 +561,7 @@
 
   <footer>
     <img src="pma.png" alt="Puppet Monkey Apps" class="footer-logo">
-    WeatherAPP Libre Production Roadmap • Updated October 21, 2026
+    WeatherAPP Libre Production Roadmap • Updated October 23, 2026
   </footer>
 
 <!-- Default Statcounter code for WeatherAPP Libre
