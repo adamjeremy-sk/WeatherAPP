@@ -297,7 +297,12 @@ class WidgetSyncWorker(
                         phase.isCurrentActivePhase || (phase.startInstant != null && phase.endInstant != null && !now.isBefore(phase.startInstant) && now.isBefore(phase.endInstant))
                     } ?: solarPhases.firstOrNull()
 
-                    val activePhaseLabel = activePhase?.getDisplayName(context)
+                    val activePhaseLabel = when (activePhase?.name?.lowercase()) {
+                        "civil twilight" -> context.getString(R.string.widget_phase_civil_twilight)
+                        "nautical twilight" -> context.getString(R.string.widget_phase_nautical_twilight)
+                        "astronomical twilight" -> context.getString(R.string.widget_phase_astronomical_twilight)
+                        else -> activePhase?.getDisplayName(context)
+                    }
                     if (!activePhaseLabel.isNullOrEmpty()) {
                         remoteViews.setTextViewText(R.id.tv_widget_natural_light_period, activePhaseLabel)
                         remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.VISIBLE)

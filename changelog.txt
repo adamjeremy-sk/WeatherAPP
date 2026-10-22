@@ -1,8 +1,6 @@
 ---------------
 Changelog 0.6.6VC26 - 2026/10/
 ---------------
-Note: Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
-
 * Enum values/entries switched
 * onBackPress fixed
 * Icons made
@@ -14,6 +12,8 @@ Note: Releases will be weekly on Wednesday evenings going forward unless a criti
 ---------------
 Changelog 0.6.5VC25 - 2026/10/20
 ---------------
+Note: Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
+
 * Widget Configuration Centralization: Removed the widget configuration popup from the home screen picker flow and centralized all widget management into a dedicated settings menu (Drawer > System > Widgets).
 * Widget Theming & Opacity Control: Introduced full Boutique Theme Engine integration for widgets, allowing users to apply any of the app's bespoke themes (or follow the system/app theme). Added a highly visual Widget Opacity slider (1-100%, default 70%) with a live contrast preview cell, allowing precise translucency calibration against any home screen wallpaper.
 * Boutique Theme Expansion: Added two new Boutique Themes: Frutiger Aero (Light) and Hardy Heron (Dark).

@@ -547,6 +547,9 @@
     <string name="phase_golden_hour">Golden Hour</string>
     <string name="phase_daytime">Daytime</string>
     <string name="phase_sunset">Sunset</string>
+    <string name="widget_phase_civil_twilight">C. Twilight</string>
+    <string name="widget_phase_nautical_twilight">N. Twilight</string>
+    <string name="widget_phase_astronomical_twilight">A. Twilight</string>
     <string name="label_today">Today</string>
 
     <!-- Night Visibility & Solunar Labels (Step 4) -->

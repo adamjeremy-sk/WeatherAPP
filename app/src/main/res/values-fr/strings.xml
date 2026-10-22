@@ -490,6 +490,9 @@
     <string name="phase_golden_hour">Heure dorée</string>
     <string name="phase_daytime">Jour</string>
     <string name="phase_sunset">Coucher du soleil</string>
+    <string name="widget_phase_civil_twilight">Crép. civil</string>
+    <string name="widget_phase_nautical_twilight">Crép. nautique</string>
+    <string name="widget_phase_astronomical_twilight">Crép. astro</string>
     <string name="label_today">Aujourd\'hui</string>
 
     <!-- Night Visibility & Solunar Labels (Step 4) -->
