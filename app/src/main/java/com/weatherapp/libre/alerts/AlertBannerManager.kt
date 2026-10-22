@@ -53,42 +53,11 @@ class AlertBannerManager(
 
         val isCanada = currentLocation.countryCode.equals("CA", ignoreCase = true) ||
                 currentLocation.country.equals("Canada", ignoreCase = true)
-
-        // 1. ECCC Alerts (Canada ONLY)
-        if (isCanada) {
-            val activeCapAlert = alertManager.getActiveAlertForLocation(currentLocation)
-            if (activeCapAlert != null) {
-                val isDismissed = locationPreferences.isAlertDismissed(activeCapAlert.identifier, currentLocation)
-                val isTest = activeCapAlert.isTestFixture
-                if (!isDismissed && (isAlertsEnabled || isTest)) {
-                    val level = when (activeCapAlert.severity.lowercase(Locale.getDefault())) {
-                        "extreme" -> 4
-                        "severe" -> 3
-                        "moderate" -> 2
-                        else -> 1
-                    }
-                    activeDisplayAlerts.add(
-                        DisplayAlert(
-                            id = activeCapAlert.identifier,
-                            sourceName = activity.getString(R.string.source_eccc_protocol),
-                            event = activeCapAlert.event,
-                            headline = activeCapAlert.headline ?: "${activeCapAlert.event} in effect for ${currentLocation.displayName}",
-                            instruction = activeCapAlert.instruction ?: activeCapAlert.description,
-                            areaDesc = activeCapAlert.areaDesc,
-                            severityLevel = level,
-                            sentUtcMs = activeCapAlert.sentUtcMs,
-                            expiresUtcMs = activeCapAlert.expiresUtcMs,
-                            isTestFixture = isTest
-                        )
-                    )
-                }
-            }
-        }
-
-        // 2. Global Multi-Region Alerts (MeteoAlarm, etc.)
         val countryCode = currentLocation.countryCode?.uppercase(Locale.US) ?: ""
         val isMeteoAlarmEligible = AlertProviderRouter.METEOALARM_COUNTRY_CODES.contains(countryCode)
-        if (isAlertsEnabled && isMeteoAlarmEligible) {
+
+        // Read active alerts from GlobalAlertCache for both Canadian and MeteoAlarm-eligible locations
+        if (isAlertsEnabled && (isCanada || isMeteoAlarmEligible)) {
             val globalAlerts = GlobalAlertCache.readAlertsForLocation(activity, currentLocation)
             val unDismissedGlobal = globalAlerts.filter { !locationPreferences.isAlertDismissed(it.id, currentLocation) }
             for (alert in unDismissedGlobal) {
@@ -114,7 +83,7 @@ class AlertBannerManager(
                         severityLevel = level,
                         sentUtcMs = null,
                         expiresUtcMs = null,
-                        isTestFixture = false
+                        isTestFixture = alert.id.contains("test")
                     )
                 )
             }

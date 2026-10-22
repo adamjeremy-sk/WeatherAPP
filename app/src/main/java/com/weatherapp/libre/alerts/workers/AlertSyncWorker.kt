@@ -75,8 +75,20 @@ class AlertSyncWorker(
 
             val provider = AlertProviderRouter.getProviderForCountryCode(countryCode)
             if (provider != null) {
+                val previousAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)
+                val previousIds = previousAlerts.map { it.id }.toSet()
+
                 val alerts = provider.fetchAlertsForLocation(loc)
                 GlobalAlertCache.writeAlertsForLocation(appContext, loc, alerts)
+
+                val newAlerts = alerts.filter { !previousIds.contains(it.id) }
+                for (newAlert in newAlerts) {
+                    com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
+                        context = appContext,
+                        alert = newAlert,
+                        location = loc
+                    )
+                }
             }
         }
 

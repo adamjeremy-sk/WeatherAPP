@@ -25,8 +25,18 @@ class AlertProviderRouterTest {
     }
 
     @Test
-    fun testNonEuCountryCodeReturnsNull() {
-        assertNull(AlertProviderRouter.getProviderForCountryCode("CA"))
+    fun testCanadaCountryCodeReturnsEcccProvider() {
+        val providerCa = AlertProviderRouter.getProviderForCountryCode("CA")
+        assertNotNull(providerCa)
+        assertEquals(AlertSource.ECCC, providerCa?.source)
+
+        val providerCan = AlertProviderRouter.getProviderForCountryCode("can")
+        assertNotNull(providerCan)
+        assertEquals(AlertSource.ECCC, providerCan?.source)
+    }
+
+    @Test
+    fun testUnsupportedCountryCodeReturnsNull() {
         assertNull(AlertProviderRouter.getProviderForCountryCode("US"))
         assertNull(AlertProviderRouter.getProviderForCountryCode("AU"))
         assertNull(AlertProviderRouter.getProviderForCountryCode(null))

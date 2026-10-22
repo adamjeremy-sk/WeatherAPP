@@ -122,7 +122,6 @@ object AlertConsentDialog {
                     activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
                 }
             }
-            AlertPollWorker.schedule(activity.applicationContext)
             com.weatherapp.libre.alerts.workers.AlertSyncWorker.schedule(activity.applicationContext)
 
             dialog.dismiss()
@@ -132,7 +131,6 @@ object AlertConsentDialog {
         btnNoThanks.setOnClickListener {
             locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_OUT)
 
-            AlertPollWorker.cancel(activity.applicationContext)
             com.weatherapp.libre.alerts.workers.AlertSyncWorker.cancel(activity.applicationContext)
 
             dialog.dismiss()

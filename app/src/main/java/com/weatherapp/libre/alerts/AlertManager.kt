@@ -11,16 +11,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 class AlertManager(
     private val context: Context,
-    private val locationPreferences: LocationPreferences,
-    private val sourceAdapter: AlertSourceAdapter = EcccCapSourceAdapter()
+    private val locationPreferences: LocationPreferences
 ) {
 
     companion object {
         private const val TAG = "AlertManager"
-        private const val FETCH_INTERVAL_FOREGROUND_MS = 5 * 60 * 1000L // 5 minutes
     }
 
-    private var lastFetchTimeMs = 0L
     private val liveAlertsByLocation = ConcurrentHashMap<String, MutableList<CapAlert>>()
     private val testAlertsByLocation = ConcurrentHashMap<String, MutableList<CapAlert>>()
 
@@ -155,44 +152,5 @@ class AlertManager(
             AlertNotificationHelper.dismissNotification(context, alert.identifier)
         }
         testAlertsByLocation.remove(key)
-    }
-
-    fun fetchAndEvaluateAlertsForLocation(
-        location: LocationItem,
-        timezoneStr: String?,
-        isForegroundActiveLocation: Boolean = false,
-        forceRefresh: Boolean = false
-    ): Int {
-        val nowMs = System.currentTimeMillis()
-        if (!forceRefresh && (nowMs - lastFetchTimeMs) < FETCH_INTERVAL_FOREGROUND_MS) {
-            Log.d(TAG, "Skipping fetch, last fetch was ${(nowMs - lastFetchTimeMs)/1000}s ago.")
-            return getActiveAlertForLocation(location)?.let { 1 } ?: 0
-        }
-
-        Log.d(TAG, "Fetching live ECCC alerts for location: ${location.displayName}")
-        val fetchResult = sourceAdapter.fetchAlerts(location = location)
-        lastFetchTimeMs = nowMs
-
-        if (fetchResult.statusCode == 404) {
-            Log.d(TAG, "ECCC Datamart structure requires directory scraping; live fetch suppressed until dedicated sweep.")
-            return 0
-        }
-
-        if (fetchResult.statusCode != 200 && fetchResult.statusCode != 304) {
-            Log.w(TAG, "ECCC alert fetch notice: ${fetchResult.errorMessage}")
-            return 0
-        }
-
-        var matchCount = 0
-        for (alert in fetchResult.alerts) {
-            val matchResult = AlertMatcher.matchesLocation(alert, location)
-            if (matchResult.isMatched) {
-                matchCount++
-                Log.d(TAG, "ECCC Alert ${alert.identifier} matched ${location.displayName} via rule ${matchResult.rule}")
-                processCapAlert(alert, location, timezoneStr, isForegroundActiveLocation)
-            }
-        }
-
-        return matchCount
     }
 }

@@ -41,7 +41,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertTestHarness
 import com.weatherapp.libre.alerts.AlertNotificationHelper
-import com.weatherapp.libre.alerts.AlertPollWorker
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
 import com.weatherapp.libre.databinding.DialogAlertsSettingsBinding
@@ -736,6 +735,17 @@ class SettingsDialogManager(
                         )
 
                         if (injectedList.isNotEmpty()) {
+                            val targetNotifyLoc = eligibleGlobalTabs.firstOrNull { it.latitude == currentLoc.latitude && it.longitude == currentLoc.longitude }
+                                ?: eligibleGlobalTabs.firstOrNull() ?: currentLoc
+                            injectedList.forEach { alert ->
+                                AlertNotificationHelper.postUnifiedAlertNotification(
+                                    context = activity.applicationContext,
+                                    alert = alert,
+                                    location = targetNotifyLoc,
+                                    timezoneStr = tz,
+                                    isTestFixture = true
+                                )
+                            }
                             if (activity is MainActivity) {
                                 activity.alertBannerManager.updateAlertBanner(currentLoc)
                             }
@@ -777,11 +787,9 @@ class SettingsDialogManager(
                         activity.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
                     }
                 }
-                AlertPollWorker.schedule(activity.applicationContext)
                 com.weatherapp.libre.alerts.workers.AlertSyncWorker.schedule(activity.applicationContext)
             } else {
                 locationPreferences.saveAlertConsentState(LocationPreferences.ALERT_CONSENT_OPT_OUT)
-                AlertPollWorker.cancel(activity.applicationContext)
                 com.weatherapp.libre.alerts.workers.AlertSyncWorker.cancel(activity.applicationContext)
             }
         }

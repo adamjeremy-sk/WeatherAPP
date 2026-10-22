@@ -1,6 +1,7 @@
 package com.weatherapp.libre.alerts.routing
 
 import com.weatherapp.libre.alerts.providers.AlertProvider
+import com.weatherapp.libre.alerts.providers.EcccProvider
 import com.weatherapp.libre.alerts.providers.MeteoAlarmProvider
 import java.util.Locale
 
@@ -16,10 +17,10 @@ object AlertProviderRouter {
     fun getProviderForCountryCode(countryCode: String?): AlertProvider? {
         if (countryCode == null) return null
         val cleanCode = countryCode.trim().uppercase(Locale.US)
-        return if (METEOALARM_COUNTRY_CODES.contains(cleanCode)) {
-            MeteoAlarmProvider()
-        } else {
-            null
+        return when {
+            cleanCode == "CA" || cleanCode == "CAN" -> EcccProvider()
+            METEOALARM_COUNTRY_CODES.contains(cleanCode) -> MeteoAlarmProvider()
+            else -> null
         }
     }
 }

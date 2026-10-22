@@ -3,7 +3,11 @@ package com.weatherapp.libre.alerts
 import android.content.Context
 import android.util.Log
 import com.weatherapp.libre.LocationItem
+import com.weatherapp.libre.alerts.cache.GlobalAlertCache
+import com.weatherapp.libre.alerts.models.AlertSeverity
+import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.models.CapAlert
+import com.weatherapp.libre.alerts.models.UnifiedAlert
 import java.util.Locale
 
 object AlertTestHarness {
@@ -74,22 +78,69 @@ object AlertTestHarness {
                     infoList = updatedInfoList
                 )
 
-                // Feed directly through AlertManager real processing pipeline
-                alertManager.processCapAlert(
-                    alert = syntheticAlert,
+                val unifiedAlert = mapCapAlertToUnifiedAlert(
+                    capAlert = syntheticAlert,
                     location = location,
-                    timezoneStr = timezoneStr,
-                    isForegroundActiveLocation = true
+                    matchedAreaDesc = matchResult.matchedAreaDesc
                 )
 
-                Log.d(TAG, "Injected ECCC test alert into ${location.displayName}")
-                lastInjectedAlert = syntheticAlert
+                if (unifiedAlert != null) {
+                    val existing = GlobalAlertCache.readAlertsForLocation(context, location).toMutableList()
+                    existing.removeAll { it.id.startsWith("eccc_test_") }
+                    existing.add(unifiedAlert)
+                    GlobalAlertCache.writeAlertsForLocation(context, location, existing)
+
+                    AlertNotificationHelper.postUnifiedAlertNotification(
+                        context = context,
+                        alert = unifiedAlert,
+                        location = location,
+                        timezoneStr = timezoneStr,
+                        isTestFixture = true
+                    )
+
+                    Log.d(TAG, "Injected ECCC test alert into GlobalAlertCache for ${location.displayName}")
+                    lastInjectedAlert = syntheticAlert
+                }
             } else {
                 lastInjectedAlert = parsedAlert
             }
         }
 
         return lastInjectedAlert
+    }
+
+    private fun mapCapAlertToUnifiedAlert(
+        capAlert: CapAlert,
+        location: LocationItem,
+        matchedAreaDesc: String?
+    ): UnifiedAlert? {
+        val info = capAlert.infoList.firstOrNull() ?: return null
+        val severity = when (info.severity.lowercase(Locale.US).trim()) {
+            "extreme" -> AlertSeverity.RED
+            "severe" -> AlertSeverity.ORANGE
+            "moderate" -> AlertSeverity.YELLOW
+            "minor" -> AlertSeverity.UNKNOWN
+            else -> AlertSeverity.UNKNOWN
+        }
+
+        val eventName = info.event.ifBlank { info.headline ?: "Weather Alert" }
+        val headlineText = info.headline ?: "$eventName in effect for ${matchedAreaDesc ?: location.displayName}"
+        val uniqueId = "eccc_test_${capAlert.identifier}_${System.currentTimeMillis()}"
+
+        return UnifiedAlert(
+            id = uniqueId,
+            source = AlertSource.ECCC,
+            locationLat = location.latitude,
+            locationLon = location.longitude,
+            severity = severity,
+            eventNative = eventName,
+            headline = headlineText,
+            description = info.description,
+            instruction = info.instruction,
+            onset = info.onset?.toString(),
+            expires = info.expires?.toString(),
+            areaDesc = matchedAreaDesc ?: info.areaList.firstOrNull()?.areaDesc ?: location.displayName
+        )
     }
 
     fun restampFixtureArea(xmlString: String, location: LocationItem): String {
