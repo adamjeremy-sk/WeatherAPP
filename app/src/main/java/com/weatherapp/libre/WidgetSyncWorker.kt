@@ -28,6 +28,9 @@ import com.weatherapp.libre.solar.SolarLightingEngine
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -87,8 +90,10 @@ class WidgetSyncWorker(
 
             if (!hasActiveWidgets || activeWidgetIds.isEmpty()) return
 
-            for (appWidgetId in activeWidgetIds.distinct()) {
-                rebuildAndUpdate(context, appWidgetId)
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default).launch {
+                for (appWidgetId in activeWidgetIds.distinct()) {
+                    rebuildAndUpdate(context, appWidgetId)
+                }
             }
         }
 
@@ -100,17 +105,19 @@ class WidgetSyncWorker(
                 ComponentName(context, WeatherWidgetProvider2x2::class.java),
                 ComponentName(context, WeatherWidgetProvider::class.java)
             )
-            for (component in widgetTypes) {
-                val ids = appWidgetManager.getAppWidgetIds(component)
-                for (appWidgetId in ids) {
-                    rebuildAndUpdate(context, appWidgetId)
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default).launch {
+                for (component in widgetTypes) {
+                    val ids = appWidgetManager.getAppWidgetIds(component)
+                    for (appWidgetId in ids) {
+                        rebuildAndUpdate(context, appWidgetId)
+                    }
                 }
             }
         }
 
-        fun rebuildAndUpdate(context: Context, appWidgetId: Int) = kotlinx.coroutines.runBlocking {
+        suspend fun rebuildAndUpdate(context: Context, appWidgetId: Int) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId) ?: return@runBlocking
+            val widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId) ?: return
             val layoutId = widgetInfo.initialLayout
             val providerComponent = widgetInfo.provider ?: ComponentName(context, WeatherWidgetProvider::class.java)
 
@@ -127,14 +134,11 @@ class WidgetSyncWorker(
             val location = locationPreferences.getTabLocation(safeActiveTab)
             val unitSystem = locationPreferences.getUnitSystem()
 
-            val weatherResult = weatherRepository.getWeatherForecast(
-                latitude = location.latitude,
-                longitude = location.longitude,
+            val weatherResponse = weatherRepository.getCachedForecast(
+                lat = location.latitude,
+                lon = location.longitude,
                 model = locationPreferences.getActiveModelForLocation(location),
-                forceRefresh = false,
-                isCacheEnabled = locationPreferences.isCacheTtlEnabled(),
-                ttlMinutes = locationPreferences.getCacheTtlMinutes(),
-                locationPreferences = locationPreferences
+                prefs = locationPreferences
             )
 
             val remoteViews = RemoteViews(context.packageName, layoutId)
@@ -211,8 +215,8 @@ class WidgetSyncWorker(
 
 
 
-            if (weatherResult.isSuccess) {
-                val response = weatherResult.getOrNull()
+            if (weatherResponse != null) {
+                val response = weatherResponse
 
                 val tempStr = response?.current?.temperature?.let {
                     UnitUtils.formatTemp(it, unitSystem)
@@ -422,65 +426,18 @@ class WidgetSyncWorker(
                 }
             }
             } else {
-                val activeModel = locationPreferences.getActiveModelForLocation(location)
-                val modelKey = activeModel.openMeteoKey
-                val cacheKey = String.format(Locale.US, "cache_v2_%.4f_%.4f_%s", location.latitude, location.longitude, modelKey)
-                val staleJson = locationPreferences.getPersistentCacheJson(cacheKey)
-                val staleResponse = if (!staleJson.isNullOrEmpty()) {
-                    try {
-                        com.google.gson.Gson().fromJson(staleJson, WeatherResponse::class.java)
-                    } catch (e: Exception) {
-                        Log.e("WidgetSync", "EXCEPTION id=$appWidgetId", e)
-                        null
-                    }
-                } else null
-
-                if (staleResponse != null) {
-                    val tempStr = staleResponse.current?.temperature?.let {
-                        UnitUtils.formatTemp(it, unitSystem)
-                    } ?: context.getString(R.string.position_unavailable)
-                    remoteViews.setTextViewText(R.id.tv_widget_temp, tempStr)
-
-                    val weatherCode = staleResponse.current?.weatherCode ?: 0
-                    val condIconRes = WeatherCodeUtils.conditionIconRes(weatherCode)
-                    val condText = WeatherCodeUtils.getWeatherDescription(context, weatherCode) + " (stale)"
-
-                    remoteViews.setImageViewResource(R.id.iv_widget_condition_icon, condIconRes)
-                    remoteViews.setTextViewText(R.id.tv_widget_condition, condText)
-
-                    val maxTemp = staleResponse.daily?.temperatureMax?.firstOrNull()
-                    val minTemp = staleResponse.daily?.temperatureMin?.firstOrNull()
-                    val highLowStr = if (maxTemp != null && minTemp != null) {
-                        "H: ${UnitUtils.formatTemp(maxTemp, unitSystem)} / L: ${UnitUtils.formatTemp(minTemp, unitSystem)}"
-                    } else {
-                        "--"
-                    }
-                    remoteViews.setTextViewText(R.id.tv_widget_high_low, highLowStr)
-
-                    val moonInfo = LunarCalculator.phaseAt(Instant.now())
-                    val moonEmoji = moonInfo.phaseCategory.getEmoji()
-                    val moonPct = (moonInfo.illuminationFraction * 100).roundToInt().coerceIn(0, 100)
-                    remoteViews.setTextViewText(R.id.tv_widget_moon_phase, "$moonEmoji $moonPct%")
-
-                    if (layoutId == R.layout.widget_layout_2x1) {
-                        val phaseName = context.getString(moonInfo.phaseCategory.getNameRes())
-                        remoteViews.setTextViewText(R.id.tv_widget_moon_stage, phaseName)
-                        remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.VISIBLE)
-                    }
-                } else {
-                    remoteViews.setTextViewText(R.id.tv_widget_temp, "--")
-                    remoteViews.setTextViewText(R.id.tv_widget_condition, context.getString(R.string.widget_no_data))
-                    remoteViews.setTextViewText(R.id.tv_widget_high_low, "--")
-                    remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
-                    remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
-                    remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.GONE)
-                    if (layoutId == R.layout.widget_layout_2x1) {
-                        remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.GONE)
-                    }
-                    remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
-                    remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
-                    remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.GONE)
+                remoteViews.setTextViewText(R.id.tv_widget_temp, "--")
+                remoteViews.setTextViewText(R.id.tv_widget_condition, context.getString(R.string.widget_no_data))
+                remoteViews.setTextViewText(R.id.tv_widget_high_low, "--")
+                remoteViews.setViewVisibility(R.id.tv_widget_sunrise, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_sunset, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_natural_light_period, View.GONE)
+                if (layoutId == R.layout.widget_layout_2x1) {
+                    remoteViews.setViewVisibility(R.id.tv_widget_moon_stage, View.GONE)
                 }
+                remoteViews.setViewVisibility(R.id.tv_widget_moonrise, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_moonset, View.GONE)
+                remoteViews.setViewVisibility(R.id.tv_widget_dark_sky_period, View.GONE)
             }
 
             // Configure Tab Pills (for 4x2 and 4x1)
@@ -572,6 +529,9 @@ class WidgetSyncWorker(
     override suspend fun doWork(): Result {
         val context = applicationContext
         val appWidgetManager = AppWidgetManager.getInstance(context)
+        val locationPreferences = LocationPreferences(context)
+        val widgetPrefs = WidgetPreferences(context)
+        val weatherRepository = WeatherRepository()
 
         val widgetTypes = listOf(
             ComponentName(context, WeatherWidgetProvider4x2::class.java),
@@ -580,10 +540,52 @@ class WidgetSyncWorker(
             ComponentName(context, WeatherWidgetProvider::class.java)
         )
 
+        val allWidgetIds = mutableListOf<Int>()
         for (component in widgetTypes) {
             val widgetIds = appWidgetManager.getAppWidgetIds(component)
-            for (appWidgetId in widgetIds) {
+            allWidgetIds.addAll(widgetIds.toList())
+        }
+
+        val distinctWidgetIds = allWidgetIds.distinct()
+        if (distinctWidgetIds.isEmpty()) {
+            return Result.success()
+        }
+
+        // Collect unique locations assigned to active widgets
+        val tabCount = locationPreferences.getTabCount()
+        val locationsToFetch = mutableSetOf<Pair<LocationItem, ForecastModel>>()
+
+        for (appWidgetId in distinctWidgetIds) {
+            val activeTab = widgetPrefs.getActiveTab(appWidgetId)
+            val safeActiveTab = activeTab.coerceIn(0, tabCount - 1)
+            val location = locationPreferences.getTabLocation(safeActiveTab)
+            val model = locationPreferences.getActiveModelForLocation(location)
+            locationsToFetch.add(Pair(location, model))
+        }
+
+        // Fetch fresh weather data for each unique location
+        for ((location, model) in locationsToFetch) {
+            try {
+                weatherRepository.getWeatherForecast(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    model = model,
+                    forceRefresh = false,
+                    isCacheEnabled = locationPreferences.isCacheTtlEnabled(),
+                    ttlMinutes = locationPreferences.getCacheTtlMinutes(),
+                    locationPreferences = locationPreferences
+                )
+            } catch (e: Exception) {
+                Log.e("WidgetSyncWorker", "Failed to refresh weather for widget location: ${location.name}", e)
+            }
+        }
+
+        // Redraw all active widgets from updated cache
+        for (appWidgetId in distinctWidgetIds) {
+            try {
                 rebuildAndUpdate(context, appWidgetId)
+            } catch (e: Exception) {
+                Log.e("WidgetSyncWorker", "Failed to rebuild widget $appWidgetId", e)
             }
         }
 

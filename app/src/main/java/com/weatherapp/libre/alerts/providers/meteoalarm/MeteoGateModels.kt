@@ -36,6 +36,7 @@ data class MeteoGateDetailedCap(
     @SerializedName("sender") val sender: String? = null,
     @SerializedName("sent") val sent: String? = null,
     @SerializedName("msgType") val msgType: String? = null,
+    @SerializedName("references") val references: String? = null,
     @SerializedName("info") val info: List<MeteoGateCapInfo>? = null
 )
 

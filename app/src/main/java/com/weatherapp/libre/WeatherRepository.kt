@@ -113,6 +113,44 @@ class WeatherRepository {
     }
 
     /**
+     * Cache-only read method that NEVER touches the network and ignores TTL.
+     * Checks in-memory forecastCache first, then falls back to persistent cache JSON.
+     */
+    fun getCachedForecast(
+        lat: Double,
+        lon: Double,
+        model: ForecastModel,
+        prefs: LocationPreferences
+    ): WeatherResponse? {
+        val modelKey = model.openMeteoKey
+        val cacheKey = String.format(Locale.US, "cache_v2_%.4f_%.4f_%s", lat, lon, modelKey)
+
+        val memoryCached = forecastCache[cacheKey]?.response
+        if (memoryCached != null) {
+            return memoryCached
+        }
+
+        val diskJson = prefs.getPersistentCacheJson(cacheKey)
+        if (!diskJson.isNullOrEmpty()) {
+            try {
+                val response = gson.fromJson(diskJson, WeatherResponse::class.java)
+                if (response != null) {
+                    val diskTime = prefs.getPersistentCacheTime(cacheKey)
+                    forecastCache[cacheKey] = CachedWeatherEntry(
+                        response,
+                        if (diskTime > 0L) diskTime else System.currentTimeMillis()
+                    )
+                    return response
+                }
+            } catch (e: Exception) {
+                // Disk JSON parse error fallback
+            }
+        }
+
+        return null
+    }
+
+    /**
      * Fetches weather forecast from Open-Meteo API.
      * Serves from memory or persistent disk cache if enabled and fetched less than ttlMinutes ago.
      */
@@ -231,7 +269,6 @@ class WeatherRepository {
                     try {
                         val json = gson.toJson(weatherResponse)
                         locationPreferences.savePersistentCache(cacheKey, json, now)
-                        WidgetSyncWorker.notifyWidgetsInvalidated(locationPreferences.context)
                     } catch (e: Exception) {
                         // Persistent cache write exception
                     }

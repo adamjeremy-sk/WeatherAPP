@@ -1,6 +1,7 @@
 package com.weatherapp.libre.alerts
 
 import com.weatherapp.libre.LocationItem
+import com.weatherapp.libre.alerts.cache.GlobalAlertCache
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -15,8 +16,8 @@ class NotificationIntentTest {
         val alertId1 = "alert-tornado-123"
         val alertId2 = "alert-wind-456"
 
-        val locKey1 = AlertCache.cacheKey(loc1)
-        val locKey2 = AlertCache.cacheKey(loc2)
+        val locKey1 = GlobalAlertCache.cacheKey(loc1)
+        val locKey2 = GlobalAlertCache.cacheKey(loc2)
 
         val reqCode1 = "${alertId1}_${locKey1}".hashCode()
         val reqCode2 = "${alertId1}_${locKey2}".hashCode()
@@ -44,15 +45,15 @@ class NotificationIntentTest {
         fun resolveTabIndex(targetKey: String?, defaultFallback: Int = 0): Int {
             if (targetKey == null) return defaultFallback
             for (i in savedTabs.indices) {
-                if (AlertCache.cacheKey(savedTabs[i]).equals(targetKey, ignoreCase = true)) {
+                if (GlobalAlertCache.cacheKey(savedTabs[i]).equals(targetKey, ignoreCase = true)) {
                     return i
                 }
             }
             return defaultFallback
         }
 
-        val winnipegKey = AlertCache.cacheKey(tab0)
-        val edmontonKey = AlertCache.cacheKey(tab1)
+        val winnipegKey = GlobalAlertCache.cacheKey(tab0)
+        val edmontonKey = GlobalAlertCache.cacheKey(tab1)
         val unknownKey = "non_existent_city_0.0000,0.0000"
 
         // 1. Tab resolution returns correct index for matching key

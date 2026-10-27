@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.weatherapp.libre.alerts.AlertManager
 import com.weatherapp.libre.alerts.AlertBannerManager
 import com.weatherapp.libre.alerts.AlertConsentDialog
 import com.weatherapp.libre.BuildConfig
@@ -39,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var weatherDisplayManager: WeatherDisplayManager
     lateinit var appUpdateManager: AppUpdateManager
     lateinit var easterEggManager: EasterEggManager
-    lateinit var alertManager: AlertManager
     lateinit var alertBannerManager: AlertBannerManager
 
     companion object {
@@ -89,8 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         locationPreferences.checkAndPerformVersionMigration(BuildConfig.VERSION_CODE, repository)
 
-        alertManager = AlertManager(applicationContext, locationPreferences)
-        alertBannerManager = AlertBannerManager(this, binding, locationPreferences, alertManager)
+        alertBannerManager = AlertBannerManager(this, binding, locationPreferences)
 
         // Initialize Managers
         themeManager = ThemeManager(this, binding, locationPreferences)
@@ -219,7 +216,7 @@ class MainActivity : AppCompatActivity() {
         val tabCount = locationPreferences.getTabCount()
         for (i in 0 until tabCount) {
             val tabLoc = locationPreferences.getTabLocation(i)
-            if (com.weatherapp.libre.alerts.AlertCache.cacheKey(tabLoc).equals(locationKey, ignoreCase = true)) {
+            if (com.weatherapp.libre.alerts.cache.GlobalAlertCache.cacheKey(tabLoc).equals(locationKey, ignoreCase = true)) {
                 locationPreferences.saveActiveTabIndex(i)
                 binding.tabLayoutLocations.getTabAt(i)?.select()
                 break

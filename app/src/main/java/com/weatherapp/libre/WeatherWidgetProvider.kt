@@ -5,6 +5,9 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class BaseWeatherWidgetProvider : AppWidgetProvider() {
 
@@ -41,8 +44,15 @@ abstract class BaseWeatherWidgetProvider : AppWidgetProvider() {
                 val widgetPrefs = WidgetPreferences(context)
                 widgetPrefs.saveActiveTab(appWidgetId, tabIndex)
 
-                // Synchronous immediate redraw from cache
-                WidgetSyncWorker.rebuildAndUpdate(context, appWidgetId)
+                // Async immediate redraw from cache
+                val pendingResult = goAsync()
+                CoroutineScope(Dispatchers.Default).launch {
+                    try {
+                        WidgetSyncWorker.rebuildAndUpdate(context, appWidgetId)
+                    } finally {
+                        pendingResult.finish()
+                    }
+                }
 
                 // Secondary background pass
                 WidgetSyncWorker.enqueueImmediate(context)

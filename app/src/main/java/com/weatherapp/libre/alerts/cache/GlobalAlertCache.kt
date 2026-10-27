@@ -12,6 +12,7 @@ import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.UnifiedAlert
 import java.time.Instant
+import java.time.OffsetDateTime
 import java.util.Locale
 
 class AlertSeverityTypeAdapter : TypeAdapter<AlertSeverity>() {
@@ -53,10 +54,64 @@ object GlobalAlertCache {
         return String.format(Locale.US, "global_alerts_loc_%.4f_%.4f", location.latitude, location.longitude)
     }
 
+    private fun reconcile(
+        existingAlerts: List<UnifiedAlert>,
+        newAlerts: List<UnifiedAlert>
+    ): List<UnifiedAlert> {
+        val resultMap = existingAlerts.associateBy { it.id }.toMutableMap()
+
+        for (newAlert in newAlerts) {
+            when (newAlert.msgType.lowercase(Locale.US)) {
+                "cancel" -> {
+                    // Remove this alert and any alerts it references
+                    resultMap.remove(newAlert.id)
+                    newAlert.references.forEach { refId -> resultMap.remove(refId) }
+                }
+                "update" -> {
+                    // Replace referenced alerts with this new alert
+                    newAlert.references.forEach { refId -> resultMap.remove(refId) }
+                    resultMap[newAlert.id] = newAlert
+                }
+                else -> {
+                    // Alert, Error, etc. - add or replace
+                    resultMap[newAlert.id] = newAlert
+                }
+            }
+        }
+
+        return resultMap.values.toList()
+    }
+
+    private fun isAlertActive(expiresStr: String?, now: Instant): Boolean {
+        if (expiresStr == null) return true
+        return try {
+            OffsetDateTime.parse(expiresStr).toInstant().isAfter(now)
+        } catch (_: Exception) {
+            try {
+                Instant.parse(expiresStr).isAfter(now)
+            } catch (_: Exception) {
+                true // Keep alert if parsing fails
+            }
+        }
+    }
+
     fun writeAlertsForLocation(context: Context, location: LocationItem, alerts: List<UnifiedAlert>) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val key = cacheKey(location)
-        val cacheEntry = CacheEntry(alerts)
+
+        // Read existing alerts for this location
+        val existingAlerts = readAlertsForLocation(context, location)
+
+        // Reconcile new alerts with existing ones
+        val reconciledAlerts = reconcile(existingAlerts, alerts)
+
+        // Filter out expired alerts using OffsetDateTime.parse / Instant.parse
+        val now = Instant.now()
+        val activeAlerts = reconciledAlerts.filter { alert ->
+            isAlertActive(alert.expires, now)
+        }
+
+        val cacheEntry = CacheEntry(activeAlerts)
         prefs.edit().putString(key, gson.toJson(cacheEntry)).apply()
     }
 
@@ -86,13 +141,7 @@ object GlobalAlertCache {
         for (key in expiredKeys) {
             val cacheEntry = prefs.getString(key, null)?.let { gson.fromJson(it, CacheEntry::class.java) }
             val filteredAlerts = cacheEntry?.alerts?.filter { alert ->
-                alert.expires?.let { expires ->
-                    try {
-                        Instant.parse(expires).isAfter(now)
-                    } catch (e: Exception) {
-                        true
-                    }
-                } ?: true
+                isAlertActive(alert.expires, now)
             } ?: emptyList()
 
             if (filteredAlerts.isEmpty()) {

@@ -19,14 +19,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * Live in-app alert surface. Reads active alerts from both ECCC AlertCache and GlobalAlertCache,
+ * Live in-app alert surface. Reads active alerts from GlobalAlertCache,
  * displaying single alerts directly or multi-alert summary banners.
  */
 class AlertBannerManager(
     private val activity: AppCompatActivity,
     private val binding: ActivityMainBinding,
-    private val locationPreferences: LocationPreferences,
-    private val alertManager: AlertManager
+    private val locationPreferences: LocationPreferences
 ) {
     companion object {
         private const val TAG = "AlertBannerManager"

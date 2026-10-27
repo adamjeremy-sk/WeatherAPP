@@ -16,7 +16,6 @@ import com.weatherapp.libre.R
 import com.weatherapp.libre.alerts.cache.GlobalAlertCache
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
-import com.weatherapp.libre.alerts.models.CapAlert
 import com.weatherapp.libre.alerts.models.UnifiedAlert
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -56,83 +55,7 @@ object AlertNotificationHelper {
         }
     }
 
-    fun postNotification(
-        context: Context,
-        alert: CapAlert,
-        location: LocationItem,
-        timezoneStr: String?
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                return
-            }
-        }
 
-        createNotificationChannels(context)
-
-        val info = alert.infoList.firstOrNull() ?: return
-        val isSevere = info.severity.equals("Extreme", ignoreCase = true) || info.severity.equals("Severe", ignoreCase = true)
-        val channelId = if (isSevere) CHANNEL_SEVERE_ID else CHANNEL_DEFAULT_ID
-
-        val zoneId = try {
-            if (!timezoneStr.isNull_or_blank_compat()) ZoneId.of(timezoneStr) else ZoneId.systemDefault()
-        } catch (e: Exception) {
-            ZoneId.systemDefault()
-        }
-
-        val dateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d • h:mm a", Locale.getDefault())
-        val sentStr = alert.sent.atZone(zoneId).format(dateFormatter)
-        val expiresStr = info.expires?.atZone(zoneId)?.format(dateFormatter) ?: "Until further notice"
-
-        val titlePrefix = if (alert.isTestFixture) "TEST — " else "🚨 "
-        val eventTitle = "$titlePrefix${info.event}"
-
-        val areaDesc = info.areaList.firstOrNull()?.areaDesc ?: location.displayName
-
-        val bigText = StringBuilder()
-            .append(info.headline ?: "${info.event} in effect for $areaDesc").append("\n\n")
-            .apply {
-                if (!info.instruction.isNull_or_blank_compat()) {
-                    append("Instructions:\n").append(info.instruction).append("\n\n")
-                } else if (!info.description.isNull_or_blank_compat()) {
-                    append("Description:\n").append(info.description).append("\n\n")
-                }
-            }
-            .append("Area: ").append(areaDesc).append("\n")
-            .append("Issued: ").append(sentStr).append("\n")
-            .append("Expires: ").append(expiresStr).append("\n\n")
-            .append("Source: Environment and Climate Change Canada")
-            .toString()
-
-        val locationKey = AlertCache.cacheKey(location)
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra("EXTRA_LOCATION_KEY", locationKey)
-            putExtra("EXTRA_ALERT_ID", alert.identifier)
-        }
-
-        val requestCode = "${alert.identifier}_$locationKey".hashCode()
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_map_pin)
-            .setContentTitle(eventTitle)
-            .setContentText(info.headline ?: "${info.event} in effect")
-            .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-            .setPriority(if (isSevere) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_DEFAULT)
-            .setGroup(String.format(Locale.US, "WEATHER_ALERTS_%.4f_%.4f", location.latitude, location.longitude))
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .build()
-
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(alert.identifier.hashCode(), notification)
-    }
 
     fun postUnifiedAlertNotification(
         context: Context,

@@ -1,13 +1,19 @@
 package com.weatherapp.libre.alerts
 
+import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.providers.MeteoAlarmProvider
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateApi
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateBasicProperties
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateCapArea
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateCapInfo
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateCapParameter
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateDetailedCap
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateFeature
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateFeatureCollection
-import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateProperties
+import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateLink
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -21,22 +27,40 @@ class GlobalAlertTestHarnessTest {
             features = listOf(
                 MeteoGateFeature(
                     id = "test_feature_01",
-                    properties = MeteoGateProperties(
-                        event = "Wind Warning",
-                        awarenessLevel = "4; red; Extreme",
-                        headline = "Extreme Wind Warning"
+                    properties = MeteoGateBasicProperties(countryCode = "FR"),
+                    links = listOf(
+                        MeteoGateLink(rel = "json", type = "application/json", href = "mock://detail/1")
+                    )
+                )
+            )
+        )
+
+        val mockDetail = MeteoGateDetailedCap(
+            identifier = "test_feature_01",
+            info = listOf(
+                MeteoGateCapInfo(
+                    event = "Wind Warning",
+                    headline = "Extreme Wind Warning",
+                    parameter = listOf(
+                        MeteoGateCapParameter(valueName = "awareness_level", value = "4; red; Extreme")
+                    ),
+                    area = listOf(
+                        MeteoGateCapArea(
+                            areaDesc = "Paris Region",
+                            polygon = listOf("48.0,2.0 49.0,2.0 49.0,3.0 48.0,3.0 48.0,2.0")
+                        )
                     )
                 )
             )
         )
 
         val mockApi = object : MeteoGateApi {
-            override suspend fun getWarningsForPosition(coords: String) = mockCollection
-            override suspend fun getWarningsItems(bbox: String?) = mockCollection
+            override suspend fun getWarningsForCountry(countryCode: String, datetime: String) = mockCollection
+            override suspend fun getDetailedCapJson(url: String) = mockDetail
         }
 
         val provider = MeteoAlarmProvider(api = mockApi)
-        val location = com.weatherapp.libre.LocationItem(
+        val location = LocationItem(
             id = 500L,
             name = "Paris",
             country = "France",

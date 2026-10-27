@@ -15,7 +15,11 @@ data class UnifiedAlert(
     val instruction: String?,
     val onset: String?,
     val expires: String?,
-    val areaDesc: String?
+    val areaDesc: String?,
+    val msgType: String = "Alert",
+    val references: List<String> = emptyList(),
+    val sent: String? = null,
+    val isTest: Boolean = false
 )
 
 @Keep

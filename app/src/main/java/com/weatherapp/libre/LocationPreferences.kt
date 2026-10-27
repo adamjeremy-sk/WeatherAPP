@@ -98,6 +98,10 @@ enum class ForecastModel(
 
 class LocationPreferences(val context: Context) {
 
+    init {
+        com.weatherapp.libre.alerts.providers.DefaultEcccMemoStore.init(context)
+    }
+
     private val prefs: SharedPreferences =
         context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
 
@@ -284,7 +288,6 @@ class LocationPreferences(val context: Context) {
 
     fun saveTabCount(count: Int) {
         prefs.edit().putInt(KEY_TAB_COUNT, count.coerceIn(1, 4)).apply()
-        WidgetSyncWorker.notifyWidgetsInvalidated(this.context)
     }
 
     fun getActiveTabIndex(): Int {
@@ -438,7 +441,6 @@ class LocationPreferences(val context: Context) {
             .putDouble("tab_${tabIndex}_lon", location.longitude)
             .putDouble("tab_${tabIndex}_elev", location.elevationMeters)
             .apply()
-        WidgetSyncWorker.notifyWidgetsInvalidated(this.context)
     }
 
     fun isChinaLocation(location: LocationItem): Boolean {
@@ -746,7 +748,6 @@ class LocationPreferences(val context: Context) {
 
     fun saveThemeMode(mode: Int) {
         prefs.edit().putInt(KEY_THEME, mode).apply()
-        WidgetSyncWorker.notifyWidgetsThemeChanged(context)
     }
 
     fun getLunarReminderLeadTimeMinutes(): Int {

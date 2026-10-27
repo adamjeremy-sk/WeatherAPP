@@ -94,6 +94,26 @@ class AlertSyncWorker(
                                 alert = newAlert,
                                 location = loc
                             )
+
+                            val alertTimestamp = newAlert.sent?.let { sentStr ->
+                                try {
+                                    java.time.Instant.parse(sentStr).toEpochMilli()
+                                } catch (_: Exception) {
+                                    System.currentTimeMillis()
+                                }
+                            } ?: System.currentTimeMillis()
+
+                            com.weatherapp.libre.alerts.AlertLogRepository.saveEntry(
+                                appContext,
+                                com.weatherapp.libre.alerts.AlertLogEntry(
+                                    id = System.currentTimeMillis(),
+                                    timestampUtc = alertTimestamp,
+                                    locationName = loc.displayName,
+                                    alertEvent = newAlert.eventNative,
+                                    severity = newAlert.severity.name,
+                                    isTest = newAlert.isTest
+                                )
+                            )
                         }
                     }
                     is AlertFetchResult.Failure -> {

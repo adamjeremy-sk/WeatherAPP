@@ -38,8 +38,6 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.weatherapp.libre.alerts.AlertManager
-import com.weatherapp.libre.alerts.AlertTestHarness
 import com.weatherapp.libre.alerts.AlertNotificationHelper
 import com.weatherapp.libre.databinding.ActivityMainBinding
 import com.weatherapp.libre.databinding.DialogAboutSettingsBinding
@@ -667,7 +665,7 @@ class SettingsDialogManager(
         dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
         dialogBinding.btnSendTestAlert.setOnClickListener { v ->
             val popup = PopupMenu(activity, v)
-            val ecccFixtures = AlertTestHarness.TestFixture.entries
+            val ecccFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.EcccTestFixture.entries
             val globalFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.GlobalTestFixture.entries
 
             for (i in ecccFixtures.indices) {
@@ -685,37 +683,33 @@ class SettingsDialogManager(
                 val itemId = menuItem.itemId
                 val currentLoc = if (activity is MainActivity) activity.weatherDisplayManager.currentLocation else locationPreferences.getSavedLocation()
                 val tz = if (activity is MainActivity) activity.weatherDisplayManager.locationTimezone else null
-                val alertMgr = if (activity is MainActivity) activity.alertManager else AlertManager(activity.applicationContext, locationPreferences)
 
                 val savedTabs = (0 until locationPreferences.getTabCount()).map { locationPreferences.getTabLocation(it) }
 
                 if (itemId < ecccFixtures.size) {
                     val selectedFixture = ecccFixtures[itemId]
                     locationPreferences.clearPersistentCache()
-                    savedTabs.forEach { alertMgr.clearTestAlerts(it) }
 
                     val eligibleEcccTabs = savedTabs.filter { tab ->
                         tab.countryCode.equals("CA", ignoreCase = true) || tab.country.equals("Canada", ignoreCase = true)
                     }
 
-                    val injectedAlert = AlertTestHarness.injectTestFixture(
-                        context = activity.applicationContext,
-                        fixture = selectedFixture,
-                        locations = eligibleEcccTabs,
-                        timezoneStr = tz,
-                        alertManager = alertMgr
-                    )
+                    activity.lifecycleScope.launch {
+                        val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectEcccTestFixture(
+                            context = activity.applicationContext,
+                            fixture = selectedFixture,
+                            locations = eligibleEcccTabs,
+                            timezoneStr = tz
+                        )
 
-                    if (injectedAlert != null) {
-                        val targetNotifyLoc = eligibleEcccTabs.firstOrNull { it.latitude == currentLoc.latitude && it.longitude == currentLoc.longitude }
-                            ?: eligibleEcccTabs.firstOrNull() ?: currentLoc
-                        AlertNotificationHelper.postNotification(activity.applicationContext, injectedAlert, targetNotifyLoc, tz)
-                        if (activity is MainActivity) {
-                            activity.alertBannerManager.updateAlertBanner(currentLoc)
+                        if (injectedList.isNotEmpty()) {
+                            if (activity is MainActivity) {
+                                activity.alertBannerManager.updateAlertBanner(currentLoc)
+                            }
+                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
                         }
-                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
                     }
                 } else if (itemId >= ecccFixtures.size && itemId < ecccFixtures.size + globalFixtures.size) {
                     val globalIdx = itemId - ecccFixtures.size

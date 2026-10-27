@@ -2,8 +2,12 @@ package com.weatherapp.libre.alerts
 
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.AlertFetchResult
+import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
+import com.weatherapp.libre.alerts.models.UnifiedAlert
+import com.weatherapp.libre.alerts.providers.EcccMemoEntry
 import com.weatherapp.libre.alerts.providers.EcccProvider
+import com.weatherapp.libre.alerts.providers.InMemoryEcccMemoStore
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -104,5 +108,111 @@ class EcccProviderTest {
 
         val codeAb = EcccProvider.PROVINCE_TO_ECCC_CODE["Alberta"]
         assertEquals("CWEG", codeAb)
+    }
+
+    @Test
+    fun testMemoSkippingHttpRequest() = runBlocking {
+        var capFileRequestCount = 0
+        val testMemoStore = InMemoryEcccMemoStore()
+
+        val capFilename = "T_WWCN13_C_CWTO_20260301120000.cap"
+        val memoKey = "eccc_memo_CWTO_$capFilename"
+        testMemoStore.put(memoKey, EcccMemoEntry(matched = false))
+
+        val mockClient = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val url = request.url.toString()
+
+                if (url.endsWith(".cap") || url.endsWith(".xml")) {
+                    capFileRequestCount++
+                }
+
+                val html = """
+                    <html>
+                    <body>
+                    <a href="12/">12/</a>
+                    <a href="$capFilename">$capFilename</a>
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                Response.Builder()
+                    .request(request)
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(200)
+                    .message("OK")
+                    .body(ResponseBody.create(null, html))
+                    .build()
+            }
+            .build()
+
+        val provider = EcccProvider(httpClient = mockClient, memoStore = testMemoStore)
+        val result = provider.fetchAlertsForLocation(torontoLocation)
+
+        assertTrue(result is AlertFetchResult.Success)
+        assertEquals(0, capFileRequestCount)
+    }
+
+    @Test
+    fun testMemoReturnsCachedUnifiedAlertWhenMatched() = runBlocking {
+        var capFileRequestCount = 0
+        val testMemoStore = InMemoryEcccMemoStore()
+
+        val capFilename = "T_WWCN13_C_CWTO_20260301120000.cap"
+        val memoKey = "eccc_memo_CWTO_$capFilename"
+
+        val cachedAlert = UnifiedAlert(
+            id = "test-cap-id",
+            source = AlertSource.ECCC,
+            locationLat = 43.6532,
+            locationLon = -79.3832,
+            severity = AlertSeverity.ORANGE,
+            eventNative = "Severe Thunderstorm Warning",
+            headline = "Severe Thunderstorm Warning in effect",
+            description = "Test description",
+            instruction = null,
+            onset = null,
+            expires = null,
+            areaDesc = "Toronto"
+        )
+        testMemoStore.put(memoKey, EcccMemoEntry(matched = true, alert = cachedAlert))
+
+        val mockClient = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val url = request.url.toString()
+
+                if (url.endsWith(".cap") || url.endsWith(".xml")) {
+                    capFileRequestCount++
+                }
+
+                val html = """
+                    <html>
+                    <body>
+                    <a href="12/">12/</a>
+                    <a href="$capFilename">$capFilename</a>
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                Response.Builder()
+                    .request(request)
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(200)
+                    .message("OK")
+                    .body(ResponseBody.create(null, html))
+                    .build()
+            }
+            .build()
+
+        val provider = EcccProvider(httpClient = mockClient, memoStore = testMemoStore)
+        val result = provider.fetchAlertsForLocation(torontoLocation)
+
+        assertTrue(result is AlertFetchResult.Success)
+        assertEquals(0, capFileRequestCount)
+        val alerts = (result as AlertFetchResult.Success).alerts
+        assertEquals(1, alerts.size)
+        assertEquals("test-cap-id", alerts[0].id)
     }
 }
