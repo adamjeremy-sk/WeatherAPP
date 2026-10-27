@@ -81,12 +81,29 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/layoutTemps"
+                app:layout_constraintEnd_toStartOf="@id/tvPrecipitation"
                 app:layout_constraintStart_toEndOf="@id/ivWeatherIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Mainly Clear" />
 
-            <!-- Column 4: High & Low Temps (Fixed Width Column Alignment) -->
+            <!-- Column 4: Precipitation -->
+            <TextView
+                android:id="@+id/tvPrecipitation"
+                android:layout_width="52dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_precipitation"
+                android:gravity="center"
+                android:paddingVertical="4dp"
+                android:textColor="@color/precipitation"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/layoutTemps"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2.5 mm" />
+
+            <!-- Column 5: High & Low Temps (Fixed Width Column Alignment) -->
             <LinearLayout
                 android:id="@+id/layoutTemps"
                 android:layout_width="wrap_content"

@@ -275,6 +275,9 @@
     <string name="label_humidity">Humidité</string>
     <string name="label_dew_point">Point de rosée</string>
     <string name="label_precipitation">Précipitations</string>
+    <string name="label_precipitation_probability">Probabilité</string>
+    <string name="precipitation_none">——</string>
+    <string name="precipitation_trace">Trace</string>
     <string name="label_cloud_cover">Couverture nuageuse</string>
     <string name="label_visibility">Visibilité</string>
     <string name="label_uv_index">Indice UV</string>

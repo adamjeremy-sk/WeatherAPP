@@ -81,7 +81,9 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#64B5F6")
+        alertMinor = Color.parseColor("#64B5F6"),
+        precipitation = Color.parseColor("#4FC3F7"),
+        precipitationBg = Color.parseColor("#01579B")
     )
 
     val COBALT_PALETTE = ColorPalette(
@@ -101,7 +103,9 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#38BDF8")
+        alertMinor = Color.parseColor("#38BDF8"),
+        precipitation = Color.parseColor("#4FC3F7"),
+        precipitationBg = Color.parseColor("#01579B")
     )
 
     val JADE_PALETTE = ColorPalette(
@@ -121,7 +125,9 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF7675"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#2DD4BF")
+        alertMinor = Color.parseColor("#2DD4BF"),
+        precipitation = Color.parseColor("#4FC3F7"),
+        precipitationBg = Color.parseColor("#01579B")
     )
 
     val AURORA_PALETTE = ColorPalette(
@@ -141,7 +147,9 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF75C3"),
         alertSevere = Color.parseColor("#FF9900"),
         alertModerate = Color.parseColor("#FFCC00"),
-        alertMinor = Color.parseColor("#818CF8")
+        alertMinor = Color.parseColor("#818CF8"),
+        precipitation = Color.parseColor("#4FC3F7"),
+        precipitationBg = Color.parseColor("#01579B")
     )
 
     val TERRACOTTA_PALETTE = ColorPalette(
@@ -241,7 +249,9 @@ object BoutiqueThemeEngine {
         alertExtreme = Color.parseColor("#FF6B6B"),
         alertSevere = Color.parseColor("#E95420"),
         alertModerate = Color.parseColor("#FFB74D"),
-        alertMinor = Color.parseColor("#4EA8DE")
+        alertMinor = Color.parseColor("#4EA8DE"),
+        precipitation = Color.parseColor("#4FC3F7"),
+        precipitationBg = Color.parseColor("#01579B")
     )
 
     fun getPalette(isDarkMode: Boolean): ColorPalette {

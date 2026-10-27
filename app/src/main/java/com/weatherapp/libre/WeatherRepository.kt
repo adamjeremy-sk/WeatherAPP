@@ -251,6 +251,10 @@ class WeatherRepository {
                     val mergedWindDirs = MutableList<Double?>(maxCount) { i -> d.windDirectionDominant?.getOrNull(i) ?: exD.windDirectionDominant?.getOrNull(i) }
                     val mergedSunrise = MutableList<String>(maxCount) { i -> d.sunrise?.getOrNull(i) ?: exD.sunrise?.getOrNull(i) ?: "" }
                     val mergedSunset = MutableList<String>(maxCount) { i -> d.sunset?.getOrNull(i) ?: exD.sunset?.getOrNull(i) ?: "" }
+                    val mergedPrecipSum = MutableList<Double?>(maxCount) { i -> d.precipitationSum?.getOrNull(i) ?: exD.precipitationSum?.getOrNull(i) }
+                    val mergedRainSum = MutableList<Double?>(maxCount) { i -> d.rainSum?.getOrNull(i) ?: exD.rainSum?.getOrNull(i) }
+                    val mergedSnowfallSum = MutableList<Double?>(maxCount) { i -> d.snowfallSum?.getOrNull(i) ?: exD.snowfallSum?.getOrNull(i) }
+                    val mergedPrecipProb = MutableList<Int?>(maxCount) { i -> d.precipitationProbabilityMax?.getOrNull(i) ?: exD.precipitationProbabilityMax?.getOrNull(i) }
 
                     d.time = mergedTimes
                     d.weatherCode = mergedCodes
@@ -262,6 +266,10 @@ class WeatherRepository {
                     d.windDirectionDominant = mergedWindDirs
                     d.sunrise = mergedSunrise
                     d.sunset = mergedSunset
+                    d.precipitationSum = mergedPrecipSum
+                    d.rainSum = mergedRainSum
+                    d.snowfallSum = mergedSnowfallSum
+                    d.precipitationProbabilityMax = mergedPrecipProb
                 }
 
                 if (weatherResponse.hourly == null && extraResponse?.hourly != null) {
@@ -295,7 +303,7 @@ class WeatherRepository {
                     "latitude=$latitude" +
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
-                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
+                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,precipitation_sum,rain_sum,snowfall_sum,precipitation_probability_max" +
                     "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
                     "&models=$modelApiString" +
@@ -340,7 +348,7 @@ class WeatherRepository {
                     "latitude=$latitude" +
                     "&longitude=$longitude" +
                     "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,visibility,uv_index,cloud_cover" +
-                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
+                    "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,precipitation_sum,rain_sum,snowfall_sum,precipitation_probability_max" +
                     "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m,dew_point_2m,cloud_cover,visibility,uv_index" +
                     "&forecast_days=8" +
                     "&timeformat=iso8601" +
@@ -509,6 +517,10 @@ class WeatherRepository {
         val windSpeed = daily.windSpeedMax?.getOrNull(todayIdx) ?: 0.0
         val windGusts = daily.windGustsMax?.getOrNull(todayIdx)
         val windDir = daily.windDirectionDominant?.getOrNull(todayIdx)
+        val precipSum = daily.precipitationSum?.getOrNull(todayIdx)
+        val rainSum = daily.rainSum?.getOrNull(todayIdx)
+        val snowfallSum = daily.snowfallSum?.getOrNull(todayIdx)
+        val precipProbMax = daily.precipitationProbabilityMax?.getOrNull(todayIdx)
 
         val weatherDescription = WeatherCodeUtils.getWeatherDescription(weatherCode)
         val current = response.current
@@ -533,7 +545,11 @@ class WeatherRepository {
             visibilityMeters = current?.visibilityMeters ?: 10000.0,
             cloudCoverPct = current?.cloudCoverPct?.toInt() ?: 0,
             airQualityIndex = current?.airQualityIndex,
-            solarSummary = solarSummary
+            solarSummary = solarSummary,
+            precipitationSumMm = precipSum,
+            rainSumMm = rainSum,
+            snowfallSumMm = snowfallSum,
+            precipitationProbabilityMax = precipProbMax
         )
     }
 
@@ -588,6 +604,10 @@ class WeatherRepository {
             val windSpeed = daily.windSpeedMax?.getOrNull(i) ?: 0.0
             val windGusts = daily.windGustsMax?.getOrNull(i)
             val windDir = daily.windDirectionDominant?.getOrNull(i)
+            val precipSum = daily.precipitationSum?.getOrNull(i)
+            val rainSum = daily.rainSum?.getOrNull(i)
+            val snowfallSum = daily.snowfallSum?.getOrNull(i)
+            val precipProbMax = daily.precipitationProbabilityMax?.getOrNull(i)
 
             val weatherDescription = WeatherCodeUtils.getWeatherDescription(weatherCode)
 
@@ -613,7 +633,11 @@ class WeatherRepository {
                     visibilityMeters = response.current?.visibilityMeters ?: 10000.0,
                     cloudCoverPct = response.current?.cloudCoverPct?.toInt() ?: 0,
                     airQualityIndex = response.current?.airQualityIndex,
-                    solarSummary = solarSummary
+                    solarSummary = solarSummary,
+                    precipitationSumMm = precipSum,
+                    rainSumMm = rainSum,
+                    snowfallSumMm = snowfallSum,
+                    precipitationProbabilityMax = precipProbMax
                 )
             )
         }

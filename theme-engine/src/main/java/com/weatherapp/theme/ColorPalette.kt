@@ -20,7 +20,9 @@ data class ColorPalette(
     val alertExtreme: Int = Color.parseColor("#DC2626"),
     val alertSevere: Int = Color.parseColor("#EA580C"),
     val alertModerate: Int = Color.parseColor("#92400E"),
-    val alertMinor: Int = Color.parseColor("#0369A1")
+    val alertMinor: Int = Color.parseColor("#0369A1"),
+    val precipitation: Int = Color.parseColor("#0288D1"),
+    val precipitationBg: Int = Color.parseColor("#E1F5FE")
 ) {
     val background: Int get() = backgroundLight
     val brandPrimary: Int get() = primary

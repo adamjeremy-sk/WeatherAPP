@@ -79,6 +79,7 @@ class DayForecastAdapter(
 
             binding.tvTempHigh.text = UnitUtils.formatTemp(item.tempMax, unitSystem)
             binding.tvTempMin.text = UnitUtils.formatTemp(item.tempMin, unitSystem)
+            binding.tvPrecipitation.text = UnitUtils.formatPrecipitation(item.precipitationSumMm, unitSystem)
 
             val p = palette
             if (p != null) {
@@ -92,6 +93,8 @@ class DayForecastAdapter(
                 binding.tvTempMin.setTextColor(p.tempLow)
                 binding.tvTempHigh.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempHighBg)
                 binding.tvTempMin.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempLowBg)
+                binding.tvPrecipitation.setTextColor(p.precipitation)
+                binding.tvPrecipitation.backgroundTintList = android.content.res.ColorStateList.valueOf(p.precipitationBg)
                 binding.layoutExpandedDetails.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvExpandedMoonPhase.setTextColor(p.textPrimary)
                 binding.tvExpandedDaylight.setTextColor(p.textPrimary)

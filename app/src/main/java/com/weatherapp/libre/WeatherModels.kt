@@ -138,7 +138,15 @@ data class DailyData(
     @SerializedName("wind_gusts_10m_max")
     var windGustsMax: List<Double?>? = null,
     @SerializedName("wind_direction_10m_dominant")
-    var windDirectionDominant: List<Double?>? = null
+    var windDirectionDominant: List<Double?>? = null,
+    @SerializedName("precipitation_sum")
+    var precipitationSum: List<Double?>? = null,
+    @SerializedName("rain_sum")
+    var rainSum: List<Double?>? = null,
+    @SerializedName("snowfall_sum")
+    var snowfallSum: List<Double?>? = null,
+    @SerializedName("precipitation_probability_max")
+    var precipitationProbabilityMax: List<Int?>? = null
 )
 
 @Keep
@@ -241,6 +249,10 @@ data class DayForecast(
     val cloudCoverPct: Int,
     val airQualityIndex: Int?,
     val solarSummary: SolarDaySummary? = null,
+    val precipitationSumMm: Double? = null,
+    val rainSumMm: Double? = null,
+    val snowfallSumMm: Double? = null,
+    val precipitationProbabilityMax: Int? = null,
     var isExpanded: Boolean = false
 ) {
     val date: LocalDate

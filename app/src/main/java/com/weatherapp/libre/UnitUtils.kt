@@ -81,6 +81,12 @@ object UnitUtils {
         }
     }
 
+    fun formatPrecipitation(mm: Double?, unitSystem: UnitSystem): String {
+        if (mm == null || mm == 0.0) return "——"
+        if (mm < 0.1) return "Trace"
+        return formatPrecipitation(mm, unitSystem)
+    }
+
     fun formatCeiling(cloudCoverPct: Int, humidityPct: Int, unitSystem: UnitSystem): String {
         if (cloudCoverPct < 25) return "Unlimited"
         val estimatedCeilingMeters = (100 - humidityPct) * 125.0

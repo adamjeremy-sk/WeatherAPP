@@ -24,6 +24,10 @@
     <color name="blue_hour_primary">#9FA8DA</color>
     <color name="blue_hour_bg">#121838</color>
 
+    <!-- Precipitation colors -->
+    <color name="precipitation">#4FC3F7</color>
+    <color name="precipitation_bg">#01579B</color>
+
     <!-- Text colors -->
     <color name="text_primary">#F8FAFC</color>
     <color name="text_secondary">#94A3B8</color>

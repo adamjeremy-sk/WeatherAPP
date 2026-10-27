@@ -316,6 +316,9 @@
     <string name="label_wind_speed">Wind Speed</string>
     <string name="label_sun_position">Sun Position</string>
     <string name="label_moon_position">Moon Position</string>
+    <string name="label_precipitation_probability">Chance</string>
+    <string name="precipitation_none">——</string>
+    <string name="precipitation_trace">Trace</string>
 
     <string name="label_feels_like">Feels Like</string>
     <string name="label_humidity">Humidity</string>
