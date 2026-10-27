@@ -19,6 +19,10 @@ captures/
 *.dex
 *.class
 
+# Release binaries and mapping files
+/app/release/
+mapping.txt
+
 # Logs
 *.log
 
