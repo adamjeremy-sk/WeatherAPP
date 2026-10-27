@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.weatherapp.theme"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 33
@@ -12,8 +12,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

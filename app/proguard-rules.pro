@@ -22,10 +22,15 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 
-# Room Database and WorkManager internals
--keep class * extends androidx.room.RoomDatabase { *; }
+# WorkManager internals
 -keep class androidx.work.impl.** { *; }
 -keep class * extends androidx.work.Worker
 -keep class * extends androidx.work.ListenableWorker {
     public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+
+# Strip debug and verbose logs in release builds
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
 }

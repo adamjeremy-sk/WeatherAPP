@@ -73,8 +73,7 @@ class WidgetSyncWorker(
             val widgetTypes = listOf(
                 ComponentName(context, WeatherWidgetProvider4x2::class.java),
                 ComponentName(context, WeatherWidgetProvider4x1::class.java),
-                ComponentName(context, WeatherWidgetProvider2x2::class.java),
-                ComponentName(context, WeatherWidgetProvider::class.java)
+                ComponentName(context, WeatherWidgetProvider2x2::class.java)
             )
 
             var hasActiveWidgets = false
@@ -102,8 +101,7 @@ class WidgetSyncWorker(
             val widgetTypes = listOf(
                 ComponentName(context, WeatherWidgetProvider4x2::class.java),
                 ComponentName(context, WeatherWidgetProvider4x1::class.java),
-                ComponentName(context, WeatherWidgetProvider2x2::class.java),
-                ComponentName(context, WeatherWidgetProvider::class.java)
+                ComponentName(context, WeatherWidgetProvider2x2::class.java)
             )
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default).launch {
                 for (component in widgetTypes) {
@@ -119,7 +117,10 @@ class WidgetSyncWorker(
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val widgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId) ?: return
             val layoutId = widgetInfo.initialLayout
-            val providerComponent = widgetInfo.provider ?: ComponentName(context, WeatherWidgetProvider::class.java)
+            val providerComponent = widgetInfo.provider ?: run {
+                Log.w("WidgetSyncWorker", "Cannot update widget $appWidgetId: provider component is null")
+                return
+            }
 
             val widgetPrefs = WidgetPreferences(context)
             val locationPreferences = LocationPreferences(context)
@@ -536,8 +537,7 @@ class WidgetSyncWorker(
         val widgetTypes = listOf(
             ComponentName(context, WeatherWidgetProvider4x2::class.java),
             ComponentName(context, WeatherWidgetProvider4x1::class.java),
-            ComponentName(context, WeatherWidgetProvider2x2::class.java),
-            ComponentName(context, WeatherWidgetProvider::class.java)
+            ComponentName(context, WeatherWidgetProvider2x2::class.java)
         )
 
         val allWidgetIds = mutableListOf<Int>()
