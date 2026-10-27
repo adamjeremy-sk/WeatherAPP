@@ -298,9 +298,19 @@
               <li><a href="#5-1-air-quality-and-visibility">Air Quality and Visibility</a></li>
             </ol>
           </li>
-          <li><a href="#6-official-alerts-and-forecast-advisories">Official Alerts and Forecast Advisories</a></li>
+          <li>
+            <a href="#6-official-alerts-and-forecast-advisories">Official Alerts and Forecast Advisories</a>
+            <ol>
+              <li><a href="#6-1-severe-weather-alert-providers">Severe Weather Alert Providers</a></li>
+            </ol>
+          </li>
           <li><a href="#7-google-play-and-application-updates">Google Play and Application Updates</a></li>
-          <li><a href="#8-user-initiated-external-actions">User-Initiated External Actions</a></li>
+          <li>
+            <a href="#8-user-initiated-external-actions">User-Initiated External Actions</a>
+            <ol>
+              <li><a href="#8-1-in-app-information-pages">In-App Information Pages</a></li>
+            </ol>
+          </li>
           <li><a href="#9-advertising-and-analytics">Advertising and Analytics</a></li>
           <li><a href="#10-data-sharing-sale-and-disclosure">Data Sharing, Sale, and Disclosure</a></li>
           <li><a href="#11-data-retention-and-deletion">Data Retention and Deletion</a></li>
@@ -342,7 +352,7 @@
 
     <main>
       <div class="privacy-glance">
-        <strong>Privacy at a glance:</strong> No account. No GPS permission. No ads. No developer-operated analytics. Manually selected locations are sent to Open-Meteo to provide requested information.
+        <strong>Privacy at a glance:</strong> No account. No GPS permission. No ads. No developer-operated analytics. Manually selected locations are sent to Open-Meteo, Environment and Climate Change Canada (ECCC), and MeteoGate (for European alerts) only when you request forecasts or opt in to severe weather alerts.
       </div>
 
       <section id="1-introduction">
@@ -437,6 +447,14 @@
         <p>WeatherAPP may display official weather alerts only when they are obtained from an identified official alert source.</p>
         <p>WeatherAPP may also display model-derived forecast advisories. A model-derived advisory is not an official government warning and will be identified separately from official alerts.</p>
         <p>Users should follow local authorities and official emergency-alert services during hazardous weather. WeatherAPP is not a substitute for official emergency communications.</p>
+
+        <h3 id="6-1-severe-weather-alert-providers">6.1 Severe Weather Alert Providers</h3>
+        <p>When you opt in to severe weather alerts, WeatherAPP contacts official alert sources directly based on your selected locations:</p>
+        <ul>
+          <li><strong>Environment and Climate Change Canada (ECCC):</strong> For Canadian locations, the app directly queries the ECCC Datamart (dd.weather.gc.ca) to download CAP-CP alert files. This reveals the province or territory of your selected location to ECCC.</li>
+          <li><strong>MeteoGate / MeteoAlarm (EUMETNET):</strong> For European locations, the app sends your coordinates (latitude and longitude, rounded to 5 decimal places) to the MeteoGate API (api.meteogate.eu) to retrieve aggregated alerts from European National Meteorological Services.</li>
+        </ul>
+        <p>Alert fetching only occurs after you explicitly opt in via the in-app consent dialog.</p>
       </section>
 
       <section id="7-google-play-and-application-updates">
@@ -455,6 +473,9 @@
         </h2>
         <p>WeatherAPP may let you open a donation page, open its Google Play listing, create an alarm through a clock application, or create an event through a calendar application.</p>
         <p>These actions occur only after you select the relevant option. Receiving websites and applications may process information under their own privacy policies. WeatherAPP does not control those services.</p>
+
+        <h3 id="8-1-in-app-information-pages">8.1 In-App Information Pages</h3>
+        <p>The Privacy, Licenses, About, Roadmap, Changelog, User Manual, and Almanac screens within the app fetch their content from weatherapplibre.ca and cache it locally for 7 days. The Donate screen loads Ko-fi (ko-fi.com) in the same in-app browser. No user data or location information is transmitted to these pages beyond standard web request headers.</p>
       </section>
 
       <section id="9-advertising-and-analytics">

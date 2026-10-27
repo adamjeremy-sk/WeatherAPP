@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import android.util.Log
 import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.theme.ColorPalette
 import android.content.res.ColorStateList
@@ -447,7 +448,9 @@ class WeatherDisplayManager(
                 try {
                     val inst = java.time.LocalDateTime.parse(tStr).atZone(zoneId).toInstant()
                     map[inst] = cPct / 100.0
-                } catch (_: Exception) {}
+                } catch (e: Exception) {
+                    Log.w("WeatherDisplayManager", "Failed to parse hourly cloud cover time string: $tStr", e)
+                }
             }
         }
         return map.ifEmpty { null }

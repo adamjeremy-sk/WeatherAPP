@@ -1,6 +1,7 @@
 package com.weatherapp.libre.almanac
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
@@ -89,7 +90,7 @@ object LunarCacheManager {
             val json = gson.toJson(wrapper)
             file.writeText(json)
         } catch (e: Exception) {
-            // Ignore cache write failure
+            Log.w("LunarCacheManager", "Failed to save 3-year lunar map cache", e)
         }
     }
 

@@ -2,6 +2,7 @@ package com.weatherapp.libre
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.annotation.Keep
@@ -617,7 +618,7 @@ class LocationPreferences(val context: Context) {
                     }
                 }
             } catch (e: Exception) {
-                // Parse fallback
+                Log.w("LocationPreferences", "Failed to parse recent locations JSON", e)
             }
         }
 
@@ -641,7 +642,7 @@ class LocationPreferences(val context: Context) {
             val json = Gson().toJson(trimmed)
             prefs.edit().putString(KEY_RECENT_LOCATIONS_JSON, json).apply()
         } catch (e: Exception) {
-            // Write fallback
+            Log.w("LocationPreferences", "Failed to save recent locations JSON", e)
         }
     }
 

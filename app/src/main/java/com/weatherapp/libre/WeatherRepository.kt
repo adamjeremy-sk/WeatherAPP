@@ -1,5 +1,6 @@
 package com.weatherapp.libre
 
+import android.util.Log
 import com.google.gson.Gson
 import com.weatherapp.libre.solar.Observer
 import com.weatherapp.libre.solar.SolarLightingEngine
@@ -186,7 +187,7 @@ class WeatherRepository {
                                 return@withContext Result.success(response)
                             }
                         } catch (e: Exception) {
-                            // Disk JSON parse error fallback
+                            Log.w("WeatherRepository", "Failed to parse persistent cache JSON for key $cacheKey", e)
                         }
                     }
                 }
@@ -197,7 +198,6 @@ class WeatherRepository {
             coroutineScope {
                 coroutineContext.ensureActive()
                 val forecastDeferred = async { fetchForecastData(latitude, longitude, model) }
-                val extraDeferred = async { fetchBestMatchMetrics(latitude, longitude) }
                 val aqiDeferred = async { fetchAirQualityData(latitude, longitude) }
 
                 val forecastResult = forecastDeferred.await()
@@ -208,7 +208,11 @@ class WeatherRepository {
                 }
 
                 val weatherResponse = forecastResult.getOrThrow()
-                val extraResponse = extraDeferred.await().getOrNull()
+
+                val extraResponse = if (isBestMatchNeeded(weatherResponse)) {
+                    fetchBestMatchMetrics(latitude, longitude).getOrNull()
+                } else null
+
                 val aqiResult = aqiDeferred.await().getOrNull()
                 coroutineContext.ensureActive()
 
@@ -270,7 +274,7 @@ class WeatherRepository {
                         val json = gson.toJson(weatherResponse)
                         locationPreferences.savePersistentCache(cacheKey, json, now)
                     } catch (e: Exception) {
-                        // Persistent cache write exception
+                        Log.w("WeatherRepository", "Failed to write persistent cache JSON for key $cacheKey", e)
                     }
                 }
 
@@ -309,6 +313,25 @@ class WeatherRepository {
             if (e is CancellationException) throw e
             Result.failure(e)
         }
+    }
+
+    private fun isBestMatchNeeded(response: WeatherResponse): Boolean {
+        val daily = response.daily ?: return true
+        if (daily.time.isNullOrEmpty() ||
+            daily.weatherCode.isNullOrEmpty() ||
+            daily.temperatureMax.isNullOrEmpty() ||
+            daily.temperatureMin.isNullOrEmpty()
+        ) {
+            return true
+        }
+        if (response.hourly == null) {
+            return true
+        }
+        val current = response.current
+        if (current == null || current.temperature == null || current.weatherCode == null) {
+            return true
+        }
+        return false
     }
 
     private suspend fun fetchBestMatchMetrics(latitude: Double, longitude: Double): Result<WeatherResponse> {

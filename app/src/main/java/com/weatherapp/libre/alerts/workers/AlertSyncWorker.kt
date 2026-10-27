@@ -98,7 +98,8 @@ class AlertSyncWorker(
                             val alertTimestamp = newAlert.sent?.let { sentStr ->
                                 try {
                                     java.time.Instant.parse(sentStr).toEpochMilli()
-                                } catch (_: Exception) {
+                                } catch (e: Exception) {
+                                    Log.w(TAG, "Failed to parse alert sent timestamp string: $sentStr", e)
                                     System.currentTimeMillis()
                                 }
                             } ?: System.currentTimeMillis()

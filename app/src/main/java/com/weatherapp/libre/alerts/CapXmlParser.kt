@@ -1,5 +1,6 @@
 package com.weatherapp.libre.alerts
 
+import android.util.Log
 import com.weatherapp.libre.alerts.models.CapAlert
 import com.weatherapp.libre.alerts.models.CapArea
 import com.weatherapp.libre.alerts.models.CapCircle
@@ -57,7 +58,7 @@ object CapXmlParser {
                 eventType = parser.next()
             }
         } catch (e: Exception) {
-            // Logged by caller
+            Log.e("CapXmlParser", "Error parsing CAP XML document", e)
         }
         return null
     }

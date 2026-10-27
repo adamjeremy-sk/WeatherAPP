@@ -1,5 +1,6 @@
 package com.weatherapp.libre.alerts.providers
 
+import android.util.Log
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.AlertMatcher
 import com.weatherapp.libre.alerts.models.AlertFetchResult
@@ -59,6 +60,7 @@ class MeteoAlarmProvider(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
+                    Log.w("MeteoAlarmProvider", "Failed to fetch/parse CAP detail for $jsonLink", e)
                     continue
                 }
 

@@ -2,6 +2,7 @@ package com.weatherapp.libre.alerts.providers
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.weatherapp.libre.LocationItem
@@ -114,7 +115,7 @@ object DefaultEcccMemoStore : EcccMemoStore {
             p.edit().putString(key, json).apply()
             purgePrefsOldEntries()
         } catch (e: Exception) {
-            // Ignore
+            Log.w("EcccProvider", "Failed to persist ECCC memo entry for key $key", e)
         }
     }
 

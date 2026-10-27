@@ -14,9 +14,10 @@ advertising, analytics, or tracking of any kind.
 - Golden Hour and Blue Hour windows; 13-phase Natural Light view
 - True Dark Sky, Night Visibility, and Solunar Activity pages
 - Official Environment Canada CAP-CP severe weather alerts (opt-in)
+- Official MeteoAlarm (EUMETNET) severe weather alerts for European locations (opt-in)
 - Eleven themes, including nine boutique palettes
-- Community extensions: themes and forecast providers via the catalog at
-  weatherapplibre.ca
+- Planned: Community extensions (themes and forecast providers) via the catalog at
+  weatherapplibre.ca (see docs/extensions.md for draft schema)
 
 ## Licence
 
@@ -33,10 +34,13 @@ Requires Android Studio with the JDK and Android SDK levels declared in
 
     ./gradlew assembleDebug
 
+Note: European alerts require a MeteoGate API key. Add METEOGATE_API_KEY=your_key_here to your local.properties file. Without it, EU alerts will fail silently, but the rest of the app will function normally.
+
 ## Data Attribution
 
 Weather data via Open-Meteo (CC BY 4.0). Severe weather alerts via
 Environment and Climate Change Canada (Open Government Licence - Canada).
+European severe weather alerts via MeteoAlarm / EUMETNET (MeteoGate API).
 Full attribution appears in the in-app Licenses & Sources screen.
 
 ## Extensions
