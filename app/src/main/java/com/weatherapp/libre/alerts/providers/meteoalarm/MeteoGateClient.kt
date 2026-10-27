@@ -7,7 +7,9 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 import java.util.concurrent.TimeUnit
 
 class MeteoGateHeaderInterceptor(
@@ -23,15 +25,14 @@ class MeteoGateHeaderInterceptor(
 }
 
 interface MeteoGateApi {
-    @GET("collections/warnings/position")
-    suspend fun getWarningsForPosition(
-        @Query("coords") coords: String
+    @GET("collections/warnings/locations/{countryCode}")
+    suspend fun getWarningsForCountry(
+        @Path("countryCode") countryCode: String,
+        @Query("datetime") datetime: String
     ): MeteoGateFeatureCollection
 
-    @GET("collections/warnings/items")
-    suspend fun getWarningsItems(
-        @Query("bbox") bbox: String? = null
-    ): MeteoGateFeatureCollection
+    @GET
+    suspend fun getDetailedCapJson(@Url url: String): MeteoGateDetailedCap
 }
 
 object MeteoGateClient {

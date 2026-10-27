@@ -1,5 +1,6 @@
 package com.weatherapp.libre.alerts
 
+import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.providers.MeteoAlarmProvider
@@ -9,7 +10,7 @@ import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateFeatureCollecti
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateProperties
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GlobalAlertTestHarnessTest {
@@ -44,7 +45,9 @@ class GlobalAlertTestHarnessTest {
             longitude = 2.3522
         )
 
-        val alerts = provider.fetchAlertsForLocation(location)
+        val result = provider.fetchAlertsForLocation(location)
+        assertTrue(result is AlertFetchResult.Success)
+        val alerts = (result as AlertFetchResult.Success).alerts
         assertEquals(1, alerts.size)
         assertEquals("test_feature_01", alerts[0].id)
         assertEquals(AlertSeverity.RED, alerts[0].severity)

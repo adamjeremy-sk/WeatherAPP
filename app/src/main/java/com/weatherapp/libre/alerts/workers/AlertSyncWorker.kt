@@ -12,6 +12,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.alerts.cache.GlobalAlertCache
+import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.routing.AlertProviderRouter
 import com.weatherapp.libre.alerts.utils.CountryCodeResolver
 import java.util.concurrent.TimeUnit
@@ -67,6 +68,9 @@ class AlertSyncWorker(
             return Result.success()
         }
 
+        var totalAttempts = 0
+        var failedAttempts = 0
+
         val tabCount = prefs.getTabCount()
         for (i in 0 until tabCount) {
             val loc = prefs.getTabLocation(i)
@@ -75,24 +79,39 @@ class AlertSyncWorker(
 
             val provider = AlertProviderRouter.getProviderForCountryCode(countryCode)
             if (provider != null) {
+                totalAttempts++
                 val previousAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)
                 val previousIds = previousAlerts.map { it.id }.toSet()
 
-                val alerts = provider.fetchAlertsForLocation(loc)
-                GlobalAlertCache.writeAlertsForLocation(appContext, loc, alerts)
+                when (val result = provider.fetchAlertsForLocation(loc)) {
+                    is AlertFetchResult.Success -> {
+                        GlobalAlertCache.writeAlertsForLocation(appContext, loc, result.alerts)
 
-                val newAlerts = alerts.filter { !previousIds.contains(it.id) }
-                for (newAlert in newAlerts) {
-                    com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
-                        context = appContext,
-                        alert = newAlert,
-                        location = loc
-                    )
+                        val newAlerts = result.alerts.filter { !previousIds.contains(it.id) }
+                        for (newAlert in newAlerts) {
+                            com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
+                                context = appContext,
+                                alert = newAlert,
+                                location = loc
+                            )
+                        }
+                    }
+                    is AlertFetchResult.Failure -> {
+                        failedAttempts++
+                        Log.w(TAG, "Alert sync failed for ${loc.name}", result.cause)
+                        // DO NOT write to GlobalAlertCache
+                        // DO NOT clear existing alerts
+                        // DO NOT trigger notifications
+                    }
                 }
             }
         }
 
         GlobalAlertCache.clearExpiredAlerts(appContext)
+
+        if (totalAttempts > 0 && totalAttempts == failedAttempts) {
+            return Result.retry()
+        }
         return Result.success()
     }
 }

@@ -1,6 +1,7 @@
 package com.weatherapp.libre.alerts
 
 import com.weatherapp.libre.LocationItem
+import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.providers.MeteoAlarmProvider
@@ -10,7 +11,9 @@ import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateFeatureCollecti
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateProperties
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.IOException
 
 class MeteoAlarmProviderTest {
 
@@ -31,6 +34,16 @@ class MeteoAlarmProviderTest {
 
         override suspend fun getWarningsItems(bbox: String?): MeteoGateFeatureCollection {
             return response
+        }
+    }
+
+    class FailingMeteoGateApi(private val exception: Exception) : MeteoGateApi {
+        override suspend fun getWarningsForPosition(coords: String): MeteoGateFeatureCollection {
+            throw exception
+        }
+
+        override suspend fun getWarningsItems(bbox: String?): MeteoGateFeatureCollection {
+            throw exception
         }
     }
 
@@ -82,7 +95,9 @@ class MeteoAlarmProviderTest {
         val fakeApi = FakeMeteoGateApi(MeteoGateFeatureCollection(features = features))
         val provider = MeteoAlarmProvider(api = fakeApi)
 
-        val alerts = provider.fetchAlertsForLocation(berlinLocation)
+        val result = provider.fetchAlertsForLocation(berlinLocation)
+        assertTrue(result is AlertFetchResult.Success)
+        val alerts = (result as AlertFetchResult.Success).alerts
 
         assertEquals(3, alerts.size)
 
@@ -97,5 +112,31 @@ class MeteoAlarmProviderTest {
 
         assertEquals("f3", alerts[2].id)
         assertEquals(AlertSeverity.RED, alerts[2].severity)
+    }
+
+    @Test
+    fun testHttpErrorReturnsFailure() = runBlocking {
+        val fakeApi = FailingMeteoGateApi(IOException("HTTP 500 Internal Server Error"))
+        val provider = MeteoAlarmProvider(api = fakeApi)
+
+        val result = provider.fetchAlertsForLocation(berlinLocation)
+
+        assertTrue(result is AlertFetchResult.Failure)
+        val failure = result as AlertFetchResult.Failure
+        assertTrue(failure.cause is IOException)
+        assertEquals("HTTP 500 Internal Server Error", failure.cause.message)
+    }
+
+    @Test
+    fun testIOExceptionReturnsFailure() = runBlocking {
+        val fakeApi = FailingMeteoGateApi(IOException("Network timeout"))
+        val provider = MeteoAlarmProvider(api = fakeApi)
+
+        val result = provider.fetchAlertsForLocation(berlinLocation)
+
+        assertTrue(result is AlertFetchResult.Failure)
+        val failure = result as AlertFetchResult.Failure
+        assertTrue(failure.cause is IOException)
+        assertEquals("Network timeout", failure.cause.message)
     }
 }

@@ -25,3 +25,10 @@ captures/
 # Signing keystores — never commit
 *.jks
 *.keystore
+
+# My stuff
+ARCHITECTURE.md
+FIXLIST.md
+AGENTS.md
+AI_ONBOARDING.md
+MASTER_EXAMPLE.txt

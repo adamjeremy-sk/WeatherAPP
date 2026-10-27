@@ -3,12 +3,15 @@ package com.weatherapp.libre.alerts.providers
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.AlertMatcher
 import com.weatherapp.libre.alerts.CapXmlParser
+import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.models.CapAlert
 import com.weatherapp.libre.alerts.models.UnifiedAlert
+import kotlinx.coroutines.CancellationException
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -22,32 +25,33 @@ class EcccProvider(
     override val source: AlertSource = AlertSource.ECCC
 
     companion object {
-        const val DATAMART_BASE_URL = "https://dd.weather.gc.ca/alerts/cap/"
+        const val DATAMART_BASE_URL = "https://dd.weather.gc.ca/today/alerts/cap/"
 
         val PROVINCE_TO_ECCC_CODE = mapOf(
             "Ontario" to "CWTO",
             "ON" to "CWTO",
             "Quebec" to "CWUL",
             "QC" to "CWUL",
-            "Alberta" to "CWAO",
-            "AB" to "CWAO",
+            "Alberta" to "CWEG",
+            "AB" to "CWEG",
             "British Columbia" to "CWVR",
             "BC" to "CWVR",
-            "Saskatchewan" to "CWRK",
-            "SK" to "CWRK",
-            "Manitoba" to "CWRN",
-            "MB" to "CWRN",
+            "Saskatchewan" to "CWWG",
+            "SK" to "CWWG",
+            "Manitoba" to "CWWG",
+            "MB" to "CWWG",
             "Nova Scotia" to "CWHX",
             "NS" to "CWHX",
-            "New Brunswick" to "CWHN",
-            "NB" to "CWHN",
-            "Newfoundland and Labrador" to "CWNT",
-            "NL" to "CWNT",
+            "New Brunswick" to "CWHX",
+            "NB" to "CWHX",
+            "Newfoundland and Labrador" to "CWHX",
+            "Newfoundland" to "CWHX",
+            "NL" to "CWHX",
             "Prince Edward Island" to "CWHX",
             "PE" to "CWHX",
             "PEI" to "CWHX",
-            "Yukon" to "CWYK",
-            "YT" to "CWYK",
+            "Yukon" to "CWVR",
+            "YT" to "CWVR",
             "Northwest Territories" to "CWNT",
             "NT" to "CWNT",
             "Nunavut" to "CWNT",
@@ -62,17 +66,17 @@ class EcccProvider(
         }
     }
 
-    override suspend fun fetchAlertsForLocation(location: LocationItem): List<UnifiedAlert> {
+    override suspend fun fetchAlertsForLocation(location: LocationItem): AlertFetchResult {
         return try {
-            val ecccCode = resolveEcccCode(location) ?: return emptyList()
+            val ecccCode = resolveEcccCode(location) ?: return AlertFetchResult.Success(emptyList())
             val dateStr = ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd"))
             val regionUrl = "$DATAMART_BASE_URL$dateStr/$ecccCode/"
 
             val request = Request.Builder().url(regionUrl).build()
             val htmlBody = httpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return emptyList()
+                if (!response.isSuccessful) return AlertFetchResult.Failure(IOException("HTTP ${response.code} fetching ECCC alerts"))
                 response.body?.string()
-            } ?: return emptyList()
+            } ?: return AlertFetchResult.Failure(IOException("Empty response body from ECCC"))
 
             val capXmlUrls = collectCapXmlUrls(regionUrl, htmlBody)
             val matchedAlerts = mutableListOf<UnifiedAlert>()
@@ -93,14 +97,18 @@ class EcccProvider(
                             }
                         }
                     }
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     // Skip failed individual document fetch/parse
                 }
             }
 
-            matchedAlerts
+            AlertFetchResult.Success(matchedAlerts)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            emptyList()
+            AlertFetchResult.Failure(e)
         }
     }
 
@@ -148,7 +156,7 @@ class EcccProvider(
             .distinct()
             .sortedDescending()
 
-        for (hourDir in hourDirs.take(3)) {
+        for (hourDir in hourDirs) {
             try {
                 val hourUrl = "$regionUrl$hourDir"
                 val hourReq = Request.Builder().url(hourUrl).build()
@@ -162,12 +170,14 @@ class EcccProvider(
                         }
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 // Ignore single hourly subfolder fetch failure
             }
         }
 
-        return fileUrls.distinct().take(20)
+        return fileUrls.distinct()
     }
 
     private fun mapCapAlertToUnifiedAlert(

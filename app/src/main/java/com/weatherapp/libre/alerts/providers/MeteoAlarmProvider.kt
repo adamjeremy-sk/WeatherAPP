@@ -1,12 +1,14 @@
 package com.weatherapp.libre.alerts.providers
 
 import com.weatherapp.libre.LocationItem
+import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
 import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.models.UnifiedAlert
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateApi
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateClient
 import com.weatherapp.libre.alerts.providers.meteoalarm.MeteoGateFeature
+import kotlinx.coroutines.CancellationException
 import java.util.Locale
 
 class MeteoAlarmProvider(
@@ -15,17 +17,20 @@ class MeteoAlarmProvider(
 
     override val source: AlertSource = AlertSource.METEOALARM
 
-    override suspend fun fetchAlertsForLocation(location: LocationItem): List<UnifiedAlert> {
+    override suspend fun fetchAlertsForLocation(location: LocationItem): AlertFetchResult {
         return try {
             val coordsParam = String.format(Locale.US, "POINT(%.5f %.5f)", location.longitude, location.latitude)
             val response = api.getWarningsForPosition(coordsParam)
             val features = response.features ?: emptyList()
 
-            features.mapNotNull { feature ->
+            val alerts = features.mapNotNull { feature ->
                 parseFeatureToUnifiedAlert(feature, location)
             }
+            AlertFetchResult.Success(alerts)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            emptyList()
+            AlertFetchResult.Failure(e)
         }
     }
 

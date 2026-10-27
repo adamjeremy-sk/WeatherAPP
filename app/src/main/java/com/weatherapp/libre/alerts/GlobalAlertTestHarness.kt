@@ -69,7 +69,10 @@ object GlobalAlertTestHarness {
         val allInjectedAlerts = mutableListOf<UnifiedAlert>()
 
         for (location in eligibleLocations) {
-            val fetchedAlerts = provider.fetchAlertsForLocation(location)
+            val fetchedAlerts = when (val result = provider.fetchAlertsForLocation(location)) {
+                is com.weatherapp.libre.alerts.models.AlertFetchResult.Success -> result.alerts
+                is com.weatherapp.libre.alerts.models.AlertFetchResult.Failure -> emptyList()
+            }
             val futureExpiryStr = Instant.now().plus(7, ChronoUnit.DAYS).toString()
             val restampedAlerts = fetchedAlerts.map { alert ->
                 val uniqueId = "${alert.id}_${System.currentTimeMillis()}"
