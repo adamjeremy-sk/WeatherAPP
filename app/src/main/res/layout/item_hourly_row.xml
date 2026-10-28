@@ -75,7 +75,7 @@
 
             </LinearLayout>
 
-            <!-- Precipitation Amount Pill (left of temp, vertically centered on the temperature line) -->
+            <!-- Precipitation Amount Pill (left of temp, vertically centered in the row to align with the description band) -->
             <TextView
                 android:id="@+id/tvHourlyPrecipPill"
                 android:layout_width="52dp"
@@ -88,9 +88,9 @@
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/tvHourlyTemp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tvHourlyTemp"
-                app:layout_constraintTop_toTopOf="@id/tvHourlyTemp"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="0.2 mm"
                 tools:visibility="visible" />
 
