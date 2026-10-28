@@ -2,9 +2,11 @@ package com.weatherapp.libre
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.weatherapp.libre.LocationPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +43,21 @@ abstract class BaseWeatherWidgetProvider : AppWidgetProvider() {
             )
             val tabIndex = intent.getIntExtra(WeatherWidgetProvider.EXTRA_TAB_INDEX, 0)
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                // 1. Verify the widget ID actually belongs to this specific receiver class
+                val widgetManager = AppWidgetManager.getInstance(context)
+                val info = widgetManager.getAppWidgetInfo(appWidgetId)
+                if (info == null || info.provider != ComponentName(context, javaClass)) {
+                    Log.w("WidgetProvider", "Ignoring ACTION_WIDGET_SWITCH_TAB for invalid or unowned appWidgetId: $appWidgetId")
+                    return
+                }
+
+                // 2. Verify the tab index is within the actual configured bounds
+                val tabCount = LocationPreferences(context).getTabCount()
+                if (tabIndex < 0 || tabIndex >= tabCount) {
+                    Log.w("WidgetProvider", "Ignoring ACTION_WIDGET_SWITCH_TAB with out-of-bounds tabIndex: $tabIndex (max: ${tabCount - 1})")
+                    return
+                }
+
                 val widgetPrefs = WidgetPreferences(context)
                 widgetPrefs.saveActiveTab(appWidgetId, tabIndex)
 
