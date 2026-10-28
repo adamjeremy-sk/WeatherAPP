@@ -19,6 +19,7 @@ leakcanary = "2.14"
 xmlpull = "1.1.3.1"
 xpp3 = "1.1.4c"
 kxml2 = "2.3.0"
+robolectric = "4.17"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", v
 xmlpull = { group = "xmlpull", name = "xmlpull", version.ref = "xmlpull" }
 xpp3 = { group = "xpp3", name = "xpp3", version.ref = "xpp3" }
 kxml2 = { group = "net.sf.kxml", name = "kxml2", version.ref = "kxml2" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

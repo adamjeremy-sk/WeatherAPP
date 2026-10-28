@@ -67,6 +67,7 @@ android {
     testOptions {
         unitTests {
             isReturnDefaultValues = true
+            isIncludeAndroidResources = true
         }
     }
 
@@ -97,6 +98,7 @@ dependencies {
     testImplementation(libs.xmlpull)
     testImplementation(libs.xpp3)
     testImplementation(libs.kxml2)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

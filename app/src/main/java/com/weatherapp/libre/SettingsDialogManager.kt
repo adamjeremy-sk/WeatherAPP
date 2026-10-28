@@ -725,21 +725,11 @@ class SettingsDialogManager(
                         val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectGlobalTestFixture(
                             context = activity.applicationContext,
                             fixture = selectedFixture,
-                            locations = eligibleGlobalTabs
+                            locations = eligibleGlobalTabs,
+                            timezoneStr = tz
                         )
 
                         if (injectedList.isNotEmpty()) {
-                            val targetNotifyLoc = eligibleGlobalTabs.firstOrNull { it.latitude == currentLoc.latitude && it.longitude == currentLoc.longitude }
-                                ?: eligibleGlobalTabs.firstOrNull() ?: currentLoc
-                            injectedList.forEach { alert ->
-                                AlertNotificationHelper.postUnifiedAlertNotification(
-                                    context = activity.applicationContext,
-                                    alert = alert,
-                                    location = targetNotifyLoc,
-                                    timezoneStr = tz,
-                                    isTestFixture = true
-                                )
-                            }
                             if (activity is MainActivity) {
                                 activity.alertBannerManager.updateAlertBanner(currentLoc)
                             }

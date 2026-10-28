@@ -126,6 +126,24 @@ object GlobalAlertTestHarness {
                     isTestFixture = true
                 )
                 injectedAlerts.add(unifiedAlert)
+
+                val alertTimestamp = try {
+                    java.time.Instant.parse(unifiedAlert.sent ?: "").toEpochMilli()
+                } catch (e: Exception) {
+                    System.currentTimeMillis()
+                }
+
+                AlertLogRepository.saveEntry(
+                    context,
+                    AlertLogEntry(
+                        id = System.currentTimeMillis(),
+                        timestampUtc = alertTimestamp,
+                        locationName = location.displayName,
+                        alertEvent = unifiedAlert.eventNative,
+                        severity = unifiedAlert.severity.name,
+                        isTest = true
+                    )
+                )
             }
         }
 
@@ -135,7 +153,8 @@ object GlobalAlertTestHarness {
     suspend fun injectGlobalTestFixture(
         context: Context,
         fixture: GlobalTestFixture,
-        locations: List<LocationItem>
+        locations: List<LocationItem>,
+        timezoneStr: String? = null
     ): List<UnifiedAlert> = withContext(Dispatchers.IO) {
         val eligibleLocations = locations.filter { loc ->
             val countryCode = loc.countryCode?.uppercase(Locale.US) ?: ""
@@ -155,6 +174,8 @@ object GlobalAlertTestHarness {
             return@withContext emptyList()
         }
 
+        var currentDetailedCap = MeteoGateDetailedCap()
+
         val mockApi = object : MeteoGateApi {
             override suspend fun getWarningsForCountry(countryCode: String, datetime: String): MeteoGateFeatureCollection {
                 val syntheticFeature = MeteoGateFeature(
@@ -172,12 +193,7 @@ object GlobalAlertTestHarness {
 
             override suspend fun getDetailedCapJson(url: String): MeteoGateDetailedCap {
                 if (url == "mock://tier2/fixture") {
-                    return try {
-                        gson.fromJson(jsonString, MeteoGateDetailedCap::class.java)
-                            ?: MeteoGateDetailedCap()
-                    } catch (e: Exception) {
-                        MeteoGateDetailedCap()
-                    }
+                    return currentDetailedCap
                 }
                 return MeteoGateDetailedCap()
             }
@@ -187,6 +203,15 @@ object GlobalAlertTestHarness {
         val allInjectedAlerts = mutableListOf<UnifiedAlert>()
 
         for (location in eligibleLocations) {
+            val restampedJson = restampFixtureJson(jsonString, location)
+            currentDetailedCap = try {
+                gson.fromJson(restampedJson, MeteoGateDetailedCap::class.java)
+                    ?: MeteoGateDetailedCap()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to parse restamped global fixture for ${location.displayName}", e)
+                MeteoGateDetailedCap()
+            }
+
             val fetchedAlerts = when (val result = provider.fetchAlertsForLocation(location)) {
                 is com.weatherapp.libre.alerts.models.AlertFetchResult.Success -> result.alerts
                 is com.weatherapp.libre.alerts.models.AlertFetchResult.Failure -> emptyList()
@@ -205,6 +230,34 @@ object GlobalAlertTestHarness {
             GlobalAlertCache.writeAlertsForLocation(context, location, restampedAlerts)
             Log.d(TAG, "Injected ${restampedAlerts.size} global test alerts for location ${location.displayName}")
             allInjectedAlerts.addAll(restampedAlerts)
+
+            for (alert in restampedAlerts) {
+                AlertNotificationHelper.postUnifiedAlertNotification(
+                    context = context,
+                    alert = alert,
+                    location = location,
+                    timezoneStr = timezoneStr,
+                    isTestFixture = true
+                )
+
+                val alertTimestamp = try {
+                    java.time.Instant.parse(alert.sent ?: "").toEpochMilli()
+                } catch (e: Exception) {
+                    System.currentTimeMillis()
+                }
+
+                AlertLogRepository.saveEntry(
+                    context,
+                    AlertLogEntry(
+                        id = System.currentTimeMillis(),
+                        timestampUtc = alertTimestamp,
+                        locationName = location.displayName,
+                        alertEvent = alert.eventNative,
+                        severity = alert.severity.name,
+                        isTest = true
+                    )
+                )
+            }
         }
 
         return@withContext allInjectedAlerts
@@ -218,6 +271,30 @@ object GlobalAlertTestHarness {
         val areaDescRegex = Regex("""<areaDesc>[^<]+</areaDesc>""", RegexOption.IGNORE_CASE)
         val newAreaDesc = "<areaDesc>${location.displayName} Region (Test)</areaDesc>"
         updated = areaDescRegex.replace(updated, newAreaDesc)
+
+        return updated
+    }
+
+    private fun restampFixtureJson(rawJson: String, location: LocationItem): String {
+        val lat = location.latitude
+        val lon = location.longitude
+        val polyStr = String.format(
+            Locale.US,
+            "%.4f,%.4f %.4f,%.4f %.4f,%.4f %.4f,%.4f %.4f,%.4f",
+            lat - 0.5, lon - 0.5,
+            lat - 0.5, lon + 0.5,
+            lat + 0.5, lon + 0.5,
+            lat + 0.5, lon - 0.5,
+            lat - 0.5, lon - 0.5
+        )
+
+        var updated = rawJson
+
+        val areaDescRegex = Regex(""""areaDesc"\s*:\s*"[^"]*"""")
+        updated = areaDescRegex.replace(updated, """"areaDesc": "${location.displayName} Region (Test)"""")
+
+        val polygonRegex = Regex(""""polygon"\s*:\s*\[\s*"[^"]*"\s*]""")
+        updated = polygonRegex.replace(updated, """"polygon": [ "$polyStr" ]""")
 
         return updated
     }

@@ -1,5 +1,6 @@
 package com.weatherapp.libre.alerts
 
+import android.content.Context
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
@@ -18,7 +19,13 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class GlobalAlertTestHarnessTest {
 
     @Test
@@ -78,5 +85,71 @@ class GlobalAlertTestHarnessTest {
         assertEquals(AlertSource.METEOALARM, alerts[0].source)
         assertEquals(48.8566, alerts[0].locationLat, 0.0001)
         assertEquals(2.3522, alerts[0].locationLon, 0.0001)
+    }
+
+    @Test
+    fun testEcccInjectionSavesAlertLogEntry() = runBlocking {
+        val context: Context = RuntimeEnvironment.getApplication()
+        AlertLogRepository.clearAll(context)
+
+        val location = LocationItem(
+            id = 600L,
+            name = "Toronto",
+            admin1 = "Ontario",
+            country = "Canada",
+            countryCode = "CA",
+            latitude = 43.6532,
+            longitude = -79.3832
+        )
+
+        val injected = GlobalAlertTestHarness.injectEcccTestFixture(
+            context = context,
+            fixture = GlobalAlertTestHarness.EcccTestFixture.TORNADO_WARNING,
+            locations = listOf(location),
+            timezoneStr = "America/Toronto"
+        )
+
+        assertTrue("Expected at least one injected ECCC test alert", injected.isNotEmpty())
+
+        val entries = AlertLogRepository.getAllEntries(context)
+        assertEquals("Expected exactly 1 alert log entry", 1, entries.size)
+
+        val entry = entries.first()
+        assertTrue("Expected isTest to be true", entry.isTest)
+        assertEquals(location.displayName, entry.locationName)
+        assertTrue("Expected non-blank severity", entry.severity.isNotBlank())
+    }
+
+    @Test
+    fun testGlobalInjectionSavesAlertLogEntry() = runBlocking {
+        val context: Context = RuntimeEnvironment.getApplication()
+        AlertLogRepository.clearAll(context)
+
+        val location = LocationItem(
+            id = 700L,
+            name = "Paris",
+            admin1 = "Ile-de-France",
+            country = "France",
+            countryCode = "FR",
+            latitude = 48.8566,
+            longitude = 2.3522
+        )
+
+        val injected = GlobalAlertTestHarness.injectGlobalTestFixture(
+            context = context,
+            fixture = GlobalAlertTestHarness.GlobalTestFixture.RED_WIND,
+            locations = listOf(location),
+            timezoneStr = "Europe/Paris"
+        )
+
+        assertTrue("Expected at least one injected global test alert", injected.isNotEmpty())
+
+        val entries = AlertLogRepository.getAllEntries(context)
+        assertEquals("Expected exactly 1 alert log entry", 1, entries.size)
+
+        val entry = entries.first()
+        assertTrue("Expected isTest to be true", entry.isTest)
+        assertEquals(location.displayName, entry.locationName)
+        assertTrue("Expected non-blank severity", entry.severity.isNotBlank())
     }
 }
