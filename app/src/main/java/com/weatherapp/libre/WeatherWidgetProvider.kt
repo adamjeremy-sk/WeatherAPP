@@ -90,4 +90,4 @@ open class WeatherWidgetProvider : BaseWeatherWidgetProvider() {
 
 class WeatherWidgetProvider4x2 : BaseWeatherWidgetProvider()
 class WeatherWidgetProvider4x1 : BaseWeatherWidgetProvider()
-class WeatherWidgetProvider2x2 : BaseWeatherWidgetProvider()
+class WeatherWidgetProvider2x1 : BaseWeatherWidgetProvider()

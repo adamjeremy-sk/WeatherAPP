@@ -73,7 +73,7 @@ class WidgetSyncWorker(
             val widgetTypes = listOf(
                 ComponentName(context, WeatherWidgetProvider4x2::class.java),
                 ComponentName(context, WeatherWidgetProvider4x1::class.java),
-                ComponentName(context, WeatherWidgetProvider2x2::class.java)
+                ComponentName(context, WeatherWidgetProvider2x1::class.java)
             )
 
             var hasActiveWidgets = false
@@ -101,7 +101,7 @@ class WidgetSyncWorker(
             val widgetTypes = listOf(
                 ComponentName(context, WeatherWidgetProvider4x2::class.java),
                 ComponentName(context, WeatherWidgetProvider4x1::class.java),
-                ComponentName(context, WeatherWidgetProvider2x2::class.java)
+                ComponentName(context, WeatherWidgetProvider2x1::class.java)
             )
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default).launch {
                 for (component in widgetTypes) {
@@ -537,7 +537,7 @@ class WidgetSyncWorker(
         val widgetTypes = listOf(
             ComponentName(context, WeatherWidgetProvider4x2::class.java),
             ComponentName(context, WeatherWidgetProvider4x1::class.java),
-            ComponentName(context, WeatherWidgetProvider2x2::class.java)
+            ComponentName(context, WeatherWidgetProvider2x1::class.java)
         )
 
         val allWidgetIds = mutableListOf<Int>()

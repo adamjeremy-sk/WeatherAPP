@@ -617,7 +617,7 @@
     <!-- Widget Strings -->
     <string name="widget_name_4x2">Weather &amp; Astronomy (4x2)</string>
     <string name="widget_name_4x1">Weather Tabs (4x1)</string>
-    <string name="widget_name_2x2">Weather Current (2x1)</string>
+    <string name="widget_name_2x1">Weather Current (2x1)</string>
     <string name="widget_config_title">Widget Configuration</string>
     <string name="widget_config_theme">Widget Theme</string>
     <string name="widget_theme_system">System Theme</string>

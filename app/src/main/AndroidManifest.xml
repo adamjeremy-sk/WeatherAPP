@@ -53,9 +53,9 @@
         </receiver>
 
         <receiver
-            android:name=".WeatherWidgetProvider2x2"
+            android:name=".WeatherWidgetProvider2x1"
             android:exported="true"
-            android:label="@string/widget_name_2x2">
+            android:label="@string/widget_name_2x1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.weatherapp.libre.ACTION_WIDGET_SWITCH_TAB" />

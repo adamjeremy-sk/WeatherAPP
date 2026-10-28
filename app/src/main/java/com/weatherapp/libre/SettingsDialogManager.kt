@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import androidx.core.graphics.ColorUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageButton
@@ -196,6 +198,19 @@ class SettingsDialogManager(
                     super.onPageFinished(view, url)
                     progressBar.visibility = View.GONE
                     swipeRefresh.isRefreshing = false
+                }
+
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+                    val host = request.url.host?.lowercase(Locale.ROOT) ?: return false
+                    if (host == "weatherapplibre.ca" || host == "www.weatherapplibre.ca") {
+                        return false
+                    }
+                    try {
+                        activity.startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                    } catch (e: Exception) {
+                        Toast.makeText(activity, activity.getString(R.string.toast_could_not_open_browser), Toast.LENGTH_SHORT).show()
+                    }
+                    return true
                 }
             }
         }
@@ -1545,7 +1560,11 @@ class SettingsDialogManager(
     }
 
     fun showDonateSettingsScreen() {
-        showWebViewSettingsPage(activity.getString(R.string.title_donate), UrlConfig.URL_KOFI)
+        try {
+            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(UrlConfig.URL_KOFI)))
+        } catch (e: Exception) {
+            Toast.makeText(activity, activity.getString(R.string.toast_could_not_open_browser), Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun showRoadmapSettingsScreen() {

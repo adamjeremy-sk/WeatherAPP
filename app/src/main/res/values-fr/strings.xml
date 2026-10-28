@@ -560,7 +560,7 @@
     <!-- Widget Strings -->
     <string name="widget_name_4x2">Météo &amp; Astronomie (4x2)</string>
     <string name="widget_name_4x1">Onglets Météo (4x1)</string>
-    <string name="widget_name_2x2">Météo Actuelle (2x1)</string>
+    <string name="widget_name_2x1">Météo Actuelle (2x1)</string>
     <string name="widget_config_title">Configuration du widget</string>
     <string name="widget_config_theme">Thème du widget</string>
     <string name="widget_theme_system">Thème du système</string>
