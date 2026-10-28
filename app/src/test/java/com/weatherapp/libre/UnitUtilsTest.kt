@@ -83,4 +83,15 @@ class UnitUtilsTest {
         // 1.27 mm / 25.4 = 0.05 -> "%.2f in" -> "0.05 in"
         assertEquals("0.05 in", UnitUtils.formatPrecipitation(1.27, UnitSystem.US_CUSTOMARY))
     }
+
+    @Test
+    fun testFormatProbability_NullReturnsEmDash() {
+        assertEquals("——", UnitUtils.formatProbability(null))
+    }
+
+    @Test
+    fun testFormatProbability_ValueReturnsPercent() {
+        assertEquals("40%", UnitUtils.formatProbability(40))
+        assertEquals("0%", UnitUtils.formatProbability(0))
+    }
 }

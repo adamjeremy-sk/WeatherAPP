@@ -81,27 +81,10 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tvPrecipitation"
+                app:layout_constraintEnd_toStartOf="@id/layoutTemps"
                 app:layout_constraintStart_toEndOf="@id/ivWeatherIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Mainly Clear" />
-
-            <!-- Column 4: Precipitation -->
-            <TextView
-                android:id="@+id/tvPrecipitation"
-                android:layout_width="52dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_precipitation"
-                android:gravity="center"
-                android:paddingVertical="4dp"
-                android:textColor="@color/precipitation"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/layoutTemps"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="2.5 mm" />
 
             <!-- Column 5: High & Low Temps (Fixed Width Column Alignment) -->
             <LinearLayout
@@ -333,6 +316,65 @@
                         android:textSize="13sp"
                         android:textStyle="bold"
                         tools:text="Rise 112° (SE) • Set 248° (SW)" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Row 4: Precipitation Sum & Probability -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_precipitation"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvExpandedPrecipSum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        tools:text="2.5 mm" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_precipitation_probability"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvExpandedPrecipProb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        tools:text="40%" />
 
                 </LinearLayout>
 

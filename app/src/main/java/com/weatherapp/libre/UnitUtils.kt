@@ -87,6 +87,11 @@ object UnitUtils {
         return formatPrecipitation(mm, unitSystem)
     }
 
+    fun formatProbability(prob: Int?): String {
+        if (prob == null) return "——"
+        return "$prob%"
+    }
+
     fun formatCeiling(cloudCoverPct: Int, humidityPct: Int, unitSystem: UnitSystem): String {
         if (cloudCoverPct < 25) return "Unlimited"
         val estimatedCeilingMeters = (100 - humidityPct) * 125.0

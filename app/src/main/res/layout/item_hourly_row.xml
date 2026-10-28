@@ -75,6 +75,24 @@
 
             </LinearLayout>
 
+            <!-- Precipitation Amount Pill (Left of Temp, top-aligned to the temperature line) -->
+            <TextView
+                android:id="@+id/tvHourlyPrecipPill"
+                android:layout_width="52dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_precipitation"
+                android:gravity="center"
+                android:paddingVertical="4dp"
+                android:textColor="@color/precipitation"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/layoutTempPrecip"
+                app:layout_constraintTop_toTopOf="@id/layoutTempPrecip"
+                tools:text="0.2 mm"
+                tools:visibility="visible" />
+
             <!-- Column 3: Temperature & Precip Probability (Right, Width 75dp) -->
             <LinearLayout
                 android:id="@+id/layoutTempPrecip"

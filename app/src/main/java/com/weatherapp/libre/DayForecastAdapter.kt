@@ -79,7 +79,6 @@ class DayForecastAdapter(
 
             binding.tvTempHigh.text = UnitUtils.formatTemp(item.tempMax, unitSystem)
             binding.tvTempMin.text = UnitUtils.formatTemp(item.tempMin, unitSystem)
-            binding.tvPrecipitation.text = UnitUtils.formatPrecipitation(item.precipitationSumMm, unitSystem)
 
             val p = palette
             if (p != null) {
@@ -93,13 +92,13 @@ class DayForecastAdapter(
                 binding.tvTempMin.setTextColor(p.tempLow)
                 binding.tvTempHigh.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempHighBg)
                 binding.tvTempMin.backgroundTintList = android.content.res.ColorStateList.valueOf(p.tempLowBg)
-                binding.tvPrecipitation.setTextColor(p.precipitation)
-                binding.tvPrecipitation.backgroundTintList = android.content.res.ColorStateList.valueOf(p.precipitationBg)
                 binding.layoutExpandedDetails.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvExpandedMoonPhase.setTextColor(p.textPrimary)
                 binding.tvExpandedDaylight.setTextColor(p.textPrimary)
                 binding.tvExpandedSunriseSunset.setTextColor(p.textPrimary)
                 binding.tvExpandedWindUv.setTextColor(p.textPrimary)
+                binding.tvExpandedPrecipSum.setTextColor(p.textPrimary)
+                binding.tvExpandedPrecipProb.setTextColor(p.textPrimary)
                 binding.tvExpandedSunAzimuth.setTextColor(p.textPrimary)
                 binding.tvExpandedMoonAzimuth.setTextColor(p.textPrimary)
             }
@@ -144,6 +143,9 @@ class DayForecastAdapter(
             } else {
                 binding.tvExpandedWindUv.text = windLine
             }
+
+            binding.tvExpandedPrecipSum.text = UnitUtils.formatPrecipitation(item.precipitationSumMm, unitSystem)
+            binding.tvExpandedPrecipProb.text = UnitUtils.formatProbability(item.precipitationProbabilityMax)
 
             val srAz = solar?.sunriseAzimuthDegrees
             val ssAz = solar?.sunsetAzimuthDegrees

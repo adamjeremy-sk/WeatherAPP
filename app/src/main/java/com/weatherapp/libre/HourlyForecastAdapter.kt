@@ -170,6 +170,14 @@ class HourlyForecastAdapter(
                 binding.layoutPrecip.visibility = View.GONE
             }
 
+            val precipAmt = forecast.precipitation
+            if (precipAmt != null && precipAmt > 0.0) {
+                binding.tvHourlyPrecipPill.visibility = View.VISIBLE
+                binding.tvHourlyPrecipPill.text = UnitUtils.formatPrecipitation(precipAmt, unitSystem)
+            } else {
+                binding.tvHourlyPrecipPill.visibility = View.GONE
+            }
+
             val isExpanded = (expandedInstant == forecast.time)
             ExpandCollapseHelper.togglePanel(binding.layoutExpandedPanel, isExpanded, binding.cardHourlyRow)
 
@@ -191,6 +199,8 @@ class HourlyForecastAdapter(
                 binding.ivHourlyConditionIcon.setColorFilter(p.brandPrimary)
                 binding.tvDroplet.setTextColor(p.brandPrimary)
                 binding.tvPrecipProb.setTextColor(p.brandPrimary)
+                binding.tvHourlyPrecipPill.setTextColor(p.precipitation)
+                binding.tvHourlyPrecipPill.backgroundTintList = android.content.res.ColorStateList.valueOf(p.precipitationBg)
 
                 binding.layoutExpandedPanel.setBackgroundColor(p.surfaceCardSecondary)
                 binding.tvStatFeelsLike.setTextColor(p.textPrimary)
