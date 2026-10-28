@@ -2,6 +2,7 @@ package com.weatherapp.libre.lunar
 
 import java.time.Instant
 import kotlin.math.*
+import androidx.annotation.Keep
 
 enum class EclipseType {
     PENUMBRAL,
@@ -15,6 +16,7 @@ enum class ShadowBoundary {
     UMBRA_INNER,
 }
 
+@Keep
 data class EclipseContacts(
     val p1: Instant? = null,
     val u1: Instant? = null,
@@ -24,6 +26,7 @@ data class EclipseContacts(
     val p4: Instant? = null,
 )
 
+@Keep
 data class LunarEclipseInfo(
     val type: EclipseType,
     val magnitude: Double,

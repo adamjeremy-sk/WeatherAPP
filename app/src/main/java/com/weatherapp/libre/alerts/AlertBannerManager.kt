@@ -82,7 +82,7 @@ class AlertBannerManager(
                         severityLevel = level,
                         sentUtcMs = null,
                         expiresUtcMs = null,
-                        isTestFixture = alert.id.contains("test")
+                        isTestFixture = alert.isTest
                     )
                 )
             }

@@ -16,7 +16,9 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
+import androidx.annotation.Keep
 
+@Keep
 data class MoonAlmanacDay(
     val date: LocalDate,
     val primaryPhase: MoonPhaseInfo,

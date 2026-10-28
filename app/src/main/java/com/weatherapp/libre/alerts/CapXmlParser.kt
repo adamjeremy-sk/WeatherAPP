@@ -17,9 +17,15 @@ import java.util.Locale
 
 object CapXmlParser {
 
+    private const val MAX_PAYLOAD_SIZE = 5 * 1024 * 1024
+
     private fun createXmlPullParser(): XmlPullParser {
         return try {
-            val factory = XmlPullParserFactory.newInstance()
+            val factory = XmlPullParserFactory.newInstance().apply {
+                isNamespaceAware = true
+                setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false)
+                setFeature(XmlPullParser.FEATURE_VALIDATION, false)
+            }
             factory.newPullParser()
         } catch (e: Exception) {
             try {
@@ -33,18 +39,32 @@ object CapXmlParser {
     }
 
     fun parse(xmlString: String, targetLocale: String = "en-CA", isTestFixture: Boolean = false): CapAlert? {
+        if (xmlString.length > MAX_PAYLOAD_SIZE) {
+            Log.w("CapXmlParser", "Payload exceeds size limit: ${xmlString.length} characters")
+            throw IllegalArgumentException("Payload exceeds size limit")
+        }
         return parse(StringReader(xmlString), targetLocale, isTestFixture)
     }
 
     fun parse(inputStream: InputStream, targetLocale: String = "en-CA", isTestFixture: Boolean = false): CapAlert? {
+        val bytes = inputStream.readBytes()
+        if (bytes.size > MAX_PAYLOAD_SIZE) {
+            Log.w("CapXmlParser", "Payload exceeds size limit: ${bytes.size} bytes")
+            throw IllegalArgumentException("Payload exceeds size limit")
+        }
         val parser = createXmlPullParser()
-        parser.setInput(inputStream, "UTF-8")
+        parser.setInput(bytes.inputStream(), "UTF-8")
         return parseInternal(parser, targetLocale, isTestFixture)
     }
 
     fun parse(reader: java.io.Reader, targetLocale: String = "en-CA", isTestFixture: Boolean = false): CapAlert? {
+        val content = reader.readText()
+        if (content.length > MAX_PAYLOAD_SIZE) {
+            Log.w("CapXmlParser", "Payload exceeds size limit: ${content.length} characters")
+            throw IllegalArgumentException("Payload exceeds size limit")
+        }
         val parser = createXmlPullParser()
-        parser.setInput(reader)
+        parser.setInput(StringReader(content))
         return parseInternal(parser, targetLocale, isTestFixture)
     }
 

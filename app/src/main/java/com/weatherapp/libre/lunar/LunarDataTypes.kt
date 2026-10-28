@@ -1,6 +1,7 @@
 package com.weatherapp.libre.lunar
 
 import java.time.Instant
+import androidx.annotation.Keep
 
 enum class MoonPhaseName {
     NEW_MOON,
@@ -61,6 +62,7 @@ enum class MoonEventType {
     MOONSET,
 }
 
+@Keep
 data class MoonPhaseInfo(
     val instantUtc: Instant,
     val phaseAngleDegrees: Double,

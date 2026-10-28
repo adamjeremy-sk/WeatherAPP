@@ -1,5 +1,6 @@
 package com.weatherapp.libre.alerts.providers.meteoalarm
 
+import android.util.Log
 import com.weatherapp.libre.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,6 +16,13 @@ import java.util.concurrent.TimeUnit
 class MeteoGateHeaderInterceptor(
     private val apiKey: String = BuildConfig.METEOGATE_API_KEY
 ) : Interceptor {
+    init {
+        if (apiKey.isBlank()) {
+            Log.w("MeteoGateClient", "EU alerts are disabled due to the missing key")
+            throw IllegalStateException("MeteoGate API key is missing from BuildConfig")
+        }
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .addHeader("apikey", apiKey)

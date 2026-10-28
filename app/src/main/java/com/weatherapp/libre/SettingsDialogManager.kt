@@ -658,90 +658,94 @@ class SettingsDialogManager(
             }
         })
 
-        // Test notification system harness
-        dialogBinding.cardTestAlert.alpha = 1.0f
-        dialogBinding.cardTestAlert.isEnabled = true
-        dialogBinding.btnSendTestAlert.isEnabled = true
-        dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
-        dialogBinding.btnSendTestAlert.setOnClickListener { v ->
-            val popup = PopupMenu(activity, v)
-            val ecccFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.EcccTestFixture.entries
-            val globalFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.GlobalTestFixture.entries
+        if (BuildConfig.DEBUG) {
+            // Test notification system harness
+            dialogBinding.cardTestAlert.alpha = 1.0f
+            dialogBinding.cardTestAlert.isEnabled = true
+            dialogBinding.btnSendTestAlert.isEnabled = true
+            dialogBinding.btnSendTestAlert.text = activity.getString(R.string.btn_send_test_alert)
+            dialogBinding.btnSendTestAlert.setOnClickListener { v ->
+                val popup = PopupMenu(activity, v)
+                val ecccFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.EcccTestFixture.entries
+                val globalFixtures = com.weatherapp.libre.alerts.GlobalAlertTestHarness.GlobalTestFixture.entries
 
-            for (i in ecccFixtures.indices) {
-                popup.menu.add(0, i, i, ecccFixtures[i].displayName)
-            }
-            val dividerItem = popup.menu.add(1, 999, 999, "──────────────")
-            dividerItem.isEnabled = false
-
-            for (i in globalFixtures.indices) {
-                val itemId = ecccFixtures.size + i
-                popup.menu.add(1, itemId, itemId, globalFixtures[i].displayName)
-            }
-
-            popup.setOnMenuItemClickListener { menuItem ->
-                val itemId = menuItem.itemId
-                val currentLoc = if (activity is MainActivity) activity.weatherDisplayManager.currentLocation else locationPreferences.getSavedLocation()
-                val tz = if (activity is MainActivity) activity.weatherDisplayManager.locationTimezone else null
-
-                val savedTabs = (0 until locationPreferences.getTabCount()).map { locationPreferences.getTabLocation(it) }
-
-                if (itemId < ecccFixtures.size) {
-                    val selectedFixture = ecccFixtures[itemId]
-                    locationPreferences.clearPersistentCache()
-
-                    val eligibleEcccTabs = savedTabs.filter { tab ->
-                        tab.countryCode.equals("CA", ignoreCase = true) || tab.country.equals("Canada", ignoreCase = true)
-                    }
-
-                    activity.lifecycleScope.launch {
-                        val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectEcccTestFixture(
-                            context = activity.applicationContext,
-                            fixture = selectedFixture,
-                            locations = eligibleEcccTabs,
-                            timezoneStr = tz
-                        )
-
-                        if (injectedList.isNotEmpty()) {
-                            if (activity is MainActivity) {
-                                activity.alertBannerManager.updateAlertBanner(currentLoc)
-                            }
-                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                } else if (itemId >= ecccFixtures.size && itemId < ecccFixtures.size + globalFixtures.size) {
-                    val globalIdx = itemId - ecccFixtures.size
-                    val selectedFixture = globalFixtures[globalIdx]
-                    locationPreferences.clearPersistentCache()
-
-                    val eligibleGlobalTabs = savedTabs.filter { tab ->
-                        val countryCode = tab.countryCode?.uppercase(Locale.US) ?: ""
-                        com.weatherapp.libre.alerts.routing.AlertProviderRouter.METEOALARM_COUNTRY_CODES.contains(countryCode)
-                    }
-
-                    activity.lifecycleScope.launch {
-                        val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectGlobalTestFixture(
-                            context = activity.applicationContext,
-                            fixture = selectedFixture,
-                            locations = eligibleGlobalTabs,
-                            timezoneStr = tz
-                        )
-
-                        if (injectedList.isNotEmpty()) {
-                            if (activity is MainActivity) {
-                                activity.alertBannerManager.updateAlertBanner(currentLoc)
-                            }
-                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                for (i in ecccFixtures.indices) {
+                    popup.menu.add(0, i, i, ecccFixtures[i].displayName)
                 }
-                true
+                val dividerItem = popup.menu.add(1, 999, 999, "──────────────")
+                dividerItem.isEnabled = false
+
+                for (i in globalFixtures.indices) {
+                    val itemId = ecccFixtures.size + i
+                    popup.menu.add(1, itemId, itemId, globalFixtures[i].displayName)
+                }
+
+                popup.setOnMenuItemClickListener { menuItem ->
+                    val itemId = menuItem.itemId
+                    val currentLoc = if (activity is MainActivity) activity.weatherDisplayManager.currentLocation else locationPreferences.getSavedLocation()
+                    val tz = if (activity is MainActivity) activity.weatherDisplayManager.locationTimezone else null
+
+                    val savedTabs = (0 until locationPreferences.getTabCount()).map { locationPreferences.getTabLocation(it) }
+
+                    if (itemId < ecccFixtures.size) {
+                        val selectedFixture = ecccFixtures[itemId]
+                        locationPreferences.clearPersistentCache()
+
+                        val eligibleEcccTabs = savedTabs.filter { tab ->
+                            tab.countryCode.equals("CA", ignoreCase = true) || tab.country.equals("Canada", ignoreCase = true)
+                        }
+
+                        activity.lifecycleScope.launch {
+                            val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectEcccTestFixture(
+                                context = activity.applicationContext,
+                                fixture = selectedFixture,
+                                locations = eligibleEcccTabs,
+                                timezoneStr = tz
+                            )
+
+                            if (injectedList.isNotEmpty()) {
+                                if (activity is MainActivity) {
+                                    activity.alertBannerManager.updateAlertBanner(currentLoc)
+                                }
+                                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else if (itemId >= ecccFixtures.size && itemId < ecccFixtures.size + globalFixtures.size) {
+                        val globalIdx = itemId - ecccFixtures.size
+                        val selectedFixture = globalFixtures[globalIdx]
+                        locationPreferences.clearPersistentCache()
+
+                        val eligibleGlobalTabs = savedTabs.filter { tab ->
+                            val countryCode = tab.countryCode?.uppercase(Locale.US) ?: ""
+                            com.weatherapp.libre.alerts.routing.AlertProviderRouter.METEOALARM_COUNTRY_CODES.contains(countryCode)
+                        }
+
+                        activity.lifecycleScope.launch {
+                            val injectedList = com.weatherapp.libre.alerts.GlobalAlertTestHarness.injectGlobalTestFixture(
+                                context = activity.applicationContext,
+                                fixture = selectedFixture,
+                                locations = eligibleGlobalTabs,
+                                timezoneStr = tz
+                            )
+
+                            if (injectedList.isNotEmpty()) {
+                                if (activity is MainActivity) {
+                                    activity.alertBannerManager.updateAlertBanner(currentLoc)
+                                }
+                                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_injected, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(activity.applicationContext, activity.getString(R.string.toast_test_alert_failed, selectedFixture.displayName), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    true
+                }
+                popup.show()
             }
-            popup.show()
+        } else {
+            dialogBinding.cardTestAlert.visibility = View.GONE
         }
 
         val thumbStates = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
