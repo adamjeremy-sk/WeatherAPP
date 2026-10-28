@@ -207,7 +207,6 @@ class HourlyForecastAdapter(
                 binding.tvStatWind.setTextColor(p.textPrimary)
                 binding.tvStatHumidity.setTextColor(p.textPrimary)
                 binding.tvStatDewPoint.setTextColor(p.textPrimary)
-                binding.tvStatPrecipAmount.setTextColor(p.textPrimary)
                 binding.tvStatCloudCover.setTextColor(p.textPrimary)
                 binding.tvStatVisibility.setTextColor(p.textPrimary)
                 binding.tvStatUvIndex.setTextColor(p.textPrimary)
@@ -275,14 +274,6 @@ class HourlyForecastAdapter(
                 binding.tvStatDewPoint.text = UnitUtils.formatTemp(dew, unitSystem)
             } else {
                 binding.boxDewPoint.visibility = View.GONE
-            }
-
-            val precip = forecast.precipitation
-            if (precip != null) {
-                binding.boxPrecipAmount.visibility = View.VISIBLE
-                binding.tvStatPrecipAmount.text = UnitUtils.formatPrecipitation(precip, unitSystem)
-            } else {
-                binding.boxPrecipAmount.visibility = View.GONE
             }
 
             val cloud = forecast.cloudCover
