@@ -144,6 +144,9 @@ class LocationPreferences(val context: Context) {
         private const val KEY_ALERT_CONSENT_STATE = "app_alert_consent_state"
         private const val KEY_CACHE_TTL_ENABLED = "app_cache_ttl_enabled"
         private const val KEY_CACHE_TTL_MINUTES = "app_cache_ttl_minutes"
+
+        // Maximum number of persistent forecast cache entries before the oldest are evicted
+        private const val MAX_CACHE_ENTRIES = 50
         private const val KEY_ALERT_DISMISSED = "app_alert_dismissed"
         private const val KEY_SOLAR_EVENTS_FIRST_LAUNCH = "is_solar_events_first_launch"
         private const val KEY_RECENT_LOCATIONS_JSON = "app_recent_locations_json"
@@ -555,10 +558,36 @@ class LocationPreferences(val context: Context) {
     }
 
     fun savePersistentCache(cacheKey: String, json: String, timestampMillis: Long) {
-        prefs.edit()
-            .putString("disk_cache_json_$cacheKey", json)
-            .putLong("disk_cache_time_$cacheKey", timestampMillis)
-            .apply()
+        synchronized(LOCATION_LOCK) {
+            prefs.edit()
+                .putString("disk_cache_json_$cacheKey", json)
+                .putLong("disk_cache_time_$cacheKey", timestampMillis)
+                .apply()
+
+            enforceCacheCap()
+        }
+    }
+
+    private fun enforceCacheCap() {
+        val timeKeys = prefs.all.keys.filter { it.startsWith("disk_cache_time_") }
+        if (timeKeys.size <= MAX_CACHE_ENTRIES) {
+            return
+        }
+
+        val entries = timeKeys.map { key ->
+            val cacheKey = key.removePrefix("disk_cache_time_")
+            cacheKey to prefs.getLong("disk_cache_time_$cacheKey", 0L)
+        }.sortedBy { it.second }
+
+        val toEvict = entries.size - MAX_CACHE_ENTRIES
+        val evictedKeys = entries.take(toEvict).map { it.first }
+
+        val editor = prefs.edit()
+        for (cacheKey in evictedKeys) {
+            editor.remove("disk_cache_json_$cacheKey")
+            editor.remove("disk_cache_time_$cacheKey")
+        }
+        editor.apply()
     }
 
 

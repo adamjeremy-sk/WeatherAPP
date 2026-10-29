@@ -1534,10 +1534,12 @@ class SettingsDialogManager(
                 .setTitle(activity.getString(com.weatherapp.libre.R.string.alert_log_clear))
                 .setMessage(activity.getString(com.weatherapp.libre.R.string.alert_log_clear_confirm))
                 .setPositiveButton(com.weatherapp.libre.R.string.btn_ok) { _, _ ->
-                    com.weatherapp.libre.alerts.AlertLogRepository.clearAll(activity)
-                    entries = emptyList()
-                    Toast.makeText(activity, activity.getString(com.weatherapp.libre.R.string.alert_log_cleared), Toast.LENGTH_SHORT).show()
-                    renderEntries()
+                    activity.lifecycleScope.launch {
+                        com.weatherapp.libre.alerts.AlertLogRepository.clearAll(activity)
+                        entries = emptyList()
+                        Toast.makeText(activity, activity.getString(com.weatherapp.libre.R.string.alert_log_cleared), Toast.LENGTH_SHORT).show()
+                        renderEntries()
+                    }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
