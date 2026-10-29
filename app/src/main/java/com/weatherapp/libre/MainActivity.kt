@@ -251,6 +251,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         astronomyManager.cleanup()
         settingsDialogManager.cleanup()
+        binding.tabLayoutLocations.clearOnTabSelectedListeners()
+        binding.tabLayoutLocations.removeAllTabs()
         super.onDestroy()
     }
 
