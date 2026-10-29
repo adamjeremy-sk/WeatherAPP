@@ -590,21 +590,6 @@ class LocationPreferences(val context: Context) {
         editor.apply()
     }
 
-
-
-    private fun getLocationDismissedKey(location: LocationItem): String {
-        val cleanName = location.name.lowercase(java.util.Locale.getDefault()).replace("\\s+".toRegex(), "_")
-        return "app_alert_dismissed_$cleanName"
-    }
-
-    fun isAlertDismissedForLocation(location: LocationItem): Boolean {
-        return prefs.getBoolean(getLocationDismissedKey(location), false)
-    }
-
-    fun setAlertDismissedForLocation(location: LocationItem, dismissed: Boolean) {
-        prefs.edit().putBoolean(getLocationDismissedKey(location), dismissed).apply()
-    }
-
     fun isFirstLaunchSolarEvents(): Boolean {
         return prefs.getBoolean(KEY_SOLAR_EVENTS_FIRST_LAUNCH, true)
     }

@@ -98,6 +98,19 @@ class SettingsDialogManager(
 
     fun getMenuStackDepth() = menuStack.size
 
+    fun cleanup() {
+        menuStack.toList().forEach { dialog ->
+            if (dialog.isShowing) {
+                try {
+                    dialog.dismiss()
+                } catch (e: Exception) {
+                    // Window may already be detached
+                }
+            }
+        }
+        menuStack.clear()
+    }
+
     fun openDrawer() {
         (activity as? MainActivity)?.binding?.drawerLayout?.openDrawer(GravityCompat.START)
     }

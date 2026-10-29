@@ -250,6 +250,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         astronomyManager.cleanup()
+        settingsDialogManager.cleanup()
         super.onDestroy()
     }
 
