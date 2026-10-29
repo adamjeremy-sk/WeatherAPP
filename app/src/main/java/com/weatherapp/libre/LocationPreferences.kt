@@ -107,6 +107,8 @@ class LocationPreferences(val context: Context) {
         context.getSharedPreferences("weather_location_prefs", Context.MODE_PRIVATE)
 
     companion object {
+        private val LOCATION_LOCK = Any()
+
         val DEFAULT_MENU_ORDER = listOf(
             "CURRENT", "HOURLY", "SEVEN_DAY", "SEPARATOR", 
             "NATURAL_LIGHT", "LUNAR_CALENDAR", "NIGHT_VISIBILITY", "DARK_SKY", 
@@ -405,43 +407,47 @@ class LocationPreferences(val context: Context) {
     }
 
     fun getTabLocation(tabIndex: Int): LocationItem {
-        val keyName = "tab_${tabIndex}_name"
-        val name = prefs.getString(keyName, null)
-        if (name != null) {
-            val id = prefs.getLong("tab_${tabIndex}_id", (1001 + tabIndex).toLong())
-            val admin1 = prefs.getString("tab_${tabIndex}_admin1", null)
-            val country = prefs.getString("tab_${tabIndex}_country", null)
-            val countryCode = prefs.getString("tab_${tabIndex}_country_code", null)
-            val lat = prefs.getDouble("tab_${tabIndex}_lat", 0.0)
-            val lon = prefs.getDouble("tab_${tabIndex}_lon", 0.0)
-            val elev = prefs.getDouble("tab_${tabIndex}_elev", 0.0)
-            return LocationItem(id = id, name = name, admin1 = admin1, country = country, countryCode = countryCode, latitude = lat, longitude = lon, elevationMeters = elev)
-        }
+        synchronized(LOCATION_LOCK) {
+            val keyName = "tab_${tabIndex}_name"
+            val name = prefs.getString(keyName, null)
+            if (name != null) {
+                val id = prefs.getLong("tab_${tabIndex}_id", (1001 + tabIndex).toLong())
+                val admin1 = prefs.getString("tab_${tabIndex}_admin1", null)
+                val country = prefs.getString("tab_${tabIndex}_country", null)
+                val countryCode = prefs.getString("tab_${tabIndex}_country_code", null)
+                val lat = prefs.getDouble("tab_${tabIndex}_lat", 0.0)
+                val lon = prefs.getDouble("tab_${tabIndex}_lon", 0.0)
+                val elev = prefs.getDouble("tab_${tabIndex}_elev", 0.0)
+                return LocationItem(id = id, name = name, admin1 = admin1, country = country, countryCode = countryCode, latitude = lat, longitude = lon, elevationMeters = elev)
+            }
 
-        // Default initial fallbacks for tabs (persist on first read so tabs remain independent and stable)
-        val defaultLoc = when (tabIndex) {
-            0 -> getInitialLocation()
-            1 -> LocationItem(id = 1004L, name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832, elevationMeters = 76.0)
-            2 -> LocationItem(id = 1005L, name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702, elevationMeters = 481.0)
-            3 -> LocationItem(id = 1006L, name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207, elevationMeters = 0.0)
-            else -> getInitialLocation()
-        }
+            // Default initial fallbacks for tabs (persist on first read so tabs remain independent and stable)
+            val defaultLoc = when (tabIndex) {
+                0 -> getInitialLocation()
+                1 -> LocationItem(id = 1004L, name = "Toronto", admin1 = "Ontario", country = "Canada", latitude = 43.6532, longitude = -79.3832, elevationMeters = 76.0)
+                2 -> LocationItem(id = 1005L, name = "Saskatoon", admin1 = "Saskatchewan", country = "Canada", latitude = 52.1579, longitude = -106.6702, elevationMeters = 481.0)
+                3 -> LocationItem(id = 1006L, name = "Vancouver", admin1 = "British Columbia", country = "Canada", latitude = 49.2827, longitude = -123.1207, elevationMeters = 0.0)
+                else -> getInitialLocation()
+            }
 
-        saveTabLocation(tabIndex, defaultLoc)
-        return defaultLoc
+            saveTabLocation(tabIndex, defaultLoc)
+            return defaultLoc
+        }
     }
 
     fun saveTabLocation(tabIndex: Int, location: LocationItem) {
-        prefs.edit()
-            .putLong("tab_${tabIndex}_id", location.id)
-            .putString("tab_${tabIndex}_name", location.name)
-            .putString("tab_${tabIndex}_admin1", location.admin1)
-            .putString("tab_${tabIndex}_country", location.country)
-            .putString("tab_${tabIndex}_country_code", location.countryCode)
-            .putDouble("tab_${tabIndex}_lat", location.latitude)
-            .putDouble("tab_${tabIndex}_lon", location.longitude)
-            .putDouble("tab_${tabIndex}_elev", location.elevationMeters)
-            .apply()
+        synchronized(LOCATION_LOCK) {
+            prefs.edit()
+                .putLong("tab_${tabIndex}_id", location.id)
+                .putString("tab_${tabIndex}_name", location.name)
+                .putString("tab_${tabIndex}_admin1", location.admin1)
+                .putString("tab_${tabIndex}_country", location.country)
+                .putString("tab_${tabIndex}_country_code", location.countryCode)
+                .putDouble("tab_${tabIndex}_lat", location.latitude)
+                .putDouble("tab_${tabIndex}_lon", location.longitude)
+                .putDouble("tab_${tabIndex}_elev", location.elevationMeters)
+                .apply()
+        }
     }
 
     fun isChinaLocation(location: LocationItem): Boolean {
@@ -634,15 +640,17 @@ class LocationPreferences(val context: Context) {
     }
 
     fun saveRecentLocation(location: LocationItem) {
-        val currentList = getRecentLocations().toMutableList()
-        currentList.removeAll { it.displayName.equals(location.displayName, ignoreCase = true) }
-        currentList.add(0, location)
-        val trimmed = currentList.take(4)
-        try {
-            val json = Gson().toJson(trimmed)
-            prefs.edit().putString(KEY_RECENT_LOCATIONS_JSON, json).apply()
-        } catch (e: Exception) {
-            Log.w("LocationPreferences", "Failed to save recent locations JSON", e)
+        synchronized(LOCATION_LOCK) {
+            val currentList = getRecentLocations().toMutableList()
+            currentList.removeAll { it.displayName.equals(location.displayName, ignoreCase = true) }
+            currentList.add(0, location)
+            val trimmed = currentList.take(4)
+            try {
+                val json = Gson().toJson(trimmed)
+                prefs.edit().putString(KEY_RECENT_LOCATIONS_JSON, json).apply()
+            } catch (e: Exception) {
+                Log.w("LocationPreferences", "Failed to save recent locations JSON", e)
+            }
         }
     }
 
@@ -671,15 +679,17 @@ class LocationPreferences(val context: Context) {
     }
 
     fun saveLastUsedLocation(location: LocationItem) {
-        prefs.edit()
-            .putString(KEY_LAST_NAME, location.name)
-            .putString(KEY_LAST_ADMIN1, location.admin1)
-            .putString(KEY_LAST_COUNTRY, location.country)
-            .putFloat(KEY_LAST_LAT, location.latitude.toFloat())
-            .putFloat(KEY_LAST_LON, location.longitude.toFloat())
-            .apply()
+        synchronized(LOCATION_LOCK) {
+            prefs.edit()
+                .putString(KEY_LAST_NAME, location.name)
+                .putString(KEY_LAST_ADMIN1, location.admin1)
+                .putString(KEY_LAST_COUNTRY, location.country)
+                .putFloat(KEY_LAST_LAT, location.latitude.toFloat())
+                .putFloat(KEY_LAST_LON, location.longitude.toFloat())
+                .apply()
 
-        saveRecentLocation(location)
+            saveRecentLocation(location)
+        }
     }
 
     fun getFixedDefaultLocation(): LocationItem {
