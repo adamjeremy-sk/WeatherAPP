@@ -14,6 +14,21 @@ val releaseStorePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
 val releaseKeyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS") ?: System.getenv("RELEASE_KEY_ALIAS")
 val releaseKeyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD") ?: System.getenv("RELEASE_KEY_PASSWORD")
 
+/**
+ * RELEASE SIGNING FALLBACK (Fixlist M-2: Resolved by Design)
+ *
+ * If the release keystore properties are not provided (e.g., in CI environments
+ * or by collaborators building from source), the release build intentionally
+ * falls back to the debug signing configuration.
+ *
+ * Rationale: Hard-failing the build when the keystore is missing breaks automated
+ * CI pipelines (which need to run `assembleRelease` to verify R8/ProGuard rules)
+ * and prevents open-source contributors from generating release-variant APKs.
+ *
+ * WARNING: A release build signed with the debug key CANNOT be uploaded to the
+ * Google Play Console. To build a true production release, ensure the keystore
+ * properties are populated in `local.properties` or passed via environment variables.
+ */
 val hasReleaseKeystore = releaseStoreFile != null && releaseStorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null
 
 plugins {
