@@ -249,6 +249,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        weatherDisplayManager.cleanup()
         astronomyManager.cleanup()
         settingsDialogManager.cleanup()
         binding.tabLayoutLocations.clearOnTabSelectedListeners()
