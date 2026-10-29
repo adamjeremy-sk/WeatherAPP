@@ -114,6 +114,7 @@ dependencies {
     testImplementation(libs.xpp3)
     testImplementation(libs.kxml2)
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.work.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

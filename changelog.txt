@@ -17,6 +17,7 @@ Changelog 0.8.0VC27 - 2026/10/30
 * Corrected the legacy 2x2 widget receiver and manifest metadata to accurately reflect its true 2x1 layout dimensions.
 * Wired test alert injection paths (ECCC and EU harnesses) into the Alert Log repository for accurate diagnostic history.
 * Dynamically generated bounding boxes for EU test fixtures to ensure they correctly match any target European location tab.
+* Applied WorkManager constraints (`NetworkType.CONNECTED`, `BatteryNotLow`) to the periodic `WidgetSyncWorker` to prevent unnecessary background wakeups and battery drain.
 * Lifecycle, Concurrency & Memory Hygiene:
 * Implemented a process-wide `synchronized` lock in `LocationPreferences` to eliminate race conditions where the main app and widget sync workers could overwrite each other's saved locations.
 * Wrapped `AlertLogRepository` read-modify-write operations in a coroutine `Mutex` to prevent concurrent alert history corruption.
@@ -27,11 +28,15 @@ Changelog 0.8.0VC27 - 2026/10/30
 * Purged dead code: deleted obsolete name-keyed alert dismissal functions and two orphaned layout XML files.
 * Forecast Pipeline & Network Optimization:
 * Converted all blocking network calls (`call.execute()`) to non-blocking, coroutine-friendly `call.enqueue()` wrappers across the weather repository, alert providers, and settings HTML fetches, freeing up IO threads and improving cancellation behavior.
+* Implemented in-flight network request deduplication in `WeatherRepository` using a `ConcurrentHashMap` of `Deferred` values to prevent duplicate API calls when the app and widget sync simultaneously.
 * Verified and confirmed all display-layer array indexing is safely bounds-guarded and null-safe against truncated provider responses.
 * Edge Case & Math Hardening:
 * Eliminated a redundant double-save and double-fetch cycle during location tab initialization.
 * Synchronized the system night-mode state immediately when switching boutique themes, preventing stale `values-night` resource resolution until the next app launch.
 * Added a `1e-9` epsilon tolerance to the alert polygon edge-matching algorithm, ensuring locations exactly on a polygon boundary (or within floating-point ULP noise) are correctly included, matching the inclusive semantics of circular alert zones.
+* Testing & Pipeline Hardening:
+* Expanded the automated test suite from 178 to 216 passing tests, achieving comprehensive coverage of the forecast, widget, and alert delivery pipelines.
+* Added extensive regression tests for alert polygon boundary math, consent gates, provider failure isolation, and cache corruption recovery.
 
 ---------------
 Changelog 0.7.0VC26 - 2026/10/22

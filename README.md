@@ -15,7 +15,7 @@ advertising, analytics, or tracking of any kind.
 - True Dark Sky, Night Visibility, and Solunar Activity pages
 - Official Environment Canada CAP-CP severe weather alerts (opt-in)
 - Official MeteoAlarm (EUMETNET) severe weather alerts for European locations (opt-in)
-- Eleven themes, including nine boutique palettes
+- Twelve themes, including ten boutique palettes (6 Light Themes and 6 Dark Themes)
 - Planned: Community extensions (themes and forecast providers) via the catalog at
   weatherapplibre.ca (see docs/extensions.md for draft schema)
 

@@ -294,4 +294,141 @@ class GlobalAlertCacheTest {
         assertEquals(1, cached.size)
         assertEquals("active-1", cached[0].id)
     }
+
+    @Test
+    fun testClearExpiredAlerts() {
+        val context = MockContext()
+        val key = GlobalAlertCache.cacheKey(testLocation)
+
+        val expiredAlert = UnifiedAlert(
+            id = "alert-expired",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.YELLOW,
+            eventNative = "Severe Wind",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().minusHours(3).toString(),
+            areaDesc = "Winnipeg"
+        )
+
+        val futureAlert = UnifiedAlert(
+            id = "alert-future",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.RED,
+            eventNative = "Tornado Warning",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(3).toString(),
+            areaDesc = "Winnipeg"
+        )
+
+        val cacheEntry = GlobalAlertCache.CacheEntry(listOf(expiredAlert, futureAlert))
+        val gson = com.google.gson.GsonBuilder()
+            .registerTypeAdapter(AlertSeverity::class.java, com.weatherapp.libre.alerts.cache.AlertSeverityTypeAdapter())
+            .create()
+
+        context.prefs.edit().putString(key, gson.toJson(cacheEntry)).apply()
+
+        GlobalAlertCache.clearExpiredAlerts(context)
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("alert-future", cached[0].id)
+    }
+
+    @Test
+    fun testCorruptedJsonRecovery() {
+        val context = MockContext()
+        val key = GlobalAlertCache.cacheKey(testLocation)
+
+        context.prefs.edit().putString(key, "CORRUPTED_GARBAGE_JSON{{{[[[").apply()
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertTrue(cached.isEmpty())
+    }
+
+    @Test
+    fun testMultiReferenceCancellation() {
+        val context = MockContext()
+        val alert1 = UnifiedAlert(
+            id = "alert-multi-1",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.YELLOW,
+            eventNative = "Thunderstorm Watch",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(4).toString(),
+            areaDesc = "Winnipeg",
+            msgType = "Alert"
+        )
+
+        val alert2 = UnifiedAlert(
+            id = "alert-multi-2",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.ORANGE,
+            eventNative = "Flood Warning",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(4).toString(),
+            areaDesc = "Winnipeg",
+            msgType = "Alert"
+        )
+
+        val alert3 = UnifiedAlert(
+            id = "alert-multi-3",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.RED,
+            eventNative = "Tornado Warning",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(4).toString(),
+            areaDesc = "Winnipeg",
+            msgType = "Alert"
+        )
+
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(alert1, alert2, alert3))
+        assertEquals(3, GlobalAlertCache.readAlertsForLocation(context, testLocation).size)
+
+        val multiCancelAlert = UnifiedAlert(
+            id = "cancel-all",
+            source = AlertSource.ECCC,
+            locationLat = testLocation.latitude,
+            locationLon = testLocation.longitude,
+            severity = AlertSeverity.INFO,
+            eventNative = "All Warnings Cancelled",
+            headline = null,
+            description = null,
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(1).toString(),
+            areaDesc = "Winnipeg",
+            msgType = "Cancel",
+            references = listOf("alert-multi-1", "alert-multi-2", "alert-multi-3")
+        )
+
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(multiCancelAlert))
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+
+        assertTrue(cached.isEmpty())
+    }
 }

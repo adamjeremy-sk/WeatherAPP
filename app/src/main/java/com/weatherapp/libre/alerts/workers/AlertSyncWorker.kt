@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.alerts.cache.GlobalAlertCache
 import com.weatherapp.libre.alerts.models.AlertFetchResult
+import com.weatherapp.libre.alerts.providers.AlertProvider
 import com.weatherapp.libre.alerts.routing.AlertProviderRouter
 import com.weatherapp.libre.alerts.utils.CountryCodeResolver
 import java.util.concurrent.TimeUnit
@@ -21,6 +22,15 @@ class AlertSyncWorker(
     private val appContext: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
+
+    /**
+     * Test-only injection point for a fake [AlertProvider]. When null (the production
+     * default), the provider is resolved through [AlertProviderRouter] exactly as before.
+     * The primary (Context, WorkerParameters) constructor is preserved so WorkManager
+     * reflection and TestListenableWorkerBuilder continue to work unchanged; tests set
+     * this property after building the worker.
+     */
+    var providerOverride: AlertProvider? = null
 
     companion object {
         private const val TAG = "AlertSyncWorker"
@@ -77,7 +87,7 @@ class AlertSyncWorker(
             val countryCode = CountryCodeResolver.resolveAndCacheCountryCode(appContext, loc, prefs)
                 ?: loc.countryCode
 
-            val provider = AlertProviderRouter.getProviderForCountryCode(countryCode)
+            val provider = providerOverride ?: AlertProviderRouter.getProviderForCountryCode(countryCode)
             if (provider != null) {
                 totalAttempts++
                 val previousAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)

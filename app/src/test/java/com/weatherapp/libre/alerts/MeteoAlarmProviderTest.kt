@@ -236,4 +236,144 @@ class MeteoAlarmProviderTest {
         assertTrue(failure.cause is IOException)
         assertEquals("Network timeout", failure.cause.message)
     }
+
+    @Test
+    fun testGbToUkRemapping() = runBlocking {
+        var queriedCountryCode: String? = null
+        val fakeApi = object : MeteoGateApi {
+            override suspend fun getWarningsForCountry(countryCode: String, datetime: String): MeteoGateFeatureCollection {
+                queriedCountryCode = countryCode
+                return MeteoGateFeatureCollection(features = emptyList())
+            }
+
+            override suspend fun getDetailedCapJson(url: String): MeteoGateDetailedCap {
+                throw IOException("Not needed")
+            }
+        }
+        val provider = MeteoAlarmProvider(api = fakeApi)
+        val gbLocation = LocationItem(
+            id = 201L,
+            name = "London",
+            admin1 = "England",
+            country = "United Kingdom",
+            countryCode = "GB",
+            latitude = 51.5074,
+            longitude = -0.1278
+        )
+
+        val result = provider.fetchAlertsForLocation(gbLocation)
+        assertTrue(result is AlertFetchResult.Success)
+        assertEquals("UK", queriedCountryCode)
+    }
+
+    @Test
+    fun testLevel2YellowSeverity() = runBlocking {
+        val feature = MeteoGateFeature(
+            id = "f_yellow",
+            properties = MeteoGateBasicProperties(countryCode = "DE"),
+            links = listOf(
+                MeteoGateLink(rel = "json", type = "application/json", href = "mock://detail/yellow")
+            )
+        )
+        val detail = MeteoGateDetailedCap(
+            identifier = "cap_yellow",
+            info = listOf(
+                MeteoGateCapInfo(
+                    event = "Moderate Rain",
+                    headline = "Moderate Rain in Berlin",
+                    severity = "Moderate",
+                    parameter = listOf(
+                        MeteoGateCapParameter(valueName = "awareness_level", value = "2; Yellow; Moderate")
+                    ),
+                    area = listOf(
+                        MeteoGateCapArea(
+                            areaDesc = "Berlin Region",
+                            polygon = listOf(berlinPolygon)
+                        )
+                    )
+                )
+            )
+        )
+
+        val fakeApi = FakeMeteoGateApi(
+            indexResponse = MeteoGateFeatureCollection(features = listOf(feature)),
+            detailsMap = mapOf("mock://detail/yellow" to detail)
+        )
+        val provider = MeteoAlarmProvider(api = fakeApi)
+
+        val result = provider.fetchAlertsForLocation(berlinLocation)
+        assertTrue(result is AlertFetchResult.Success)
+        val alerts = (result as AlertFetchResult.Success).alerts
+
+        assertEquals(1, alerts.size)
+        assertEquals(AlertSeverity.YELLOW, alerts[0].severity)
+    }
+
+    @Test
+    fun testFallbackSeverity() = runBlocking {
+        val feature = MeteoGateFeature(
+            id = "f_unknown",
+            properties = MeteoGateBasicProperties(countryCode = "DE"),
+            links = listOf(
+                MeteoGateLink(rel = "json", type = "application/json", href = "mock://detail/unknown")
+            )
+        )
+        val detail = MeteoGateDetailedCap(
+            identifier = "cap_unknown",
+            info = listOf(
+                MeteoGateCapInfo(
+                    event = "Custom Event",
+                    severity = "UnrecognizedString",
+                    parameter = emptyList(),
+                    area = listOf(
+                        MeteoGateCapArea(
+                            areaDesc = "Berlin Region",
+                            polygon = listOf(berlinPolygon)
+                        )
+                    )
+                )
+            )
+        )
+
+        val fakeApi = FakeMeteoGateApi(
+            indexResponse = MeteoGateFeatureCollection(features = listOf(feature)),
+            detailsMap = mapOf("mock://detail/unknown" to detail)
+        )
+        val provider = MeteoAlarmProvider(api = fakeApi)
+
+        val result = provider.fetchAlertsForLocation(berlinLocation)
+        assertTrue(result is AlertFetchResult.Success)
+        val alerts = (result as AlertFetchResult.Success).alerts
+        assertTrue(alerts.isEmpty())
+    }
+
+    @Test
+    fun testCountryNameResolution() = runBlocking {
+        var queriedCountryCode: String? = null
+        val fakeApi = object : MeteoGateApi {
+            override suspend fun getWarningsForCountry(countryCode: String, datetime: String): MeteoGateFeatureCollection {
+                queriedCountryCode = countryCode
+                return MeteoGateFeatureCollection(features = emptyList())
+            }
+
+            override suspend fun getDetailedCapJson(url: String): MeteoGateDetailedCap {
+                throw IOException("Not needed")
+            }
+        }
+        val provider = MeteoAlarmProvider(api = fakeApi)
+
+        val germanLocationNoCode = LocationItem(
+            id = 301L,
+            name = "Munich",
+            admin1 = "Bavaria",
+            country = "Germany",
+            countryCode = null,
+            latitude = 48.1351,
+            longitude = 11.5820
+        )
+
+        val result = provider.fetchAlertsForLocation(germanLocationNoCode)
+        assertTrue(result is AlertFetchResult.Success)
+        assertEquals("DE", queriedCountryCode)
+    }
 }

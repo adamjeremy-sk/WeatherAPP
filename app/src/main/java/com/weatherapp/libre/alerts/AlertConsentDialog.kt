@@ -52,7 +52,9 @@ object AlertConsentDialog {
                     if (dialog.isShowing) {
                         try {
                             dialog.dismiss()
-                        } catch (ignored: Exception) {}
+                        } catch (ignored: Exception) {
+                            android.util.Log.w("AlertConsentDialog", "Failed to dismiss dialog", ignored)
+                        }
                     }
                     activeDialog = null
                 }

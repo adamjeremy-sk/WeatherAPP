@@ -44,6 +44,15 @@ class WidgetSyncWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    /**
+     * Test-only injection point for a [WeatherRepository] backed by a fake HTTP client.
+     * When null (the production default), a fresh [WeatherRepository] is created as before.
+     * The primary (Context, WorkerParameters) constructor is preserved so WorkManager
+     * reflection and TestListenableWorkerBuilder continue to work unchanged; tests set
+     * this property after building the worker.
+     */
+    var weatherRepositoryOverride: WeatherRepository? = null
+
     companion object {
         private const val WORK_NAME_PERIODIC = "widget_sync_periodic"
         private const val WORK_NAME_IMMEDIATE = "widget_immediate_sync"
@@ -541,7 +550,7 @@ class WidgetSyncWorker(
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val locationPreferences = LocationPreferences(context)
         val widgetPrefs = WidgetPreferences(context)
-        val weatherRepository = WeatherRepository()
+        val weatherRepository = weatherRepositoryOverride ?: WeatherRepository()
 
         val widgetTypes = listOf(
             ComponentName(context, WeatherWidgetProvider4x2::class.java),

@@ -42,4 +42,23 @@ class AlertProviderRouterTest {
         assertNull(AlertProviderRouter.getProviderForCountryCode(null))
         assertNull(AlertProviderRouter.getProviderForCountryCode(""))
     }
+
+    @Test
+    fun testCountryCodeWhitespaceAndCasing() {
+        val providerCaWithWhitespace = AlertProviderRouter.getProviderForCountryCode(" ca ")
+        assertNotNull(providerCaWithWhitespace)
+        assertEquals(AlertSource.ECCC, providerCaWithWhitespace?.source)
+
+        val providerCaLowercase = AlertProviderRouter.getProviderForCountryCode("ca")
+        assertNotNull(providerCaLowercase)
+        assertEquals(AlertSource.ECCC, providerCaLowercase?.source)
+
+        val providerUkWithWhitespace = AlertProviderRouter.getProviderForCountryCode("  uk  ")
+        assertNotNull(providerUkWithWhitespace)
+        assertEquals(AlertSource.METEOALARM, providerUkWithWhitespace?.source)
+
+        val providerDeMixed = AlertProviderRouter.getProviderForCountryCode("  dE \t ")
+        assertNotNull(providerDeMixed)
+        assertEquals(AlertSource.METEOALARM, providerDeMixed?.source)
+    }
 }

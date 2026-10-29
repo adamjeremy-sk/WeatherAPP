@@ -37,13 +37,15 @@ data class CachedWeatherEntry(
     val timestampMillis: Long
 )
 
-class WeatherRepository {
-
-    private val gson = Gson()
-    private val client = OkHttpClient.Builder()
+class WeatherRepository(
+    client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .build()
+) {
+
+    private val gson = Gson()
+    private val client = client
 
     private val forecastCache = ConcurrentHashMap<String, CachedWeatherEntry>()
 
