@@ -13,9 +13,11 @@ import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.theme.ColorPalette
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -47,7 +49,14 @@ class WidgetSyncWorker(
         private const val WORK_NAME_IMMEDIATE = "widget_immediate_sync"
 
         fun enqueuePeriodic(context: Context) {
-            val request = PeriodicWorkRequestBuilder<WidgetSyncWorker>(60, TimeUnit.MINUTES).build()
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .build()
+
+            val request = PeriodicWorkRequestBuilder<WidgetSyncWorker>(60, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME_PERIODIC,
                 ExistingPeriodicWorkPolicy.KEEP,

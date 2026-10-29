@@ -7,7 +7,10 @@ import com.weatherapp.libre.solar.SolarLightingEngine
 import com.weatherapp.libre.solar.SolarRiseSetSolver
 import kotlin.math.round
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
@@ -43,6 +46,10 @@ class WeatherRepository {
         .build()
 
     private val forecastCache = ConcurrentHashMap<String, CachedWeatherEntry>()
+
+    private val repositoryScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    private val inFlightRequests = ConcurrentHashMap<String, Deferred<String>>()
 
     fun clearMemoryAndDiskCache(locationPreferences: LocationPreferences?) {
         forecastCache.clear()
@@ -86,37 +93,43 @@ class WeatherRepository {
         return false
     }
 
-    private suspend fun executeCancellableRequest(request: Request): String = suspendCancellableCoroutine { continuation ->
-        val call = client.newCall(request)
-        continuation.invokeOnCancellation {
-            try {
-                call.cancel()
-            } catch (e: Exception) {
-                // Ignore cancellation exception during call.cancel()
+    private suspend fun executeCancellableRequest(request: Request): String {
+        val url = request.url.toString()
+        val deferred = inFlightRequests.computeIfAbsent(url) {
+            repositoryScope.async {
+                try {
+                    suspendCancellableCoroutine { continuation ->
+                        val call = client.newCall(request)
+                        // No invokeOnCancellation hook: the shared call must finish even if a caller cancels.
+                        call.enqueue(object : Callback {
+                            override fun onResponse(call: Call, response: Response) {
+                                response.use { resp ->
+                                    if (!resp.isSuccessful) {
+                                        if (continuation.isActive) {
+                                            continuation.resumeWithException(IOException("HTTP Error: ${resp.code}"))
+                                        }
+                                    } else {
+                                        val bodyString = resp.body?.string() ?: ""
+                                        if (continuation.isActive) {
+                                            continuation.resume(bodyString)
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (continuation.isActive) {
+                                    continuation.resumeWithException(e)
+                                }
+                            }
+                        })
+                    }
+                } finally {
+                    inFlightRequests.remove(url)
+                }
             }
         }
-        call.enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                response.use { resp ->
-                    if (!resp.isSuccessful) {
-                        if (continuation.isActive) {
-                            continuation.resumeWithException(IOException("HTTP Error: ${resp.code}"))
-                        }
-                    } else {
-                        val bodyString = resp.body?.string() ?: ""
-                        if (continuation.isActive) {
-                            continuation.resume(bodyString)
-                        }
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call, e: IOException) {
-                if (continuation.isActive) {
-                    continuation.resumeWithException(e)
-                }
-            }
-        })
+        return deferred.await()
     }
 
     /**

@@ -25,6 +25,13 @@ Changelog 0.8.0VC27 - 2026/10/30
 * Hard-capped the volume-key rapid-cycle date loop at 10 seconds and added an `onPause` lifecycle observer to guarantee termination if the app is backgrounded while a key is held.
 * Fixed a UX quirk where the live header clock would stall during network fetches; the update heartbeat now survives timezone resolution delays.
 * Purged dead code: deleted obsolete name-keyed alert dismissal functions and two orphaned layout XML files.
+* Forecast Pipeline & Network Optimization:
+* Converted all blocking network calls (`call.execute()`) to non-blocking, coroutine-friendly `call.enqueue()` wrappers across the weather repository, alert providers, and settings HTML fetches, freeing up IO threads and improving cancellation behavior.
+* Verified and confirmed all display-layer array indexing is safely bounds-guarded and null-safe against truncated provider responses.
+* Edge Case & Math Hardening:
+* Eliminated a redundant double-save and double-fetch cycle during location tab initialization.
+* Synchronized the system night-mode state immediately when switching boutique themes, preventing stale `values-night` resource resolution until the next app launch.
+* Added a `1e-9` epsilon tolerance to the alert polygon edge-matching algorithm, ensuring locations exactly on a polygon boundary (or within floating-point ULP noise) are correctly included, matching the inclusive semantics of circular alert zones.
 
 ---------------
 Changelog 0.7.0VC26 - 2026/10/22
