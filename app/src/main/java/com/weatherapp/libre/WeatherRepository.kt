@@ -13,8 +13,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.time.LocalDate
 import java.time.ZoneId
@@ -92,25 +95,28 @@ class WeatherRepository {
                 // Ignore cancellation exception during call.cancel()
             }
         }
-        try {
-            val response = call.execute()
-            response.use { resp ->
-                if (!resp.isSuccessful) {
-                    if (!continuation.isCancelled) {
-                        continuation.resumeWithException(IOException("HTTP Error: ${resp.code}"))
-                    }
-                } else {
-                    val bodyString = resp.body?.string() ?: ""
-                    if (!continuation.isCancelled) {
-                        continuation.resume(bodyString)
+        call.enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                response.use { resp ->
+                    if (!resp.isSuccessful) {
+                        if (continuation.isActive) {
+                            continuation.resumeWithException(IOException("HTTP Error: ${resp.code}"))
+                        }
+                    } else {
+                        val bodyString = resp.body?.string() ?: ""
+                        if (continuation.isActive) {
+                            continuation.resume(bodyString)
+                        }
                     }
                 }
             }
-        } catch (e: Exception) {
-            if (!continuation.isCancelled) {
-                continuation.resumeWithException(e)
+
+            override fun onFailure(call: Call, e: IOException) {
+                if (continuation.isActive) {
+                    continuation.resumeWithException(e)
+                }
             }
-        }
+        })
     }
 
     /**
@@ -391,29 +397,26 @@ class WeatherRepository {
 
             val request = Request.Builder().url(url).get().build()
 
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    return@use Result.failure(IOException("HTTP Error: ${response.code}"))
-                }
-                val bodyString = response.body?.string()
-                    ?: return@use Result.failure(IOException("Empty response body"))
-
-                val geocodingResponse = gson.fromJson(bodyString, GeocodingResponse::class.java)
-                val results = geocodingResponse.results?.map {
-                    LocationItem(
-                        id = it.id,
-                        name = it.name,
-                        admin1 = it.admin1,
-                        country = it.country,
-                        countryCode = it.countryCode,
-                        latitude = it.latitude,
-                        longitude = it.longitude,
-                        elevationMeters = it.elevation ?: 0.0
-                    )
-                } ?: emptyList()
-
-                Result.success(results)
+            val bodyString = executeCancellableRequest(request)
+            if (bodyString.isEmpty()) {
+                return@withContext Result.failure(IOException("Empty response body"))
             }
+
+            val geocodingResponse = gson.fromJson(bodyString, GeocodingResponse::class.java)
+            val results = geocodingResponse.results?.map {
+                LocationItem(
+                    id = it.id,
+                    name = it.name,
+                    admin1 = it.admin1,
+                    country = it.country,
+                    countryCode = it.countryCode,
+                    latitude = it.latitude,
+                    longitude = it.longitude,
+                    elevationMeters = it.elevation ?: 0.0
+                )
+            } ?: emptyList()
+
+            Result.success(results)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             Result.failure(e)

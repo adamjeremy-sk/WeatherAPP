@@ -55,9 +55,15 @@ import com.weatherapp.libre.databinding.DialogSystemScreenBinding
 import com.weatherapp.libre.databinding.DialogTabsSettingsBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class SettingsDialogManager(
     private val activity: AppCompatActivity,
@@ -248,18 +254,45 @@ class SettingsDialogManager(
                     try {
                         val client = OkHttpClient()
                         val request = Request.Builder().url(url).build()
-                        client.newCall(request).execute().use { response ->
-                            val html = response.body?.string()
-                            if (response.isSuccessful && !html.isNullOrEmpty()) {
-                                locationPreferences.saveCachedPageHtml(pageKey, html)
-                                withContext(Dispatchers.Main) {
-                                    if (!activity.isFinishing && !activity.isDestroyed) {
-                                        progressBar.visibility = View.GONE
-                                        swipeRefresh.isRefreshing = false
-                                        webView.loadDataWithBaseURL(url, html, "text/html", "UTF-8", null)
+                        val html = suspendCancellableCoroutine<String> { continuation ->
+                            val call = client.newCall(request)
+                            continuation.invokeOnCancellation {
+                                try {
+                                    call.cancel()
+                                } catch (e: Exception) {
+                                    // Ignore cancellation exception during call.cancel()
+                                }
+                            }
+                            call.enqueue(object : Callback {
+                                override fun onResponse(call: Call, response: Response) {
+                                    response.use { resp ->
+                                        val body = resp.body?.string()
+                                        if (!resp.isSuccessful || body.isNullOrEmpty()) {
+                                            if (continuation.isActive) {
+                                                continuation.resumeWithException(java.io.IOException("HTTP ${resp.code}"))
+                                            }
+                                        } else {
+                                            if (continuation.isActive) {
+                                                continuation.resume(body)
+                                            }
+                                        }
                                     }
                                 }
-                            } else throw java.io.IOException("HTTP ${response.code}")
+
+                                override fun onFailure(call: Call, e: java.io.IOException) {
+                                    if (continuation.isActive) {
+                                        continuation.resumeWithException(e)
+                                    }
+                                }
+                            })
+                        }
+                        locationPreferences.saveCachedPageHtml(pageKey, html)
+                        withContext(Dispatchers.Main) {
+                            if (!activity.isFinishing && !activity.isDestroyed) {
+                                progressBar.visibility = View.GONE
+                                swipeRefresh.isRefreshing = false
+                                webView.loadDataWithBaseURL(url, html, "text/html", "UTF-8", null)
+                            }
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {

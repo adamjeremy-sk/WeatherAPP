@@ -14,8 +14,14 @@ import com.weatherapp.libre.alerts.models.AlertSource
 import com.weatherapp.libre.alerts.models.CapAlert
 import com.weatherapp.libre.alerts.models.UnifiedAlert
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import java.io.IOException
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -219,21 +225,42 @@ class EcccProvider(
 
                 try {
                     val capReq = Request.Builder().url(capUrl).build()
-                    httpClient.newCall(capReq).execute().use { capResp ->
-                        if (capResp.isSuccessful) {
-                            val xml = capResp.body?.string()
-                            if (xml != null) {
-                                val capAlert = CapXmlParser.parse(xml)
-                                if (capAlert != null) {
-                                    val matchResult = AlertMatcher.matchesLocation(capAlert, location)
-                                    if (matchResult.isMatched) {
-                                        val unifiedAlert = mapCapAlertToUnifiedAlert(capAlert, location, matchResult.matchedAreaDesc)
-                                        memoStore.put(memoKey, EcccMemoEntry(matched = true, alert = unifiedAlert))
-                                        if (unifiedAlert != null && matchedAlerts.none { it.id == unifiedAlert.id }) {
-                                            matchedAlerts.add(unifiedAlert)
-                                        }
-                                    } else {
-                                        memoStore.put(memoKey, EcccMemoEntry(matched = false))
+                    val capResult = suspendCancellableCoroutine<Pair<Boolean, String?>> { continuation ->
+                        val call = httpClient.newCall(capReq)
+                        continuation.invokeOnCancellation {
+                            try {
+                                call.cancel()
+                            } catch (e: Exception) {
+                                // Ignore cancellation exception during call.cancel()
+                            }
+                        }
+                        call.enqueue(object : Callback {
+                            override fun onResponse(call: Call, response: Response) {
+                                response.use { resp ->
+                                    if (continuation.isActive) {
+                                        continuation.resume(resp.isSuccessful to resp.body?.string())
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (continuation.isActive) {
+                                    continuation.resumeWithException(e)
+                                }
+                            }
+                        })
+                    }
+                    if (capResult.first) {
+                        val xml = capResult.second
+                        if (xml != null) {
+                            val capAlert = CapXmlParser.parse(xml)
+                            if (capAlert != null) {
+                                val matchResult = AlertMatcher.matchesLocation(capAlert, location)
+                                if (matchResult.isMatched) {
+                                    val unifiedAlert = mapCapAlertToUnifiedAlert(capAlert, location, matchResult.matchedAreaDesc)
+                                    memoStore.put(memoKey, EcccMemoEntry(matched = true, alert = unifiedAlert))
+                                    if (unifiedAlert != null && matchedAlerts.none { it.id == unifiedAlert.id }) {
+                                        matchedAlerts.add(unifiedAlert)
                                     }
                                 } else {
                                     memoStore.put(memoKey, EcccMemoEntry(matched = false))
@@ -241,6 +268,8 @@ class EcccProvider(
                             } else {
                                 memoStore.put(memoKey, EcccMemoEntry(matched = false))
                             }
+                        } else {
+                            memoStore.put(memoKey, EcccMemoEntry(matched = false))
                         }
                     }
                 } catch (e: CancellationException) {
@@ -279,7 +308,7 @@ class EcccProvider(
         return null
     }
 
-    private fun collectCapXmlUrls(
+    private suspend fun collectCapXmlUrls(
         ecccCode: String,
         candidateDates: List<String>,
         now: ZonedDateTime
@@ -296,18 +325,45 @@ class EcccProvider(
             val regionUrl = "$DATAMART_BASE_URL$dateStr/$ecccCode/"
             try {
                 val request = Request.Builder().url(regionUrl).build()
-                val htmlBody = httpClient.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        if (response.code != 404) {
-                            lastException = IOException("HTTP ${response.code} fetching ECCC alerts")
-                        } else {
-                            atLeastOneSuccess = true
+                val regionResult = suspendCancellableCoroutine<Pair<Int, String?>> { continuation ->
+                    val call = httpClient.newCall(request)
+                    continuation.invokeOnCancellation {
+                        try {
+                            call.cancel()
+                        } catch (e: Exception) {
+                            // Ignore cancellation exception during call.cancel()
                         }
-                        return@use null
                     }
-                    atLeastOneSuccess = true
-                    response.body?.string()
-                } ?: continue
+                    call.enqueue(object : Callback {
+                        override fun onResponse(call: Call, response: Response) {
+                            response.use { resp ->
+                                if (continuation.isActive) {
+                                    continuation.resume(resp.code to resp.body?.string())
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call, e: IOException) {
+                            if (continuation.isActive) {
+                                continuation.resumeWithException(e)
+                            }
+                        }
+                    })
+                }
+                val regionCode = regionResult.first
+                val htmlBody = regionResult.second
+                if (regionCode !in 200..299) {
+                    if (regionCode != 404) {
+                        lastException = IOException("HTTP $regionCode fetching ECCC alerts")
+                    } else {
+                        atLeastOneSuccess = true
+                    }
+                    continue
+                }
+                atLeastOneSuccess = true
+                if (htmlBody == null) {
+                    continue
+                }
 
                 // Direct CAP/XML files in region directory (if any)
                 for (match in capFileRegex.findAll(htmlBody)) {
@@ -343,14 +399,37 @@ class EcccProvider(
                     val hourUrl = "$regionUrl$hh/"
                     try {
                         val hourReq = Request.Builder().url(hourUrl).build()
-                        httpClient.newCall(hourReq).execute().use { hourResp ->
-                            if (hourResp.isSuccessful) {
-                                val hourBody = hourResp.body?.string() ?: ""
-                                for (match in capFileRegex.findAll(hourBody)) {
-                                    val path = match.groupValues[1]
-                                    val fullUrl = if (path.startsWith("http")) path else "$hourUrl${path.removePrefix("/")}"
-                                    fileUrls.add(fullUrl)
+                        val hourResult = suspendCancellableCoroutine<Pair<Boolean, String?>> { continuation ->
+                            val call = httpClient.newCall(hourReq)
+                            continuation.invokeOnCancellation {
+                                try {
+                                    call.cancel()
+                                } catch (e: Exception) {
+                                    // Ignore cancellation exception during call.cancel()
                                 }
+                            }
+                            call.enqueue(object : Callback {
+                                override fun onResponse(call: Call, response: Response) {
+                                    response.use { resp ->
+                                        if (continuation.isActive) {
+                                            continuation.resume(resp.isSuccessful to resp.body?.string())
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call, e: IOException) {
+                                    if (continuation.isActive) {
+                                        continuation.resumeWithException(e)
+                                    }
+                                }
+                            })
+                        }
+                        if (hourResult.first) {
+                            val hourBody = hourResult.second ?: ""
+                            for (match in capFileRegex.findAll(hourBody)) {
+                                val path = match.groupValues[1]
+                                val fullUrl = if (path.startsWith("http")) path else "$hourUrl${path.removePrefix("/")}"
+                                fileUrls.add(fullUrl)
                             }
                         }
                     } catch (e: CancellationException) {
