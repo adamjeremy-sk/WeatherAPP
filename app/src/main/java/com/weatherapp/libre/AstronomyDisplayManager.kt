@@ -71,13 +71,22 @@ class AstronomyDisplayManager(
     var currentHourlyCloudCoverMap: Map<Instant, Double>? = null
     private var calculationJob: Job? = null
 
+    private companion object {
+        const val MAX_VOLUME_HOLD_MS = 10000L
+    }
+
     private val handler = Handler(Looper.getMainLooper())
     private var isVolumeKeyHeld = false
     private var volumeKeyDirection = 1
+    private var volumeKeyHoldStartTime = 0L
 
     private val rapidCycleRunnable = object : Runnable {
         override fun run() {
             if (isVolumeKeyHeld) {
+                if (System.currentTimeMillis() - volumeKeyHoldStartTime > MAX_VOLUME_HOLD_MS) {
+                    isVolumeKeyHeld = false
+                    return
+                }
                 if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
                     inlineGoldenDate = if (volumeKeyDirection > 0) inlineGoldenDate.plusDays(1) else inlineGoldenDate.minusDays(1)
                     updateInlineGoldenHourDisplay(currentLocationItem)
@@ -100,6 +109,14 @@ class AstronomyDisplayManager(
                 handler.postDelayed(this, delayMs)
             }
         }
+    }
+
+    init {
+        activity.lifecycle.addObserver(object : androidx.lifecycle.DefaultLifecycleObserver {
+            override fun onPause(owner: androidx.lifecycle.LifecycleOwner) {
+                stopVolumeKeyLoop()
+            }
+        })
     }
 
     private var currentLocationItem: LocationItem = LocationItem(id = 0L, name = "Ottawa", admin1 = "Ontario", country = "Canada", latitude = 45.4215, longitude = -75.6972)
@@ -649,12 +666,18 @@ class AstronomyDisplayManager(
             .show()
     }
 
+    private fun stopVolumeKeyLoop() {
+        isVolumeKeyHeld = false
+        handler.removeCallbacks(rapidCycleRunnable)
+    }
+
     fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if ((activeInlineSubTab == InlineSubTab.NATURAL_LIGHT || activeInlineSubTab == InlineSubTab.LUNAR_CALENDAR) && locationPreferences.isVolumeScrollEnabled()) {
             when (keyCode) {
                 KeyEvent.KEYCODE_VOLUME_UP -> {
                     if (!isVolumeKeyHeld) {
                         isVolumeKeyHeld = true
+                        volumeKeyHoldStartTime = System.currentTimeMillis()
                         volumeKeyDirection = 1
                         if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
                             inlineGoldenDate = inlineGoldenDate.plusDays(1)
@@ -682,6 +705,7 @@ class AstronomyDisplayManager(
                 KeyEvent.KEYCODE_VOLUME_DOWN -> {
                     if (!isVolumeKeyHeld) {
                         isVolumeKeyHeld = true
+                        volumeKeyHoldStartTime = System.currentTimeMillis()
                         volumeKeyDirection = -1
                         if (activeInlineSubTab == InlineSubTab.NATURAL_LIGHT) {
                             inlineGoldenDate = inlineGoldenDate.minusDays(1)
@@ -713,8 +737,7 @@ class AstronomyDisplayManager(
 
     fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            isVolumeKeyHeld = false
-            handler.removeCallbacks(rapidCycleRunnable)
+            stopVolumeKeyLoop()
             return true
         }
         return false
@@ -723,7 +746,7 @@ class AstronomyDisplayManager(
     fun cleanup() {
         calculationJob?.cancel()
         lunarDebounceJob?.cancel()
-        isVolumeKeyHeld = false
+        stopVolumeKeyLoop()
         handler.removeCallbacksAndMessages(null)
     }
 }

@@ -1,22 +1,48 @@
 ---------------
+Changelog 0.8.0VC27 - 2026/10/30
+---------------
+* Security & Release Hardening:
+* Hardened the CAP-CP XML parser against XXE and OOM attacks by disabling DTD processing and enforcing a 5MB byte ceiling.
+* Restricted in-app WebView navigation strictly to the `weatherapplibre.ca` allowlist; external links now launch in the system browser.
+* Gated the test-alert injection menu behind `BuildConfig.DEBUG` to prevent end-user access in production builds.
+* Replaced fragile string-matching for test alerts with a typed `isTest` boolean in the alert banner manager.
+* Added a fail-fast guard for the MeteoGate API key to prevent silent EU alert fetch failures.
+* Protected 4 Gson-serialized almanac classes with `@Keep` annotations to ensure survival through R8 minification.
+* Documented the intentional release signing fallback (debug key) in the build script to prevent future CI/CD confusion.
+* Forecast & Precipitation Enhancements:
+* Added daily precipitation totals (rain, snow, sum) and maximum probability to the 7-day expanded forecast details.
+* Reworked precipitation UI placement: moved the 7-day collapsed pill to expanded details and introduced a new, perfectly aligned hourly precipitation pill using a ConstraintLayout Barrier.
+* Widget & Alert Pipeline Reliability:
+* Added strict AppWidgetManager ID ownership and tab-index bounds checking to all widget receivers to reject malformed intents.
+* Corrected the legacy 2x2 widget receiver and manifest metadata to accurately reflect its true 2x1 layout dimensions.
+* Wired test alert injection paths (ECCC and EU harnesses) into the Alert Log repository for accurate diagnostic history.
+* Dynamically generated bounding boxes for EU test fixtures to ensure they correctly match any target European location tab.
+* Lifecycle, Concurrency & Memory Hygiene:
+* Implemented a process-wide `synchronized` lock in `LocationPreferences` to eliminate race conditions where the main app and widget sync workers could overwrite each other's saved locations.
+* Wrapped `AlertLogRepository` read-modify-write operations in a coroutine `Mutex` to prevent concurrent alert history corruption.
+* Capped the persistent forecast disk cache at 50 entries with automatic FIFO eviction of the oldest data to prevent unbounded SharedPreferences growth.
+* Added explicit `cleanup()` lifecycle methods to `SettingsDialogManager`, `WeatherDisplayManager`, and `AstronomyDisplayManager` to prevent `WindowManager` leaks and handler runaways on Activity destruction.
+* Hard-capped the volume-key rapid-cycle date loop at 10 seconds and added an `onPause` lifecycle observer to guarantee termination if the app is backgrounded while a key is held.
+* Fixed a UX quirk where the live header clock would stall during network fetches; the update heartbeat now survives timezone resolution delays.
+* Purged dead code: deleted obsolete name-keyed alert dismissal functions and two orphaned layout XML files.
+
+---------------
 Changelog 0.7.0VC26 - 2026/10/22
 ---------------
 
-- Refactor Alert Architecture (Major Overhaul):
-  - Implemented EcccProvider for Datamart CAP-CP directory scraping.
-  - Integrated MeteoAlarm provider for comprehensive EU alerts.
-  - Unified GlobalAlertCache and AlertBannerManager pipelines.
-  - Implemented coordinate-scoped dismissals and strict geographic gating.
-  - Added system-level push notifications for Global alerts (with consent enforcement).
-  - Completely excised legacy Atom feed workers and adapters.
-
-- Solar Precision Restoration:
-  - Enforced 64-bit coordinate serialization (resolved 5-min offset bug).
-  - Restored elevation passing for accurate sunrise/sunset azimuth calculations.
-
-- UI/UX & Localization:
-  - Updated multi-provider alert consent dialog (EN/FR).
-  - Stabilized lunar calendar, solunar activity views, and widget previews.
+* Refactor Alert Architecture (Major Overhaul):
+* Implemented EcccProvider for Datamart CAP-CP directory scraping.
+* Integrated MeteoAlarm provider for comprehensive EU alerts.
+* Unified GlobalAlertCache and AlertBannerManager pipelines.
+* Implemented coordinate-scoped dismissals and strict geographic gating.
+* Added system-level push notifications for Global alerts (with consent enforcement).
+* Completely excised legacy Atom feed workers and adapters.
+* Solar Precision Restoration:
+* Enforced 64-bit coordinate serialization (resolved 5-min offset bug).
+* Restored elevation passing for accurate sunrise/sunset azimuth calculations.
+* UI/UX & Localization:
+* Updated multi-provider alert consent dialog (EN/FR).
+* Stabilized lunar calendar, solunar activity views, and widget previews.
   
 ---------------
 Changelog 0.6.5VC25 - 2026/10/20
@@ -29,7 +55,7 @@ Note: Releases will be weekly on Wednesday evenings going forward unless a criti
 * System Default Theme Fidelity: Permanently resolved the legacy "System Default Theme" bug. The toggle now flawlessly tracks the device's true light/dark state using un-overridden system configuration resources, ensuring the UI and widgets perfectly mirror the OS polarity.
 * Edge-to-Edge API 35+ Compliance: Re-established full Android 15 compliance by purging deprecated `android:windowLightStatusBar` XML attributes and relying exclusively on the programmatic `WindowInsetsController` for system bar contrast.
 * Astronomical Heuristics Refinement: Adjusted the Blue Hour astronomical window from -6° to -4° down to -8° to -4°, providing astrophotographers with a more accurate and extended deep cobalt sky window. Audited and verified the mathematical integrity of night visibility cloud cover interactions and true dark sky window calculations.
-* Lunar Almanac Polish: Refined the Lunar Calendar to display dual viewing metrics: "Stellar" (favoring dark skies for deep-space observation) and "Selenic" (favoring illuminated moons for lunar observation). Streamlined the 3-year Special Lunar Events sheet by removing redundant "Next Phase" countdowns and suppressing special-event outline strokes for a cleaner list view.
+* Lunar Almanac Polish: Refined the Lunar Calendar to display dual-viewing metrics: "Stellar" (favoring dark skies for deep-space observation) and "Selenic" (favoring illuminated moons for lunar observation). Streamlined the 3-year Special Lunar Events sheet by removing redundant "Next Phase" countdowns and suppressing special-event outline strokes for a cleaner list view.
 * 7-Day Forecast Localization & Cleanup: Resolved French localization bypasses for sky conditions and moon phase names in the 7-day forecast. Removed atmospheric lunar phenomena (halos, coronas, moonbows) from the daily forecast expanded cells, keeping them exclusively accessible within the dedicated Moon Phase & Cycle popup to reduce visual clutter.
 * Hero Cell State Fix: Resolved a defect where the main hero weather cell was incorrectly pulling the hero weather state from a previously viewed location tab.
 * Share Intent & Polish: Modernized the "Share This Project" intent with updated Google Play Store and official website calls-to-action.
