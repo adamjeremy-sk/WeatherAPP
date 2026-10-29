@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<android.view.View>(R.id.layoutInlineDateClickable)?.setOnClickListener {
             val currDate = astronomyManager.inlineGoldenDate
-            DatePickerDialog(
+            val datePickerDialog = DatePickerDialog(
                 this,
                 { _, yr, monthIdx, dayOfMonth ->
                     astronomyManager.inlineGoldenDate = LocalDate.of(yr, monthIdx + 1, dayOfMonth)
@@ -316,7 +316,9 @@ class MainActivity : AppCompatActivity() {
                 currDate.year,
                 currDate.monthValue - 1,
                 currDate.dayOfMonth
-            ).show()
+            )
+            SystemBarContrastHelper.applyDialogEdgeToEdge(datePickerDialog)
+            datePickerDialog.show()
         }
 
         // Adapters

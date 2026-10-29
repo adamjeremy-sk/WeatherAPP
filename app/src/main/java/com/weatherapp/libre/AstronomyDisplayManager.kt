@@ -481,7 +481,7 @@ class AstronomyDisplayManager(
 
         // Generate 3-Year Lunar Map Cache Trigger Button Click
         btnCache?.setOnClickListener {
-            MaterialAlertDialogBuilder(activity)
+            val dialog = MaterialAlertDialogBuilder(activity)
                 .setTitle(activity.getString(R.string.title_generate_lunar_map))
                 .setMessage(activity.getString(R.string.msg_generate_lunar_map_warning))
                 .setPositiveButton(activity.getString(R.string.btn_proceed)) { dialog, _ ->
@@ -491,7 +491,9 @@ class AstronomyDisplayManager(
                 .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }
-                .show()
+                .create()
+            SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+            dialog.show()
         }
 
         // Special Events Filter Toggle Click
@@ -501,7 +503,7 @@ class AstronomyDisplayManager(
                 isLunarFilterActive = !isLunarFilterActive
                 updateInlineLunarCalendarDisplay(location)
             } else {
-                MaterialAlertDialogBuilder(activity)
+                val dialog = MaterialAlertDialogBuilder(activity)
                     .setTitle(activity.getString(R.string.title_generate_lunar_map))
                     .setMessage(activity.getString(R.string.msg_generate_lunar_map_warning))
                     .setPositiveButton(activity.getString(R.string.btn_proceed)) { dialog, _ ->
@@ -511,7 +513,9 @@ class AstronomyDisplayManager(
                     .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                         dialog.dismiss()
                     }
-                    .show()
+                    .create()
+                SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+                dialog.show()
             }
         }
 
@@ -643,7 +647,7 @@ class AstronomyDisplayManager(
         val alarmFormatted = alarmZdt.format(formatter)
         val phaseFormatted = phaseZdt.format(formatter)
 
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_set_solar_alarm))
             .setMessage(activity.getString(R.string.msg_set_solar_alarm, leadMins, item.name, phaseFormatted, alarmFormatted))
             .setPositiveButton(activity.getString(R.string.btn_set_alarm)) { dialog, _ ->
@@ -663,7 +667,9 @@ class AstronomyDisplayManager(
             .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+        dialog.show()
     }
 
     private fun stopVolumeKeyLoop() {

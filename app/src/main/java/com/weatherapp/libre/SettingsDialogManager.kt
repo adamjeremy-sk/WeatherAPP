@@ -75,6 +75,7 @@ class SettingsDialogManager(
     private var wasPopped = false
 
     fun trackDialog(dialog: Dialog) {
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         menuStack.add(dialog)
         dialog.setOnDismissListener {
             menuStack.remove(dialog)
@@ -148,12 +149,6 @@ class SettingsDialogManager(
             orientation = LinearLayout.VERTICAL
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             setBackgroundColor(palette.backgroundLight)
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
         }
 
         // Top Header Bar
@@ -332,12 +327,6 @@ class SettingsDialogManager(
         val dialogBinding = DialogTabsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
@@ -463,12 +452,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogModelsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val density = activity.resources.displayMetrics.density
@@ -658,12 +641,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogAlertsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
@@ -1576,7 +1553,7 @@ class SettingsDialogManager(
         }
 
         btnClear.setOnClickListener {
-            android.app.AlertDialog.Builder(activity)
+            val dialog = android.app.AlertDialog.Builder(activity)
                 .setTitle(activity.getString(com.weatherapp.libre.R.string.alert_log_clear))
                 .setMessage(activity.getString(com.weatherapp.libre.R.string.alert_log_clear_confirm))
                 .setPositiveButton(com.weatherapp.libre.R.string.btn_ok) { _, _ ->
@@ -1588,7 +1565,9 @@ class SettingsDialogManager(
                     }
                 }
                 .setNegativeButton(android.R.string.cancel, null)
-                .show()
+                .create()
+            SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+            dialog.show()
         }
 
         renderEntries()
@@ -1644,12 +1623,6 @@ class SettingsDialogManager(
         val dialogBinding = DialogSystemScreenBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
@@ -1701,12 +1674,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = com.weatherapp.libre.databinding.DialogWidgetsSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
@@ -1913,12 +1880,6 @@ class SettingsDialogManager(
         val dialogBinding = com.weatherapp.libre.databinding.DialogWidgetThemePickerBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
@@ -2048,12 +2009,6 @@ class SettingsDialogManager(
         val dialogBinding = DialogBehaviourScreenBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
@@ -2156,12 +2111,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogMenuOrganizationScreenBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
@@ -2323,12 +2272,6 @@ class SettingsDialogManager(
         val dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_NoActionBar)
         val dialogBinding = DialogInfoScreenBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard

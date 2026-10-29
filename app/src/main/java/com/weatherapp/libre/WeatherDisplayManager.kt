@@ -415,6 +415,7 @@ class WeatherDisplayManager(
             .setMessage(message)
             .setPositiveButton(activity.getString(R.string.btn_close), null)
             .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
 
         dialog.setOnShowListener {
             val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable(
@@ -486,6 +487,7 @@ class WeatherDisplayManager(
                 .setMessage(activity.getString(R.string.msg_data_information, formattedDateStr, sourceModel))
                 .setPositiveButton(activity.getString(R.string.btn_ok), null)
                 .create()
+            SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
 
             dialog.setOnShowListener {
                 val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable(

@@ -229,12 +229,6 @@ class ThemeManager(
         val dialogBinding = DialogThemeSettingsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(dialogBinding.root) { _, insets ->
-            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-            dialogBinding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val currentTheme = locationPreferences.getThemeMode()
         val palette = ColorPalette.forMode(currentTheme, activity)
         val headerBg = palette.surfaceCard

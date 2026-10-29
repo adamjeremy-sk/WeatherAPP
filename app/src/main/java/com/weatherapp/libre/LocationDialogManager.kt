@@ -36,6 +36,7 @@ class LocationDialogManager(
         if (activity.isFinishing || activity.isDestroyed) return
 
         val dialog = BottomSheetDialog(activity)
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         val dialogBinding = DialogSearchLocationBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
@@ -147,6 +148,7 @@ class LocationDialogManager(
         }
 
         val dialog = BottomSheetDialog(activity)
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         val dialogBinding = DialogRecentLocationsBinding.inflate(activity.layoutInflater)
         dialog.setContentView(dialogBinding.root)
 

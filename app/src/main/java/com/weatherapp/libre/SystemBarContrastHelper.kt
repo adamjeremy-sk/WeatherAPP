@@ -1,11 +1,30 @@
 package com.weatherapp.libre
 
 import android.app.Activity
+import android.app.Dialog
 import android.graphics.Color
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import kotlin.math.pow
 
 object SystemBarContrastHelper {
+
+    @JvmStatic
+    fun applyDialogEdgeToEdge(dialog: Dialog) {
+        val window = dialog.window ?: return
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
+            insets
+        }
+    }
 
     fun updateSystemBarContrast(activity: Activity, backgroundColor: Int) {
         val window = activity.window ?: return

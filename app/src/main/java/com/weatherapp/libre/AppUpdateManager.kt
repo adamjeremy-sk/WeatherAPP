@@ -73,7 +73,7 @@ class AppUpdateManager(
     private fun showUpdateAvailablePrompt(appUpdateInfo: AppUpdateInfo?) {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_update_notification))
             .setMessage(activity.getString(R.string.msg_update_available_libre))
             .setPositiveButton(activity.getString(R.string.btn_view_update)) { dialog, _ ->
@@ -83,25 +83,29 @@ class AppUpdateManager(
             .setNegativeButton(activity.getString(R.string.btn_not_now)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+        dialog.show()
     }
 
     private fun showUpToDatePrompt() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_app_up_to_date))
             .setMessage(activity.getString(R.string.msg_running_latest_version))
             .setPositiveButton(activity.getString(R.string.btn_ok)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+        dialog.show()
     }
 
     private fun showCheckUpdateFallbackDialog() {
         if (activity.isFinishing || activity.isDestroyed) return
 
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_check_play_store))
             .setMessage(activity.getString(R.string.msg_check_play_store))
             .setPositiveButton(activity.getString(R.string.btn_open_play_store)) { dialog, _ ->
@@ -111,14 +115,16 @@ class AppUpdateManager(
             .setNegativeButton(activity.getString(android.R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+        dialog.show()
     }
 
     fun show500LaunchMilestoneDialog() {
         if (activity.isFinishing || activity.isDestroyed) return
 
         locationPreferences.resetAppLaunchCount()
-        MaterialAlertDialogBuilder(activity)
+        val dialog = MaterialAlertDialogBuilder(activity)
             .setTitle(activity.getString(R.string.title_milestone_500_launches))
             .setMessage(activity.getString(R.string.msg_milestone_500_launches))
             .setPositiveButton(activity.getString(R.string.btn_leave_review)) { dialog, _ ->
@@ -132,7 +138,9 @@ class AppUpdateManager(
             .setNegativeButton(activity.getString(R.string.btn_maybe_later)) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
+        dialog.show()
     }
 
     fun openPlayStorePage() {

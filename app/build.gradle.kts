@@ -118,3 +118,67 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
+
+abstract class VerifyEdgeToEdgeTask : DefaultTask() {
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val srcDir: DirectoryProperty
+
+    @TaskAction
+    fun verify() {
+        val bannedKotlin = listOf(
+            "statusBarColor",
+            "navigationBarColor",
+            "setStatusBarColor",
+            "setNavigationBarColor",
+            "systemUiVisibility",
+            "SYSTEM_UI_FLAG",
+            "FLAG_TRANSLUCENT_STATUS",
+            "FLAG_TRANSLUCENT_NAVIGATION",
+            "FLAG_FULLSCREEN"
+        )
+        val bannedXml = listOf(
+            "android:statusBarColor",
+            "android:navigationBarColor",
+            "android:windowLightStatusBar",
+            "android:windowLightNavigationBar",
+            "android:windowTranslucentStatus",
+            "android:windowTranslucentNavigation"
+        )
+
+        var violations = 0
+        val dir = srcDir.get().asFile
+
+        if (dir.exists()) {
+            dir.walkTopDown().filter { it.isFile && (it.extension == "kt" || it.extension == "xml") }.forEach { file ->
+                val bannedList = if (file.extension == "kt") bannedKotlin else bannedXml
+                file.useLines { lines ->
+                    lines.forEachIndexed { index, line ->
+                        bannedList.forEach { banned ->
+                            if (line.contains(banned)) {
+                                logger.error("Edge-to-Edge Violation [${file.path}:${index + 1}]: '$line'")
+                                violations++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (violations > 0) {
+            throw GradleException("Edge-to-Edge compliance check failed with $violations violation(s).")
+        } else {
+            logger.lifecycle("Edge-to-Edge compliance check passed cleanly. 0 violations found.")
+        }
+    }
+}
+
+tasks.register<VerifyEdgeToEdgeTask>("verifyEdgeToEdge") {
+    group = "verification"
+    description = "Enforces Edge-to-Edge compliance by scanning source code for forbidden deprecated APIs."
+    srcDir.set(layout.projectDirectory.dir("src/main"))
+}
+
+tasks.matching { it.name == "assembleDebug" || it.name == "assembleRelease" }.configureEach {
+    dependsOn("verifyEdgeToEdge")
+}

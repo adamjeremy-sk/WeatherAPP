@@ -18,6 +18,7 @@ import com.google.android.material.card.MaterialCardView
 import com.weatherapp.theme.BoutiqueThemeEngine
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.R
+import com.weatherapp.libre.SystemBarContrastHelper
 
 object AlertConsentDialog {
 
@@ -40,6 +41,7 @@ object AlertConsentDialog {
         val density = activity.resources.displayMetrics.density
 
         val dialog = Dialog(activity)
+        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.setCancelable(false)
         dialog.setCanceledOnTouchOutside(false)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
