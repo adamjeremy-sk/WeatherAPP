@@ -1,5 +1,5 @@
 ---------------
-Changelog 0.8.0VC27 - 2026/10/30
+Changelog 0.8.0VC27 - 2026/10/29
 ---------------
 * Security & Release Hardening:
 * Hardened the CAP-CP XML parser against XXE and OOM attacks by disabling DTD processing and enforcing a 5MB byte ceiling.
@@ -37,6 +37,170 @@ Changelog 0.8.0VC27 - 2026/10/30
 * Testing & Pipeline Hardening:
 * Expanded the automated test suite from 178 to 216 passing tests, achieving comprehensive coverage of the forecast, widget, and alert delivery pipelines.
 * Added extensive regression tests for alert polygon boundary math, consent gates, provider failure isolation, and cache corruption recovery.
+* Edge-to-Edge Compliance & Enforcement:
+* Centralized dialog edge-to-edge configuration and 4-side inset padding into a single `SystemBarContrastHelper` utility, automatically applied to all tracked settings dialogs and explicitly applied to all standalone alerts/pickers.
+* Installed a mechanical `verifyEdgeToEdge` Gradle build gate that scans source code for forbidden deprecated window APIs, permanently preventing Play Store edge-to-edge regressions in future releases.
+
+---------------
+Changelog 0.7.0VC26 - 2026/10/22
+---------------
+
+* Refactor Alert Architecture (Major Overhaul):
+* Implemented EcccProvider for Datamart CAP-CP directory scraping.
+* Integrated MeteoAlarm provider for comprehensive EU alerts.
+* Unified GlobalAlertCache and AlertBannerManager pipelines.
+* Implemented coordinate-scoped dismissals and strict geographic gating.
+* Added system-level push notifications for Global alerts (with consent enforcement).
+* Completely excised legacy Atom feed workers and adapters.
+* Solar Precision Restoration:
+* Enforced 64-bit coordinate serialization (resolved 5-min offset bug).
+* Restored elevation passing for accurate sunrise/sunset azimuth calculations.
+* UI/UX & Localization:
+* Updated multi-provider alert consent dialog (EN/FR).
+* Stabilized lunar calendar, solunar activity views, and widget previews.
+  
+---------------
+Changelog 0.6.5VC25 - 2026/10/20
+---------------
+Note: Releases will be weekly on Wednesday evenings going forward unless a critical app-breaking bug is found.
+
+* Widget Configuration Centralization: Removed the widget configuration popup from the home screen picker flow and centralized all widget management into a dedicated settings menu (Drawer > System > Widgets).
+* Widget Theming & Opacity Control: Introduced full Boutique Theme Engine integration for widgets, allowing users to apply any of the app's bespoke themes (or follow the system/app theme). Added a highly visual Widget Opacity slider (1-100%, default 70%) with a live contrast preview cell, allowing precise translucency calibration against any home screen wallpaper.
+* Boutique Theme Expansion: Added two new Boutique Themes: Frutiger Aero (Light) and Hardy Heron (Dark).
+* System Default Theme Fidelity: Permanently resolved the legacy "System Default Theme" bug. The toggle now flawlessly tracks the device's true light/dark state using un-overridden system configuration resources, ensuring the UI and widgets perfectly mirror the OS polarity.
+* Edge-to-Edge API 35+ Compliance: Re-established full Android 15 compliance by purging deprecated `android:windowLightStatusBar` XML attributes and relying exclusively on the programmatic `WindowInsetsController` for system bar contrast.
+* Astronomical Heuristics Refinement: Adjusted the Blue Hour astronomical window from -6° to -4° down to -8° to -4°, providing astrophotographers with a more accurate and extended deep cobalt sky window. Audited and verified the mathematical integrity of night visibility cloud cover interactions and true dark sky window calculations.
+* Lunar Almanac Polish: Refined the Lunar Calendar to display dual-viewing metrics: "Stellar" (favoring dark skies for deep-space observation) and "Selenic" (favoring illuminated moons for lunar observation). Streamlined the 3-year Special Lunar Events sheet by removing redundant "Next Phase" countdowns and suppressing special-event outline strokes for a cleaner list view.
+* 7-Day Forecast Localization & Cleanup: Resolved French localization bypasses for sky conditions and moon phase names in the 7-day forecast. Removed atmospheric lunar phenomena (halos, coronas, moonbows) from the daily forecast expanded cells, keeping them exclusively accessible within the dedicated Moon Phase & Cycle popup to reduce visual clutter.
+* Hero Cell State Fix: Resolved a defect where the main hero weather cell was incorrectly pulling the hero weather state from a previously viewed location tab.
+* Share Intent & Polish: Modernized the "Share This Project" intent with updated Google Play Store and official website calls-to-action.
+* Cache & Polish: Confirmed the default cache TTL correctly identifies 60 minutes and resolved minor widget caching bugs.
+
+---------------
+Changelog 0.6.4VC24 - 2026/10/17
+---------------
+* Widget Clipping Fix: Tightened the vertical height budget across all three widget layouts (2x1, 4x1, 4x2) by reducing root padding to 4dp, shrinking margins to 2dp, and capping the 4x2 temperature height at 48dp, eliminating layout clipping on constrained third-party and OEM launchers like Niagara and Xiaomi.
+* Cache TTL Alignment: Reduced the default weather cache time-to-live from 120 minutes to 60 minutes, synchronizing it perfectly with the WorkManager polling interval and XML update period.
+* Widget Sync Invalidation Trigger: Bridged the cache-write to widget-read disconnect by adding an immediate invalidation trigger in the WeatherRepository. Whenever the main app successfully writes fresh data to the persistent cache, all active widget instances are now enumerated, synchronously rebuilt, and forced to redraw instantly, permanently eliminating the stale "--" temperature fallback state.
+
+
+---------------
+Changelog 0.6.3VC23 - 2026/10/16
+---------------
+* Theme Engine Modularization: Extracted BoutiqueThemeEngine and ColorPalette into a standalone, portable Android Library module (theme-engine) for reuse across projects. The module exposes a single public surface via ThemeMode constants and getPalette(), with zero coupling to host-app business logic. Legacy Fire Engine installs continue to self-heal to the Dark theme via the host app's migration resolver.
+* Widget Information Architecture Overhaul: Restructured all three widget footprints for clarity and consistency. Removed the redundant city name from all layouts (the selected tab pill already displays it). Sunrise/sunset now render universally as locale-neutral arrows (↑/↓) on all layouts. Moonrise/moonset moved to the right column on 4x1 and 4x2 with localized labels. The 4x2 middle timings row narrowed to Transit and Nadir only; the feature panel (Night Visibility, Solunar Activity, True Dark Sky) now expands to fill available height.
+* 4x1 Alignment Fix: Resolved horizontal centering drift on the 4x1 temperature by restructuring the content row into three equal-weight regions (left data, hero temp, right data), ensuring the temperature renders on the exact centerline across all launcher implementations.
+* 2x1 Widget Conversion: Converted the small widget from a 2x2 quadrant grid to a compact 2x1 two-column stack, removing the pill bar to fit within one-cell height grants on tight launchers. Left column carries the solar narrative (icon, sun arrows, condition, high/low); right column carries the lunar narrative (hero temperature, moon arrows, moon phase name, night context, illumination). Increased icon size to 32dp and temperature autosize ceiling to 30sp for improved visual presence.
+
+---------------
+Changelog 0.6.2VC22 - 2026/10/15
+---------------
+* French Localization Fixes: Externalized all remaining hardcoded English strings (weather conditions, moon phases, sub-tab and menu labels, natural light phases, night visibility and solunar labels, forecast model and theme descriptions); enforced French typography (space before colons); localized dropdown menu entries and dialog buttons.
+* Home Screen Widgets: Added 4x2, 4x1, and 2x2 widgets with on-widget location tab pills, tap-to-deep-link into the app, Material You dynamic theming, sunrise/sunset rows, active natural light period display, and optional Night Visibility / Solunar Activity lines.
+* Widget Efficiency: Cache-first background sync via WorkManager with an adjustable 60-minute TTL; widgets refresh immediately on in-app tab edits and on app launch; no GPS and no independent network polling.
+* Edge-to-edge API 35+ Compliant: Removed deprecated status/navigation bar coloring and theme attributes; added theme-aware system bar icon contrast via SystemBarContrastHelper; full window inset coverage across all Activities and full-screen dialogs; purged legacy window flags and opt-outs.
+* Removed Fire Engine Theme: Deleted with a self-healing migration that moves legacy installs to the Dark theme; all special-case branches purged from drawers, headers, dialogs, and night-mode mapping.
+* Reorganized Theme Page: Regrouped the picker into Light Themes (Light, Crema, Frost, Orange Grove, Terracotta) and Dark Themes (Dark, Aurora, Charcoal, Cobalt, Jade) with simplified display names in English and French.
+* Removed Syzygy: Badge, data flag, and strings removed from the Lunar Calendar as redundant (occurs at every New and Full Moon); the term remains documented in the Lunar Almanac glossary.
+
+---------------
+Changelog 0.6.1VC21 - 2026/10/14
+---------------
+* Lunar Calendar UI Overhaul: Replaced bottom sheets with a compact, inline week-by-week layout (Sunday–Saturday) featuring inline cell expansion for exhaustive lunar details.
+* Performance Optimization: Implemented a 30ms debounce delay combined with user-configurable volume scroll speeds to prevent CPU lag during rapid date cycling.
+* Long-Term Caching: Added a 3-year forward-looking lunar event cache generator with a progress bar and warning dialog, enabling instant loading of the "Special Lunar Events" filter.
+* Atmospheric Phenomena Heuristics: Integrated probability calculations for Lunar Moonbows, Halos, Coronas, and Parselenes, now displayed in the main Moon Phase popup and 7-day forecast expanded views (including explicit "Unlikely" messaging when conditions are unfavorable).
+* Enhanced Event Badging: Added dedicated badges for Penumbral, Partial, and Total eclipses, as well as Micromoons and Syzygy. Fixed Syzygy badge contrast for universal theme visibility.
+* Vector Icon Correction: Swapped and corrected the path data for `ic_moon_new.xml` and `ic_moon_full.xml` to accurately represent their respective lunar phases.
+* Theming & Navigation Fixes: Replaced the native `DatePickerDialog` with `MaterialDatePicker` to ensure instant, dynamic theme color updates without requiring an app restart. Removed redundant calendar navigation buttons.
+* Highlighting Parity: Fixed the "Today" cell highlighting in the Lunar Calendar to use solid, opaque colors, perfectly matching the visual rendering of the 7-day and hourly forecasts.
+* Settings Cleanup: Resolved the duplicate "Speed 1" entry in the Volume Key Date Cycling settings, enforcing a strict 1–7 sequence with improved, localized descriptions.
+* Date Formatting: Ensured the year is explicitly displayed in the Special Events view to prevent ambiguity across the 3-year forecast range.
+* Mathematical Verification: Audited and confirmed the Blood Moon (Total Lunar Eclipse) calculation logic strictly adheres to Jean Meeus Chapter 55 standards (`umbralMagnitude >= 1.0`).
+
+
+---------------
+Changelog 0.6.0VC20 - 2026/10/13
+---------------
+* Open-sourced the complete application under the GNU GPLv3 license, ensuring long-term transparency and privacy.
+* Overhauled the solar and lunar calculation engines (17-module remediation) for almanac-grade astronomical accuracy.
+* Integrated official Espenak/Meeus Delta T polynomials and Meeus Chapter 49 quarter-phase corrections.
+* Corrected atmospheric refraction physics and integrated exact geometric horizon dip for high-altitude sunrise/sunset times.
+* Upgraded topocentric math and eradicated negative-epoch bugs, ensuring flawless calculations at the poles and for dates prior to 1970.
+* Rebuilt the solar timeline engine to dynamically handle polar latitudes (Midnight Sun and Polar Night) without UI placeholders.
+* Expanded the automated test suite to 140 tests to guarantee mathematical rigor and long-term numerical stability.
+* Added a "Cached Data" inspector in settings to view all locally stored weather files and clear the cache with one tap.
+* Tapping the main weather hero card now displays a popup showing the exact time the forecast was cached and the active model source.
+* Fixed the Alert Log to correctly retain and display test alerts and historical CAP entries without background pruning.
+* Added an in-app Diagnostic Logs screen and internal event logger for advanced troubleshooting and support.
+* Added a one-tap "Delete local app data" control in settings for a complete reset of app preferences.
+* Reorganized the System settings menu alphabetically and moved "Menu Organization" to the top level for easier access.
+* Unified all in-app popups and dialogs with 16dp rounded corners and full BoutiqueThemeEngine color integration.
+* Fixed full-screen dialog layouts to properly respect the system status bar area.
+* minSdk changed; 32 -> 33
+* Renamed the mislabeled System screen cell and settings header from "7-Day Forecast Placement" to "Location Tabs"; the genuine 7-day placement control remains exclusively in Menu Organization.
+* Removed the Default Location cell from Drawer > System; underlying preference logic and remaining entry points untouched.
+* 7-day forecast now displays wind direction alongside wind speed via the shared UnitUtils.formatWindSpeed formatter ("X km/h D" / "X mph D" in both unit systems), backed by wind_direction_10m_dominant.
+* Location search dialog text (header title and description, input text, hint, box stroke, start/end icons, empty state, and result-row primary/secondary lines) now bound programmatically to BoutiqueThemeEngine palette tokens, restoring legibility across all dark themes.
+
+---------------
+Changelog 0.5.2VC18 - 2026/10/08
+---------------
+* Localization files created
+* DEX code optimization
+* User manual added
+
+---------------
+Changelog 0.5.1VC17 - 2026/10/08
+---------------
+* Fixed current weather/weather title on launch
+* Fixed 7-day forecast when it displays
+* Fixed True Dark Sky icons
+* Night Visibility Forecast now highlights current stage of the night
+* Added option to move 7-day forecast to the drop down menu
+* Added toggle to allow 7-day forecast to default to menu behaviour or old behaviour
+* Added ability to organize drop down menu
+* Added ability to change default load page
+* Added ability to enable/disable menu pages in drow down menu
+
+---------------
+Changelog 0.5.0VC16 - 2026/10/07
+---------------
+* Added True Dark Sky, Night Visibility, and Solunar Activity forecasts
+
+---------------
+Changelog 0.4.8VC15 - 2026/10/07
+---------------
+* Added alert log history
+* Cleaned and hardened compilation tests
+
+---------------
+Changelog 0.4.7VC14 - 2026/10/06
+---------------
+* Added "Feels like" temperature
+* Fixed main page cells text alignment
+* Back button takes you to main weather
+* Fixed asking for permission to send notifications every update
+* Changed initial startup, no longer full-screen asks you for a location
+* Fixed alignments on 7-day forecast
+* Long press on location tab will bring up location chooser
+* Changed menu layout
+
+---------------
+Changelog 0.4.6VC13 - 2026/10/03
+---------------
+* Audited legacy CAP notification system
+* Fixed in-app CAP notifications
+* Preserved system CAP notifications
+* Fixed About / Privacy Policy / Roadmap / Support links
+
+
+---------------
+Changelog 0.4.5VC12 - 2026/10/01
+---------------
+* Natural light time bands fixed
+* Natural light cell highlighting changed to show all current states
+* Fixed opt-in notifications and weather alerts
 
 ---------------
 Changelog 0.7.0VC26 - 2026/10/22

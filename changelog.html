@@ -285,7 +285,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc26">0.7.0VC26 (Latest)</a></li>
+          <li><a href="#vc27">0.8.0VC27 (Latest)</a></li>
+          <li><a href="#vc26">0.7.0VC26</a></li>
           <li><a href="#vc25">0.6.5VC25</a></li>
           <li><a href="#vc24">0.6.4VC24</a></li>
           <li><a href="#vc23">0.6.3VC23</a></li>
@@ -339,11 +340,58 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc27" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.8.0VC27
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released October 29, 2026</p>
+        <h3>Added</h3>
+        <ul class="change-list added">
+          <li>Added daily precipitation totals (rain, snow, sum) and maximum probability to the 7-day expanded forecast details.</li>
+          <li>Added strict AppWidgetManager ID ownership and tab-index bounds checking to all widget receivers to reject malformed intents.</li>
+          <li>Added explicit <code>cleanup()</code> lifecycle methods to <code>SettingsDialogManager</code>, <code>WeatherDisplayManager</code>, and <code>AstronomyDisplayManager</code> to prevent <code>WindowManager</code> leaks and handler runaways on Activity destruction.</li>
+          <li>Expanded the automated test suite from 178 to 216 passing tests, achieving comprehensive coverage of the forecast, widget, and alert delivery pipelines.</li>
+          <li>Added extensive regression tests for alert polygon boundary math, consent gates, provider failure isolation, and cache corruption recovery.</li>
+          <li>Centralized dialog edge-to-edge configuration and 4-side inset padding into a single <code>SystemBarContrastHelper</code> utility, automatically applied to all tracked settings dialogs and explicitly applied to all standalone alerts/pickers.</li>
+          <li>Installed a mechanical <code>verifyEdgeToEdge</code> Gradle build gate that scans source code for forbidden deprecated window APIs, permanently preventing Play Store edge-to-edge regressions in future releases.</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul class="change-list changed">
+          <li>Wired test alert injection paths (ECCC and EU harnesses) into the Alert Log repository for accurate diagnostic history.</li>
+          <li>Dynamically generated bounding boxes for EU test fixtures to ensure they correctly match any target European location tab.</li>
+          <li>Applied WorkManager constraints (<code>NetworkType.CONNECTED</code>, <code>BatteryNotLow</code>) to the periodic <code>WidgetSyncWorker</code> to prevent unnecessary background wakeups and battery drain.</li>
+          <li>Implemented a process-wide <code>synchronized</code> lock in <code>LocationPreferences</code> to eliminate race conditions where the main app and widget sync workers could overwrite each other's saved locations.</li>
+          <li>Wrapped <code>AlertLogRepository</code> read-modify-write operations in a coroutine <code>Mutex</code> to prevent concurrent alert history corruption.</li>
+          <li>Capped the persistent forecast disk cache at 50 entries with automatic FIFO eviction of the oldest data to prevent unbounded SharedPreferences growth.</li>
+          <li>Hard-capped the volume-key rapid-cycle date loop at 10 seconds and added an <code>onPause</code> lifecycle observer to guarantee termination if the app is backgrounded while a key is held.</li>
+          <li>Purged dead code: deleted obsolete name-keyed alert dismissal functions and two orphaned layout XML files.</li>
+          <li>Converted all blocking network calls (<code>call.execute()</code>) to non-blocking, coroutine-friendly <code>call.enqueue()</code> wrappers across the weather repository, alert providers, and settings HTML fetches, freeing up IO threads and improving cancellation behavior.</li>
+          <li>Implemented in-flight network request deduplication in <code>WeatherRepository</code> using a <code>ConcurrentHashMap</code> of <code>Deferred</code> values to prevent duplicate API calls when the app and widget sync simultaneously.</li>
+          <li>Synchronized the system night-mode state immediately when switching boutique themes, preventing stale <code>values-night</code> resource resolution until the next app launch.</li>
+        </ul>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Hardened the CAP-CP XML parser against XXE and OOM attacks by disabling DTD processing and enforcing a 5MB byte ceiling.</li>
+          <li>Restricted in-app WebView navigation strictly to the <code>weatherapplibre.ca</code> allowlist; external links now launch in the system browser.</li>
+          <li>Gated the test-alert injection menu behind <code>BuildConfig.DEBUG</code> to prevent end-user access in production builds.</li>
+          <li>Replaced fragile string-matching for test alerts with a typed <code>isTest</code> boolean in the alert banner manager.</li>
+          <li>Added a fail-fast guard for the MeteoGate API key to prevent silent EU alert fetch failures.</li>
+          <li>Protected 4 Gson-serialized almanac classes with <code>@Keep</code> annotations to ensure survival through R8 minification.</li>
+          <li>Documented the intentional release signing fallback (debug key) in the build script to prevent future CI/CD confusion.</li>
+          <li>Corrected the legacy 2x2 widget receiver and manifest metadata to accurately reflect its true 2x1 layout dimensions.</li>
+          <li>Fixed a UX quirk where the live header clock would stall during network fetches; the update heartbeat now survives timezone resolution delays.</li>
+          <li>Verified and confirmed all display-layer array indexing is safely bounds-guarded and null-safe against truncated provider responses.</li>
+          <li>Eliminated a redundant double-save and double-fetch cycle during location tab initialization.</li>
+          <li>Added a <code>1e-9</code> epsilon tolerance to the alert polygon edge-matching algorithm, ensuring locations exactly on a polygon boundary (or within floating-point ULP noise) are correctly included, matching the inclusive semantics of circular alert zones.</li>
+        </ul>
+      </section>
+
       <section id="vc26" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.7.0VC26
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 22, 2026</p>
         <h3>Added</h3>
