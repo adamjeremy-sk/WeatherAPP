@@ -451,10 +451,17 @@ class MainActivity : AppCompatActivity() {
         })
 
         val activeIndex = locationPreferences.getActiveTabIndex().coerceIn(0, tabCount - 1)
-        binding.tabLayoutLocations.getTabAt(activeIndex)?.select()
+        val activeTab = binding.tabLayoutLocations.getTabAt(activeIndex)
+        val wasAlreadySelected = activeTab?.isSelected == true
+        activeTab?.select()
+        if (wasAlreadySelected) {
+            // select() on an already-selected tab is a no-op and does not fire onTabSelected,
+            // so load the data here. Otherwise onTabSelected already called loadTabData()
+            // and calling it again would double-save the active tab index and double-fetch.
+            loadTabData(activeIndex)
+        }
 
         updateStickyTabsPosition()
-        loadTabData(activeIndex)
     }
 
     fun updateActiveTabCity(location: LocationItem) {

@@ -88,8 +88,11 @@ object AlertMatcher {
             val xj = polygon[j].first
             val yj = polygon[j].second
 
+            // Inclusive crossing test with a 1e-9 epsilon so points exactly on the polygon
+            // edge (or within floating-point ULP noise of it) count as inside, matching the
+            // inclusive (<=) semantics of the circle rule.
             val intersect = ((yi > lon) != (yj > lon)) &&
-                    (lat < (xj - xi) * (lon - yi) / (yj - yi) + xi)
+                    (lat <= (xj - xi) * (lon - yi) / (yj - yi) + xi + 1e-9)
             if (intersect) inside = !inside
             j = i
         }

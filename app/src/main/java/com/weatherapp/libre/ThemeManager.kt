@@ -374,6 +374,21 @@ class ThemeManager(
                 card.setOnClickListener {
                     if (dialogBinding.switchSystemDefault.isChecked) return@setOnClickListener
                     locationPreferences.saveThemeMode(mode)
+                    // Sync the AppCompat night mode with the theme's polarity (same mapping as
+                    // MainActivity.onCreate) so dialogs/widgets resolve the correct values-night
+                    // resources immediately instead of waiting for the next app launch.
+                    val nightMode = when (mode) {
+                        LocationPreferences.THEME_LIGHT, LocationPreferences.THEME_CREMA,
+                        LocationPreferences.THEME_TERRACOTTA, LocationPreferences.THEME_FROST,
+                        LocationPreferences.THEME_ORANGE_GROVE, LocationPreferences.THEME_FRUTIGER_AERO ->
+                            AppCompatDelegate.MODE_NIGHT_NO
+                        LocationPreferences.THEME_DARK, LocationPreferences.THEME_CHARCOAL,
+                        LocationPreferences.THEME_COBALT, LocationPreferences.THEME_JADE,
+                        LocationPreferences.THEME_AURORA, LocationPreferences.THEME_HARDY_HERON ->
+                            AppCompatDelegate.MODE_NIGHT_YES
+                        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    }
+                    AppCompatDelegate.setDefaultNightMode(nightMode)
                     WidgetSyncWorker.notifyWidgetsThemeChanged(activity)
                     applyTheme(mode)
                     dialog.dismiss()
