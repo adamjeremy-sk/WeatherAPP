@@ -492,7 +492,6 @@ class AstronomyDisplayManager(
                     dialog.dismiss()
                 }
                 .create()
-            SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
             dialog.show()
         }
 
@@ -514,7 +513,6 @@ class AstronomyDisplayManager(
                         dialog.dismiss()
                     }
                     .create()
-                SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
                 dialog.show()
             }
         }
@@ -668,7 +666,6 @@ class AstronomyDisplayManager(
                 dialog.dismiss()
             }
             .create()
-        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.show()
     }
 

@@ -317,7 +317,6 @@ class MainActivity : AppCompatActivity() {
                 currDate.monthValue - 1,
                 currDate.dayOfMonth
             )
-            SystemBarContrastHelper.applyDialogEdgeToEdge(datePickerDialog)
             datePickerDialog.show()
         }
 

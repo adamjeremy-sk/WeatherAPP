@@ -84,7 +84,6 @@ class AppUpdateManager(
                 dialog.dismiss()
             }
             .create()
-        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.show()
     }
 
@@ -98,7 +97,6 @@ class AppUpdateManager(
                 dialog.dismiss()
             }
             .create()
-        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.show()
     }
 
@@ -116,7 +114,6 @@ class AppUpdateManager(
                 dialog.dismiss()
             }
             .create()
-        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.show()
     }
 
@@ -139,7 +136,6 @@ class AppUpdateManager(
                 dialog.dismiss()
             }
             .create()
-        SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
         dialog.show()
     }
 

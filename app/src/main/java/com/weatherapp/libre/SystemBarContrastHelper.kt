@@ -12,6 +12,15 @@ object SystemBarContrastHelper {
 
     @JvmStatic
     fun applyDialogEdgeToEdge(dialog: Dialog) {
+        // Defensive guard: Edge-to-edge system bar insets corrupt the measure/positioning 
+        // of wrap_content floating dialogs. Only apply to fullscreen dialogs.
+        if (dialog is androidx.appcompat.app.AlertDialog ||
+            dialog is android.app.AlertDialog ||
+            dialog is com.google.android.material.bottomsheet.BottomSheetDialog ||
+            dialog is android.app.DatePickerDialog) {
+            return
+        }
+
         val window = dialog.window ?: return
         WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->

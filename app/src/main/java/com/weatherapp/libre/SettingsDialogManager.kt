@@ -1566,7 +1566,6 @@ class SettingsDialogManager(
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .create()
-            SystemBarContrastHelper.applyDialogEdgeToEdge(dialog)
             dialog.show()
         }
 
