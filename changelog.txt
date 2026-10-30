@@ -1,4 +1,9 @@
 ---------------
+Changelog 0.8.1VC28 - 2026/10/29
+---------------
+* Fixed a layout regression where small floating confirmation dialogs (like the lunar cache generator prompt) were rendered off-screen due to over-aggressive Android 15 edge-to-edge system bar enforcement. Floating dialogs now correctly bypass the fullscreen edge-to-edge helper.
+
+---------------
 Changelog 0.8.0VC27 - 2026/10/29
 ---------------
 * Security & Release Hardening:
