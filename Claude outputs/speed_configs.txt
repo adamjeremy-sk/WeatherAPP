@@ -1,0 +1,23 @@
+# Speed sweep round 2 — one per line:  name | flags | note
+# Flags change qwen-server's own lines:  --flag=value replaces (or adds) that flag,  --flag=DEL removes it.
+# Anything not listed stays exactly as in your qwen-server.
+# A config whose flag this llama.cpp build doesn't know is skipped and reported, not run.
+# The first line is the reference everything is compared against.
+#
+# Round 1 (2026-11-04) settled: f16 KV (spills out of VRAM, -72%), -ub 1024/2048 (no gain),
+# min-p 0.05 (no speed effect), N=8 (slow even with p-min), p-min 0.3/0.5/0.9 (worse). Not repeated.
+# Round 2 focuses on long context (agent-like) and two untested ideas: probabilistic drafting and n-gram copying.
+
+base_n5            | --spec-draft-n-max=5                                        | reference: your current setting
+n4                 | --spec-draft-n-max=4                                        | round-1 tie with 5; prose favours 4
+n6                 | --spec-draft-n-max=6                                        | long context has a higher fixed cost per check, may favour longer drafts
+n7                 | --spec-draft-n-max=7                                        | same question, no early stop
+n7_pmin0.6         | --spec-draft-n-max=7 --spec-draft-p-min=0.6                 | bracket round-1 winner at long context (0.7)
+n7_pmin0.7         | --spec-draft-n-max=7 --spec-draft-p-min=0.7                 | round-1: +9% long context, -3% short (3 runs only: confirm)
+n7_pmin0.8         | --spec-draft-n-max=7 --spec-draft-p-min=0.8                 | bracket round-1 winner
+n6_pmin0.7         | --spec-draft-n-max=6 --spec-draft-p-min=0.7                 | same early stop, one shorter maximum
+n5_prob            | --spec-draft-n-max=5 --spec-draft-sampling=probabilistic    | draft by sampling instead of argmax: may raise acceptance at temp 0.7
+n7_pmin0.7_prob    | --spec-draft-n-max=7 --spec-draft-p-min=0.7 --spec-draft-sampling=probabilistic | both ideas together
+n5_mtp_ngram       | --spec-draft-n-max=5 --spec-type=draft-mtp,ngram-mod        | add n-gram copying from the prompt (edits reuse existing code)
+n7_pmin0.7_ngram   | --spec-draft-n-max=7 --spec-draft-p-min=0.7 --spec-type=draft-mtp,ngram-mod | n-gram copying + round-1 winner
+base_n5_end        | --spec-draft-n-max=5                                        | reference again: detects drift
