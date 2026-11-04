@@ -97,7 +97,10 @@ class AlertSyncWorker(
                     is AlertFetchResult.Success -> {
                         GlobalAlertCache.writeAlertsForLocation(appContext, loc, result.alerts)
 
-                        val newAlerts = result.alerts.filter { !previousIds.contains(it.id) }
+                        // Reconciled cache is the source of truth: superseded Alerts and Cancels
+                        // are dropped by reconcile(), so only the surviving, net-new entries notify.
+                        val currentAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)
+                        val newAlerts = currentAlerts.filter { !previousIds.contains(it.id) }
                         for (newAlert in newAlerts) {
                             com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
                                 context = appContext,

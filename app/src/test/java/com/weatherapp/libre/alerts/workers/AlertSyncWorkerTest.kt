@@ -6,6 +6,7 @@ import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.LocationPreferences
+import com.weatherapp.libre.alerts.AlertLogEntry
 import com.weatherapp.libre.alerts.AlertLogRepository
 import com.weatherapp.libre.alerts.cache.GlobalAlertCache
 import com.weatherapp.libre.alerts.models.AlertFetchResult
@@ -201,5 +202,149 @@ class AlertSyncWorkerTest {
         val entries = AlertLogRepository.getAllEntries(context)
         assertEquals("Only the new alert must be logged (dedup)", 1, entries.size)
         assertEquals("Tornado Warning", entries.first().alertEvent)
+    }
+
+    // ---------------------------------------------------------------------
+    // Repeated alert notifications (Step 2): the worker must notify only
+    // alerts that are net-new in the reconciled cache. Superseded Alerts and
+    // Cancels returned by the provider on every sync must NOT be re-notified
+    // or re-logged, and a Cancel must drop its whole chain from the cache.
+    // ---------------------------------------------------------------------
+
+    /** Builds a [UnifiedAlert] with explicit msgType, references and sent timestamp. */
+    private fun fogAlert(
+        id: String,
+        msgType: String,
+        references: List<String>,
+        sent: String,
+        event: String = "Dense Fog Advisory"
+    ): UnifiedAlert =
+        UnifiedAlert(
+            id = id,
+            source = AlertSource.ECCC,
+            locationLat = toronto.latitude,
+            locationLon = toronto.longitude,
+            severity = AlertSeverity.ORANGE,
+            eventNative = event,
+            headline = event,
+            description = "desc $id",
+            instruction = null,
+            onset = null,
+            expires = OffsetDateTime.now().plusHours(6).toString(),
+            areaDesc = "Toronto",
+            msgType = msgType,
+            references = references,
+            sent = sent
+        )
+
+    /**
+     * Runs one simulated sync: builds a fresh [FakeProvider] (fixed result) and worker,
+     * invokes doWork(), and returns the log entries and cached alert ids afterwards.
+     */
+    private fun runSync(alerts: List<UnifiedAlert>): Pair<List<AlertLogEntry>, List<String>> =
+        runBlocking {
+            val provider = FakeProvider(AlertFetchResult.Success(alerts))
+            val worker = buildWorker(provider)
+            worker.doWork()
+            AlertLogRepository.getAllEntries(context) to GlobalAlertCache.readAlertsForLocation(context, toronto).map { it.id }
+        }
+
+    @Test
+    fun testFogChainForwardOrder_notifiesOnlyNetNew() {
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z")
+        val c = fogAlert("fog-C", "Cancel", listOf("fog-A"), "2024-01-01T02:00:00Z")
+
+        runSync(listOf(a))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u, c))
+        runSync(listOf(a, u, c))
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        assertEquals("Fog chain must log exactly 2 entries (A once, U once)", 2, entries.size)
+        assertEquals("The surviving Update must be logged", "Dense Fog Advisory", entries.first().alertEvent)
+        assertEquals("The original Alert must be logged", "Dense Fog Advisory", entries.last().alertEvent)
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
+        assertEquals("A Cancel must drop the whole chain, leaving an empty cache", 0, cached.size)
+    }
+
+    @Test
+    fun testFogChainReversedOrder_notifiesOnlyNetNew() {
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z")
+        val c = fogAlert("fog-C", "Cancel", listOf("fog-A"), "2024-01-01T02:00:00Z")
+
+        // Same chain, each provider list reversed. Reconcile is order-independent.
+        runSync(listOf(u, a))
+        runSync(listOf(u, a))
+        runSync(listOf(u, a))
+        runSync(listOf(u, a))
+        runSync(listOf(c, u, a))
+        runSync(listOf(c, u, a))
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        // Reconcile picks the latest-sent survivor (U), so A is superseded on the very
+        // first sync and never becomes a survivor; only U is logged. Order of the provider
+        // list does not change this, unlike the forward case where sync 1 is [A] alone.
+        assertEquals("Reversed fog chain must log exactly 1 entry (only the surviving Update)", 1, entries.size)
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
+        assertEquals("A Cancel must drop the whole chain, leaving an empty cache", 0, cached.size)
+    }
+
+    @Test
+    fun testFogChainSteadyState_notifiesOnlyNetNew() {
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z")
+
+        // Steady state: the surviving Update is net-new on the first sync, then stable.
+        runSync(listOf(a, u))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u))
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        // Reconcile picks the latest-sent survivor (U) on the first sync, so A is never a
+        // survivor and only U is logged; repeated [A, U] syncs add nothing.
+        assertEquals("Steady-state fog chain must log exactly 1 entry (only the surviving Update)", 1, entries.size)
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
+        assertEquals("The surviving Update must remain cached", 1, cached.size)
+        assertEquals("fog-U", cached.first().id)
+    }
+
+    @Test
+    fun testUnrelatedNewAlertIsLoggedOnce() {
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z")
+        val b = fogAlert("tornado-B", "Alert", emptyList(), "2024-01-01T03:00:00Z", event = "Tornado Warning")
+
+        // First two syncs of the fog chain, then an unrelated new alert B arrives.
+        runSync(listOf(a))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u, b))
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        assertEquals("Fog chain plus an unrelated new alert must log exactly 3 entries", 3, entries.size)
+        assertEquals("The unrelated new alert B must be logged exactly once", 1, entries.count { it.alertEvent == "Tornado Warning" })
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
+        val cachedIds = cached.map { it.id }.toSet()
+        assertTrue("The unrelated new alert B must be cached", cachedIds.contains("tornado-B"))
+        assertEquals("The surviving Update must remain cached", 1, cached.count { it.id == "fog-U" })
     }
 }
