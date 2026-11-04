@@ -9,8 +9,8 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 | Repo HEAD at update | 3d49db1 "Fixed markdown files" (orchestration docs committed at repo root; .gitignore entries removed). Committed HANDOFF.md is STALE (mid-baseline version) — replace with this copy. |
 | Tests | 222 after Step 1 (216 + 6), uncommitted until Adam commits Step 1 |
 | Active task | Repeated alert notifications (fog advisory re-notified every sync). Root cause: worker treats IDs pruned by reconcile() (superseded Alerts, Cancels) as new each sync, because EcccProvider re-returns the full 24 h CAP history. Also: Cancel referencing only the original left the Update in cache (banner showed cancelled alert). |
-| Gate position | Step 0 PASS WITH NOTES; Step 1 (chain-aware order-independent reconcile, union-find, latest-sent winner, Cancel drops chain) PASS WITH NOTES. Step 2 (worker notifies only net-new entries of reconciled cache) issued. Step 3 pending: stable per-chain notification ID; Updates replace, Cancels clear. |
-| Awaiting | Adam: commit Step 1; run Step 2 prompt; answer Step 3 decision (Update to active alert: silent replace [recommended, buzz only on severity increase] vs buzz again). |
+| Gate position | Step 0, 1, 2 PASS WITH NOTES (226/226). Step 3 split: 3a = UnifiedAlert.chainKey + reconcile carries chainKey + legacy-null normalization on cache read (issued); 3b = worker silent-update/severity-escalation/cancel-dismiss + helper notification ID per chain+location. Then collateral (changelog/manual). |
+| Awaiting | Adam: commit Step 2, push (orchestrator has not yet verified Steps 1–2 in the repo), run Step 3a prompt. |
 | Last prompt issued | Step 2 prompt (see this chat; worker: read cache after write, notify ids not in previousIds; tests in AlertSyncWorkerTest using a new FakeProvider per sync). Re-issue from the Step 2 spec if lost. |
 | Next action | Audit Step 2 output; then issue Step 3 once Adam decides; final step = build + full tests + changelog/manual collateral (rail 9). Verify Step 1/2 code against the repo after Adam pushes. |
 | Agent / runtime | Qwen3.8-27B only (Gemma retired). Harness: Android Studio built-in Agent tab (Cline dropped 2026-11-03). llama.cpp prebuilt Vulkan binary, `qwen-server` (--device Vulkan0, KV q8_0/q8_0, -c 131072, -n 8192, MTP draft). |
@@ -34,6 +34,11 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 - 2026-11-03 — (Adam) Cline dropped; coding agent now runs in Android Studio's built-in Agent tab. Agent is cleared between steps: every prompt is a fresh prompt (mandatory AGENTS.md block + Last verified line). Adam commits each passed step before the next prompt so the fresh agent sees a clean tree.
 
 - 2026-11-03 — AGENTS.md change (e): Bazzite-era symlink/relative-path rules removed. Harness precedence added (Android Studio Agent's tool rules decide HOW to read/edit; AGENTS.md decides WHAT and evidence). Edit proof = raw `git diff`; line numbers from grep -n / diff hunks / IDE tool. Shell limited to git, grep, ./gradlew. ARCHITECTURE.md path convention updated to match. Current = (a)–(e).
+
+- 2026-11-03 — (Adam) Alert Updates to an active alert replace the notification silently; re-alert (sound) only when severity increases. Cancel/expiry clears the notification.
+
+- 2026-11-03 — (Adam) The ">5 files → plan first" limit was a legacy constraint from Alibaba's Qwen chat interface; removed. AGENTS.md change (f): rule 10 now only gates AlertProvider-interface and SharedPreferences-schema changes. Gates are still kept small for the local agent's sake. Current = (a)–(f).
+
 
 ## 2b. Coding Agent Profiles  *(edit as evidence accumulates)*
 **Agent A: Gemma 4 26B-A4B — RETIRED 2026-11-03 (Adam: never use). Profile kept for history only.**
@@ -79,7 +84,9 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 ### 2026-11-03 (late evening) — Alert re-notification fix
 - Readback: HEAD 3d49db1 (docs committed; repo HANDOFF.md stale).
 - Diagnosed repeated fog notifications (see §1). Step 0 PASS WITH NOTES (raw block elided with "..."; trace missed the active-advisory [A,U] case). Step 1 PASS WITH NOTES (no line numbers on quoted code; same-sent same-type tie is order-dependent — add id tie-break if touched again).
-- Adam moved from Cline to Android Studio's Agent tab.
+- Adam moved from Cline to Android Studio's Agent tab. AGENTS.md change (e).
+- Step 2: my spec for tests (b)/(c) was wrong (expected 2, correct 1); agent caught it and stopped — good behaviour. Qwen again put "..." inside a raw block (test totals) — recurring rule 12 breach.
+- Found latent risk: Gson leaves non-null Kotlin fields (msgType, references) null for legacy cache JSON → possible NPE in new reconcile; fixed in 3a.
 ### 2026-11-03 (evening) — Runtime tuning, ROCm trial, handoff
 - Confirmed llama.cpp runs on Vulkan (RADV); iGPU visible as Vulkan1 → all scripts pin `--device Vulkan0`.
 - Installed ROCm (--no-dkms) + HIP build; same-commit llama-bench: ROCm +20% prompt processing, Vulkan +6% generation. Adam chose Vulkan; ROCm build and packages uninstalled (Adam also running apt autoremove; told to keep python3-pip/pkg-config if he uses them, and to verify `llama server --list-devices` still shows the 7900 XTX).

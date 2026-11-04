@@ -8,7 +8,7 @@
 7. Identity stability: never rename constants, preference keys, view IDs, or wiring names when display text changes.
 8. UI rails: all colors flow from theme-engine palette tokens (no hex in views/adapters/drawables); enableEdgeToEdge + four-side insets on every Activity and full-screen dialog (via SystemBarContrastHelper; small floating dialogs are exempt); no bottom sheets.
 9. Concurrency: coroutines + WorkManager only; never runBlocking on the main thread; rethrow CancellationException; no blocking call.execute().
-10. If a task needs >5 files, or touches the AlertProvider interface or the SharedPreferences schema, stop and propose a plan first.
+10. If a task touches the AlertProvider interface or the SharedPreferences schema (new or renamed keys or prefs files), stop and propose a plan first. There is no file-count limit.
 11. Verify before reporting: ./gradlew :app:testDebugUnitTest must pass fully (a falling test count is a defect) and :app:assembleDebug must succeed.
 12. Evidence: verbatim quoted code for every edit, an edited-file manifest, and grep proofs for all deletion/absence claims. In addition:
     - Every count or list shows the exact command AND its raw output in a code block (trim to 40 lines max and say how many lines were trimmed). A conclusion without its raw output is treated as unverified.
