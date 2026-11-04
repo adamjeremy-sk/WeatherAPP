@@ -58,28 +58,80 @@ object GlobalAlertCache {
         existingAlerts: List<UnifiedAlert>,
         newAlerts: List<UnifiedAlert>
     ): List<UnifiedAlert> {
-        val resultMap = existingAlerts.associateBy { it.id }.toMutableMap()
+        // 1. Pool = existing + new, de-duplicated by id (a duplicate id keeps the newAlerts copy).
+        val poolById = LinkedHashMap<String, UnifiedAlert>()
+        for (alert in existingAlerts) poolById[alert.id] = alert
+        for (alert in newAlerts) poolById[alert.id] = alert
+        val pool = poolById.values.toList()
+        if (pool.isEmpty()) return emptyList()
 
-        for (newAlert in newAlerts) {
-            when (newAlert.msgType.lowercase(Locale.US)) {
-                "cancel" -> {
-                    // Remove this alert and any alerts it references
-                    resultMap.remove(newAlert.id)
-                    newAlert.references.forEach { refId -> resultMap.remove(refId) }
-                }
-                "update" -> {
-                    // Replace referenced alerts with this new alert
-                    newAlert.references.forEach { refId -> resultMap.remove(refId) }
-                    resultMap[newAlert.id] = newAlert
-                }
-                else -> {
-                    // Alert, Error, etc. - add or replace
-                    resultMap[newAlert.id] = newAlert
-                }
+        // 2. Union-find over pool ids plus every referenced id. Referenced ids that are not
+        //    present in the pool still act as nodes, so two messages that reference the same
+        //    absent original land in the same chain.
+        val parent = HashMap<String, String>()
+        fun find(node: String): String {
+            var root = node
+            while (true) {
+                val rootParent = parent[root]
+                if (rootParent == null || rootParent == root) return root
+                root = rootParent
             }
         }
+        fun union(a: String, b: String) {
+            parent.putIfAbsent(a, a)
+            parent.putIfAbsent(b, b)
+            val rootA = find(a)
+            val rootB = find(b)
+            if (rootA != rootB) parent[rootA] = rootB
+        }
+        for (alert in pool) {
+            parent.putIfAbsent(alert.id, alert.id)
+            for (refId in alert.references) union(alert.id, refId)
+        }
 
-        return resultMap.values.toList()
+        val chains = HashMap<String, MutableList<UnifiedAlert>>()
+        for (alert in pool) {
+            chains.getOrPut(find(alert.id)) { mutableListOf() }.add(alert)
+        }
+
+        // 3-5. Pick the winner per chain; drop the whole chain when the winner is a Cancel.
+        val kept = mutableListOf<UnifiedAlert>()
+        for (chain in chains.values) {
+            val winner = chain.maxWith { a, b -> compareChainWinners(a, b) }
+            if (winner.msgType.equals("cancel", ignoreCase = true)) continue
+            kept.add(winner)
+        }
+        return kept
+    }
+
+    private fun sentEpochMillis(alert: UnifiedAlert): Long? {
+        val sent = alert.sent ?: return null
+        return try {
+            OffsetDateTime.parse(sent).toInstant().toEpochMilli()
+        } catch (_: Exception) {
+            try {
+                Instant.parse(sent).toEpochMilli()
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    private fun msgTypeRank(alert: UnifiedAlert): Int {
+        return when (alert.msgType.lowercase(Locale.US)) {
+            "cancel" -> 2
+            "update" -> 1
+            else -> 0
+        }
+    }
+
+    private fun compareChainWinners(a: UnifiedAlert, b: UnifiedAlert): Int {
+        val aSent = sentEpochMillis(a)
+        val bSent = sentEpochMillis(b)
+        if (aSent != null && bSent != null && aSent != bSent) {
+            return aSent.compareTo(bSent)
+        }
+        return msgTypeRank(a).compareTo(msgTypeRank(b))
     }
 
     private fun isAlertActive(expiresStr: String?, now: Instant): Boolean {

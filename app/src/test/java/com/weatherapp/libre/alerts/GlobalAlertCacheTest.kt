@@ -431,4 +431,125 @@ class GlobalAlertCacheTest {
 
         assertTrue(cached.isEmpty())
     }
+
+    // ---------------------------------------------------------------------
+    // Chain-aware, order-independent reconcile (STEP 1)
+    // ---------------------------------------------------------------------
+
+    private fun makeAlert(
+        id: String,
+        event: String,
+        msgType: String = "Alert",
+        references: List<String> = emptyList(),
+        sent: String? = null
+    ): UnifiedAlert = UnifiedAlert(
+        id = id,
+        source = AlertSource.ECCC,
+        locationLat = testLocation.latitude,
+        locationLon = testLocation.longitude,
+        severity = AlertSeverity.ORANGE,
+        eventNative = event,
+        headline = event,
+        description = null,
+        instruction = null,
+        onset = null,
+        expires = OffsetDateTime.now().plusHours(6).toString(),
+        areaDesc = "Winnipeg",
+        msgType = msgType,
+        references = references,
+        sent = sent
+    )
+
+    @Test
+    fun testChainReconcileAlertAndUpdateBothOrders() {
+        val a = makeAlert("a-1", "Fog Advisory", msgType = "Alert")
+        val u = makeAlert("u-1", "Fog Advisory", msgType = "Update", references = listOf("a-1"))
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u))
+        var cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u-1", cached[0].id)
+
+        val context2 = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context2, testLocation, listOf(u, a))
+        cached = GlobalAlertCache.readAlertsForLocation(context2, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u-1", cached[0].id)
+    }
+
+    @Test
+    fun testChainReconcileCacheHoldsUpdateThenRewriteAlertAndUpdate() {
+        val a = makeAlert("a-2", "Fog Advisory", msgType = "Alert")
+        val u = makeAlert("u-2", "Fog Advisory", msgType = "Update", references = listOf("a-2"))
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(u))
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u))
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u-2", cached[0].id)
+    }
+
+    @Test
+    fun testChainReconcileCancelReferencingOnlyOriginalDropsUpdate() {
+        val a = makeAlert("a-3", "Tornado Warning", msgType = "Alert")
+        val u = makeAlert("u-3", "Tornado Warning", msgType = "Update", references = listOf("a-3"))
+        val c = makeAlert("c-3", "Tornado Warning", msgType = "Cancel", references = listOf("a-3"))
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(u))
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u, c))
+
+        assertTrue(GlobalAlertCache.readAlertsForLocation(context, testLocation).isEmpty())
+    }
+
+    @Test
+    fun testChainReconcileCancelReferencingOnlyOriginalDropsUpdateReversed() {
+        val a = makeAlert("a-4", "Tornado Warning", msgType = "Alert")
+        val u = makeAlert("u-4", "Tornado Warning", msgType = "Update", references = listOf("a-4"))
+        val c = makeAlert("c-4", "Tornado Warning", msgType = "Cancel", references = listOf("a-4"))
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(u))
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(c, u, a))
+
+        assertTrue(GlobalAlertCache.readAlertsForLocation(context, testLocation).isEmpty())
+    }
+
+    @Test
+    fun testChainReconcileFullChainLatestUpdateWinsBothOrders() {
+        val a = makeAlert("a-5", "Severe Thunderstorm", msgType = "Alert")
+        val u1 = makeAlert("u1-5", "Severe Thunderstorm", msgType = "Update", references = listOf("a-5"), sent = "2026-09-30T12:00:00Z")
+        val u2 = makeAlert("u2-5", "Severe Thunderstorm", msgType = "Update", references = listOf("a-5", "u1-5"), sent = "2026-09-30T13:00:00Z")
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u1, u2))
+        var cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u2-5", cached[0].id)
+
+        val context2 = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context2, testLocation, listOf(u2, u1, a))
+        cached = GlobalAlertCache.readAlertsForLocation(context2, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u2-5", cached[0].id)
+    }
+
+    @Test
+    fun testChainReconcileUnrelatedAlertSurvivesCancel() {
+        val a = makeAlert("a-6", "Tornado Warning", msgType = "Alert")
+        val u = makeAlert("u-6", "Tornado Warning", msgType = "Update", references = listOf("a-6"))
+        val c = makeAlert("c-6", "Tornado Warning", msgType = "Cancel", references = listOf("a-6"))
+        val b = makeAlert("b-6", "Winter Storm Warning", msgType = "Alert")
+
+        val context = MockContext()
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(u))
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u, c, b))
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("b-6", cached[0].id)
+    }
 }

@@ -72,7 +72,7 @@ ECCC Datamart: /today/alerts/cap/{YYYYMMDD}/{EEEE}/{hh}/*.cap; SK→CWWG, MB→C
 Strings externalized EN+FR with French typography (space before :;!?»); formatting only via UnitUtils/WeatherCodeUtils.
 Colors only from theme-engine palette tokens; no hex in views/adapters/drawables.
 Edge-to-edge: full-screen dialogs go through SystemBarContrastHelper; small floating dialogs must NOT (0.8.1 regression).
-ALWAYS use project-relative paths for tooling.
+Shell commands run from the project root with relative paths; built-in IDE file tools may use absolute paths inside the project (see AGENTS.md TOOLING).
 
 ## Do not touch
 lunar/, solar/ math cores (verified ≤1 min / ≤1° vs official sources).
