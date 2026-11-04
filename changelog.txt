@@ -1,11 +1,13 @@
 ---------------
-Changelog 0.8.2VC29 - 2026/11/03
+Changelog 0.8.2VC30 - 2026/11/03
 ---------------
 * Fixed repeated weather alert notifications: an alert that was updated or cancelled by the issuing agency was re-notified on every background sync (roughly every 15 minutes), because older versions of the same alert were treated as new.
 * Alert updates now replace the existing notification quietly; your phone alerts again only if the alert's severity increases.
 * Cancelled and expired alerts now clear their notification, and the alert banner no longer shows an alert after it has been cancelled.
 * The Alert Log now records each alert once, instead of once per update or repeat.
 * Hardened the alert cache against entries saved by older versions of the app.
+* Fixed long day names (such as "Wednesday") in the 7-day forecast and times (such as "11:00 PM") in the hourly forecast wrapping onto two lines. Labels now stay on one line and shrink slightly at large font sizes.
+* Fixed extra space above the header on the Data Cache, Cached Data Inspector and Alert Log screens.
 
 ---------------
 Changelog 0.8.1VC28 - 2026/10/29

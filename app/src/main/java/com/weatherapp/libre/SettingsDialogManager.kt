@@ -853,12 +853,6 @@ class SettingsDialogManager(
         }
         dialog.setContentView(cacheSettingsView)
 
-        ViewCompat.setOnApplyWindowInsetsListener(cacheSettingsView) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard
         val headerTitleColor = getAaaTitleColor(headerBg)
@@ -1035,12 +1029,6 @@ class SettingsDialogManager(
             setBackgroundColor(palette.backgroundLight)
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // Header Card
         val cardHeader = MaterialCardView(activity).apply {
             radius = 0f
@@ -1210,12 +1198,6 @@ class SettingsDialogManager(
             setBackgroundColor(palette.backgroundLight)
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // Header Card
         val cardHeader = MaterialCardView(activity).apply {
             radius = 0f
@@ -1350,12 +1332,6 @@ class SettingsDialogManager(
 
     private fun createAlertLogView(dialog: Dialog, onBack: () -> Unit): View {
         val view = activity.layoutInflater.inflate(com.weatherapp.libre.R.layout.dialog_alert_log, null)
-
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val palette = BoutiqueThemeEngine.getThemePalette(locationPreferences.getSavedThemeMode())
         val headerBg = palette.surfaceCard

@@ -28,11 +28,16 @@
             android:paddingHorizontal="14dp"
             android:paddingVertical="8dp">
 
-            <!-- Column 1: Localized Hour Label (Left, Width 54dp) -->
+            <!-- Column 1: Localized Hour Label (Left, Width 72dp) -->
             <TextView
                 android:id="@+id/tvHourlyTime"
-                android:layout_width="54dp"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:autoSizeStepGranularity="1sp"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold"
