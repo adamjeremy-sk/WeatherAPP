@@ -4,7 +4,7 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 ## 1. Current State  *(overwrite every update)*
 | Field | Value |
 |---|---|
-| Updated | 2026-11-03 ~23:25 (session ended by handoff) |
+| Updated | 2026-11-04 ~10:10 (MTP benchmark; app state unchanged) |
 | App version | 0.8.2 (VC30) — committed and pushed; Play upload pending Adam's device check. VC29 = earlier 0.8.1.1 hotfix (skipped in changelog). |
 | Repo HEAD at update | d6477d6 "0.8.2 VC30: fix double insets on cache/alert-log screens, restore single-line forecast labels" (code verified by orchestrator: 0 inset listeners in SettingsDialogManager, 88dp/72dp label columns). Committed ARCHITECTURE.md/HANDOFF.md at d6477d6 are OLDER than the Project copies — commit the Project copies. |
 | Tests | 232 passing |
@@ -60,6 +60,7 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 **Agent B: Qwen3.8-27B — THE coding agent (sole agent since 2026-11-03)**
 - Model: Qwen3.8-27B Q4_K_M GGUF (Abiray), dense hybrid (DeltaNet + attention per Adam's script comment), llama.cpp server (--jinja, reasoning on, budget 2048, reasoning_effort medium, MTP speculative draft n-max 2). Sampling: temp 0.7, top-k 20, top-p 0.80, min-p 0.
 - Server script `qwen-server` (final, 2026-11-03): --device Vulkan0, -c 131072, KV q8_0/q8_0, -n 8192, --cache-reuse 256, --cache-ram 16384, log ~/llama-server-qwen.log. Original had KV q4_0 and no -n cap. Open: check the Qwen3.8 model card for thinking-mode sampling (earlier Qwen3 recommended 0.6/20/0.95 with thinking on).
+- MTP draft benchmark (2026-11-04, mtp_bench.py, 3 prompts × 3 seeded runs via /v1/chat/completions): n-max 2/3/4/5 all ≈ equal — code ~98–110 t/s, prose ~62–64 t/s, acceptance 0.64–0.80 code / 0.35–0.36 prose, all differences <5% (noise). Drafted/generated tokens flat at 1.37–1.43 across all four → raising n-max does not change drafting (cause open: p-min cutoff, MTP head depth, or flag not reaching server; check server log). Keep n-max 2.
 - Port 8080; stop any running server first (`pkill -f llama-server`) or it fails with "couldn't bind HTTP server socket".
 - Capability (Suite v1, 2026-11-03): all gates PASS / PASS WITH NOTES. Strengths: accurate facts and line numbers, no false positives, discloses omissions rather than hiding them, unaltered raw blocks, arithmetic shown, reads enclosing code correctly, volunteers useful architectural observations. Weaknesses: overclaims that paraphrased context was "shown as raw output"; soft classifications (states the failure mode correctly but labels it LEGITIMATE); verbose (more context per gate). No loops observed.
 - Server: revised qwen-server (KV q8_0/q8_0, -n 8192, -c 131072) — confirmed by Adam as the config used for Suite v1.
@@ -90,6 +91,9 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 - Orchestrator cannot build locally (no Android SDK in its workspace) — Adam remains build authority.
 
 ## 4. Session Log  *(newest first, keep 10)*
+### 2026-11-04 (morning) — MTP draft-length benchmark
+- Readback: HEAD 033e1e9 (docs committed; stray .kotlin/sessions/*.salive committed — add `.kotlin/` to .gitignore + `git rm --cached` in next task's commit).
+- Adam tried draft n-max 5. Wrote mtp_bench.py (speed/acceptance, not Suite v1 — spec decoding is verified by the main model, and Suite v1 is pinned to b47934a + AGENTS.md (a)–(d) + Cline, so no longer comparable). Result: n-max 2–5 indistinguishable; drafting volume unchanged. Keep 2. See §2b.
 ### 2026-11-03 (late night) — 0.8.2 VC30 UI fixes, handoff
 - Found the 0.8.1.1 (VC29) label hotfix was never in git (lost to `git restore`); rebuilt it: 7-day day column 68→88dp, hourly time 54→72dp, maxLines=1 + uniform autosize.
 - Double insets: Data Cache, Cached Data Inspector, full-content viewer, Alert Log each re-applied systemBars padding on top of SystemBarContrastHelper's decorView padding → removed the 4 local listeners (24 deletions).
