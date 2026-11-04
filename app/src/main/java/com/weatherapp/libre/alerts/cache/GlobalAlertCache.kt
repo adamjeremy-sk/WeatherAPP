@@ -54,14 +54,25 @@ object GlobalAlertCache {
         return String.format(Locale.US, "global_alerts_loc_%.4f_%.4f", location.latitude, location.longitude)
     }
 
+    /** Stable key for a chain: the alert's own chainKey if present, else its id. */
+    fun chainKeyOf(alert: UnifiedAlert): String = alert.chainKey ?: alert.id
+
     private fun reconcile(
         existingAlerts: List<UnifiedAlert>,
         newAlerts: List<UnifiedAlert>
     ): List<UnifiedAlert> {
-        // 1. Pool = existing + new, de-duplicated by id (a duplicate id keeps the newAlerts copy).
+        // 1. Pool = existing + new, de-duplicated by id (a duplicate id keeps the newAlerts copy,
+        //    preserving any existing non-null chainKey if the new alert has none).
         val poolById = LinkedHashMap<String, UnifiedAlert>()
         for (alert in existingAlerts) poolById[alert.id] = alert
-        for (alert in newAlerts) poolById[alert.id] = alert
+        for (alert in newAlerts) {
+            val existing = poolById[alert.id]
+            if (existing?.chainKey != null && alert.chainKey == null) {
+                poolById[alert.id] = alert.copy(chainKey = existing.chainKey)
+            } else {
+                poolById[alert.id] = alert
+            }
+        }
         val pool = poolById.values.toList()
         if (pool.isEmpty()) return emptyList()
 
@@ -99,7 +110,10 @@ object GlobalAlertCache {
         for (chain in chains.values) {
             val winner = chain.maxWith { a, b -> compareChainWinners(a, b) }
             if (winner.msgType.equals("cancel", ignoreCase = true)) continue
-            kept.add(winner)
+            // Stable chain key: the smallest non-null chainKey among the chain's pool members,
+            // else the winner's id. Stays constant as the winning message changes across Updates.
+            val key = chain.mapNotNull { it.chainKey }.minOrNull() ?: winner.id
+            kept.add(winner.copy(chainKey = key))
         }
         return kept
     }
@@ -174,7 +188,14 @@ object GlobalAlertCache {
             val json = prefs.getString(key, null)
             if (json != null) {
                 val cacheEntry = gson.fromJson(json, CacheEntry::class.java)
-                cacheEntry?.alerts ?: emptyList()
+                val alerts = cacheEntry?.alerts ?: emptyList()
+                // Gson can leave these null for legacy JSON written before the fields existed.
+                alerts.map { alert ->
+                    alert.copy(
+                        msgType = (alert.msgType as String?) ?: "Alert",
+                        references = (alert.references as List<String>?) ?: emptyList()
+                    )
+                }
             } else emptyList()
         } catch (e: Exception) {
             emptyList()

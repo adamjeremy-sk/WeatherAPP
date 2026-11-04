@@ -1,6 +1,5 @@
 package com.weatherapp.libre.alerts
 
-import android.content.Context
 import android.content.ContextWrapper
 import android.content.SharedPreferences
 import com.weatherapp.libre.LocationItem
@@ -551,5 +550,95 @@ class GlobalAlertCacheTest {
         val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
         assertEquals(1, cached.size)
         assertEquals("b-6", cached[0].id)
+    }
+
+    // ---------------------------------------------------------------------
+    // Stable chain key and legacy cache entry safety (STEP 3a)
+    // ---------------------------------------------------------------------
+
+    @Test
+    fun testChainKeyPropagatesFromOriginalAlertOnSequentialSyncs() {
+        val context = MockContext()
+        val a = makeAlert("a-key-1", "Dense Fog Advisory", msgType = "Alert", sent = "2026-09-30T10:00:00Z")
+        val u = makeAlert("u-key-1", "Dense Fog Advisory", msgType = "Update", references = listOf("a-key-1"), sent = "2026-09-30T11:00:00Z")
+
+        // Write [A] first
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a))
+        var cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("a-key-1", cached[0].id)
+        assertEquals("a-key-1", cached[0].chainKey)
+
+        // Then write [A, U] -> cache holds U, and U.chainKey == A.id
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u))
+        cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u-key-1", cached[0].id)
+        assertEquals("a-key-1", cached[0].chainKey)
+    }
+
+    @Test
+    fun testChainKeyInheritedAcrossMultipleUpdates() {
+        val context = MockContext()
+        val a = makeAlert("a-key-2", "Dense Fog Advisory", msgType = "Alert", sent = "2026-09-30T10:00:00Z")
+        val u1 = makeAlert("u1-key-2", "Dense Fog Advisory", msgType = "Update", references = listOf("a-key-2"), sent = "2026-09-30T11:00:00Z")
+        val u2 = makeAlert("u2-key-2", "Dense Fog Advisory", msgType = "Update", references = listOf("a-key-2", "u1-key-2"), sent = "2026-09-30T12:00:00Z")
+
+        // Write [A, U1] in a single first write -> U1.chainKey == U1.id
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u1))
+        var cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u1-key-2", cached[0].id)
+        assertEquals("u1-key-2", cached[0].chainKey)
+
+        // Then write [A, U1, U2] -> cache holds U2, and U2.chainKey == U1.id
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(a, u1, u2))
+        cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        assertEquals("u2-key-2", cached[0].id)
+        assertEquals("u1-key-2", cached[0].chainKey)
+    }
+
+    @Test
+    fun testLegacyCacheJsonNormalizationAndSafety() {
+        val context = MockContext()
+        val key = GlobalAlertCache.cacheKey(testLocation)
+
+        // Put a raw JSON string straight into SharedPreferences without msgType, references, or chainKey
+        val legacyJson = """
+            {
+              "alerts": [
+                {
+                  "id": "legacy-alert-1",
+                  "source": "ECCC",
+                  "locationLat": 49.8951,
+                  "locationLon": -97.1384,
+                  "severity": "ORANGE",
+                  "eventNative": "Blizzard Warning",
+                  "expires": "2030-01-01T00:00:00Z"
+                }
+              ]
+            }
+        """.trimIndent()
+        context.prefs.edit().putString(key, legacyJson).apply()
+
+        // Assert readAlertsForLocation normalizes null msgType -> "Alert", references -> emptyList()
+        val cached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(1, cached.size)
+        val legacy = cached[0]
+        assertEquals("legacy-alert-1", legacy.id)
+        assertEquals("Alert", legacy.msgType)
+        assertTrue(legacy.references.isEmpty())
+        assertEquals("legacy-alert-1", GlobalAlertCache.chainKeyOf(legacy))
+
+        // Write an unrelated new alert B -> must not throw, and cache holds both
+        val alertB = makeAlert("alert-b-legacy", "Tornado Warning", msgType = "Alert")
+        GlobalAlertCache.writeAlertsForLocation(context, testLocation, listOf(alertB))
+
+        val updatedCached = GlobalAlertCache.readAlertsForLocation(context, testLocation)
+        assertEquals(2, updatedCached.size)
+        val ids = updatedCached.map { it.id }.toSet()
+        assertTrue(ids.contains("legacy-alert-1"))
+        assertTrue(ids.contains("alert-b-legacy"))
     }
 }

@@ -19,7 +19,8 @@ data class UnifiedAlert(
     val msgType: String = "Alert",
     val references: List<String> = emptyList(),
     val sent: String? = null,
-    val isTest: Boolean = false
+    val isTest: Boolean = false,
+    val chainKey: String? = null
 )
 
 @Keep

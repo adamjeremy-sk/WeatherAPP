@@ -22,7 +22,7 @@ Every non-trivial task executes under this protocol. No exceptions.
     FIRST: read AGENTS.md in the project root before doing anything else. Its rules are binding for this entire task and override anything below if they conflict. If you cannot read it, say so and STOP.
     Last verified: [one line — e.g. "Step 1 PASS, tree clean at <short HEAD>" or "New task; tree clean at <short HEAD>"]
     ```
-    Short continuation messages within a live agent session (e.g. "Proceed to GATE 0.2.") may omit it, since AGENTS.md already tells the agent to re-read it after any reset.
+    **Adam starts a fresh agent chat for every prompt** (keeps the local model's context small). So every prompt the Orchestrator issues is a full, self-contained fresh prompt; never a bare "Proceed". If the step being resumed has uncommitted work, the "Last verified" line lists those files as expected so the agent does not stop on them.
 4.  **Final step of every task**: build + full test run with exact counts, then the Documentation Collateral sweep (rail 9) unless Adam defers it.
 5.  **Agent context wipes are frequent.** A correction given only inside a prompt is lost on the next wipe. Any correction that should outlive the current step goes into AGENTS.md (Adam commits it); the prompt may repeat it, but AGENTS.md is the durable copy. Every continuation prompt ("Proceed to STEP N") must state the last verified state in one line (e.g. "Last verified: Step 0.2 PASS, tree clean at b47934a") so a freshly wiped agent can resume without guessing.
 
