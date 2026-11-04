@@ -29,6 +29,14 @@ object AlertNotificationHelper {
     const val CHANNEL_DEFAULT_ID = "eccc_watches_channel"
     const val CHANNEL_DEFAULT_NAME = "Weather Watches and Statements (ECCC)"
 
+    fun notificationIdFor(chainKey: String, location: LocationItem): Int =
+        "${chainKey}_${GlobalAlertCache.cacheKey(location)}".hashCode()
+
+    fun cancelChainNotification(context: Context, chainKey: String, location: LocationItem) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(notificationIdFor(chainKey, location))
+    }
+
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -62,7 +70,8 @@ object AlertNotificationHelper {
         alert: UnifiedAlert,
         location: LocationItem,
         timezoneStr: String? = null,
-        isTestFixture: Boolean = false
+        isTestFixture: Boolean = false,
+        silent: Boolean = false
     ) {
         val prefs = LocationPreferences(context)
         if (!isTestFixture && prefs.getAlertConsentState() != LocationPreferences.ALERT_CONSENT_OPT_IN) {
@@ -135,7 +144,7 @@ object AlertNotificationHelper {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, channelId)
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_map_pin)
             .setContentTitle(eventTitle)
             .setContentText(alert.headline ?: "${alert.eventNative} in effect")
@@ -144,10 +153,15 @@ object AlertNotificationHelper {
             .setGroup(String.format(Locale.US, "WEATHER_ALERTS_%.4f_%.4f", location.latitude, location.longitude))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .build()
+
+        if (silent) {
+            builder.setSilent(true)
+        }
+
+        val notification = builder.build()
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(alert.id.hashCode(), notification)
+        notificationManager.notify(notificationIdFor(GlobalAlertCache.chainKeyOf(alert), location), notification)
     }
 
     fun dismissNotification(context: Context, identifier: String) {

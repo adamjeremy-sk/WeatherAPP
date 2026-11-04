@@ -285,7 +285,8 @@
         </h2>
         <ol>
           <li><a href="#about">About This Changelog</a></li>
-          <li><a href="#vc28">0.8.1VC28 (Latest)</a></li>
+          <li><a href="#vc29">0.8.2VC29 (Latest)</a></li>
+          <li><a href="#vc28">0.8.1VC28</a></li>
           <li><a href="#vc27">0.8.0VC27</a></li>
           <li><a href="#vc26">0.7.0VC26</a></li>
           <li><a href="#vc25">0.6.5VC25</a></li>
@@ -341,11 +342,27 @@
         <p style="margin-bottom: 0;">Version numbers are followed by a <code>VC##</code> suffix denoting the internal Android version code for that release.</p>
       </section>
 
+      <section id="vc29" class="card">
+        <h2>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+          0.8.2VC29
+          <span class="badge">Latest</span>
+        </h2>
+        <p class="release-date">Released November 3, 2026</p>
+        <h3>Fixed &amp; Improved</h3>
+        <ul class="change-list fixed">
+          <li>Fixed repeated weather alert notifications: an alert that was updated or cancelled by the issuing agency was re-notified on every background sync (roughly every 15 minutes), because older versions of the same alert were treated as new.</li>
+          <li>Alert updates now replace the existing notification quietly; your phone alerts again only if the alert&#39;s severity increases.</li>
+          <li>Cancelled and expired alerts now clear their notification, and the alert banner no longer shows an alert after it has been cancelled.</li>
+          <li>The Alert Log now records each alert once, instead of once per update or repeat.</li>
+          <li>Hardened the alert cache against entries saved by older versions of the app.</li>
+        </ul>
+      </section>
+
       <section id="vc28" class="card">
         <h2>
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
           0.8.1VC28
-          <span class="badge">Latest</span>
         </h2>
         <p class="release-date">Released October 29, 2026</p>
         <h3>Fixed &amp; Improved</h3>

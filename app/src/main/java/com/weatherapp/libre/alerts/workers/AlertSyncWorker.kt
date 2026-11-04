@@ -92,42 +92,70 @@ class AlertSyncWorker(
                 totalAttempts++
                 val previousAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)
                 val previousIds = previousAlerts.map { it.id }.toSet()
+                val previousByKey = previousAlerts.associateBy { GlobalAlertCache.chainKeyOf(it) }
 
                 when (val result = provider.fetchAlertsForLocation(loc)) {
                     is AlertFetchResult.Success -> {
                         GlobalAlertCache.writeAlertsForLocation(appContext, loc, result.alerts)
 
-                        // Reconciled cache is the source of truth: superseded Alerts and Cancels
-                        // are dropped by reconcile(), so only the surviving, net-new entries notify.
+                        // Reconciled cache is the source of truth
                         val currentAlerts = GlobalAlertCache.readAlertsForLocation(appContext, loc)
+                        val currentChainKeys = currentAlerts.map { GlobalAlertCache.chainKeyOf(it) }.toSet()
+
                         val newAlerts = currentAlerts.filter { !previousIds.contains(it.id) }
-                        for (newAlert in newAlerts) {
-                            com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
-                                context = appContext,
-                                alert = newAlert,
-                                location = loc
-                            )
+                        for (c in newAlerts) {
+                            val chainKey = GlobalAlertCache.chainKeyOf(c)
+                            val prev = previousByKey[chainKey]
 
-                            val alertTimestamp = newAlert.sent?.let { sentStr ->
-                                try {
-                                    java.time.Instant.parse(sentStr).toEpochMilli()
-                                } catch (e: Exception) {
-                                    Log.w(TAG, "Failed to parse alert sent timestamp string: $sentStr", e)
-                                    System.currentTimeMillis()
-                                }
-                            } ?: System.currentTimeMillis()
+                            val isEscalation = prev != null && c.severity.ordinal > prev.severity.ordinal
+                            val isNewChain = prev == null
 
-                            com.weatherapp.libre.alerts.AlertLogRepository.saveEntry(
-                                appContext,
-                                com.weatherapp.libre.alerts.AlertLogEntry(
-                                    id = System.currentTimeMillis(),
-                                    timestampUtc = alertTimestamp,
-                                    locationName = loc.displayName,
-                                    alertEvent = newAlert.eventNative,
-                                    severity = newAlert.severity.name,
-                                    isTest = newAlert.isTest
+                            if (isNewChain || isEscalation) {
+                                com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
+                                    context = appContext,
+                                    alert = c,
+                                    location = loc,
+                                    silent = false
                                 )
-                            )
+
+                                val alertTimestamp = c.sent?.let { sentStr ->
+                                    try {
+                                        java.time.Instant.parse(sentStr).toEpochMilli()
+                                    } catch (e: Exception) {
+                                        Log.w(TAG, "Failed to parse alert sent timestamp string: $sentStr", e)
+                                        System.currentTimeMillis()
+                                    }
+                                } ?: System.currentTimeMillis()
+
+                                com.weatherapp.libre.alerts.AlertLogRepository.saveEntry(
+                                    appContext,
+                                    com.weatherapp.libre.alerts.AlertLogEntry(
+                                        id = System.currentTimeMillis(),
+                                        timestampUtc = alertTimestamp,
+                                        locationName = loc.displayName,
+                                        alertEvent = c.eventNative,
+                                        severity = c.severity.name,
+                                        isTest = c.isTest
+                                    )
+                                )
+                            } else {
+                                com.weatherapp.libre.alerts.AlertNotificationHelper.postUnifiedAlertNotification(
+                                    context = appContext,
+                                    alert = c,
+                                    location = loc,
+                                    silent = true
+                                )
+                            }
+                        }
+
+                        for (key in previousByKey.keys) {
+                            if (!currentChainKeys.contains(key)) {
+                                com.weatherapp.libre.alerts.AlertNotificationHelper.cancelChainNotification(
+                                    appContext,
+                                    key,
+                                    loc
+                                )
+                            }
                         }
                     }
                     is AlertFetchResult.Failure -> {

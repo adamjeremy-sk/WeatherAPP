@@ -222,7 +222,7 @@ class AlertNotificationHelperTest {
         AlertNotificationHelper.postUnifiedAlertNotification(testContext, yellowAlert, ottawa)
 
         assertEquals(2, shadowNm.allNotifications.size)
-        val notifYellow = shadowNm.allNotifications[1]
+        val notifYellow = shadowNm.getNotification(AlertNotificationHelper.notificationIdFor(yellowAlert.id, ottawa))
         assertEquals(AlertNotificationHelper.CHANNEL_DEFAULT_ID, notifYellow.channelId)
     }
 

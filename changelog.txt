@@ -1,4 +1,13 @@
 ---------------
+Changelog 0.8.2VC29 - 2026/11/03
+---------------
+* Fixed repeated weather alert notifications: an alert that was updated or cancelled by the issuing agency was re-notified on every background sync (roughly every 15 minutes), because older versions of the same alert were treated as new.
+* Alert updates now replace the existing notification quietly; your phone alerts again only if the alert's severity increases.
+* Cancelled and expired alerts now clear their notification, and the alert banner no longer shows an alert after it has been cancelled.
+* The Alert Log now records each alert once, instead of once per update or repeat.
+* Hardened the alert cache against entries saved by older versions of the app.
+
+---------------
 Changelog 0.8.1VC28 - 2026/10/29
 ---------------
 * Fixed a layout regression where small floating confirmation dialogs (like the lunar cache generator prompt) were rendered off-screen due to over-aggressive Android 15 edge-to-edge system bar enforcement. Floating dialogs now correctly bypass the fullscreen edge-to-edge helper.

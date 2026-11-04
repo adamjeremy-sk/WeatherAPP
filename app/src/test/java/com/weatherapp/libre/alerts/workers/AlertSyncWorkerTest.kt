@@ -1,5 +1,7 @@
 package com.weatherapp.libre.alerts.workers
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
@@ -8,6 +10,7 @@ import com.weatherapp.libre.LocationItem
 import com.weatherapp.libre.LocationPreferences
 import com.weatherapp.libre.alerts.AlertLogEntry
 import com.weatherapp.libre.alerts.AlertLogRepository
+import com.weatherapp.libre.alerts.AlertNotificationHelper
 import com.weatherapp.libre.alerts.cache.GlobalAlertCache
 import com.weatherapp.libre.alerts.models.AlertFetchResult
 import com.weatherapp.libre.alerts.models.AlertSeverity
@@ -22,6 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.io.IOException
 import java.time.OffsetDateTime
@@ -217,16 +221,18 @@ class AlertSyncWorkerTest {
         msgType: String,
         references: List<String>,
         sent: String,
-        event: String = "Dense Fog Advisory"
+        event: String = "Dense Fog Advisory",
+        severity: AlertSeverity = AlertSeverity.ORANGE,
+        headline: String = event
     ): UnifiedAlert =
         UnifiedAlert(
             id = id,
             source = AlertSource.ECCC,
             locationLat = toronto.latitude,
             locationLon = toronto.longitude,
-            severity = AlertSeverity.ORANGE,
+            severity = severity,
             eventNative = event,
-            headline = event,
+            headline = headline,
             description = "desc $id",
             instruction = null,
             onset = null,
@@ -266,9 +272,7 @@ class AlertSyncWorkerTest {
         runSync(listOf(a, u, c))
 
         val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
-        assertEquals("Fog chain must log exactly 2 entries (A once, U once)", 2, entries.size)
-        assertEquals("The surviving Update must be logged", "Dense Fog Advisory", entries.first().alertEvent)
-        assertEquals("The original Alert must be logged", "Dense Fog Advisory", entries.last().alertEvent)
+        assertEquals("Fog chain must log exactly 1 entry", 1, entries.size)
 
         val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
         assertEquals("A Cancel must drop the whole chain, leaving an empty cache", 0, cached.size)
@@ -339,12 +343,100 @@ class AlertSyncWorkerTest {
         runSync(listOf(a, u, b))
 
         val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
-        assertEquals("Fog chain plus an unrelated new alert must log exactly 3 entries", 3, entries.size)
+        assertEquals("Fog chain plus an unrelated new alert must log exactly 2 entries", 2, entries.size)
         assertEquals("The unrelated new alert B must be logged exactly once", 1, entries.count { it.alertEvent == "Tornado Warning" })
 
         val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
         val cachedIds = cached.map { it.id }.toSet()
         assertTrue("The unrelated new alert B must be cached", cachedIds.contains("tornado-B"))
         assertEquals("The surviving Update must remain cached", 1, cached.count { it.id == "fog-U" })
+    }
+
+    @Test
+    fun testSameSeverityUpdateReplacesNotificationSilently() {
+        shadowOf(context.applicationContext as android.app.Application)
+            .grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z", headline = "Headline A")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z", headline = "Headline U")
+
+        runSync(listOf(a))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u))
+
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val active = nm.activeNotifications
+        assertEquals("Exactly 1 active notification overall", 1, active.size)
+
+        val activeNotif = active.first()
+        val expectedId = AlertNotificationHelper.notificationIdFor("fog-A", toronto)
+        assertEquals("Notification ID matches chain notificationIdFor", expectedId, activeNotif.id)
+
+        val extraText = activeNotif.notification.extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+        assertEquals("Notification EXTRA_TEXT equals U's headline", "Headline U", extraText)
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        assertEquals("Exactly 1 log entry", 1, entries.size)
+
+        assertEquals(
+            "Silent update must set groupAlertBehavior to GROUP_ALERT_SUMMARY",
+            Notification.GROUP_ALERT_SUMMARY,
+            activeNotif.notification.groupAlertBehavior
+        )
+    }
+
+    @Test
+    fun testEscalationAlertsAgain() {
+        shadowOf(context.applicationContext as android.app.Application)
+            .grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z", severity = AlertSeverity.YELLOW, headline = "Yellow Headline A")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z", severity = AlertSeverity.RED, headline = "Red Headline U")
+
+        runSync(listOf(a))
+        runSync(listOf(a, u))
+
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val active = nm.activeNotifications
+        assertEquals("Exactly 1 active notification overall", 1, active.size)
+
+        val activeNotif = active.first()
+        val extraText = activeNotif.notification.extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+        assertEquals("Notification EXTRA_TEXT equals U's headline", "Red Headline U", extraText)
+
+        val entries = runBlocking { AlertLogRepository.getAllEntries(context) }
+        assertEquals("Exactly 2 log entries", 2, entries.size)
+
+        assertTrue(
+            "Escalation notification groupAlertBehavior must not be GROUP_ALERT_SUMMARY",
+            activeNotif.notification.groupAlertBehavior != Notification.GROUP_ALERT_SUMMARY
+        )
+    }
+
+    @Test
+    fun testCancelClearsNotificationAndCache() {
+        shadowOf(context.applicationContext as android.app.Application)
+            .grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        seedOptedInSingleTab()
+        runBlocking { AlertLogRepository.clearAll(context) }
+
+        val a = fogAlert("fog-A", "Alert", emptyList(), "2024-01-01T00:00:00Z", headline = "Headline A")
+        val u = fogAlert("fog-U", "Update", listOf("fog-A"), "2024-01-01T01:00:00Z", headline = "Headline U")
+        val c = fogAlert("fog-C", "Cancel", listOf("fog-A"), "2024-01-01T02:00:00Z", headline = "Headline C")
+
+        runSync(listOf(a))
+        runSync(listOf(a, u))
+        runSync(listOf(a, u, c))
+
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val active = nm.activeNotifications
+        assertEquals("0 active notifications after cancel", 0, active.size)
+
+        val cached = GlobalAlertCache.readAlertsForLocation(context, toronto)
+        assertTrue("Cache must be empty after cancel", cached.isEmpty())
     }
 }

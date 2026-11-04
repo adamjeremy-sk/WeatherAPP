@@ -43,8 +43,8 @@ android {
         applicationId = "com.weatherapp.libre"
         minSdk = 33
         targetSdk = 37
-        versionCode = 28
-        versionName = "0.8.1"
+        versionCode = 29
+        versionName = "0.8.2"
 
         buildConfigField("String", "METEOGATE_API_KEY", "\"$meteoGateApiKey\"")
 

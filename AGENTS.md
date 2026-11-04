@@ -33,4 +33,4 @@
 Your context is frequently wiped mid-task. These rules exist so a wipe never causes damage:
 - On every fresh context, re-read this file before doing anything else. These rules are standing; they apply even if the current prompt does not repeat them.
 - Never assume the result of a previous step or turn. If the prompt does not state the last verified state, run `git status --short` and `git log --oneline -3`, report them, and ask which step to resume. Do not continue a task from memory.
-- If `git status --short` shows uncommitted changes you did not make in this turn, do not modify, revert, or build on them. Report them and STOP.
+- Adam commits only when a whole task is finished, so earlier passed steps are often uncommitted. The prompt's "Last verified" line lists the files expected to be modified. Build on those. If `git status --short` shows any change to a file NOT on that list, do not modify, revert, or build on it: report it and STOP. Never run `git restore`, `git checkout --`, `git stash`, `git reset` or `git clean`.
