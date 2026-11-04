@@ -4,19 +4,18 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 ## 1. Current State  *(overwrite every update)*
 | Field | Value |
 |---|---|
-| Updated | 2026-11-03 ~20:25 |
-| App version | 0.8.1 (VC28), released 2026-10-29 |
-| Repo HEAD at update | 3d49db1 "Fixed markdown files" (orchestration docs committed at repo root; .gitignore entries removed). Committed HANDOFF.md is STALE (mid-baseline version) — replace with this copy. |
-| Tests | 222 after Step 1 (216 + 6), uncommitted until Adam commits Step 1 |
-| Active task | Repeated alert notifications (fog advisory re-notified every sync). Root cause: worker treats IDs pruned by reconcile() (superseded Alerts, Cancels) as new each sync, because EcccProvider re-returns the full 24 h CAP history. Also: Cancel referencing only the original left the Update in cache (banner showed cancelled alert). |
-| Gate position | Step 0, 1, 2 PASS WITH NOTES (226/226). Step 3 split: 3a = UnifiedAlert.chainKey + reconcile carries chainKey + legacy-null normalization on cache read (issued); 3b = worker silent-update/severity-escalation/cancel-dismiss + helper notification ID per chain+location. Then collateral (changelog/manual). |
-| Awaiting | Adam: commit Step 2, push (orchestrator has not yet verified Steps 1–2 in the repo), run Step 3a prompt. |
-| Last prompt issued | Step 2 prompt (see this chat; worker: read cache after write, notify ids not in previousIds; tests in AlertSyncWorkerTest using a new FakeProvider per sync). Re-issue from the Step 2 spec if lost. |
-| Next action | Audit Step 2 output; then issue Step 3 once Adam decides; final step = build + full tests + changelog/manual collateral (rail 9). Verify Step 1/2 code against the repo after Adam pushes. |
-| Agent / runtime | Qwen3.8-27B only (Gemma retired). Harness: Android Studio built-in Agent tab (Cline dropped 2026-11-03). llama.cpp prebuilt Vulkan binary, `qwen-server` (--device Vulkan0, KV q8_0/q8_0, -c 131072, -n 8192, MTP draft). |
+| Updated | 2026-11-03 ~23:25 (session ended by handoff) |
+| App version | 0.8.2 (VC30) — committed and pushed; Play upload pending Adam's device check. VC29 = earlier 0.8.1.1 hotfix (skipped in changelog). |
+| Repo HEAD at update | d6477d6 "0.8.2 VC30: fix double insets on cache/alert-log screens, restore single-line forecast labels" (code verified by orchestrator: 0 inset listeners in SettingsDialogManager, 88dp/72dp label columns). Committed ARCHITECTURE.md/HANDOFF.md at d6477d6 are OLDER than the Project copies — commit the Project copies. |
+| Tests | 232 passing |
+| Active task | None. 0.8.2 complete (alert re-notification fix + double-inset fix + restored single-line forecast labels). |
+| Gate position | n/a |
+| Awaiting | Adam: device check (alerts notify once / silent updates; Data Cache, Cache Inspector, full-content viewer, Alert Log headers sit under the status bar like System; "Wednesday"/"11:00 PM" one line at large font + French; Data Cache cards not clipped on the right — first screenshot looked clipped, possibly a crop); upload to Play with the release notes from this session; commit the refreshed docs; choose next task. |
+| Last prompt issued | None outstanding. |
+| Next action | On resume: State Readback, then next task. Recommended: notification text localization in AlertNotificationHelper (expiry via OffsetDateTime first; "Until further notice", "TEST — ", "Instructions:", "Description:", "Area:", "Expires:", "Source:", channel names/descriptions → EN/FR resources) + "Today"/"Tomorrow"/"Day N" in WeatherRepository.kt:603-608. Alternatives: bottom sheets → full-screen dialogs; Float coords → Double (prefs schema → plan first). |
+| Agent / runtime | Qwen3.8-27B (local llama.cpp Vulkan) and Gemini 3.6 Flash (cloud, temporary) in Android Studio's Agent tab; fresh chat per prompt; commit only at task end. |
 
 **Open decisions (Adam's call)**
-- Step 3 notification behaviour for Updates to an active alert (silent replace vs buzz).
 - F-Droid eligibility vs play-app-update-ktx dependency.
 
 ## 2. Decision Log  *(append only, one line each, newest last)*
@@ -45,6 +44,8 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 - 2026-11-03 — (Adam) Fresh agent chat for every prompt. Orchestrator always issues full self-contained prompts (no bare "Proceed" variants); AI_ONBOARDING §2.3 updated. 
 
 - 2026-11-03 — (Adam) Commit only when a whole task is finished; between steps work stays uncommitted (Adam uses `git restore .` to roll back). Prompts list all task-modified files in "Last verified"; AGENTS.md CONTEXT RESETS rule changed accordingly (change (g)) and agent forbidden from restore/checkout/stash/reset/clean. Commit line given at task end only.
+
+- 2026-11-03 — (Adam) VC29 was already used by an undocumented 0.8.1.1 hotfix (not in git history at e9fa1fc). 0.8.2 ships as VC30; VC29 skipped in the changelog. Open: identify what 0.8.1.1 fixed and confirm the fix exists in the current tree.
 
 ## 2b. Coding Agent Profiles  *(edit as evidence accumulates)*
 **Agent A: Gemma 4 26B-A4B — RETIRED 2026-11-03 (Adam: never use). Profile kept for history only.**
@@ -81,6 +82,7 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 - Stale "Handle bar for BottomSheet" comment in dialog_lunar_detail.xml:16.
 - **AlertNotificationHelper.kt:90-96 expiry display**: formats `alert.expires` with Instant.parse only; on failure shows the raw ISO string. Likely broken on Android 13 (minSdk 33; believed pre-JDK-12 libcore, where Instant.parse rejects "+02:00" offsets) for MeteoAlarm/offset-bearing expires; JVM unit tests would not catch it. Verify on an API 33 emulator; fix = OffsetDateTime.parse first (same pattern as GlobalAlertCache.isAlertActive). Same block hardcodes "Until further notice" and "TEST — " (localization rail violation). Related low-risk: AlertSyncWorker.kt:110 parses `sent` with Instant.parse, falls back to now().
 - Rail violations (confirmed by both agents): LocationDialogManager uses BottomSheetDialog for search + recent-locations dialogs (no-bottom-sheets rail); LocationPreferences stores last-used and fixed-default lat/lon as Float (Double invariant). Fix hint: LocationPreferences already has private putDouble/getDouble (raw long bits, :399-410) with a Float fallback in getDouble — switching the four accessors to it may self-migrate, but getDouble's fallback only triggers on exception from getLong on a Float-typed key; verify migration behaviour in Step 0 (prefs schema change → plan first, AGENTS rule 10). Unused BottomSheetDialog import in ThemeManager.
+- **Hardcoded English day labels**: WeatherRepository.kt:603-608 returns "Today", "Tomorrow", "Day N" for the 7-day list — French users see English (localization rail). Needs a Context/string-resource path; data layer has none today.
 - Merge duplicate SolarLightingEngineTest classes (test root vs test solar/) — must not reduce test count.
 - No CI workflow (verifyEdgeToEdge + unit tests would be natural first jobs).
 - SettingsDialogManager is ~2,300 lines (owns every settings screen) — candidate for a planned split (needs plan per AGENTS rule 10).
@@ -88,6 +90,18 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 - Orchestrator cannot build locally (no Android SDK in its workspace) — Adam remains build authority.
 
 ## 4. Session Log  *(newest first, keep 10)*
+### 2026-11-03 (late night) — 0.8.2 VC30 UI fixes, handoff
+- Found the 0.8.1.1 (VC29) label hotfix was never in git (lost to `git restore`); rebuilt it: 7-day day column 68→88dp, hourly time 54→72dp, maxLines=1 + uniform autosize.
+- Double insets: Data Cache, Cached Data Inspector, full-content viewer, Alert Log each re-applied systemBars padding on top of SystemBarContrastHelper's decorView padding → removed the 4 local listeners (24 deletions).
+- A Qwen run crashed after applying Step 1; the fresh agent correctly stopped on the unexpected diff; verified instead of redone.
+- Release: versionCode 30, changelog txt/html updated, Play notes (en-CA/fr-CA/fr-FR, ≤500 chars) drafted. Committed d6477d6.
+- Harness: Android Studio Agent sometimes blanks piped output and path-like lines; evidence now uses unpiped single commands.
+### 2026-11-03 (night) — Alert fix completed, 0.8.2 VC30 prepared
+- Step 3a (Gemini) chainKey + legacy-null normalization; 3b (Gemini) per-chain notifications, silent updates, escalation re-alerts, cancel clears; 3b-fix (Qwen) order-dependent AlertNotificationHelperTest fixed by ID lookup; Step 4 (Qwen) version 0.8.2/VC30, changelog txt/html, manual bullet. 232/232.
+- Workflow changes: fresh agent chat per prompt; commit only at task end (agent forbidden from restore/stash/reset/clean); orchestrator gives `git commit -m` line at task end only.
+- Harness quirk: Android Studio Agent output display sometimes blanks piped output and path-like lines (e.g. `git diff --stat`). Use unpiped single commands for evidence (`git diff -- <files>`, `git diff --shortstat`, single awk over the XML files for totals).
+- Harness quirk (Qwen found): Android Studio Agent drops stdout when awk is the bare last command of a pipe — wrap in ( … ) or pipe to `| cat`.
+- My errors this task: Step 2 test spec (b)/(c) counts; Step 4 grep excluded orchestration/ but the docs live at repo root.
 ### 2026-11-03 (late evening) — Alert re-notification fix
 - Readback: HEAD 3d49db1 (docs committed; repo HANDOFF.md stale).
 - Diagnosed repeated fog notifications (see §1). Step 0 PASS WITH NOTES (raw block elided with "..."; trace missed the active-advisory [A,U] case). Step 1 PASS WITH NOTES (no line numbers on quoted code; same-sent same-type tie is order-dependent — add id tie-break if touched again).

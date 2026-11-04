@@ -1,7 +1,7 @@
 # Architecture — WeatherAPP Libre
 Privacy-first, ad-free Android weather + astronomy app (Kotlin, GPLv3, public beta on Play): manual location tabs, selectable forecast models, official ECCC/MeteoAlarm alerts, on-device Meeus-grade solar/lunar tools, home-screen widgets. No GPS permission, no accounts, no ad/analytics SDKs.
 
-*Last verified against repo: v0.8.1 (VC28), commit b47934a, 2026-11-03.*
+*Last verified against repo: v0.8.2 (VC30), 2026-11-03 (alert re-notification fix).*
 
 ## Modules & build
 | Module | Path | Responsibility | Depends on |
@@ -43,7 +43,7 @@ values/: strings.xml + values-fr/strings.xml (French typography enforced); value
 ## Assets & tests
 assets/cap_fixtures/: 6 CAP XML (tornado warning/update/cancel, thunderstorm, winter storm, special statement) — drive reconcile tests and the debug harness.
 assets/meteoalarm_fixtures/: 3 MeteoGate JSON (red wind, orange rain, yellow frost).
-app/src/test/: 216 unit tests (v0.8.1) mirroring packages (root, alerts, alerts/workers, lunar, solar, almanac). A falling count is a defect.
+app/src/test/: 232 unit tests (v0.8.2) mirroring packages (root, alerts, alerts/workers, lunar, solar, almanac). A falling count is a defect.
 Known debt: two same-named SolarLightingEngineTest classes (test root and test solar/) — merge pending. No CI workflow yet.
 
 ## Root & website
@@ -67,11 +67,13 @@ Never "fix" solar/lunar math; precision bugs live in serialization/display layer
 Coordinates/elevation Double end-to-end (putDouble/getDouble raw long bits); Float truncation caused a 5-min sunrise error.
 Alert providers return typed Failure (AlertFetchResult), never emptyList() on error — empty wipes the cache.
 CAP expires may carry offsets (+02:00): OffsetDateTime.parse, not Instant.parse.
+Alert chains: providers re-return the full 24-h CAP history every sync. GlobalAlertCache.reconcile() groups messages into chains (union-find over id + references), keeps the latest-sent winner, drops chains whose winner is a Cancel, and carries a stable chainKey. The worker notifies only net-new reconciled alerts; one notification per chain+location (AlertNotificationHelper.notificationIdFor); Updates replace silently unless severity rises; vanished chains cancel their notification. Never diff against the raw provider list.
 Dismissals coordinate-scoped (app_alert_dismissed_<lat>_<lon>_<id>); test alert IDs timestamped.
 ECCC Datamart: /today/alerts/cap/{YYYYMMDD}/{EEEE}/{hh}/*.cap; SK→CWWG, MB→CWWG, AB→CWEG, ON→CWTO, QC→CWUL, BC→CWVR, Atlantic→CWHX; 24-h lookback.
 Strings externalized EN+FR with French typography (space before :;!?»); formatting only via UnitUtils/WeatherCodeUtils.
 Colors only from theme-engine palette tokens; no hex in views/adapters/drawables.
-Edge-to-edge: full-screen dialogs go through SystemBarContrastHelper; small floating dialogs must NOT (0.8.1 regression).
+Edge-to-edge: full-screen dialogs go through SystemBarContrastHelper; small floating dialogs must NOT (0.8.1 regression). SystemBarContrastHelper pads the dialog's decorView by the system-bar insets; never add a second systemBars padding listener on a dialog's content root (that doubled the top band on Data Cache / Cache Inspector / Alert Log until 0.8.2).
+Forecast label columns (item_day_forecast 88dp, item_hourly_row time 72dp) are fixed-width for row alignment and use maxLines=1 + uniform autosize; keep that pattern for any new fixed label column.
 Shell commands run from the project root with relative paths; built-in IDE file tools may use absolute paths inside the project (see AGENTS.md TOOLING).
 
 ## Do not touch
