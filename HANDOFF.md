@@ -4,15 +4,15 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 ## 1. Current State  *(overwrite every update)*
 | Field | Value |
 |---|---|
-| Updated | 2026-11-12 (process alignment session) |
+| Updated | 2026-11-12 11:45 (handoff at the end of the process-alignment session) |
 | App version | 0.8.2 (VC30), committed and pushed. Play upload / device check status not reported. |
-| Repo HEAD at update | bec248f "Docs: handoff 2026-11-04 …". App code unchanged since d6477d6 (0.8.2 VC30). **Uncommitted, by the Orchestrator this session:** AGENTS.md, AI_ONBOARDING.md, ARCHITECTURE.md, HANDOFF.md, MASTER_EXAMPLE.md, ACTION_PLAN.md (new), docs/archive/HANDOFF_2026-11-04.md (new), docs/audits/ (3 reports, new), docs/sources/meeus-ch47/ (verified Moon tables, new). |
+| Repo HEAD at update | **aa83b29** "Docs: record D1/D9 decisions …", on top of 41862a1 "Docs: align process with vermilion-editor; audits, action plan, verified Meeus ch.47 tables" and bec248f. Pushed; tree clean (verified 2026-11-12 with `git status -sb`: level with origin/main). App code unchanged since d6477d6 (0.8.2 VC30). |
 | Tests | 232 `@Test` (counted, last build 232 at 0.8.2). None measures astronomy accuracy. |
-| Active task | Remediation program R0-R4 (ACTION_PLAN.md). The process docs were rewritten to the vermilion-editor methods; **no gate has been issued yet.** |
+| Active task | Remediation program R0-R4 (ACTION_PLAN.md). The process docs are rewritten to the vermilion-editor methods and committed; **no gate has been issued yet.** |
 | Gate position | Before R0.1. |
-| Awaiting | Adam: review and commit the docs (suggested message below); then the Orchestrator issues the R0.1 prompt. D1, D2, D7 and the push policy are decided (§2). |
+| Awaiting | Adam: say "go" in the new chat; the Orchestrator then issues the **R0.1 prompt** for Gemini. **Reminder for Adam: set the new chat to Sonnet 5.5 with thinking level High.** |
 | Last prompt issued | None outstanding. |
-| Next action | On resume: State Readback, then R0.1 (`.gitignore`: `evidence/`, `.kotlin/`; new `.aiexclude`), then R0.2 (protected-path and size-ratchet tests). |
+| Next action | On resume: State Readback (ends with the Sonnet 5.5 / High reminder), then R0.1 (`.gitignore`: `evidence/`, `.kotlin/`; new `.aiexclude`), then R0.2 (protected-path and size-ratchet tests). |
 | Coder | Gemini 3.6 Flash (cloud) in Android Studio's Agent tab, for the whole remediation (Adam, 2026-11-12). Adam's Google Pro stays enabled for now and he will say if that changes (2026-11-12). |
 
 **Open decisions (Adam's call; details and defaults in ACTION_PLAN.md "Decisions")**
@@ -53,7 +53,7 @@ All findings and the older backlog items are in **ACTION_PLAN.md**, ordered by p
 ## 4. Session Log  *(newest first, keep 3)*
 ### 2026-11-12 — Audits, drift analysis, process alignment
 - Audited the code (CODE_AUDIT) and `lunar/`+`solar/` (ASTRONOMY_AUDIT); read vermilion-editor's process docs and wrote DRIFT_ANALYSIS. Findings of note: ECCC memo not keyed by location (missed alerts); backup rules name the wrong prefs files; Statcounter runs in the in-app pages; Moon series wrong (phase times up to 47 min); sunrise at the wrong altitude.
-- Rewrote AGENTS.md and AI_ONBOARDING.md, updated ARCHITECTURE.md (claim tags, withdrawn "verified" label, corrected Do-not-touch), MASTER_EXAMPLE.md (current-format example) and this file; wrote ACTION_PLAN.md; archived the old HANDOFF. Nothing in the app code was touched. Documents were read, not chat transcripts; the astronomy checks used Python transliterations and published values because the Orchestrator cannot build.
+- Rewrote AGENTS.md and AI_ONBOARDING.md, updated ARCHITECTURE.md (claim tags, withdrawn "verified" label, corrected Do-not-touch), MASTER_EXAMPLE.md (current-format example) and this file; wrote ACTION_PLAN.md; archived the old HANDOFF. Later in the session Adam decided D1 (block Statcounter now), D2 (openly licensed Moon tables, fetched and verified against Meeus 47.a), D7 (audits in the repo) and D9 (bundled markdown pages, in-house renderer, R3.12); both docs commits pushed (aa83b29). Nothing in the app code was touched. Documents were read, not chat transcripts; the astronomy checks used Python transliterations and published values because the Orchestrator cannot build.
 ### 2026-11-04 — LLM speed benchmarking (spun off), workflow changes
 - Tuned the Qwen server's MTP drafting; moved the benchmark to ~/Projects/llm-suite-test; orchestrator got read/write access to the repo folder (docs only) and may commit handoff docs when asked. Details: archive.
 ### 2026-11-03 — 0.8.2 (VC30), alert re-notification fix, baseline audit, runtime tuning
