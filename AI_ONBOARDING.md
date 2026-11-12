@@ -60,7 +60,7 @@ Every non-trivial task executes under this protocol. No exceptions. A gate id lo
 6.  **Identity Stability**: Internal constants, preference keys, SharedPreferences file names and view IDs are **NEVER** renamed when display text changes. No drive-by refactors.
 7.  **Migration Safety**: Removed features self-heal legacy preferences to safe defaults. Cached JSON is forward-compatible (unknown fields ignored).
 8.  **RemoteViews (Widgets)**: Framework views only. PendingIntents use component-targeted intents with unique data URIs/request codes. Widgets invalidate synchronously from cache.
-9.  **Documentation Collateral**: User-facing changes ship with matching updates to the website manual (usermanual.html), changelog (changelog.txt + changelog.html), and roadmap in the same sweep, unless explicitly deferred.
+9.  **Documentation Collateral**: User-facing changes ship with matching updates to the website manual (usermanual.html), changelog (changelog.txt + changelog.html), and roadmap in the same sweep, unless explicitly deferred. **From gate R3.12 on** (in-app pages as bundled markdown, Adam 2026-11-12) the matching `assets/*.md` page is updated in the same sweep as its website HTML; a sync test fails the build when a heading or link in the HTML is missing from the markdown.
 10. **Privacy statements are checked against the code (Adam, 2026-11-12).** The policy, the README and ARCHITECTURE.md say things about backups, analytics and alert consent. A gate that changes any of those facts updates the statements in the same sweep, and a gate that finds a statement false fixes either the code or the statement before it closes.
 
 ## 4. Project Summary & Component Map

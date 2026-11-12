@@ -16,7 +16,7 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 | Coder | Gemini 3.6 Flash (cloud) in Android Studio's Agent tab, for the whole remediation (Adam, 2026-11-12). Adam's Google Pro stays enabled for now and he will say if that changes (2026-11-12). |
 
 **Open decisions (Adam's call; details and defaults in ACTION_PLAN.md "Decisions")**
-Decided 2026-11-12: D1 (block Statcounter in the WebView), D2 (openly licensed Moon tables), D7 (audits in the repo). Still open: D3 Sun rise/set definition · D4 elevation (dip) policy · D5 formatter · D6 territory office codes · D8 phase refinement (each has a default and a needed-by gate in the plan). Older: F-Droid eligibility vs play-app-update-ktx; Adam's global git identity is still the placeholder "Your Name <you@example.com>" (his call).
+Decided 2026-11-12: D9 (in-app pages become bundled markdown, in-house renderer, website stays HTML, md adopts from it; gate R3.12), D1 (block Statcounter in the WebView as a stopgap), D2 (openly licensed Moon tables), D7 (audits in the repo). Still open: D3 Sun rise/set definition · D4 elevation (dip) policy · D5 formatter · D6 territory office codes · D8 phase refinement (each has a default and a needed-by gate in the plan). Older: F-Droid eligibility vs play-app-update-ktx; Adam's global git identity is still the placeholder "Your Name <you@example.com>" (his call).
 
 ## 2. Decisions  *(standing decisions in one line; append new dated ones at the end)*
 **Standing (summarized from the archive; dates are the originals)**
@@ -39,6 +39,7 @@ Decided 2026-11-12: D1 (block Statcounter in the WebView), D2 (openly licensed M
 - 2026-11-12 — HIGH-STAKES gates (astronomy, alert pipeline, privacy statements and backup rules, prefs schema) get a second reader: a cold review in a fresh context.
 - 2026-11-12 — Tables and constants dictated by the Orchestrator need provenance; recalled numbers are never a source.
 - 2026-11-12 — (Adam) D1: block Statcounter inside the in-app WebView. D2: use an openly licensed implementation for the Moon tables (done: astronomia MIT tables verified against Meeus Example 47.a, in `docs/sources/meeus-ch47/`). D7: audits copied to `docs/audits/`. Push at the end of every gate after the verdict (vermilion policy adopted). Google Pro stays enabled.
+- 2026-11-12 — (Adam) D9: drop the WebView for bundled markdown pages (gate R3.12). Our own in-house renderer, even if we have to write it. The website stays HTML; each markdown page adopts from its HTML and is updated whenever the HTML is (a sync test will check it). The R1.3 block stays as the stopgap until then.
 - 2026-11-12 — (Adam) Android Studio Agent settings: it may do anything except `git push` and destructive git; edits and commands are NOT hand-approved. The rules and the R0.2 tests are the guard; the Orchestrator checks `git log -1`/`git status --short` in every audit.
 
 ## 2b. Coder Profile  *(edit as evidence accumulates)*
