@@ -1,0 +1,6 @@
+# Files the cloud Coder must never receive (AGENTS.md rule 13)
+local.properties
+keystore.properties
+*.jks
+*.keystore
+app/release/

@@ -29,3 +29,7 @@ mapping.txt
 # Signing keystores — never commit
 *.jks
 *.keystore
+
+# Agent evidence files (AGENTS.md rule 18) and Kotlin compiler sessions
+/evidence/
+.kotlin/
