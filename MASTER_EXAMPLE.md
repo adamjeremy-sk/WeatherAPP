@@ -2,6 +2,8 @@
 
 *Historical examples of gated prompt structure. Prompt text preserved verbatim except for formatting cleanup and the addition of verification gates where none existed.*
 
+**Status (2026-11-12): Examples 1-4 are historical** (written before the vermilion-style process: they ask for "STOP AND WAIT FOR MY CONFIRMATION", have no mandatory opening block, no evidence files, no "Prompt doubts", and some facts in them are stale, such as the 152-test count). Use them only for the *shape* of CONTEXT / RAILS / STEPS / EVIDENCE. **Example 5 at the end is the current format** and is what AI_ONBOARDING §2 describes.
+
 ---
 
 ## Example 1: Semantic Theme Engine
@@ -255,3 +257,49 @@ STOP AND WAIT FOR MY VERIFICATION BEFORE PROCEEDING TO STEP 3.
 3.3 Report exact pass/fail counts.
 
 STOP AND WAIT FOR MY FINAL CONFIRMATION.
+
+---
+
+## Example 5: Current format (2026-11-12) — a defect gate with a red run, an UNLOCK and a provenance line
+
+*This is an illustrative skeleton, not a live prompt. Gate ids, files and numbers are examples; the real values come from ACTION_PLAN.md and the audits.*
+
+```
+FIRST: read AGENTS.md in the project root before doing anything else. Its rules are binding for this entire task and override anything below if they conflict. If you cannot read it, say so and STOP.
+Last verified: New task; tree clean at bec248f.
+```
+
+GATE R1.1 — ECCC memo per location (CODE_AUDIT H1). Risk: HIGH-STAKES (alert pipeline).
+
+CONTEXT (BINDING):
+- `EcccProvider.kt` memoizes the match result under `eccc_memo_${ecccCode}_${filename}`, which has no location in it. Two tabs that share a region (Ottawa and Toronto, both CWTO) can miss or misattribute an alert.
+- Source of this statement: CODE_AUDIT_2026-11-12.md H1 (the Orchestrator re-checks it in Step 0 against the code).
+- Rule 10 applies: if the memo entry type or the prefs schema must change, STOP after Step 0 and propose a plan.
+
+STRICT RAILS:
+- Only the files named in the steps. No drive-by edits. PROTECTED paths are not touched; this gate has no UNLOCK line.
+- A failing test is never "fixed" by editing the test (rule 24).
+
+=== STEP 0 (read-only) ===
+0.1 `grep -n "memoKey" app/src/main/java/com/weatherapp/libre/alerts/providers/EcccProvider.kt` — raw output pasted.
+0.2 Quote lines 205-270 of that file with `grep -n`-style line numbers visible.
+0.3 List every test that reads or writes the memo (`grep -rn "eccc_memo" app/src/test`), raw output pasted.
+STOP AND WAIT.
+
+=== STEP 1: the red run ===
+1.1 Create `app/src/test/java/com/weatherapp/libre/alerts/EcccProviderTwoLocationTest.kt` with one test: a tornado-warning polygon that covers Toronto only; Ottawa is synced first, then Toronto; the test asserts that Toronto receives the alert and Ottawa does not. Fixture: the existing tornado-warning CAP file in `assets/cap_fixtures/` (Source of the polygon and the two coordinates: the Step 0.2 output; expected result: written here by the Orchestrator from the geometry, never computed by running the code).
+1.2 Run `:app:testDebugUnitTest --tests "*EcccProviderTwoLocationTest*"` with its output written to `evidence/R1.1/red.txt` (rule 18 form). The test MUST fail on today's code. If it passes, STOP and report: the audit finding would be wrong.
+FILE: evidence/R1.1/red.txt, `cat -n` of the new test.
+STOP AND WAIT.
+
+=== STEP 2: the fix ===
+2.1 Make the memo location-aware (option chosen after Step 0: memoize the location-independent parse and match per location). Smallest change.
+2.2 Run the same test and then the full `:app:testDebugUnitTest`, outputs written to `evidence/R1.1/green.txt` and `evidence/R1.1/full.txt`.
+FILE: both files, `git diff -- <each changed file>`.
+STOP AND WAIT.
+
+REPORT (every step): the rule 15 ending, `wc -l` of each file created or modified (rule 16), and a section headed "Prompt doubts" (rule 22).
+
+DEFINITION OF DONE: the red run failed, the green run passed, the full suite passes with a higher count than before (232 + the new tests), no file outside the manifest changed, no PROTECTED path touched.
+
+*Variant for an astronomy gate:* add the line `UNLOCK: app/src/main/java/com/weatherapp/libre/lunar/LunarPosition.kt — replace the truncated Moon series with Table 47.A/47.B — approved by Adam 2026-MM-DD`, give each dictated expected value its source on the line itself (for example `Meeus, Astronomical Algorithms 2nd ed., Example 47.a: Δ = 368409.7 km`), ship the tables as an exact file with a row-count check, and end the gate with the exact command that regenerates `config/protected.sha256`.

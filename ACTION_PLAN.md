@@ -1,0 +1,104 @@
+# ACTION_PLAN — WeatherAPP Libre remediation (2026-11-12)
+Maintained by the Orchestrator. Order = priority: work top to bottom; an item is skipped only by Adam's decision, written in HANDOFF.md §2. Sources: CODE_AUDIT_2026-11-12.md (ids `C-H1`, `C-M3`, …), ASTRONOMY_AUDIT_2026-11-12.md (`A-H1`, …), DRIFT_ANALYSIS_2026-11-12.md (its six drifts, cited as "drift 1" to "drift 6"; its recommendations are R0), HANDOFF.md §3 of 2026-11-04 (`HO`). Coder for all gates: Gemini 3.6 Flash. Adam is the build authority and the decider.
+
+## How to read this
+- **Milestones R0-R4** = priority tiers. Gates are `R<m>.<n>`. Each gate follows AI_ONBOARDING §2: Step 0 audit, steps, evidence files, "Prompt doubts", fix loops inside the gate, then one commit and push. Each milestone ends with a review (`docs/milestones/R<m>-review.md`) before the next starts.
+- **Type**: `CODE` (Coder edits code), `DOCS` (Orchestrator edits docs), `DECISION` (Adam decides first), `CHECK` (Adam checks on a device or machine).
+- **Risk**: `ORD` ordinary; `HIGH` = HIGH-STAKES (adds a cold second review, AI_ONBOARDING §1); `UNLOCK` = edits a PROTECTED path, so the prompt carries an UNLOCK line.
+- **Done when** = the evidence that closes the gate. A defect gate shows a red run (a test that fails first), then the fix, then a green run. The test count rises; it never falls.
+- Status: ☐ open · ▶ in progress · ✔ done (ticked in the gate's docs sweep).
+
+## Order of work at a glance
+| # | Gate | What | Why now |
+|---|---|---|---|
+| 1 | R0.0 | Process docs aligned (done by the Orchestrator, Adam to commit) | Controls how everything below runs |
+| 2 | R0.1-R0.2 | Cloud-Coder secrets guard, rails as tests | Stops the drift that produced the findings |
+| 3 | R1.1 | ECCC memo per location | Missed or misattributed safety alerts |
+| 4 | R1.2 | Backup rules name the wrong files | Privacy promise broken today |
+| 5 | R1.3 | **C-H3** Statcounter runs in the in-app WebView, even from the cache. Decided (D1): block `statcounter.com` in the WebView's `shouldInterceptRequest` for every page, cached or live (UNLOCK for any edit to the "Do not touch" Statcounter blocks; the plan is not to edit the HTML, which stays for the website). Step 0 lists every third-party host the in-app pages request, so the claim "no third-party requests" is checked, not assumed. Correct `privacypolicy.html` §8.1/§9 and the "at a glance" box and the README to say exactly what is true (the app blocks it; the website in a browser still uses it, if that is so); Adam updates the Play Data Safety answers | CODE + CHECK / HIGH | Test with a fake WebView request proves the block for cached and live loads; policy, README and code agree; Adam confirms the Data Safety form | ☐ |
+| 6 | R1.4 | Missing key aborts sync; Cache Inspector; bundle gate | Small, mechanical, high yield |
+| 7 | R2.1-R2.7 | Astronomy: golden tests, Moon series, phases, sunrise definition, dip, cleanup | Product claim is "Meeus-grade"; errors up to 47 min |
+| 8 | R3.x | Crash, cache locking, zeros, timestamps, territories, localization, Float, … | Correctness and robustness |
+| 9 | R4.x | Structure, tests, CI, colours, dependencies, accessibility | Hygiene |
+
+## Decisions (Adam)  *(recommended default in bold; needed by the gate shown)*
+| Id | Decision | Options | Needed by |
+|---|---|---|---|
+| D1 ✔ **DECIDED 2026-11-12: (a) block it in the WebView** | Statcounter in the in-app pages (C-H3) | (a) **Block `statcounter.com` in the WebView, and disclose it in the policy only if the website itself keeps it**; (b) disable JavaScript in the WebView (pages may look static; test); (c) serve an app variant of the pages without the snippet; (d) keep it and disclose it in the policy, README and the Play Data Safety form | R1.3 |
+| D2 ✔ **DECIDED 2026-11-12: (b)** — tables fetched and verified, in `docs/sources/meeus-ch47/` | Source of the Moon tables (A-H1) | (a) **Your copy of Meeus, "Astronomical Algorithms" 2nd ed., Tables 47.A and 47.B, transferred as a file by you (typed or scanned) and checked against Example 47.a**; (b) an openly licensed implementation of the same tables (a permissive licence compatible with GPLv3), fetched and then checked against Example 47.a and 49.a before use; never a table from a model's memory | R2.2 |
+| D3 | Sunrise/sunset definition (A-H3) | (a) **Standard almanac: true altitude of the Sun's centre -0.8333°, no extra refraction**; (b) apparent upper limb with Bennett refraction. Both give the same answer within seconds when done consistently | R2.4 |
+| D4 | Elevation (dip) policy (A-M1) | (a) **Almanac match: ignore elevation for sunrise/sunset (matches published tables); apply dip only for an opt-in "open horizon" setting later**; (b) keep dip for the Sun and add it to the Moon; today's 1.7 min (Ottawa) and 7.4 min (Calgary) shift stays, with one dip formula | R2.5 |
+| D5 | Formatter (AGENTS.md rule 19) | **Decide after R0 (adding a Gradle plugin is a build change)**: ktlint or Spotless with `.editorconfig`, or none | R4.11 |
+| D6 | Territory office codes (C-L5) | Yukon, NWT, Nunavut are unmapped; the codes are unverified. Source: the ECCC Datamart listing itself; Adam or a read-only fetch confirms | R3.5 |
+| D7 ✔ **DECIDED 2026-11-12: yes, done** | Copy the three reports into the repo under `docs/audits/` (repo is authoritative) | **Yes** / no | R0.0 |
+| D8 | Moon phase times (A-H2) | (a) **Pure Meeus Ch. 49 with the corrected coefficients, no refinement loop**; (b) keep the Newton refinement on the corrected series | R2.3 |
+
+## R0 — Process rails (no user-visible change)
+| Gate | Item | Type / Risk | Done when | Status |
+|---|---|---|---|---|
+| R0.0 | Align the process docs with vermilion-editor (drifts 1-6 of DRIFT_ANALYSIS): AGENTS.md rules 16-24, AI_ONBOARDING, HANDOFF capped, ARCHITECTURE claim tags, MASTER_EXAMPLE, this plan; audits copied to `docs/audits/`; Moon tables prepared in `docs/sources/meeus-ch47/` | DOCS | Adam has reviewed and committed the doc files | ▶ docs written, awaiting commit |
+| R0.1 | `.gitignore` += `evidence/`, `.kotlin/` (C-L11, HO); new `.aiexclude` listing `local.properties`, `keystore.properties`, `*.jks`, `*.keystore`, `app/release/`; Adam checks in Android Studio that excluded files are not offered to the Agent (feature support to be confirmed on his version) | CODE + CHECK / ORD | `git status --short` shows only those files; Adam's check; if `.aiexclude` is unsupported, record the fallback in HANDOFF §2b | ☐ |
+| R0.2 | Rails as tests: (a) `ProtectedPathsTest` compares SHA-256 of every file under `lunar/`, `solar/` (main) and any `golden/` directory with `config/protected.sha256`; (b) a size ratchet: `config/size-baseline.txt` lists files already over 500 lines (tests over 800), which may only shrink; new files must obey AGENTS.md rule 16; (c) a unit test of the comparer itself with a fake mismatch | CODE / ORD | Tests green; count rises; the report shows the manifest regeneration command; Orchestrator audit confirms the manifest equals the tree | ☐ |
+| R0.3 | Pilot review: `docs/milestones/R0-review.md`. Did Gemini follow rules 12, 18, 22? Did multi-step prompts work? What changes in AGENTS.md before R1? Update the Coder profile | DOCS | Review agreed with Adam | ☐ |
+
+## R1 — Alerts and privacy (safety and trust)
+| Gate | Item | Type / Risk | Done when | Status |
+|---|---|---|---|---|
+| R1.1 | **C-H1** ECCC memo keyed by region+file, matching per location. Memoize the location-independent parse, run `AlertMatcher` per location (or add the location key); plan first if the memo entry type changes (rule 10). Add a two-location regression test using the default tabs' case (Ottawa and Toronto both `CWTO`) | CODE / HIGH | Red run: the new test fails on today's code; green run after the fix; old memo entries age out in 48 h (state it); count rises | ☐ |
+| R1.2 | **C-H2** `backup_rules.xml` and `data_extraction_rules.xml` name `location_preferences.xml`/`widget_preferences.xml`; the real files are `weather_location_prefs`, `weather_widget_prefs`. Step 0: trace whether a restored `ALERT_CONSENT_OPT_IN` can start polling without a fresh consent step (unverified in the audit). Add the guard test first: every `getSharedPreferences("…")` name in `src/main` is excluded in both XML files. Then fix both files. Orchestrator corrects ARCHITECTURE.md (the [F] tag comes off) | CODE / HIGH | Red run, green run; both XML files' diff pasted; the Step 0 trace answered either way | ☐ |
+| R1.3 | **C-H3** Statcounter runs in the in-app WebView, even from the cache. Implement D1 (UNLOCK for the "Do not touch" Statcounter blocks if the HTML is edited); correct `privacypolicy.html` §8.1/§9 and the "at a glance" box, README, usermanual if needed; Adam updates the Play Data Safety answers | DECISION → CODE + CHECK / HIGH | Policy, README and code agree; a test or grep proves the chosen mechanism; Adam confirms the Data Safety form | ☐ |
+| R1.4 | Three small steps. **C-M1**: a blank MeteoGate key returns `AlertFetchResult.Failure` (or provider resolution is wrapped per tab), so Canadian tabs after an EU tab still sync; **C-M2**: Cache Inspector uses `global_alert_cache_prefs` (the R1.2 guard test also covers it); **C-M8**: wire `verifyEdgeToEdge` to `preBuild`/`check` so `bundleRelease` (the Play artifact) runs it | CODE / ORD | Each step has a test or a Gradle proof; README "fails silently" statement true; ARCHITECTURE [F] tags removed | ☐ |
+| R1.5 | Milestone review R1 | DOCS | `R1-review.md` agreed | ☐ |
+
+## R2 — Astronomy (`lunar/`, `solar/`; every gate is HIGH and UNLOCK)
+Prerequisite: R0.2 (so the unlock is visible) and D3, D4, D8 answered (D2 is done). Expected values come only from the sources in ASTRONOMY_AUDIT §1 and §7, and the prompts cite them (AGENTS.md rule 24). The Moon tables are copied, never typed by a model.
+| Gate | Item | Type / Risk | Done when | Status |
+|---|---|---|---|---|
+| R2.1 | **A-M2** Golden test infrastructure, plus goldens for the parts that are already right (and thereby earn "VERIFIED" for them): GMST, nutation, obliquity, ΔT branches, Sun position (Meeus Ch. 25 example), the topocentric correction, Brent's solver. New `golden/` directory is PROTECTED from the next gate on; remove the one-day and 30-minute tolerances only in the gates that fix the code they cover | CODE / HIGH | All goldens pass today; each cites its source in a header comment; manifest regenerated | ☐ |
+| R2.2 | **A-H1** Replace the three Moon series (longitude 60 rows, latitude 60, distance 60) with the full Table 47.A/47.B from `docs/sources/meeus-ch47/` (D2 decided: the two verified CSV files, SHA-256 in `SHA256SUMS`; the Orchestrator diffs the Kotlin numbers against them by script; the licences page gets the astronomia/Meeus attribution); fix the line 139 and 147 errors. Row-count test (60/60/60 per table, plus the E and A additive terms) | UNLOCK `lunar/LunarPosition.kt` | Red run: Meeus Example 47.a (λ 133.162655° before nutation, 133.167265° apparent; β -3.229126°; Δ 368409.7 km; at 0.001°/0.1 km) and the three NASA eclipse peaks at 2 minutes fail on today's code; green after; the old tolerances in `LunarEclipseCalculatorTest` tightened to the claim | ☐ |
+| R2.3 | **A-H2** `MoonPhaseCalculator`: sign error (lines 86, 105), 0.01044→0.01039, quarter-phase coefficients (119-127), complete the planetary arguments to 14 terms; apply D8; correct comments | UNLOCK `lunar/MoonPhaseCalculator.kt` | Red run: Meeus Example 49.a to 1 minute plus the 2026 phase list at 2 minutes (the source list is an agency table, not only time-ok.com); green after | ☐ |
+| R2.4 | **A-H3** Sunrise/sunset altitude per D3: stop comparing the apparent altitude with a true-altitude target; remove the -1° discontinuity from the search; fix the text in `SolarLightingEngine` ("elevation -0.83°") and the daytime description; one refraction function | UNLOCK `solar/`, `lunar/AtmosphericRefraction.kt` | Red run: three sea-level cities on three dates against an almanac at 90 s; green after; twilights unchanged | ☐ |
+| R2.5 | **A-M1** Elevation policy per D4: one `Observer`, one dip formula, dip applied only to the horizon event, the Moon consistent with the Sun | UNLOCK `lunar/`, `solar/` / DECISION | Test with Ottawa 70 m and Calgary 1,045 m shows the chosen policy; both `Observer` classes merged or one deleted (rule 8) | ☐ |
+| R2.6 | **A-L1..L8** Lows, in order: L2 nutation counted twice; L7 `julianCenturies` still called; L8 date-dependent test; L5 `Observer` throws (trace every caller; Step 0 only); L3, L4 solar-noon and sampling (measure first); L1 ΔT for 2026: needs a primary source (IERS bulletin), then the 2005-2050 branch | UNLOCK / HIGH | Each item either fixed with a golden or closed with a measured "no change needed" in the report | ☐ |
+| R2.7 | **A-M3, A-M4, C pattern 2** Merge the duplicate implementations (two `Observer`, two refraction, two Sun position, two topocentric, two Brent solvers, two `SolarLightingEngineTest`) without lowering the test count; correct the false comments (`LunarEclipseCalculator.kt:62-64`, "Bennett" labels, the daytime description) | UNLOCK / HIGH | `wc -l` before/after; test count not lower; goldens unchanged | ☐ |
+| R2.8 | Docs: the Orchestrator replaces every "not verified" tag in ARCHITECTURE and AI_ONBOARDING with [V] plus the golden test that earns it; milestone review R2 | DOCS | Each VERIFIED cites a test; `R2-review.md` agreed | ☐ |
+
+## R3 — Correctness and robustness
+Order inside the milestone is by user impact.
+| Gate | Item | Type / Risk | Done when | Status |
+|---|---|---|---|---|
+| R3.1 | **C-M6** Widget background work can crash the process: catch in `WidgetSyncWorker` (lines ~110, 124) and `WeatherWidgetProvider` (~66); revisit `ExistingWorkPolicy.REPLACE` in `enqueueImmediate` | CODE / ORD | Test or fault-injection proof; no uncaught path | ☐ |
+| R3.2 | **C-L7** `GlobalAlertCache` has no lock; parse errors become `emptyList()` (re-notifies); `clearExpiredAlerts` parses unguarded | CODE / HIGH | Concurrency and corrupt-entry tests (red then green) | ☐ |
+| R3.3 | **C-M3, C-L14** Missing forecast data shown as zeros. First a CHECK: Adam selects CMA-GFS, ECMWF and GEFS on a device (and reports); record a response for tests. Then `null`/"—" handling | CHECK → CODE / ORD | Unit test with a missing variable; GEFS parameter question answered | ☐ |
+| R3.4 | **C-L3, HO** One timestamp parser (`OffsetDateTime` first) used by `AlertNotificationHelper`, `AlertSyncWorker`, `MeteoAlarmProvider`, `GlobalAlertCache`; expiry formatting in the right zone | CODE / ORD | Tests with `+02:00` offsets; the three divergent patterns gone | ☐ |
+| R3.5 | **C-L5** Canadian territories get no alerts; fix the 2-letter substring fallback (`ON` in "Edmonton"). Needs D6 first | DECISION → CODE / HIGH | Codes verified against the Datamart listing; test per territory | ☐ |
+| R3.6 | **C-M5, A-L6, HO** Localization series, in this order: (a) `DayForecast` gets an explicit `isToday` field (removes the `equals("Today")` coupling); (b) day labels "Today", "Tomorrow", "Day N"; (c) notification text and channel names (and the "(ECCC)" label on MeteoAlarm alerts); (d) `AlertBannerManager`, adapters, "Back"; (e) English strings and emoji in `SolarLightingEngine` (UNLOCK) | CODE / ORD | EN/FR key parity test (571/569 today: keep parity), French typography, grep shows no hardcoded English in the named files | ☐ |
+| R3.7 | **C-L1** Float → Double coordinates in `LocationPreferences` (and the dropped id/countryCode/elevation fields). Prefs schema: plan first (rule 10); migrate old Float keys | CODE / HIGH | Migration test with an old Float-typed prefs file | ☐ |
+| R3.8 | **C-M4** MeteoAlarm N+1 requests: filter by location in the first call or memoize by identifier | CODE / ORD | Request count measured before and after in a test with a fake client | ☐ |
+| R3.9 | **C-L2** Bottom sheets → full-screen dialogs in `LocationDialogManager` (rail 4); remove the unused import in `ThemeManager` and the stale comment in `dialog_lunar_detail.xml` | CODE / ORD | grep proofs; device check by Adam | ☐ |
+| R3.10 | **C-L6** Geocode rule `areaDesc.contains(location.name)` false positives | CODE / ORD | Test with a short/common name | ☐ |
+| R3.11 | Milestone review R3 | DOCS | `R3-review.md` agreed | ☐ |
+
+## R4 — Hygiene and structure
+| Gate | Item | Type / Risk | Done when | Status |
+|---|---|---|---|---|
+| R4.1 | **C-M7** Forecast JSON and page HTML out of `weather_location_prefs` into files under `cacheDir` (as `LunarCacheManager` does); also removes them from backups. Prefs schema: plan first | CODE / HIGH | Migration of existing caches; startup measurement | ☐ |
+| R4.2 | **C-L13** Test debt: merge the duplicate `SolarLightingEngineTest` (R2.7 if not yet done); first tests for `AlertConsentDialog`, `MeteoGateClient`, `AppUpdateManager`, `ThemeManager`; then `SettingsDialogManager`, `LocationDialogManager` | CODE / ORD | Count rises each gate | ☐ |
+| R4.3 | **C-L4** Hex colours into palette tokens (SettingsDialogManager 14, HeatShimmerView 2, WidgetSyncWorker, 69 drawables, 6 layouts; widgets need a palette decision first) plus a rail check with a baseline that only shrinks | CODE / ORD | Baseline file shrinks to the widget exceptions | ☐ |
+| R4.4 | `SettingsDialogManager` (2,317 lines) split: plan first, then one settings screen per gate, each a PASS before the next | CODE / ORD (several gates) | Size baseline entry falls to under 500 | ☐ |
+| R4.5 | **C-L8** Move `GlobalAlertTestHarness` and the fixtures into a `debug` source set so "zero synthetic alerts in release" is structural | CODE / ORD | Release APK has no fixtures (listing as proof) | ☐ |
+| R4.6 | **C-L11** CI workflow (GitHub Actions): unit tests, `verifyEdgeToEdge`, the rail tests. Adam commits the workflow file | CODE / ORD | First green run on `main` | ☐ |
+| R4.7 | **C-L9** WebView hygiene: `destroy()`, scheme check in the allowlist, one shared `OkHttpClient`, notification group summary | CODE / ORD | grep proofs and tests where possible | ☐ |
+| R4.8 | **C-L10** Dependency report and updates (one library group per gate); AGP declared once; narrow the `androidx.work.impl.**` keep rule | CODE + CHECK / ORD | R8 release build checked by Adam | ☐ |
+| R4.9 | **C-L12** Accessibility: label or mark decorative images (widgets 15 icons, 0 descriptions; `activity_main` 6/3, others) | CODE / ORD | Count of unlabeled images per layout drops to the decorative set | ☐ |
+| R4.10 | **C pattern 4** Agent-isms: `isNull_or_blank_compat`, `as String?` casts, empty catches (102 `catch (e: Exception)` sites; ratchet: no new empty catch) | CODE / ORD | Counts before/after | ☐ |
+| R4.11 | **D5** Formatter adoption (if chosen) and AGENTS.md rule 19 updated | DECISION → CODE / ORD | A format check in CI | ☐ |
+| R4.12 | **C pattern 2, HO** Collapse the OkHttp callback→coroutine wrappers (about five copies); two types named `CacheEntry`; widget layouts' demo text (Tab 1-4, "Partly Cloudy", "18°C"); `.kotlin/` is done in R0.1 | CODE / ORD | grep proofs | ☐ |
+| R4.13 | Milestone review R4, and a final audit (repeat the code and astronomy audits against the new HEAD) | DOCS | `R4-review.md` and a dated audit file | ☐ |
+
+## Standing rules while this plan runs
+- One milestone at a time; a review before the next (AI_ONBOARDING §2.7).
+- New findings go into this file with an id and a priority; they are never carried as loose notes (AGENTS.md rule 17).
+- The test count never falls. A golden tolerance is never loosened to pass (AGENTS.md rule 24).
+- The Coder never touches PROTECTED paths without an UNLOCK line (AGENTS.md rule 23). A UI problem never changes a formula.
+- Every ARCHITECTURE.md claim carries [V], [U] or [F]; an [F] has a gate here.
