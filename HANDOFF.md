@@ -4,15 +4,15 @@ Maintained by the Orchestrator per AI_ONBOARDING.md §6. A new instance reads th
 ## 1. Current State  *(overwrite every update)*
 | Field | Value |
 |---|---|
-| Updated | 2026-11-12 13:20 (R0.2 closed, awaiting Adam's commits) |
+| Updated | 2026-11-12 13:30 (handoff at Adam's request, R0.2 committed and pushed) |
 | App version | 0.8.2 (VC30), committed and pushed. Play upload / device check status not reported. |
-| Repo HEAD at update | **2c32c29** (pushed) plus Adam's two R0.2 commits once he makes them (gate commit: `app/build.gradle.kts`, `app/src/test/java/com/weatherapp/libre/rails/`, `config/`; docs commit: AGENTS.md, AI_ONBOARDING.md, ARCHITECTURE.md, ACTION_PLAN.md, HANDOFF.md, `docs/milestones/`). App code (production) unchanged since d6477d6 (0.8.2 VC30). |
+| Repo HEAD at update | **2c59d33** "Docs: R0.2 closed; report template (rule 15), rails documented, R0 review draft", on top of 63e4601 (R0.2 gate: rails tests, `config/`, `railsConfig`), 2c32c29 and 21e4dd8 (R0.1). Pushed; `git status -sb` level with origin/main and clean at 13:25. This handoff edit itself is uncommitted until Adam commits it. App code (production) unchanged since d6477d6 (0.8.2 VC30). |
 | Tests | 243 `@Test` (R0.2: 232 + 11 rails tests; full run 243, 0 failures, 0 errors). Astronomy accuracy is still not measured. |
 | Active task | Remediation program R0-R4 (ACTION_PLAN.md). R0.0, R0.1, R0.2 done; R0.3 (milestone review) next; **no R1 gate has been issued.** |
 | Gate position | R0.2 done (all steps audited PASS; fixes 1 and 2 closed). Before R0.3. |
-| Awaiting | Adam: make the two commits and push (commands in chat); then say "go" for the R0 milestone review. **Reminder for Adam: set this chat to Sonnet 5.5 with thinking level High.** |
+| Awaiting | Adam: commit this handoff refresh (`HANDOFF.md`), then in the new chat say "Resume from HANDOFF.md" and "go" for the R0 milestone review. **Reminder for Adam: set the new chat to Sonnet 5.5 with thinking level High.** |
 | Last prompt issued | R0.2, closed (verbatim in `docs/milestones/R0.2-prompt.md`). None outstanding. |
-| Next action | After the push: verify `git status --short` is clean, then open the R0 milestone review with Adam as a discussion (AI_ONBOARDING §2.7). A draft is in `docs/milestones/R0-review.md`. R1.1 is issued only after Adam agrees. |
+| Next action | On resume: State Readback (ends with the Sonnet 5.5 / High reminder), then the R0 milestone review as a discussion with Adam (AI_ONBOARDING §2.7), starting from the draft `docs/milestones/R0-review.md` and its three questions (second reader for HIGH gates, Gemini sizing for R1.1, moving the MeteoGate key out of `local.properties`). Write the agreed review, then R1.1 (ECCC memo per location, HIGH) only when Adam agrees. |
 | Coder | Gemini 3.6 Flash (cloud) in Android Studio's Agent tab, for the whole remediation (Adam, 2026-11-12). Adam's Google Pro stays enabled for now and he will say if that changes (2026-11-12). |
 
 **Open decisions (Adam's call; details and defaults in ACTION_PLAN.md "Decisions")**
