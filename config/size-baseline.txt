@@ -1,0 +1,11 @@
+# Files already over the size limit (AGENTS.md rule 16): main .kt over 500 lines, tests over 800.
+# A number may only fall. When a file drops to its limit or below, or is deleted, remove its line.
+# Format: <newline count, as wc -l> <path from the repository root>
+755 app/src/main/java/com/weatherapp/libre/AstronomyDisplayManager.kt
+889 app/src/main/java/com/weatherapp/libre/LocationPreferences.kt
+517 app/src/main/java/com/weatherapp/libre/MainActivity.kt
+2317 app/src/main/java/com/weatherapp/libre/SettingsDialogManager.kt
+514 app/src/main/java/com/weatherapp/libre/WeatherDisplayManager.kt
+665 app/src/main/java/com/weatherapp/libre/WeatherRepository.kt
+612 app/src/main/java/com/weatherapp/libre/WidgetSyncWorker.kt
+510 app/src/main/java/com/weatherapp/libre/alerts/providers/EcccProvider.kt

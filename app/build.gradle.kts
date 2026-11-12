@@ -182,3 +182,11 @@ tasks.register<VerifyEdgeToEdgeTask>("verifyEdgeToEdge") {
 tasks.matching { it.name == "assembleDebug" || it.name == "assembleRelease" }.configureEach {
     dependsOn("verifyEdgeToEdge")
 }
+
+tasks.withType<Test>().configureEach {
+    inputs.files(
+        rootProject.file("config/protected.sha256"),
+        rootProject.file("config/size-baseline.txt")
+    ).withPropertyName("railsConfig")
+}
+
