@@ -43,7 +43,8 @@ values/: strings.xml + values-fr/strings.xml (French typography enforced); value
 ## Assets & tests
 assets/cap_fixtures/: 6 CAP XML (tornado warning/update/cancel, thunderstorm, winter storm, special statement) — drive reconcile tests and the debug harness.
 assets/meteoalarm_fixtures/: 3 MeteoGate JSON (red wind, orange rain, yellow frost).
-app/src/test/: 232 unit tests (v0.8.2) mirroring packages (root, alerts, alerts/workers, lunar, solar, almanac). A falling count is a defect.
+app/src/test/: 243 unit tests **[V]** (232 at v0.8.2 plus 11 rails tests, R0.2, 2026-11-12) mirroring packages (root, alerts, alerts/workers, lunar, solar, almanac, rails). A falling count is a defect.
+rails/ (test package, R0.2) **[V]**: RepoRoot, ProtectedManifest, SizeBaseline and their tests. `ProtectedPathsTest` compares SHA-256 of every file under lunar/, solar/ and any `golden/` directory with `config/protected.sha256` (18 files today); `SizeRatchetTest` compares file sizes with `config/size-baseline.txt` (8 main files over 500 lines; the numbers may only fall); `RailsComparerTest` (9 tests) proves both comparers fire on fake mismatches. `app/build.gradle.kts` declares both config files as inputs of every Test task (`railsConfig`), proven by a controlled change of a config file.
 Known debt: two same-named SolarLightingEngineTest classes (test root and test solar/) — merge pending. No CI workflow yet. **[F]** No test measures astronomy accuracy: tolerances of 10-30 min and one day exist in the astronomy tests (ASTRONOMY_AUDIT M2), and the UI managers have no tests (CODE_AUDIT L13). Every remaining item is in ACTION_PLAN.md.
 
 ## Root & website
@@ -77,7 +78,7 @@ Forecast label columns (item_day_forecast 88dp, item_hourly_row time 72dp) are f
 Shell commands run from the project root with relative paths; built-in IDE file tools may use absolute paths inside the project (see AGENTS.md TOOLING).
 
 ## Do not touch
-**PROTECTED** (AGENTS.md rule 23; the Coder edits these only in a gate whose prompt carries an `UNLOCK:` line): `app/src/main/java/com/weatherapp/libre/lunar/`, `app/src/main/java/com/weatherapp/libre/solar/`, any `golden/` test directory, and `config/protected.sha256` (both of the last two once gate R0.2 creates them). Protected means the Coder must not edit it. It does **not** mean correct: the earlier label "verified ≤1 min / ≤1° vs official sources" is withdrawn (it had no test behind it; ASTRONOMY_AUDIT_2026-11-12.md).
+**PROTECTED** (AGENTS.md rule 23; the Coder edits these only in a gate whose prompt carries an `UNLOCK:` line): `app/src/main/java/com/weatherapp/libre/lunar/`, `app/src/main/java/com/weatherapp/libre/solar/`, any `golden/` test directory, and `config/protected.sha256` (the last two exist since gate R0.2; `ProtectedPathsTest` fails on any change, **[V]**). Protected means the Coder must not edit it. It does **not** mean correct: the earlier label "verified ≤1 min / ≤1° vs official sources" is withdrawn (it had no test behind it; ASTRONOMY_AUDIT_2026-11-12.md).
 verifyEdgeToEdge build gate (do not disable or loosen; wiring it to more tasks is allowed).
 local.properties, keystores, app/release/ binaries: never commit, and the Coder never opens them (cloud model; AGENTS.md rule 13).
 Statcounter snippet at bottom of every *.html: UNLOCK is pending the privacy decision D1 (ACTION_PLAN R1.3). **[F]** The README and privacy policy say there is no analytics, while the in-app WebView runs this snippet even from the cache (CODE_AUDIT H3).
